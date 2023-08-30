@@ -1,0 +1,54 @@
+{
+  "name": "@ldo/cli",
+  "version": "0.0.0",
+  "description": "A Command Line Interface for Linked Data Objects",
+  "main": "./dist/index.js",
+  "bin": {
+    "ldo": "./dist/index.js"
+  },
+  "scripts": {
+    "start": "node dist/index.js build",
+    "start:init": "node dist/index.js init",
+    "dev": "npm run build && npm run start:init",
+    "build": "npm run clean && npm run build:ts && npm run copy-files && npm run update-permission",
+    "build:ts": "tsc --project tsconfig.build.json",
+    "clean": "rimraf dist/",
+    "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
+    "update-permission": "chmod +x ../../node_modules/.bin/ldo",
+    "watch": "tsc --watch",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run test && npm run build",
+    "postinstall": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/ldo-cli.git"
+  }, 
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/ldo-cli/issues"
+  },
+  "homepage": "https://github.com/o-development/ldo-cli#readme",
+  "devDependencies": {
+    "@types/child-process-promise": "^2.2.2",
+    "@types/ejs": "^3.1.1",
+    "@types/fs-extra": "^9.0.13",
+    "@types/jest": "^27.0.3",
+    "@types/shexj": "^2.1.4",
+    "copyfiles": "^2.4.1",
+    "jest": "^27.4.2",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.7"
+  },
+  "dependencies": {
+    "@shexjs/parser": "^1.0.0-alpha.24",
+    "child-process-promise": "^2.2.1",
+    "commander": "^9.3.0",
+    "ejs": "^3.1.8",
+    "fs-extra": "^10.1.0",
+    "loading-cli": "^1.1.0",
+    "shexj2typeandcontext": "^2.0.0"
+  }
+}

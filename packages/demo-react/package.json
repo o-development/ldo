@@ -1,10 +1,9 @@
 {
   "name": "@ldo/demo-react",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "dependencies": {
     "@ldo/solid-react": "^0.0.0",
-    "ldo": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -13,7 +12,6 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
     "eject": "react-scripts eject",
     "lint": "eslint src/** --fix",
     "build:ldo": "ldo build --input src/shapes --output src/ldo"
@@ -38,9 +36,9 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
+    "@ldo/cli": "^0.0.0",
     "@types/jsonld": "^1.5.9",
     "@types/shexj": "^2.1.4",
-    "ldo-cli": "^3.0.1",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
   }
 }

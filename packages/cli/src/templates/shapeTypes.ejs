@@ -1,0 +1,24 @@
+import { ShapeType } from "ldo";
+import { <%- fileName %>Schema } from "./<%- fileName %>.schema";
+import { <%- fileName %>Context } from "./<%- fileName %>.context";
+import {
+<% typings.forEach((typing) => { -%>
+  <%- typing.dts.name %>,
+<% }); -%>} from "./<%- fileName %>.typings";
+
+/**
+ * =============================================================================
+ * LDO ShapeTypes <%- fileName %>
+ * =============================================================================
+ */
+<% typings.forEach((typing) => { -%>
+
+/**
+ * <%- typing.dts.name %> ShapeType
+ */
+export const <%- typing.dts.name %>ShapeType: ShapeType<<%- typing.dts.name %>> = {
+  schema: <%- fileName %>Schema,
+  shape: "<%- typing.dts.shapeId %>",
+  context: <%- fileName %>Context,
+};
+<% }); -%>

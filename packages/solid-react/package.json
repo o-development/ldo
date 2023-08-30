@@ -8,12 +8,8 @@
     "watch": "tsc --watch",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "docs": "typedoc",
-    "prepublishOnly": "npm run test && npm run build && npm run docs",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "storybook:ldo": "ldo build --input stories/shapes --output stories/ldo",
-    "build:ldo": "ldo build --input lib/shapes --output lib/ldo"
+    "prepublishOnly": "npm run test && npm run build",
+    "build:ldo": "ldo build --input src/shapes --output src/ldo"
   },
   "repository": {
     "type": "git",
@@ -29,13 +25,12 @@
     "@babel/preset-env": "^7.22.10",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.11",
+    "@ldo/cli": "^0.0.0",
     "@rdfjs/types": "^1.1.0",
     "@types/jest": "^29.0.3",
     "@types/jsonld": "^1.5.8",
     "@types/n3": "^1.10.4",
     "@types/shexj": "^2.1.4",
-    "ldo-cli": "^3.0.1",
-    "prop-types": "^15.8.1",
     "ts-jest": "^29.0.2"
   },
   "dependencies": {
