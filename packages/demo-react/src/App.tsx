@@ -1,23 +1,18 @@
 import React, { FunctionComponent } from "react";
+import Profile from "./Profile";
+import { SolidAuthProvider, LdoProvider } from "@ldo/solid-react";
+import { fetch } from "solid-authn-react-native";
+import Layout from "./Layout";
 
-const App: FunctionComponent = () => {
+const ProfileApp: FunctionComponent = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <SolidAuthProvider>
+      <LdoProvider fetch={fetch}>
+        <Layout>
+          <Profile />
+        </Layout>
+      </LdoProvider>
+    </SolidAuthProvider>
   );
 };
-
-export default App;
+export default ProfileApp;

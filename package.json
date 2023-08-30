@@ -5,6 +5,8 @@
     "packages/*"
   ],
   "scripts": {
+    "test": "lerna run test",
+    "build": "lerna run build",
     "demo-react": "lerna run start --scope @ldo/demo-react",
     "lint": "lerna run lint"
   },
