@@ -7,12 +7,12 @@ import type {
   PredicateType,
   SubjectProxy,
   SubjectType,
-} from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
-} from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 import type { Quad } from "n3";
 import type { SubscribableDataset, TransactionalDataset } from "o-dataset-pack";
 

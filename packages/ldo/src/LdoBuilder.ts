@@ -4,7 +4,7 @@ import type {
   QuadMatch,
   SubjectType,
   LanguageOrdering,
-} from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./util";
 import { normalizeNodeName, normalizeNodeNames } from "./util";

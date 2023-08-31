@@ -2,8 +2,8 @@ import type {
   ArrayProxyTarget,
   SubjectProxyTarget,
   ProxyContextOptions,
-} from "jsonld-dataset-proxy";
-import { ProxyContext } from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
+import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
 import type { UpdateManager } from "./UpdateManager";
 import { namedNode } from "@rdfjs/data-model";
 

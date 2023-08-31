@@ -5,8 +5,8 @@ import { ProfileShapeType } from "./profileData";
 import type { LdoBuilder, LdoDataset } from "../src";
 import { createLdoDataset, graphOf, parseRdf, toTurtle } from "../src";
 import { sampleJsonld, sampleTurtle } from "./sampleData";
-import type { SubjectProxy } from "jsonld-dataset-proxy";
-import { _proxyContext } from "jsonld-dataset-proxy";
+import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
+import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
 
 describe("LdoDataset", () => {
   let ldoDataset: LdoDataset;

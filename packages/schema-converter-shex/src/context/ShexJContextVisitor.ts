@@ -1,5 +1,5 @@
 import ShexJTraverser from "shexj-traverser";
-import { JsonLdContextBuilder } from "./JsonLdContextBuilder";
+import type { JsonLdContextBuilder } from "./JsonLdContextBuilder";
 
 /**
  * Visitor
@@ -7,9 +7,7 @@ import { JsonLdContextBuilder } from "./JsonLdContextBuilder";
 export const ShexJNameVisitor =
   ShexJTraverser.createVisitor<JsonLdContextBuilder>({
     Shape: {
-      visitor: async (shape, context) => {
-        
-      }
+      visitor: async (_shape, _context) => {},
     },
     TripleConstraint: {
       visitor: async (tripleConstraint, context) => {
@@ -26,7 +24,7 @@ export const ShexJNameVisitor =
                   "@type": tripleConstraint.valueExpr.datatype,
                 },
                 isContainer,
-                tripleConstraint.annotations
+                tripleConstraint.annotations,
               );
             } else if (
               tripleConstraint.valueExpr.nodeKind &&
@@ -36,14 +34,14 @@ export const ShexJNameVisitor =
                 tripleConstraint.predicate,
                 { "@type": "@id" },
                 isContainer,
-                tripleConstraint.annotations
+                tripleConstraint.annotations,
               );
             } else {
               context.addPredicate(
                 tripleConstraint.predicate,
                 {},
                 isContainer,
-                tripleConstraint.annotations
+                tripleConstraint.annotations,
               );
             }
           } else {
@@ -53,13 +51,13 @@ export const ShexJNameVisitor =
                 "@type": "@id",
               },
               isContainer,
-              tripleConstraint.annotations
+              tripleConstraint.annotations,
             );
           }
         } else {
           context.addSubject(
             tripleConstraint.predicate,
-            tripleConstraint.annotations
+            tripleConstraint.annotations,
           );
         }
       },

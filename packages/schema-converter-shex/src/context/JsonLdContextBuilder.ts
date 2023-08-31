@@ -1,5 +1,5 @@
-import { Annotation } from "shexj";
-import { ContextDefinition, ExpandedTermDefinition } from "jsonld";
+import type { Annotation } from "shexj";
+import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
 
 /**
  * Name functions
@@ -24,7 +24,7 @@ export function nameFromObject(obj: {
 }): string | undefined {
   const labelAnnotationObject = obj.annotations?.find(
     (annotation) =>
-      annotation.predicate === "http://www.w3.org/2000/01/rdf-schema#label"
+      annotation.predicate === "http://www.w3.org/2000/01/rdf-schema#label",
   )?.object;
   if (labelAnnotationObject && typeof labelAnnotationObject === "string") {
     return toCamelCase(iriToName(labelAnnotationObject));
@@ -68,7 +68,7 @@ export class JsonLdContextBuilder {
     iri: string,
     expandedTermDefinition: ExpandedTermDefinition,
     isContainer: boolean,
-    annotations?: Annotation[]
+    annotations?: Annotation[],
   ) {
     this.addSubject(iri, annotations);
     if (!this.iriTypes[iri]) {
@@ -115,7 +115,7 @@ export class JsonLdContextBuilder {
         const labelAnnotationObject = annotations.find(
           (annotation) =>
             annotation.predicate ===
-            "http://www.w3.org/2000/01/rdf-schema#label"
+            "http://www.w3.org/2000/01/rdf-schema#label",
         )?.object;
         if (
           labelAnnotationObject &&

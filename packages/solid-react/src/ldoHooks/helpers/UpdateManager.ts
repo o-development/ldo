@@ -5,8 +5,8 @@ import type {
   SubjectType,
   PredicateType,
   ObjectType,
-} from "jsonld-dataset-proxy";
-import { nodeToString } from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
+import { nodeToString } from "@ldo/jsonld-dataset-proxy";
 import type { Quad } from "@rdfjs/types";
 
 export type TripleMatch = [QuadMatch[0], QuadMatch[1], QuadMatch[2]];

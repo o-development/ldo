@@ -1,5 +1,8 @@
-import type { SubjectType } from "jsonld-dataset-proxy";
-import { ContextUtil, JsonldDatasetProxyBuilder } from "jsonld-dataset-proxy";
+import type { SubjectType } from "@ldo/jsonld-dataset-proxy";
+import {
+  ContextUtil,
+  JsonldDatasetProxyBuilder,
+} from "@ldo/jsonld-dataset-proxy";
 import type { ShapeType, LdoBase } from "@ldo/ldo";
 import { LdoBuilder } from "@ldo/ldo";
 import { useLdoContext } from "../LdoContext";

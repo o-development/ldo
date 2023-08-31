@@ -1,12 +1,12 @@
 import type { Dataset } from "@rdfjs/types";
 import type { JsonLdDocument } from "jsonld";
-import type { GraphType, InteractOptions } from "jsonld-dataset-proxy";
+import type { GraphType, InteractOptions } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
   write as writeDependency,
-} from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 import type { Quad, WriterOptions } from "n3";
 import type { DatasetChanges, SubscribableDataset } from "o-dataset-pack";
 import { datasetToString } from "./datasetConverters";
@@ -21,7 +21,7 @@ export {
   graphOf,
   languagesOf,
   setLanguagePreferences,
-} from "jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 
 export function write(...graphs: (GraphType | string)[]): InteractOptions {
   return writeDependency(...normalizeNodeNames(graphs));

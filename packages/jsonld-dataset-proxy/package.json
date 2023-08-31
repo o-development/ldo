@@ -1,0 +1,46 @@
+{
+  "name": "@ldo/jsonld-dataset-proxy",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "build:watch": "tsc-watch",
+    "test": "jest --coverage",
+    "prepublishOnly": "npm run test && npm run build",
+    "start": "ts-node ./example/example.ts",
+    "start:lang": "ts-node ./example/languageExample.ts",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/jsonld-dataset-proxy.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/jsonld-dataset-proxy/issues"
+  },
+  "homepage": "https://github.com/o-development/jsonld-dataset-proxy#readme",
+  "devDependencies": {
+    "@rdfjs/types": "^1.0.1",
+    "@types/jest": "^27.0.3",
+    "@types/jsonld": "^1.5.6",
+    "@types/n3": "^1.10.4",
+    "@types/rdfjs__dataset": "^1.0.5",
+    "@types/shexj": "2.1.4",
+    "jest": "^27.4.5",
+    "shex-test": "^0.5.5",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0",
+    "tsc-watch": "^6.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@rdfjs/data-model": "^1.2.0",
+    "jsonld2graphobject": "^0.0.4",
+    "o-dataset-pack": "^0.2.14"
+  }
+}

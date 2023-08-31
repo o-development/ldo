@@ -34,9 +34,9 @@
     "ts-node": "^10.4.0"
   },
   "dependencies": {
+    "@ldo/jsonld-dataset-proxy": "^0.0.0",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
-    "jsonld-dataset-proxy": "^1.2.1",
     "n3": "^1.16.2",
     "o-dataset-pack": "^0.2.11",
     "readable-stream": "^4.3.0"

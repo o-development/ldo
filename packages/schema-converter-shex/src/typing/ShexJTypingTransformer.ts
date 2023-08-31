@@ -1,19 +1,19 @@
 import ShexJTraverser from "shexj-traverser";
 import * as dom from "dts-dom";
-import { Annotation } from "shexj";
+import type { Annotation } from "shexj";
 import { nameFromObject } from "../context/JsonLdContextBuilder";
-import { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
+import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string) => string;
 }
 
 export function commentFromAnnotations(
-  annotations?: Annotation[]
+  annotations?: Annotation[],
 ): string | undefined {
   const commentAnnotationObject = annotations?.find(
     (annotation) =>
-      annotation.predicate === "http://www.w3.org/2000/01/rdf-schema#comment"
+      annotation.predicate === "http://www.w3.org/2000/01/rdf-schema#comment",
   )?.object;
   if (typeof commentAnnotationObject === "string") {
     // It's an IRI
@@ -49,7 +49,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
   Schema: {
     transformer: async (
       _schema,
-      getTransformedChildren
+      getTransformedChildren,
     ): Promise<dom.TopLevelDeclaration[]> => {
       const transformedChildren = await getTransformedChildren();
       const interfaces: dom.TopLevelDeclaration[] = [];
@@ -67,7 +67,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
   ShapeDecl: {
     transformer: async (
       shapeDecl,
-      getTransformedChildren
+      getTransformedChildren,
     ): Promise<dom.InterfaceDeclaration> => {
       const shapeName = nameFromObject(shapeDecl) || "Shape";
       const { shapeExpr } = await getTransformedChildren();
@@ -80,7 +80,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       } else {
         // TODO: Handle other items
         throw new Error(
-          "Cannot handle ShapeOr, ShapeAnd, ShapeNot, ShapeExternal, or NodeConstraint"
+          "Cannot handle ShapeOr, ShapeAnd, ShapeNot, ShapeExternal, or NodeConstraint",
         );
       }
     },
@@ -95,15 +95,15 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         dom.create.property(
           "@id",
           dom.type.string,
-          dom.DeclarationFlags.Optional
-        )
+          dom.DeclarationFlags.Optional,
+        ),
       );
       newInterface.members.push(
         dom.create.property(
           "@context",
           dom.create.namedTypeReference("ContextDefinition"),
-          dom.DeclarationFlags.Optional
-        )
+          dom.DeclarationFlags.Optional,
+        ),
       );
       if (typeof transformedChildren.expression === "string") {
         // TODO: handle string
@@ -113,14 +113,14 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
           "interface"
       ) {
         newInterface.members.push(
-          ...(transformedChildren.expression as dom.ObjectType).members
+          ...(transformedChildren.expression as dom.ObjectType).members,
         );
       } else if (
         (transformedChildren.expression as dom.PropertyDeclaration).kind ===
         "property"
       ) {
         newInterface.members.push(
-          transformedChildren.expression as dom.PropertyDeclaration
+          transformedChildren.expression as dom.PropertyDeclaration,
         );
       }
       // Use EXTENDS
@@ -129,7 +129,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         transformedChildren.extends.forEach((extendsItem) => {
           if ((extendsItem as dom.InterfaceDeclaration).kind === "interface") {
             newInterface.baseTypes?.push(
-              extendsItem as dom.InterfaceDeclaration
+              extendsItem as dom.InterfaceDeclaration,
             );
           }
         });
@@ -151,21 +151,21 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       transformedChildren.expressions
         .filter(
           (
-            expression
+            expression,
           ): expression is dom.ObjectType | dom.PropertyDeclaration => {
             return (
               (expression as dom.PropertyDeclaration).kind === "property" ||
               (expression as dom.ObjectType).kind === "object" ||
               (expression as dom.InterfaceDeclaration).kind === "interface"
             );
-          }
+          },
         )
         .forEach(
           (
             expression:
               | dom.ObjectType
               | dom.InterfaceDeclaration
-              | dom.PropertyDeclaration
+              | dom.PropertyDeclaration,
           ) => {
             if (expression.kind === "property") {
               inputPropertyExpressions.push(expression);
@@ -176,7 +176,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
                 }
               });
             }
-          }
+          },
         );
 
       // Merge property expressions
@@ -206,7 +206,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
             dom.type.array(dom.create.union([oldProeprtyType, propertyType])),
             isOptional
               ? dom.DeclarationFlags.Optional
-              : dom.DeclarationFlags.None
+              : dom.DeclarationFlags.None,
           );
           // Set JS Comment
           properties[propertyDeclaration.name].jsDocComment =
@@ -229,7 +229,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       tripleConstraint,
       getTransformedChildren,
       setReturnPointer,
-      context
+      context,
     ) => {
       const transformedChildren = await getTransformedChildren();
       const propertyName = context.getNameFromIri(tripleConstraint.predicate);
@@ -244,11 +244,11 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       const propertyDeclaration = dom.create.property(
         propertyName,
         isArray ? dom.type.array(type) : type,
-        isOptional ? dom.DeclarationFlags.Optional : dom.DeclarationFlags.None
+        isOptional ? dom.DeclarationFlags.Optional : dom.DeclarationFlags.None,
       );
 
       propertyDeclaration.jsDocComment = commentFromAnnotations(
-        tripleConstraint.annotations
+        tripleConstraint.annotations,
       );
       return propertyDeclaration;
     },
@@ -258,7 +258,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       nodeConstraint,
       _getTransformedChildren,
       setReturnPointer,
-      context
+      context,
     ) => {
       if (nodeConstraint.datatype) {
         switch (nodeConstraint.datatype) {
@@ -325,7 +325,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
               dom.create.property(
                 "@id",
                 dom.type.string,
-                dom.DeclarationFlags.Optional
+                dom.DeclarationFlags.Optional,
               ),
             ]);
           case "literal":
@@ -341,9 +341,9 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
               dom.create.objectType([
                 dom.create.property(
                   "@id",
-                  dom.type.stringLiteral(context.getNameFromIri(value))
+                  dom.type.stringLiteral(context.getNameFromIri(value)),
                 ),
-              ])
+              ]),
             );
           }
         });

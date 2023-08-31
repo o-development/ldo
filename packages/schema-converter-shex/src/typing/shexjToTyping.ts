@@ -1,5 +1,5 @@
-import { ContextDefinition } from "jsonld";
-import { Schema } from "shexj";
+import type { ContextDefinition } from "jsonld";
+import type { Schema } from "shexj";
 import { JsonLdContextBuilder } from "../context/JsonLdContextBuilder";
 import { ShexJNameVisitor } from "../context/ShexJContextVisitor";
 import { jsonld2graphobject } from "jsonld2graphobject";
@@ -15,7 +15,7 @@ export interface TypeingReturn {
 }
 
 export async function shexjToTyping(
-  shexj: Schema
+  shexj: Schema,
 ): Promise<[TypeingReturn, ContextDefinition]> {
   const processedShexj: Schema = (await jsonld2graphobject(
     {
@@ -23,7 +23,7 @@ export async function shexjToTyping(
       "@id": "SCHEMA",
       "@context": "http://www.w3.org/ns/shex.jsonld",
     },
-    "SCHEMA"
+    "SCHEMA",
   )) as unknown as Schema;
   const jsonLdContextBuilder = new JsonLdContextBuilder();
   await ShexJNameVisitor.visit(processedShexj, "Schema", jsonLdContextBuilder);
@@ -34,7 +34,7 @@ export async function shexjToTyping(
     {
       getNameFromIri:
         jsonLdContextBuilder.getNameFromIri.bind(jsonLdContextBuilder),
-    }
+    },
   );
   const typings = declarations.map((declaration) => {
     return {

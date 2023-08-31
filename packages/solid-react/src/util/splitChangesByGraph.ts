@@ -1,6 +1,6 @@
 import type { DatasetChanges } from "o-dataset-pack";
 import { createDataset } from "o-dataset-pack";
-import type { GraphType } from "jsonld-dataset-proxy";
+import type { GraphType } from "@ldo/jsonld-dataset-proxy";
 import type { Quad } from "@rdfjs/types";
 import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
 
