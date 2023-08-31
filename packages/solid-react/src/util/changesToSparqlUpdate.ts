@@ -1,4 +1,4 @@
-import type { DatasetChanges } from "o-dataset-pack";
+import type { DatasetChanges } from "@ldo/subscribable-dataset";
 import { datasetToString } from "@ldo/ldo";
 import type { Quad } from "@rdfjs/types";
 import { quad as createQuad } from "@rdfjs/data-model";

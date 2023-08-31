@@ -14,7 +14,7 @@ import {
   _proxyContext,
 } from "@ldo/jsonld-dataset-proxy";
 import type { Quad } from "n3";
-import type { SubscribableDataset, TransactionalDataset } from "o-dataset-pack";
+import type { SubscribableDataset, TransactionalDataset } from "@ldo/subscribable-dataset";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LdoBase = Record<string, any>;

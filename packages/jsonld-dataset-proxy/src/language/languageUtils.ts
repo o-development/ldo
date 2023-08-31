@@ -1,5 +1,5 @@
 import type { Dataset, Literal, Quad, Quad_Object } from "@rdfjs/types";
-import { createDataset } from "o-dataset-pack";
+import { createDataset } from "@ldo/dataset";
 import type { PredicateType, SubjectType } from "../types";
 import type { LanguageKey, LanguageOrdering } from "./languageTypes";
 

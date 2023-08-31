@@ -1,6 +1,6 @@
 import type { Quad } from "@rdfjs/types";
 import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
-import { WrapperSubscribableDataset } from "o-dataset-pack";
+import { WrapperSubscribableDataset } from "@ldo/subscribable-dataset";
 import { LdoBuilder } from "./LdoBuilder";
 import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./index";

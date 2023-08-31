@@ -9,7 +9,7 @@ import type { BinaryResource } from "./document/resource/binaryResource/BinaryRe
 import type { ContainerResource } from "./document/resource/dataResource/containerResource/ContainerResource";
 import type { AccessRules } from "./document/accessRules/AccessRules";
 import type { SubjectType } from "@ldo/jsonld-dataset-proxy";
-import type { DatasetChanges } from "o-dataset-pack";
+import type { DatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 
 export interface UseLdoReturn {

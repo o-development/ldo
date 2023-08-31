@@ -34,11 +34,12 @@
     "ts-node": "^10.4.0"
   },
   "dependencies": {
+    "@ldo/dataset": "^0.0.0",
     "@ldo/jsonld-dataset-proxy": "^0.0.0",
+    "@ldo/subscribable-dataset": "^0.0.0",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
     "n3": "^1.16.2",
-    "o-dataset-pack": "^0.2.11",
     "readable-stream": "^4.3.0"
   },
   "overrides": {

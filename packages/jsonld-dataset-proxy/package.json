@@ -39,8 +39,9 @@
     "dist"
   ],
   "dependencies": {
+    "@ldo/dataset": "^0.0.0",
+    "@ldo/subscribable-dataset": "^0.0.0",
     "@rdfjs/data-model": "^1.2.0",
-    "jsonld2graphobject": "^0.0.4",
-    "o-dataset-pack": "^0.2.14"
+    "jsonld2graphobject": "^0.0.4"
   }
 }

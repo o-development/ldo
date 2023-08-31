@@ -5,7 +5,7 @@ import { Resource } from "../Resource";
 import { DocumentFetchError } from "../../errors/DocumentFetchError";
 import { DocumentError } from "../../errors/DocumentError";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import type { DatasetChanges } from "o-dataset-pack";
+import type { DatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import { changesToSparqlUpdate } from "../../../util/changesToSparqlUpdate";
 import type { UpdateManager } from "../../../ldoHooks/helpers/UpdateManager";

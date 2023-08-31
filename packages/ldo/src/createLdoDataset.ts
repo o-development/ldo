@@ -1,5 +1,5 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import { createDataset } from "o-dataset-pack";
+import { createDataset } from "@ldo/dataset";
 import { LdoDatasetFactory } from "./LdoDatasetFactory";
 
 export function createLdoDatasetFactory() {

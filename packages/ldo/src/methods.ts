@@ -8,7 +8,10 @@ import {
   write as writeDependency,
 } from "@ldo/jsonld-dataset-proxy";
 import type { Quad, WriterOptions } from "n3";
-import type { DatasetChanges, SubscribableDataset } from "o-dataset-pack";
+import type {
+  DatasetChanges,
+  SubscribableDataset,
+} from "@ldo/subscribable-dataset";
 import { datasetToString } from "./datasetConverters";
 import type { LdoBase } from "./util";
 import {

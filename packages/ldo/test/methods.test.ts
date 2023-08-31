@@ -6,7 +6,7 @@ import {
   _getUnderlyingDataset,
   _proxyContext,
 } from "@ldo/jsonld-dataset-proxy";
-import { createDataset } from "o-dataset-pack";
+import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
 import type { LdoDataset } from "../src";

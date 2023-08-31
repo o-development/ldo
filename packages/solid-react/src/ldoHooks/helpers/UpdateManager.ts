@@ -1,5 +1,5 @@
-import type { DatasetChanges } from "o-dataset-pack";
-import { createDataset } from "o-dataset-pack";
+import type { DatasetChanges } from "@ldo/subscribable-dataset";
+import { createDataset } from "@ldo/dataset";
 import type {
   QuadMatch,
   SubjectType,

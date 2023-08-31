@@ -1,5 +1,5 @@
-import type { DatasetChanges } from "o-dataset-pack";
-import { createDataset } from "o-dataset-pack";
+import type { DatasetChanges } from "@ldo/subscribable-dataset";
+import { createDataset } from "@ldo/dataset";
 import type { GraphType } from "@ldo/jsonld-dataset-proxy";
 import type { Quad } from "@rdfjs/types";
 import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
