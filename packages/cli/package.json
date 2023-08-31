@@ -19,7 +19,6 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "postinstall": "npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
@@ -45,11 +44,11 @@
   },
   "dependencies": {
     "@shexjs/parser": "^1.0.0-alpha.24",
+    "@ldo/schema-converter-shex": "^0.0.0",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
-    "loading-cli": "^1.1.0",
-    "shexj2typeandcontext": "^2.0.0"
+    "loading-cli": "^1.1.0"
   }
 }

@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import type { Schema } from "shexj";
 import parser from "@shexjs/parser";
-import shexjToTypeAndContext from "shexj2typeandcontext";
+import schemaConverterShex from "@ldo/schema-converter-shex";
 import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";
@@ -42,7 +42,7 @@ export async function build(options: BuildOptions) {
         .construct("https://ldo.js.org/")
         .parse(shexC);
       // Convert the content to types
-      const [typings, context] = await shexjToTypeAndContext(schema);
+      const [typings, context] = await schemaConverterShex(schema);
       await Promise.all(
         ["context", "schema", "shapeTypes", "typings"].map(
           async (templateName) => {

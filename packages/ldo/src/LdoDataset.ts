@@ -3,7 +3,7 @@ import jsonldDatasetProxy from "jsonld-dataset-proxy";
 import { WrapperSubscribableDataset } from "o-dataset-pack";
 import { LdoBuilder } from "./LdoBuilder";
 import type { ShapeType } from "./ShapeType";
-import type { LdoBase } from "./util";
+import type { LdoBase } from "./index";
 
 /**
  * Utility for building a linked data object
