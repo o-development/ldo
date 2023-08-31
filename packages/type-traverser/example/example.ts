@@ -1,4 +1,5 @@
-import { Traverser, TraverserDefinition, ValidateTraverserTypes } from "../src";
+import type { TraverserDefinition, ValidateTraverserTypes } from "../src";
+import { Traverser } from "../src";
 
 async function run() {
   /**
@@ -99,7 +100,7 @@ async function run() {
    * Instantiate the Traverser
    */
   const avatarTraverser = new Traverser<AvatarTraverserTypes>(
-    avatarTraverserDefinition
+    avatarTraverserDefinition,
   );
 
   /**
@@ -133,7 +134,7 @@ async function run() {
    * Run the visitor on data
    */
   console.log(
-    "############################## Visitor Logs ##############################"
+    "############################## Visitor Logs ##############################",
   );
   await avatarVisitor.visit(aang, "Bender", undefined);
 
@@ -156,7 +157,7 @@ async function run() {
    * Run the counting visitor
    */
   console.log(
-    "############################## Found Number of Benders Using Visitor ##############################"
+    "############################## Found Number of Benders Using Visitor ##############################",
   );
   const countContext: AvatarCountingVisitorContext = { numberOfBenders: 0 };
   await avatarCountingVisitor.visit(aang, "Bender", countContext);
@@ -221,7 +222,7 @@ async function run() {
       item,
       getTransformedChildren,
       setReturnPointer,
-      _context
+      _context,
     ) => {
       const personToReturn: ActionablePerson = {} as ActionablePerson;
       setReturnPointer(personToReturn);
@@ -236,7 +237,7 @@ async function run() {
    * Run the Transformer
    */
   console.log(
-    "############################## AvatarTraverser DoAction ##############################"
+    "############################## AvatarTraverser DoAction ##############################",
   );
   const result = await avatarTransformer.transform(aang, "Bender", undefined);
   result.doAction();

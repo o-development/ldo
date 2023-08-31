@@ -1,9 +1,9 @@
-import { Traverser } from "../../../lib";
+import { Traverser } from "../../../src";
 import { avatarTraverserDefinition } from "./AvatarTraverserDefinition";
-import { AvatarTraverserTypes } from "./AvatarTraverserTypes";
+import type { AvatarTraverserTypes } from "./AvatarTraverserTypes";
 
 const avatarTraverser = new Traverser<AvatarTraverserTypes>(
-  avatarTraverserDefinition
+  avatarTraverserDefinition,
 );
 
 interface ActionablePerson {

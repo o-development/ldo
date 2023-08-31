@@ -1,4 +1,4 @@
-import { Bender, NonBender } from "./AvatarTraverserTypes";
+import type { Bender, NonBender } from "./AvatarTraverserTypes";
 /**
  * Raw Data to Traverse
  */

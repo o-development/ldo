@@ -1,4 +1,4 @@
-import { ValidateTraverserTypes } from "../../../lib";
+import type { ValidateTraverserTypes } from "../../../src";
 
 /**
  * Original Type Definition

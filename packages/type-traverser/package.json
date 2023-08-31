@@ -22,10 +22,8 @@
   "homepage": "https://github.com/o-development/type-traverser#readme",
   "devDependencies": {
     "@types/jest": "^27.4.0",
-    "@types/shexj": "^2.1.1",
     "@types/uuid": "^8.3.4",
     "jest": "^27.4.7",
-    "jsonld2graphobject": "^0.0.3",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0"
   },
