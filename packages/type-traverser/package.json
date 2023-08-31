@@ -1,0 +1,35 @@
+{
+  "name": "@ldo/type-traverser",
+  "version": "0.0.0",
+  "description": "An organized way to traverse over objects using typescript",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "test": "jest --coverage",
+    "start": "ts-node ./example/example",
+    "prepublishOnly": "npm run test && npm run build",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/type-traverser.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/type-traverser/issues"
+  },
+  "homepage": "https://github.com/o-development/type-traverser#readme",
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/shexj": "^2.1.1",
+    "@types/uuid": "^8.3.4",
+    "jest": "^27.4.7",
+    "jsonld2graphobject": "^0.0.3",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
+}

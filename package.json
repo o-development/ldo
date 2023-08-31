@@ -8,8 +8,7 @@
     "test": "lerna run test",
     "build": "lerna run build",
     "demo-react": "lerna run start --scope @ldo/demo-react",
-    "lint": "lerna run lint",
-    "postinstall": "npm run build"
+    "lint": "lerna run lint"
   },
   "devDependencies": {
     "@types/node": "^20.5.7",
