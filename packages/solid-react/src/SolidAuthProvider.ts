@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { ISessionInfo } from "solid-authn-react-native";
 import {
-  ISessionInfo,
   handleIncomingRedirect,
   login as libraryLogin,
   getDefaultSession,
@@ -24,7 +24,7 @@ interface AuthGlobalHookReturn {
 
 function useAuthGlobalHookFunc(): AuthGlobalHookReturn {
   const [session, setSession] = useState<ISessionInfo>(
-    getDefaultSession().info
+    getDefaultSession().info,
   );
   const [ranInitialAuthCheck, setRanInitialAuthCheck] = useState(false);
 
@@ -42,7 +42,7 @@ function useAuthGlobalHookFunc(): AuthGlobalHookReturn {
     window.history.replaceState(
       {},
       "",
-      window.localStorage.getItem(PRE_REDIRECT_URI)
+      window.localStorage.getItem(PRE_REDIRECT_URI),
     );
     window.localStorage.removeItem(PRE_REDIRECT_URI);
 
@@ -60,7 +60,7 @@ function useAuthGlobalHookFunc(): AuthGlobalHookReturn {
       });
       setSession({ ...getDefaultSession().info });
     },
-    []
+    [],
   );
 
   const logout = useCallback(async () => {
@@ -87,7 +87,7 @@ function useAuthGlobalHookFunc(): AuthGlobalHookReturn {
       ranInitialAuthCheck,
       fetch: libraryFetch,
     }),
-    [login, logout, ranInitialAuthCheck, runInitialAuthCheck, session, signUp]
+    [login, logout, ranInitialAuthCheck, runInitialAuthCheck, session, signUp],
   );
 }
 

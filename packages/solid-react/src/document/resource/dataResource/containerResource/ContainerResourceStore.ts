@@ -1,12 +1,8 @@
-import {
-  DocumentStore,
-  DocumentStoreDependencies,
-} from "../../../DocumentStore";
-import { Resource } from "../../Resource";
-import {
-  ContainerResource,
-  ContainerResourceDependencies,
-} from "./ContainerResource";
+import type { DocumentStoreDependencies } from "../../../DocumentStore";
+import { DocumentStore } from "../../../DocumentStore";
+import type { Resource } from "../../Resource";
+import type { ContainerResourceDependencies } from "./ContainerResource";
+import { ContainerResource } from "./ContainerResource";
 
 export interface ContainerResourceStoreDependencies
   extends ContainerResourceDependencies,

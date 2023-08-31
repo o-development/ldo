@@ -1,6 +1,8 @@
-import { DocumentStore, DocumentStoreDependencies } from "../DocumentStore";
-import { Resource } from "../resource/Resource";
-import { AccessRules, AccessRulesDependencies } from "./AccessRules";
+import type { DocumentStoreDependencies } from "../DocumentStore";
+import { DocumentStore } from "../DocumentStore";
+import type { Resource } from "../resource/Resource";
+import type { AccessRulesDependencies } from "./AccessRules";
+import { AccessRules } from "./AccessRules";
 
 export interface AccessRulesStoreDependencies
   extends DocumentStoreDependencies,

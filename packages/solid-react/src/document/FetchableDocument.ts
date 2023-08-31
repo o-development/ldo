@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { DocumentError } from "./errors/DocumentError";
+import type { DocumentError } from "./errors/DocumentError";
 
 export interface FetchableDocumentDependencies {
   onDocumentError?: (error: DocumentError) => void;

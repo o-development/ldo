@@ -1,5 +1,6 @@
-import { DocumentError } from "../../errors/DocumentError";
-import { Resource, ResourceDependencies } from "../Resource";
+import type { DocumentError } from "../../errors/DocumentError";
+import type { ResourceDependencies } from "../Resource";
+import { Resource } from "../Resource";
 
 export declare type BinaryResourceDependencies = ResourceDependencies;
 

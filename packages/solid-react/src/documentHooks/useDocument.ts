@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from "react";
-import {
+import type {
   DocumentStore,
   DocumentStoreDependencies,
 } from "../document/DocumentStore";
-import { FetchableDocument } from "../document/FetchableDocument";
+import type { FetchableDocument } from "../document/FetchableDocument";
 import { useForceUpdate } from "../util/useForceReload";
 
 export interface UseDocumentOptions {
@@ -12,7 +12,7 @@ export interface UseDocumentOptions {
 
 export function useDocument<
   DocumentType extends FetchableDocument,
-  Initializer
+  Initializer,
 >(
   initializer: Initializer,
   documentStore: DocumentStore<
@@ -20,7 +20,7 @@ export function useDocument<
     Initializer,
     DocumentStoreDependencies
   >,
-  options?: UseDocumentOptions
+  options?: UseDocumentOptions,
 ) {
   const document = useMemo(() => {
     return documentStore.get(initializer);

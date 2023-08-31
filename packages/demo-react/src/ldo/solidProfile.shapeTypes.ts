@@ -1,7 +1,7 @@
-import { ShapeType } from "ldo";
+import type { ShapeType } from "@ldo/ldo";
 import { solidProfileSchema } from "./solidProfile.schema";
 import { solidProfileContext } from "./solidProfile.context";
-import {
+import type {
   SolidProfileShape,
   AddressShape,
   EmailShape,

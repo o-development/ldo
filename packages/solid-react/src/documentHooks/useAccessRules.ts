@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import { useLdoContext } from "../LdoContext";
-import { UseDocumentOptions, useDocument } from "./useDocument";
-import { Resource } from "../document/resource/Resource";
+import type { UseDocumentOptions } from "./useDocument";
+import { useDocument } from "./useDocument";
+import type { Resource } from "../document/resource/Resource";
 
 export function useAccessRules(
   resource: string | Resource,
-  options?: UseDocumentOptions
+  options?: UseDocumentOptions,
 ) {
   const { dataResourceStore, accessRulesStore } = useLdoContext();
   const realResource = useMemo(() => {

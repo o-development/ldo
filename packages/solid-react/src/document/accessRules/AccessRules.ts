@@ -1,12 +1,8 @@
-import {
-  universalAccess,
-  AccessModes as IAccessModes,
-} from "@inrupt/solid-client";
-import {
-  FetchableDocument,
-  FetchableDocumentDependencies,
-} from "../FetchableDocument";
-import { Resource } from "../resource/Resource";
+import type { AccessModes as IAccessModes } from "@inrupt/solid-client";
+import { universalAccess } from "@inrupt/solid-client";
+import type { FetchableDocumentDependencies } from "../FetchableDocument";
+import { FetchableDocument } from "../FetchableDocument";
+import type { Resource } from "../resource/Resource";
 import { DocumentError } from "../errors/DocumentError";
 
 export type AccessModes = IAccessModes;

@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
-import { BinaryResourceStoreDependencies } from "./document/resource/binaryResource/BinaryResourceStore";
-import { DataResourceStoreDependencies } from "./document/resource/dataResource/DataResourceStore";
-import { AccessRulesStoreDependencies } from "./document/accessRules/AccessRulesStore";
-import { ContainerResourceStoreDependencies } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
+import type { BinaryResourceStoreDependencies } from "./document/resource/binaryResource/BinaryResourceStore";
+import type { DataResourceStoreDependencies } from "./document/resource/dataResource/DataResourceStore";
+import type { AccessRulesStoreDependencies } from "./document/accessRules/AccessRulesStore";
+import type { ContainerResourceStoreDependencies } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
 
 export interface LdoContextData
   extends BinaryResourceStoreDependencies,

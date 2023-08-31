@@ -1,10 +1,5 @@
-import React, {
-  createContext,
-  FunctionComponent,
-  useContext,
-  Context,
-  PropsWithChildren,
-} from "react";
+import type { FunctionComponent, Context, PropsWithChildren } from "react";
+import React, { createContext, useContext } from "react";
 
 export function createGlobalHook<ReturnValues>(useHook: () => ReturnValues): {
   Provider: FunctionComponent<PropsWithChildren>;

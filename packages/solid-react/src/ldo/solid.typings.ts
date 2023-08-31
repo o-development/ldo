@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import type { ContextDefinition } from "jsonld";
 
 /**
  * =============================================================================
@@ -30,7 +30,7 @@ export interface Container {
   /**
    * Defines a Solid Resource
    */
-  contains?: (Resource | Container)[];
+  contains?: Resource[];
   /**
    * ?
    */

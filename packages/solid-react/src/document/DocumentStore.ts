@@ -1,4 +1,4 @@
-import { FetchableDocument } from "./FetchableDocument";
+import type { FetchableDocument } from "./FetchableDocument";
 
 // This may eventually have fields
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -7,7 +7,7 @@ export interface DocumentStoreDependencies {}
 export abstract class DocumentStore<
   DocumentType extends FetchableDocument,
   Initializer,
-  Dependencies extends DocumentStoreDependencies
+  Dependencies extends DocumentStoreDependencies,
 > {
   protected documentMap: Map<Initializer, DocumentType>;
   protected dependencies: Dependencies;

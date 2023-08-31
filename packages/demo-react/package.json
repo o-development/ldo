@@ -13,7 +13,7 @@
     "start": "craco start",
     "build": "craco build",
     "eject": "react-scripts eject",
-    "lint": "eslint src/** --fix",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "build:ldo": "ldo build --input src/shapes --output src/ldo"
   },
   "eslintConfig": {

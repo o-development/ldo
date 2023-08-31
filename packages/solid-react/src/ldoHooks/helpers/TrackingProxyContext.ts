@@ -1,10 +1,10 @@
-import {
+import type {
   ArrayProxyTarget,
-  ProxyContext,
   SubjectProxyTarget,
   ProxyContextOptions,
 } from "jsonld-dataset-proxy";
-import { UpdateManager } from "./UpdateManager";
+import { ProxyContext } from "jsonld-dataset-proxy";
+import type { UpdateManager } from "./UpdateManager";
 import { namedNode } from "@rdfjs/data-model";
 
 export class TrackingProxyContext extends ProxyContext {
@@ -14,7 +14,7 @@ export class TrackingProxyContext extends ProxyContext {
   constructor(
     options: ProxyContextOptions,
     updateManager: UpdateManager,
-    listener: () => void
+    listener: () => void,
   ) {
     super(options);
     this.updateManager = updateManager;
@@ -27,7 +27,7 @@ export class TrackingProxyContext extends ProxyContext {
     const newGetFunction: ProxyHandler<SubjectProxyTarget>["get"] = (
       target: SubjectProxyTarget,
       key: string | symbol,
-      receiver
+      receiver,
     ) => {
       const subject = target["@id"];
       if (typeof key === "symbol") {
@@ -35,13 +35,13 @@ export class TrackingProxyContext extends ProxyContext {
       } else if (key === "@id") {
         this.updateManager.registerListener(
           [subject, null, null],
-          this.listener
+          this.listener,
         );
       } else if (!this.contextUtil.isArray(key)) {
         const predicate = namedNode(this.contextUtil.keyToIri(key));
         this.updateManager.registerListener(
           [subject, predicate, null],
-          this.listener
+          this.listener,
         );
       }
       return oldGetFunction && oldGetFunction(target, key, receiver);
@@ -49,7 +49,7 @@ export class TrackingProxyContext extends ProxyContext {
     baseHandler.get = newGetFunction;
     baseHandler.set = () => {
       console.warn(
-        "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function."
+        "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",
       );
       return true;
     };
@@ -62,12 +62,12 @@ export class TrackingProxyContext extends ProxyContext {
     const newGetFunction: ProxyHandler<ArrayProxyTarget>["get"] = (
       target: ArrayProxyTarget,
       key: string | symbol,
-      receiver
+      receiver,
     ) => {
       if (qualifiedArrayMethods.has(key)) {
         this.updateManager.registerListener(
           [target[0][0], target[0][1], target[0][2]],
-          this.listener
+          this.listener,
         );
       }
       return oldGetFunction && oldGetFunction(target, key, receiver);

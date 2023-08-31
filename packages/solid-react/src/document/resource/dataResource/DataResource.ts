@@ -1,12 +1,14 @@
-import { LdoDataset, parseRdf } from "ldo";
-import { Resource, ResourceDependencies } from "../Resource";
+import type { LdoDataset } from "@ldo/ldo";
+import { parseRdf } from "@ldo/ldo";
+import type { ResourceDependencies } from "../Resource";
+import { Resource } from "../Resource";
 import { DocumentFetchError } from "../../errors/DocumentFetchError";
 import { DocumentError } from "../../errors/DocumentError";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import { DatasetChanges } from "o-dataset-pack";
-import { Quad } from "@rdfjs/types";
+import type { DatasetChanges } from "o-dataset-pack";
+import type { Quad } from "@rdfjs/types";
 import { changesToSparqlUpdate } from "../../../util/changesToSparqlUpdate";
-import { UpdateManager } from "../../../ldoHooks/helpers/UpdateManager";
+import type { UpdateManager } from "../../../ldoHooks/helpers/UpdateManager";
 
 export interface DataResourceDependencies extends ResourceDependencies {
   dataset: LdoDataset;
@@ -56,7 +58,7 @@ export class DataResource extends Resource {
       return new DocumentFetchError(
         this,
         response.status,
-        `Error fetching resource ${this.uri}`
+        `Error fetching resource ${this.uri}`,
       );
     }
     // Parse the incoming turtle into a dataset
@@ -80,7 +82,7 @@ export class DataResource extends Resource {
     // Add the triples from the fetched item
     loadedDataset.forEach((quad) => {
       transactionalDataset.add(
-        createQuad(quad.subject, quad.predicate, quad.object, graphNode)
+        createQuad(quad.subject, quad.predicate, quad.object, graphNode),
       );
     });
     const changes = transactionalDataset.getChanges();
@@ -90,7 +92,7 @@ export class DataResource extends Resource {
   }
 
   async update(
-    changes: DatasetChanges<Quad>
+    changes: DatasetChanges<Quad>,
   ): Promise<DocumentError | undefined> {
     this.beginWrite();
     // Convert changes to transactional Dataset
@@ -117,8 +119,8 @@ export class DataResource extends Resource {
         new DocumentFetchError(
           this,
           response.status,
-          `Problem writing to ${this.uri}`
-        )
+          `Problem writing to ${this.uri}`,
+        ),
       );
       return;
     }

@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
-import { Schema } from "shexj";
+import type { Schema } from "shexj";
 import parser from "@shexjs/parser";
 import shexjToTypeAndContext from "shexj2typeandcontext";
 import { renderFile } from "ejs";
@@ -20,7 +20,7 @@ export async function build(options: BuildOptions) {
   });
   // Filter out non-shex documents
   const shexFiles = shapeDir.filter(
-    (file) => file.isFile() && file.name.endsWith(".shex")
+    (file) => file.isFile() && file.name.endsWith(".shex"),
   );
   // Prepare new folder by clearing/and/or creating it
   if (fs.existsSync(options.output)) {
@@ -35,7 +35,7 @@ export async function build(options: BuildOptions) {
       // Get the content of each document
       const shexC = await fs.promises.readFile(
         path.join(options.input, file.name),
-        "utf8"
+        "utf8",
       );
       // Convert to ShexJ
       const schema: Schema = parser
@@ -53,17 +53,17 @@ export async function build(options: BuildOptions) {
                 fileName,
                 schema: JSON.stringify(schema, null, 2),
                 context: JSON.stringify(context, null, 2),
-              }
+              },
             );
             // Save conversion to document
             await fs.promises.writeFile(
               path.join(options.output, `${fileName}.${templateName}.ts`),
-              await prettier.format(finalContent, { parser: "typescript" })
+              await prettier.format(finalContent, { parser: "typescript" }),
             );
-          }
-        )
+          },
+        ),
       );
-    })
+    }),
   );
   load.stop();
 }

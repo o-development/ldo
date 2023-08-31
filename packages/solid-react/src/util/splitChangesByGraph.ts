@@ -1,6 +1,7 @@
-import { createDataset, DatasetChanges } from "o-dataset-pack";
-import { GraphType } from "jsonld-dataset-proxy";
-import { Quad } from "@rdfjs/types";
+import type { DatasetChanges } from "o-dataset-pack";
+import { createDataset } from "o-dataset-pack";
+import type { GraphType } from "jsonld-dataset-proxy";
+import type { Quad } from "@rdfjs/types";
 import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
 
 export function graphNodeToString(graphNode: GraphType): string {
@@ -14,7 +15,7 @@ export function stringToGraphNode(input: string): GraphType {
 }
 
 export function splitChangesByGraph(
-  changes: DatasetChanges<Quad>
+  changes: DatasetChanges<Quad>,
 ): Map<GraphType, DatasetChanges<Quad>> {
   const changesMap: Record<string, DatasetChanges<Quad>> = {};
   changes.added?.forEach((quad) => {
@@ -26,7 +27,7 @@ export function splitChangesByGraph(
       changesMap[graphHash].added = createDataset();
     }
     changesMap[graphHash].added?.add(
-      createQuad(quad.subject, quad.predicate, quad.object, quad.graph)
+      createQuad(quad.subject, quad.predicate, quad.object, quad.graph),
     );
   });
 
@@ -39,7 +40,7 @@ export function splitChangesByGraph(
       changesMap[graphHash].removed = createDataset();
     }
     changesMap[graphHash].removed?.add(
-      createQuad(quad.subject, quad.predicate, quad.object, quad.graph)
+      createQuad(quad.subject, quad.predicate, quad.object, quad.graph),
     );
   });
 

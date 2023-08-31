@@ -1,4 +1,4 @@
-import { FetchableDocument } from "../FetchableDocument";
+import type { FetchableDocument } from "../FetchableDocument";
 
 export class DocumentError extends Error {
   public readonly document: FetchableDocument;

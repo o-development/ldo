@@ -1,18 +1,15 @@
-import React, {
-  FunctionComponent,
-  PropsWithChildren,
-  useEffect,
-  useMemo,
-} from "react";
+import type { FunctionComponent, PropsWithChildren } from "react";
+import React, { useEffect, useMemo } from "react";
 import crossFetch from "cross-fetch";
-import { createLdoDataset } from "ldo";
-import { LdoContextData, LdoContextProvider } from "./LdoContext";
+import { createLdoDataset } from "@ldo/ldo";
+import type { LdoContextData } from "./LdoContext";
+import { LdoContextProvider } from "./LdoContext";
 import { UpdateManager } from "./ldoHooks/helpers/UpdateManager";
 import { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";
 import { DataResourceStore } from "./document/resource/dataResource/DataResourceStore";
 import { ContainerResourceStore } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
 import { AccessRulesStore } from "./document/accessRules/AccessRulesStore";
-import { Dataset } from "@rdfjs/types";
+import type { Dataset } from "@rdfjs/types";
 
 export interface LdoProviderProps extends PropsWithChildren {
   fetch?: typeof fetch;

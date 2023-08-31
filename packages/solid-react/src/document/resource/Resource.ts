@@ -1,11 +1,9 @@
-import {
-  FetchableDocument,
-  FetchableDocumentDependencies,
-} from "../FetchableDocument";
-import { AccessRulesStore } from "../accessRules/AccessRulesStore";
+import type { FetchableDocumentDependencies } from "../FetchableDocument";
+import { FetchableDocument } from "../FetchableDocument";
+import type { AccessRulesStore } from "../accessRules/AccessRulesStore";
 import { DocumentFetchError } from "../errors/DocumentFetchError";
-import { ContainerResource } from "./dataResource/containerResource/ContainerResource";
-import { ContainerResourceStore } from "./dataResource/containerResource/ContainerResourceStore";
+import type { ContainerResource } from "./dataResource/containerResource/ContainerResource";
+import type { ContainerResourceStore } from "./dataResource/containerResource/ContainerResourceStore";
 
 export interface ResourceDependencies extends FetchableDocumentDependencies {
   fetch: typeof fetch;
@@ -71,8 +69,8 @@ export abstract class Resource extends FetchableDocument {
       new DocumentFetchError(
         this,
         response.status,
-        `Could not delete ${this.uri}`
-      )
+        `Could not delete ${this.uri}`,
+      ),
     );
   }
 

@@ -1,0 +1,47 @@
+{
+  "name": "@ldo/ldo",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "example": "ts-node ./example/example.ts",
+    "build": "tsc --project tsconfig.build.json",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch --coverage",
+    "prepublishOnly": "npm run test && npm run build",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/ldo.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/ldo/issues"
+  },
+  "homepage": "https://github.com/o-development/ldo#readme",
+  "devDependencies": {
+    "@rdfjs/types": "^1.1.0",
+    "@types/jest": "^27.0.3",
+    "@types/jsonld": "^1.5.6",
+    "@types/n3": "^1.10.4",
+    "@types/readable-stream": "^2.3.13",
+    "@types/shexj": "2.1.4",
+    "cross-fetch": "^3.1.5",
+    "jest": "^27.4.5",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0"
+  },
+  "dependencies": {
+    "@rdfjs/data-model": "^1.2.0",
+    "buffer": "^6.0.3",
+    "jsonld-dataset-proxy": "^1.2.1",
+    "n3": "^1.16.2",
+    "o-dataset-pack": "^0.2.11",
+    "readable-stream": "^4.3.0"
+  },
+  "overrides": {
+    "readable-stream": "^4.3.0"
+  }
+}

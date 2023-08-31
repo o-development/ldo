@@ -1,7 +1,7 @@
-import { ShapeType } from "ldo";
+import type { ShapeType } from "@ldo/ldo";
 import { solidSchema } from "./solid.schema";
 import { solidContext } from "./solid.context";
-import { Container, Resource } from "./solid.typings";
+import type { Container, Resource } from "./solid.typings";
 
 /**
  * =============================================================================

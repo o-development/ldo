@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useState } from "react";
+import type { FunctionComponent } from "react";
+import React, { useState } from "react";
 
 interface BlurTextInputProps {
   value: string;

@@ -1,5 +1,7 @@
-import { DocumentStore, DocumentStoreDependencies } from "../../DocumentStore";
-import { DataResource, DataResourceDependencies } from "./DataResource";
+import type { DocumentStoreDependencies } from "../../DocumentStore";
+import { DocumentStore } from "../../DocumentStore";
+import type { DataResourceDependencies } from "./DataResource";
+import { DataResource } from "./DataResource";
 
 export interface DataResourceStoreDependencies
   extends DocumentStoreDependencies,

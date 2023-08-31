@@ -1,8 +1,9 @@
 import { ContainerShapeType } from "../../../../ldo/solid.shapeTypes";
-import { Resource } from "../../Resource";
-import { BinaryResourceStore } from "../../binaryResource/BinaryResourceStore";
-import { DataResource, DataResourceDependencies } from "../DataResource";
-import { DataResourceStore } from "../DataResourceStore";
+import type { Resource } from "../../Resource";
+import type { BinaryResourceStore } from "../../binaryResource/BinaryResourceStore";
+import type { DataResourceDependencies } from "../DataResource";
+import { DataResource } from "../DataResource";
+import type { DataResourceStore } from "../DataResourceStore";
 
 export interface ContainerResourceDependencies
   extends DataResourceDependencies {
@@ -55,16 +56,16 @@ export class ContainerResource extends DataResource {
       if (resourceData["@id"]) {
         if (resourceData.type?.some((type) => type["@id"] === "Container")) {
           resourcesToAdd.push(
-            this.containerResourceStore.get(resourceData["@id"])
+            this.containerResourceStore.get(resourceData["@id"]),
           );
         } else {
           if (resourceData["@id"].endsWith(".ttl")) {
             resourcesToAdd.push(
-              this.dataResourceStore.get(resourceData["@id"])
+              this.dataResourceStore.get(resourceData["@id"]),
             );
           } else {
             resourcesToAdd.push(
-              this.binaryResourceStore.get(resourceData["@id"])
+              this.binaryResourceStore.get(resourceData["@id"]),
             );
           }
         }

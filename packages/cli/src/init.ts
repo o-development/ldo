@@ -28,7 +28,7 @@ export async function init(initOptions: InitOptions) {
     for (let i = 0; i < POTENTIAL_PARENT_DIRECTORIES.length; i++) {
       if (
         allDirectories.some(
-          (dir) => dir.name === POTENTIAL_PARENT_DIRECTORIES[i]
+          (dir) => dir.name === POTENTIAL_PARENT_DIRECTORIES[i],
         )
       ) {
         parentDirectory = POTENTIAL_PARENT_DIRECTORIES[i];
@@ -41,25 +41,25 @@ export async function init(initOptions: InitOptions) {
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
   await fs.promises.mkdir(shapesFolderPath);
   const defaultShapePaths = await fs.promises.readdir(
-    path.join(__dirname, "./templates/defaultShapes")
+    path.join(__dirname, "./templates/defaultShapes"),
   );
   await Promise.all(
     defaultShapePaths.map(async (shapePath) => {
       const shapeContent = await renderFile(
         path.join(__dirname, "./templates/defaultShapes", shapePath),
-        {}
+        {},
       );
       await fs.promises.writeFile(
         path.join(shapesFolderPath, `${path.parse(shapePath).name}.shex`),
-        shapeContent
+        shapeContent,
       );
-    })
+    }),
   );
 
   // Add build script
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const packageJson: any = JSON.parse(
-    (await fs.promises.readFile("./package.json")).toString()
+    (await fs.promises.readFile("./package.json")).toString(),
   );
   if (!packageJson.scripts) {
     packageJson.scripts = {};
@@ -70,7 +70,7 @@ export async function init(initOptions: InitOptions) {
   ] = `ldo build --input ${shapesFolderPath} --output ${ldoFolder}`;
   await fs.promises.writeFile(
     "./package.json",
-    JSON.stringify(packageJson, null, 2)
+    JSON.stringify(packageJson, null, 2),
   );
 
   // Build LDO

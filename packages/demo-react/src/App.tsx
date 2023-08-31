@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
+import React from "react";
 import Profile from "./Profile";
 import { SolidAuthProvider, LdoProvider } from "@ldo/solid-react";
 import { fetch } from "solid-authn-react-native";

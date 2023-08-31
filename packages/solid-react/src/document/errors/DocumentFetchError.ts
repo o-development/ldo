@@ -1,4 +1,4 @@
-import { FetchableDocument } from "../FetchableDocument";
+import type { FetchableDocument } from "../FetchableDocument";
 import { DocumentError } from "./DocumentError";
 
 export class DocumentFetchError extends DocumentError {

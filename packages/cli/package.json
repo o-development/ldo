@@ -19,7 +19,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
     "type": "git",
@@ -36,7 +37,7 @@
     "@types/ejs": "^3.1.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
-    "@types/shexj": "^2.1.4",
+    "@types/shexj": "2.1.4",
     "copyfiles": "^2.4.1",
     "jest": "^27.4.2",
     "rimraf": "^3.0.2",

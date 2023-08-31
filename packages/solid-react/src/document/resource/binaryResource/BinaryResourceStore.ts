@@ -1,5 +1,7 @@
-import { DocumentStore, DocumentStoreDependencies } from "../../DocumentStore";
-import { BinaryResource, BinaryResourceDependencies } from "./BinaryResource";
+import type { DocumentStoreDependencies } from "../../DocumentStore";
+import { DocumentStore } from "../../DocumentStore";
+import type { BinaryResourceDependencies } from "./BinaryResource";
+import { BinaryResource } from "./BinaryResource";
 
 export interface BinaryResourceStoreDependencies
   extends DocumentStoreDependencies,

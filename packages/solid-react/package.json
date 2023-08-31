@@ -9,7 +9,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "build:ldo": "ldo build --input src/shapes --output src/ldo"
+    "build:ldo": "ldo build --input src/shapes --output src/ldo",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
     "type": "git",
@@ -30,14 +31,14 @@
     "@types/jest": "^29.0.3",
     "@types/jsonld": "^1.5.8",
     "@types/n3": "^1.10.4",
-    "@types/shexj": "^2.1.4",
+    "@types/shexj": "2.1.4",
     "ts-jest": "^29.0.2"
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.29.0",
+    "@ldo/ldo": "^0.0.0",
     "cross-fetch": "^3.1.6",
     "jsonld-dataset-proxy": "^1.2.3",
-    "ldo": "^1.0.3",
     "o-dataset-pack": "^0.2.14",
     "solid-authn-react-native": "^2.0.3",
     "stream": "^0.0.2"

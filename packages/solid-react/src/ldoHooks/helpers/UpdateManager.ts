@@ -1,12 +1,13 @@
-import { DatasetChanges, createDataset } from "o-dataset-pack";
-import {
+import type { DatasetChanges } from "o-dataset-pack";
+import { createDataset } from "o-dataset-pack";
+import type {
   QuadMatch,
   SubjectType,
   PredicateType,
   ObjectType,
-  nodeToString,
 } from "jsonld-dataset-proxy";
-import { Quad } from "@rdfjs/types";
+import { nodeToString } from "jsonld-dataset-proxy";
+import type { Quad } from "@rdfjs/types";
 
 export type TripleMatch = [QuadMatch[0], QuadMatch[1], QuadMatch[2]];
 
@@ -16,7 +17,7 @@ export class UpdateManager {
 
   private tripleMatchToHash(tripleMatch: TripleMatch): string {
     return `${nodeToString(tripleMatch[0])}${nodeToString(
-      tripleMatch[1]
+      tripleMatch[1],
     )}${nodeToString(tripleMatch[2])}`;
   }
 
