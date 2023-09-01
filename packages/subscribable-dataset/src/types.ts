@@ -1,11 +1,9 @@
 import type {
   Dataset,
-  NamedNode,
-  BlankNode,
-  DefaultGraph,
   BaseQuad,
-} from "@rdfjs/types";
-
+  DatasetChanges,
+  QuadMatch,
+} from "@ldo/rdf-utils";
 
 /**
  * An event listeners for nodes
@@ -47,7 +45,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @returns
    */
   addListener(
-    eventName: DatasetEventMatch,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -59,7 +57,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @returns true if the event had listeners, false otherwise.
    */
   emit(
-    eventName: DatasetEventMatch,
+    eventName: QuadMatch,
     dataset: Dataset<InAndOutQuad, InAndOutQuad>,
     datasetChanges: DatasetChanges<InAndOutQuad>,
   ): boolean;
@@ -67,7 +65,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns an array listing the events for which the emitter has registered listeners. The values in the array are strings or Symbols.
    */
-  eventNames(): DatasetEventMatch[];
+  eventNames(): QuadMatch[];
 
   /**
    * Returns the current max listener value for the EventEmitter which is either set by emitter.setMaxListeners(n) or defaults to events.defaultMaxListeners.
@@ -77,42 +75,33 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns the number of listeners listening to the event named eventName.
    */
-  listenerCount(eventName: DatasetEventMatch): number;
+  listenerCount(eventName: QuadMatch): number;
 
   /**
    * Returns a copy of the array of listeners for the event named eventName.
    */
-  listeners(eventName: DatasetEventMatch): nodeEventListener<InAndOutQuad>[];
+  listeners(eventName: QuadMatch): nodeEventListener<InAndOutQuad>[];
 
   /**
    * Alias for emitter.removeListener()
    */
-  off(
-    eventName: DatasetEventMatch,
-    listener: nodeEventListener<InAndOutQuad>,
-  ): void;
+  off(eventName: QuadMatch, listener: nodeEventListener<InAndOutQuad>): void;
 
   /**
    * Adds the listener function to the end of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
-  on(
-    eventName: DatasetEventMatch,
-    listener: nodeEventListener<InAndOutQuad>,
-  ): this;
+  on(eventName: QuadMatch, listener: nodeEventListener<InAndOutQuad>): this;
 
   /**
    * Adds a one-time listener function for the event named eventName. The next time eventName is triggered, this listener is removed and then invoked.
    */
-  once(
-    eventName: DatasetEventMatch,
-    listener: nodeEventListener<InAndOutQuad>,
-  ): this;
+  once(eventName: QuadMatch, listener: nodeEventListener<InAndOutQuad>): this;
 
   /**
    * Adds the listener function to the beginning of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
   prependListener(
-    eventName: DatasetEventMatch,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -120,20 +109,20 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Adds a one-time listener function for the event named eventName to the beginning of the listeners array. The next time eventName is triggered, this listener is removed, and then invoked.
    */
   prependOnceListener(
-    eventName: DatasetEventMatch,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
   /**
    * Removes all listeners, or those of the specified eventName.
    */
-  removeAllListeners(eventName: DatasetEventMatch): this;
+  removeAllListeners(eventName: QuadMatch): this;
 
   /**
    * Removes the specified listener from the listener array for the event named eventName.
    */
   removeListener(
-    eventName: DatasetEventMatch,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -145,7 +134,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns a copy of the array of listeners for the event named eventName, including any wrappers (such as those created by .once()).
    */
-  rawListeners(eventName: DatasetEventMatch): nodeEventListener<InAndOutQuad>[];
+  rawListeners(eventName: QuadMatch): nodeEventListener<InAndOutQuad>[];
 
   /**
    * ==================================================================

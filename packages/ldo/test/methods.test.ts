@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,

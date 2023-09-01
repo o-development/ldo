@@ -1,5 +1,4 @@
-import type { ParserOptions } from "n3";
-import type { Quad } from "@rdfjs/types";
+import type { ParserOptions, Quad } from "@ldo/rdf-utils";
 import { createDatasetFromSerializedInput } from "@ldo/dataset";
 import { createWrapperSubscribableDatasetFactory } from "./createWrapperSubscribableDataset";
 import type WrapperSubscribableDataset from "./WrapperSubscribableDataset";

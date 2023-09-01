@@ -1,15 +1,15 @@
 import { EventEmitter } from "events";
+import { namedNode, blankNode, defaultGraph } from "@ldo/rdf-utils";
 import type {
+  DatasetChanges,
   Dataset,
   BaseQuad,
   Stream,
   Term,
   DatasetFactory,
-} from "@rdfjs/types";
-import { namedNode, blankNode, defaultGraph } from "@rdfjs/data-model";
+} from "@ldo/rdf-utils";
 import type {
   SubscribableTerms,
-  DatasetChanges,
   nodeEventListener,
   SubscribableDataset,
   TransactionalDataset,

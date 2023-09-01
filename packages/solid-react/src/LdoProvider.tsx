@@ -5,11 +5,7 @@ import { createLdoDataset } from "@ldo/ldo";
 import type { LdoContextData } from "./LdoContext";
 import { LdoContextProvider } from "./LdoContext";
 import { UpdateManager } from "./ldoHooks/helpers/UpdateManager";
-import { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";
-import { DataResourceStore } from "./document/resource/dataResource/DataResourceStore";
-import { ContainerResourceStore } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
-import { AccessRulesStore } from "./document/accessRules/AccessRulesStore";
-import type { Dataset } from "@rdfjs/types";
+import type { Dataset } from "@ldo/rdf-utils";
 
 export interface LdoProviderProps extends PropsWithChildren {
   fetch?: typeof fetch;

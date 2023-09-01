@@ -1,20 +1,16 @@
-import { namedNode } from "@rdfjs/data-model";
-import type { Dataset } from "@rdfjs/types";
-import type {
-  ArrayProxy,
-  GraphType,
-  ObjectType,
-  PredicateType,
-  SubjectProxy,
-  SubjectType,
-} from "@ldo/jsonld-dataset-proxy";
+import { namedNode } from "@ldo/rdf-utils";
+import type { Dataset } from "@ldo/rdf-utils";
+import type { ArrayProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
 } from "@ldo/jsonld-dataset-proxy";
-import type { Quad } from "n3";
-import type { SubscribableDataset, TransactionalDataset } from "@ldo/subscribable-dataset";
+import type { Quad, AnyNode } from "@ldo/rdf-utils";
+import type {
+  SubscribableDataset,
+  TransactionalDataset,
+} from "@ldo/subscribable-dataset";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LdoBase = Record<string, any>;
@@ -24,9 +20,9 @@ export type LdoBase = Record<string, any>;
  * @param input A Node or string
  * @returns A node
  */
-export function normalizeNodeName<
-  NodeType extends SubjectType | PredicateType | ObjectType | GraphType,
->(input: NodeType | string): NodeType {
+export function normalizeNodeName<NodeType extends AnyNode>(
+  input: NodeType | string,
+): NodeType {
   return (typeof input === "string" ? namedNode(input) : input) as NodeType;
 }
 
@@ -35,9 +31,9 @@ export function normalizeNodeName<
  * @param inputs An array of nodes/strings
  * @returns An array of nodes
  */
-export function normalizeNodeNames<
-  NodeType extends SubjectType | PredicateType | ObjectType | GraphType,
->(inputs: (NodeType | string)[]): NodeType[] {
+export function normalizeNodeNames<NodeType extends AnyNode>(
+  inputs: (NodeType | string)[],
+): NodeType[] {
   return inputs.map((input) => normalizeNodeName<NodeType>(input));
 }
 

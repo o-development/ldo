@@ -1,5 +1,5 @@
-import type { BlankNode, NamedNode } from "@rdfjs/types";
-import { literal, namedNode, quad } from "@rdfjs/data-model";
+import type { BlankNode, NamedNode } from "@ldo/rdf-utils";
+import { literal, namedNode, quad } from "@ldo/rdf-utils";
 import { _getUnderlyingNode } from "../types";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
 import { getNodeFromRawObject, getNodeFromRawValue } from "./getNodeFromRaw";

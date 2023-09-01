@@ -1,6 +1,6 @@
-import type { Dataset } from "@rdfjs/types";
+import type { Dataset } from "@ldo/rdf-utils";
 import type { JsonLdDocument } from "jsonld";
-import type { ParserOptions } from "n3";
+import type { ParserOptions } from "@ldo/rdf-utils";
 import { createDatasetFromSerializedInput } from "@ldo/dataset";
 import { createLdoDataset, createLdoDatasetFactory } from "./createLdoDataset";
 import type { LdoDataset } from "./LdoDataset";

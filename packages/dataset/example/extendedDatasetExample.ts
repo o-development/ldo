@@ -1,14 +1,14 @@
 import { createDataset } from "../src";
-import { quad, namedNode, literal } from "@rdfjs/data-model";
 // Required for advanced features:
 import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
 import { ExtendedDatasetFactory } from "../src";
+import { quad, namedNode, literal } from "@ldo/rdf-utils";
 import type {
   Dataset,
   Quad,
   DatasetCoreFactory,
   DatasetCore,
-} from "@rdfjs/types";
+} from "@ldo/rdf-utils";
 
 /**
  * Create a dataset with default settings

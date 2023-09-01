@@ -1,5 +1,10 @@
-import type { BlankNode, DefaultGraph, Literal, NamedNode } from "@rdfjs/types";
-import type { ObjectType } from "../types";
+import type {
+  BlankNode,
+  DefaultGraph,
+  Literal,
+  NamedNode,
+  ObjectNode,
+} from "@ldo/rdf-utils";
 
 export function nodeToString(
   node: NamedNode | BlankNode | DefaultGraph | Literal | null | undefined,
@@ -21,19 +26,19 @@ export function nodeToString(
 
 export class NodeSet {
   private set: Set<string> = new Set();
-  private map: Record<string, ObjectType> = {};
+  private map: Record<string, ObjectNode> = {};
 
-  add(node: ObjectType) {
+  add(node: ObjectNode) {
     const key = nodeToString(node);
     this.set.add(key);
     this.map[key] = node;
   }
 
-  has(node: ObjectType): boolean {
+  has(node: ObjectNode): boolean {
     return this.set.has(nodeToString(node));
   }
 
-  delete(node: ObjectType) {
+  delete(node: ObjectNode) {
     const key = nodeToString(node);
     delete this.map[key];
     return this.set.delete(nodeToString(node));

@@ -1,4 +1,5 @@
-import type { SubjectType } from "@ldo/jsonld-dataset-proxy";
+import { defaultGraph } from "@ldo/rdf-utils";
+import type { SubjectNode } from "@ldo/rdf-utils";
 import {
   ContextUtil,
   JsonldDatasetProxyBuilder,
@@ -8,11 +9,10 @@ import { LdoBuilder } from "@ldo/ldo";
 import { useLdoContext } from "../LdoContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TrackingProxyContext } from "./helpers/TrackingProxyContext";
-import { defaultGraph } from "@rdfjs/data-model";
 
 export function useSubject<Type extends LdoBase>(
   shapeType: ShapeType<Type>,
-  subject: string | SubjectType,
+  subject: string | SubjectNode,
 ): [Type, undefined] | [undefined, Error] {
   const { dataset, updateManager } = useLdoContext();
 

@@ -1,5 +1,3 @@
-import type { BlankNode, DefaultGraph, Literal, NamedNode } from "@rdfjs/types";
-
 export const _getUnderlyingNode = Symbol("_getUnderlyingNode");
 export const _getUnderlyingMatch = Symbol("_getUnderlyingMatch");
 export const _isSubjectOriented = Symbol("_isSubjectOriented");

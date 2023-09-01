@@ -1,4 +1,4 @@
-import { literal, namedNode, quad } from "@rdfjs/data-model";
+import { literal, namedNode, quad } from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";

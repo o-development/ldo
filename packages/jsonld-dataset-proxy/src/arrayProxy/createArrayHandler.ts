@@ -1,10 +1,14 @@
-import type { NamedNode } from "@rdfjs/types";
+import { quad } from "@ldo/rdf-utils";
+import type {
+  NamedNode,
+  ObjectNode,
+  QuadMatch,
+  SubjectNode,
+} from "@ldo/rdf-utils";
 import type { ObjectJsonRepresentation } from "../util/nodeToJsonldRepresentation";
 import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
-import { quad } from "@rdfjs/data-model";
 import type { ArrayMethodBuildersType } from "./arrayMethods";
 import { arrayMethodsBuilders, methodNames } from "./arrayMethods";
-import type { ObjectType, QuadMatch, SubjectType } from "../types";
 import {
   _getNodeAtIndex,
   _getUnderlyingArrayTarget,
@@ -20,7 +24,7 @@ import { filterQuadsByLanguageOrdering } from "../language/languageUtils";
 
 export type ArrayProxyTarget = [
   quadMatch: QuadMatch,
-  curArray: ObjectType[],
+  curArray: ObjectNode[],
   isSubjectOriented?: boolean,
   isLangStringArray?: boolean,
 ];
@@ -38,12 +42,12 @@ function updateArrayOrder(
   quads.toArray().forEach((quad) => {
     // If this this a subject-oriented document
     if (target[2]) {
-      datasetObjects.add(quad.subject as SubjectType);
+      datasetObjects.add(quad.subject as SubjectNode);
     } else {
-      datasetObjects.add(quad.object as ObjectType);
+      datasetObjects.add(quad.object as ObjectNode);
     }
   });
-  const processedObjects: ObjectType[] = [];
+  const processedObjects: ObjectNode[] = [];
   target[1].forEach((arrItem) => {
     if (datasetObjects.has(arrItem)) {
       processedObjects.push(arrItem);
@@ -82,7 +86,7 @@ export function createArrayHandler(
         case _proxyContext:
           return proxyContext;
         case _getNodeAtIndex:
-          return (index: number): ObjectType | undefined => {
+          return (index: number): ObjectNode | undefined => {
             updateArrayOrder(target, proxyContext);
             return target[1][index];
           };

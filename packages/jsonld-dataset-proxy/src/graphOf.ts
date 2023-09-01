@@ -1,9 +1,10 @@
-import { namedNode } from "@rdfjs/data-model";
+import type { ObjectNode, GraphNode } from "@ldo/rdf-utils";
+import { namedNode } from "@ldo/rdf-utils";
 import {
   getSubjectProxyFromObject,
   isSubjectProxy,
 } from "./subjectProxy/isSubjectProxy";
-import type { GraphType, ObjectLike, ObjectType } from "./types";
+import type { ObjectLike } from "./types";
 import {
   _getNodeAtIndex,
   _getUnderlyingDataset,
@@ -25,14 +26,14 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
   object?: NonNullable<Subject[Key]> extends Array<unknown>
     ? number | ObjectLike
     : ObjectLike,
-): GraphType[] {
+): GraphNode[] {
   const subjectProxy = getSubjectProxyFromObject(subject);
   const proxyContext = subjectProxy[_proxyContext];
   const subjectNode = subjectProxy[_getUnderlyingNode];
   const predicateNode = namedNode(
     proxyContext.contextUtil.keyToIri(predicate as string),
   );
-  let objectNode: ObjectType | null;
+  let objectNode: ObjectNode | null;
   if (object == null) {
     objectNode = null;
   } else if (typeof object === "number") {
@@ -58,5 +59,5 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
     predicateNode,
     objectNode,
   );
-  return quads.toArray().map((quad): GraphType => quad.graph as GraphType);
+  return quads.toArray().map((quad): GraphNode => quad.graph as GraphNode);
 }

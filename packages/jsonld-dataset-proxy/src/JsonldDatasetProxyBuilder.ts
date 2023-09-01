@@ -1,8 +1,13 @@
-import { blankNode, namedNode } from "@rdfjs/data-model";
-import type { BlankNode, NamedNode } from "@rdfjs/types";
+import { blankNode, namedNode } from "@ldo/rdf-utils";
+import type {
+  BlankNode,
+  NamedNode,
+  GraphNode,
+  QuadMatch,
+} from "@ldo/rdf-utils";
 import type { LanguageOrdering } from "./language/languageTypes";
 import type { ProxyContext } from "./ProxyContext";
-import type { GraphType, ObjectLike, QuadMatch } from "./types";
+import type { ObjectLike } from "./types";
 
 /**
  * Helps build JSON LD Dataset Proxies for a specific dataset and context
@@ -18,7 +23,7 @@ export class JsonldDatasetProxyBuilder {
    * Designates that all Jsonld Dataset Proxies created should write to the
    * specified graphs
    */
-  write(...graphs: GraphType[]): JsonldDatasetProxyBuilder {
+  write(...graphs: GraphNode[]): JsonldDatasetProxyBuilder {
     return new JsonldDatasetProxyBuilder(
       this.proxyContext.duplicate({ writeGraphs: graphs }),
     );

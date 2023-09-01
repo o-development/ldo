@@ -1,4 +1,4 @@
-import type { Literal, Quad_Object } from "@rdfjs/types";
+import type { Literal, Quad_Object } from "@ldo/rdf-utils";
 import type { ProxyContext } from "../ProxyContext";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
 

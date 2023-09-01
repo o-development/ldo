@@ -1,10 +1,15 @@
-import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
+import type {
+  BlankNode,
+  Dataset,
+  NamedNode,
+  GraphNode,
+  QuadMatch,
+} from "@ldo/rdf-utils";
 import type { ArrayProxyTarget } from "./arrayProxy/createArrayHandler";
 import { createArrayHandler } from "./arrayProxy/createArrayHandler";
 import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
 import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
 import type { ArrayProxy } from "./arrayProxy/ArrayProxy";
-import type { GraphType, QuadMatch } from "./types";
 import { _getUnderlyingArrayTarget } from "./types";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";
@@ -12,7 +17,7 @@ import type { LanguageOrdering } from "./language/languageTypes";
 export interface ProxyContextOptions {
   dataset: Dataset;
   contextUtil: ContextUtil;
-  writeGraphs: GraphType[];
+  writeGraphs: GraphNode[];
   languageOrdering: LanguageOrdering;
   prefilledArrayTargets?: ArrayProxyTarget[];
   state?: Record<string, unknown>;
@@ -29,7 +34,7 @@ export class ProxyContext {
 
   readonly dataset: Dataset;
   readonly contextUtil: ContextUtil;
-  readonly writeGraphs: GraphType[];
+  readonly writeGraphs: GraphNode[];
   readonly languageOrdering: LanguageOrdering;
   public state: Record<string, unknown>;
 

@@ -1,4 +1,4 @@
-import type { BlankNode, NamedNode } from "@rdfjs/types";
+import type { BlankNode, NamedNode } from "@ldo/rdf-utils";
 import { _getUnderlyingNode } from "../types";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
 

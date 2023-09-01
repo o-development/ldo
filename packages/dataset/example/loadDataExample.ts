@@ -1,4 +1,4 @@
-import { serializedToDataset, serializedToSubscribableDataset } from "../src";
+import { serializedToDataset } from "../src";
 
 async function run(): Promise<void> {
   // Create an ExtendedDataset using Turtle
@@ -31,14 +31,11 @@ async function run(): Promise<void> {
       "@id": "https://jackson.solidcommunity.net/profile/card#me",
     },
   ];
-  const jsonLdDataset = await serializedToSubscribableDataset(
-    JSON.stringify(jsonLdData),
-    {
-      baseIRI:
-        "https://jackson.solidcommunity.net/IndividualChats/jackson.solidcommunity.net/index.ttl#",
-      format: "application/json-ld",
-    },
-  );
+  const jsonLdDataset = await serializedToDataset(JSON.stringify(jsonLdData), {
+    baseIRI:
+      "https://jackson.solidcommunity.net/IndividualChats/jackson.solidcommunity.net/index.ttl#",
+    format: "application/json-ld",
+  });
   // Returns true because the input data describes the same triple.
   console.log(turtleDataset.equals(jsonLdDataset));
 }

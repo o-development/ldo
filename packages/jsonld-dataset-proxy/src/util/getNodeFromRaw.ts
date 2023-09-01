@@ -1,5 +1,5 @@
-import type { BlankNode, Literal, NamedNode } from "@rdfjs/types";
-import { namedNode, literal, blankNode } from "@rdfjs/data-model";
+import type { BlankNode, Literal, NamedNode } from "@ldo/rdf-utils";
+import { namedNode, literal, blankNode } from "@ldo/rdf-utils";
 import type { ContextUtil } from "../ContextUtil";
 import { _getUnderlyingNode } from "../types";
 import type { RawObject, RawValue } from "./RawObject";

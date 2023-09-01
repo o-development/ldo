@@ -1,6 +1,6 @@
-import { literal, quad } from "@rdfjs/data-model";
+import type { PredicateNode, SubjectNode } from "@ldo/rdf-utils";
+import { literal, quad } from "@ldo/rdf-utils";
 import type { ProxyContext } from "../ProxyContext";
-import type { PredicateType, SubjectType } from "../types";
 import {
   languageKeyToLiteralLanguage,
   quadsToLanguageQuadMap,
@@ -12,8 +12,8 @@ import LanguageSet from "./languageSet";
 export function createLanguageMapProxy<
   Target extends LanguageMap | LanguageSetMap,
 >(
-  subject: SubjectType,
-  predicate: PredicateType,
+  subject: SubjectNode,
+  predicate: PredicateNode,
   proxyContext: ProxyContext,
   isArray: boolean,
 ): Target {

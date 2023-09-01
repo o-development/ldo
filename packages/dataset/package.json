@@ -8,7 +8,6 @@
     "watch": "tsc --watch",
     "test": "jest --coverage",
     "example:extendedDataset": "ts-node ./example/extendedDatasetExample.ts",
-    "example:subscribableDataset": "ts-node ./example/subscribableDatasetExample.ts",
     "example:loadData": "ts-node ./example/loadDataExample.ts",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"

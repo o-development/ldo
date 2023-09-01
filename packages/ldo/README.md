@@ -352,9 +352,8 @@ commitTransaction(profile);
 ### `getDataset(linkedDataObject)`
 Returns the Linked Data Object's underlying RDFJS dataset. Modifying this dataset will change the Linked Data Object as well.
 ```typescript
-import { Dataset } from "@rdfjs/types";
 import { getDataset } from "ldo"
-const dataset: Dataset = dataset(profile);
+const dataset = getDataset(profile);
 ```
 
 ## Sponsorship

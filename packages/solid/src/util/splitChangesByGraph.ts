@@ -1,25 +1,23 @@
-import type { DatasetChanges } from "@ldo/subscribable-dataset";
 import { createDataset } from "@ldo/dataset";
-import type { GraphType } from "@ldo/jsonld-dataset-proxy";
-import type { Quad } from "@rdfjs/types";
-import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
+import type { GraphNode, DatasetChanges, Quad } from "@ldo/rdf-utils";
+import { defaultGraph, namedNode, quad as createQuad } from "@ldo/rdf-utils";
 
-export function graphNodeToString(graphNode: GraphType): string {
+export function graphNodeToString(graphNode: GraphNode): string {
   return graphNode.termType === "DefaultGraph"
     ? "defaultGraph()"
     : graphNode.value;
 }
 
-export function stringToGraphNode(input: string): GraphType {
+export function stringToGraphNode(input: string): GraphNode {
   return input === "defaultGraph()" ? defaultGraph() : namedNode(input);
 }
 
 export function splitChangesByGraph(
   changes: DatasetChanges<Quad>,
-): Map<GraphType, DatasetChanges<Quad>> {
+): Map<GraphNode, DatasetChanges<Quad>> {
   const changesMap: Record<string, DatasetChanges<Quad>> = {};
   changes.added?.forEach((quad) => {
-    const graphHash = graphNodeToString(quad.graph as GraphType);
+    const graphHash = graphNodeToString(quad.graph as GraphNode);
     if (!changesMap[graphHash]) {
       changesMap[graphHash] = {};
     }
@@ -32,7 +30,7 @@ export function splitChangesByGraph(
   });
 
   changes.removed?.forEach((quad) => {
-    const graphHash = graphNodeToString(quad.graph as GraphType);
+    const graphHash = graphNodeToString(quad.graph as GraphNode);
     if (!changesMap[graphHash]) {
       changesMap[graphHash] = {};
     }
@@ -44,7 +42,7 @@ export function splitChangesByGraph(
     );
   });
 
-  const finalMap = new Map<GraphType, DatasetChanges<Quad>>();
+  const finalMap = new Map<GraphNode, DatasetChanges<Quad>>();
   Object.entries(changesMap).forEach(([key, value]) => {
     finalMap.set(stringToGraphNode(key), value);
   });

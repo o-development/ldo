@@ -1,13 +1,13 @@
-import type {
-  DatasetCore,
-  Dataset,
-  BaseQuad,
-  Stream,
-  Term,
-  DatasetCoreFactory,
-  Quad,
-} from "@rdfjs/types";
-import { Writer } from "n3";
+import {
+  type DatasetCore,
+  type Dataset,
+  type BaseQuad,
+  type Stream,
+  type Term,
+  type DatasetCoreFactory,
+  type Quad,
+  datasetToString,
+} from "@ldo/rdf-utils";
 import { Readable } from "readable-stream";
 
 /**
@@ -309,8 +309,7 @@ export default class ExtendedDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * No prior normalization is required, therefore the results for the same quads may vary depending on the Dataset implementation.
    */
   toString(): string {
-    const writer = new Writer<InAndOutQuad>({ format: "N-Triples" });
-    return writer.quadsToString(this.toArray() as Quad[]);
+    return datasetToString(this as Dataset<Quad>, { format: "N-Triples" });
   }
 
   /**

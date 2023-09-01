@@ -7,9 +7,7 @@
     "build": "tsc --project tsconfig.build.json",
     "watch": "tsc --watch",
     "test": "jest --coverage",
-    "example:extendedDataset": "ts-node ./example/extendedDatasetExample.ts",
     "example:subscribableDataset": "ts-node ./example/subscribableDatasetExample.ts",
-    "example:loadData": "ts-node ./example/loadDataExample.ts",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
@@ -24,26 +22,17 @@
   },
   "homepage": "https://github.com/o-development/o-dataset-pack#readme",
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
+    "@rdfjs/dataset": "^1.1.0",
     "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
-    "@types/n3": "^1.10.4",
     "@types/rdfjs__dataset": "^1.0.4",
-    "@types/readable-stream": "^2.3.13",
     "jest": "^27.4.5",
     "ts-jest": "^27.1.2",
     "ts-node": "^9.1.1"
   },
   "dependencies": {
     "@ldo/dataset": "^0.0.0",
-    "@rdfjs/data-model": "^1.2.0",
-    "@rdfjs/dataset": "^1.1.0",
-    "buffer": "^6.0.3",
-    "n3": "^1.10.0",
-    "readable-stream": "^4.2.0"
-  },
-  "overrides": {
-    "readable-stream": "^4.2.0"
+    "@ldo/rdf-utils": "^0.0.0"
   },
   "files": [
     "dist"

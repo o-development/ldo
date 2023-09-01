@@ -7,8 +7,8 @@ import {
   quad,
   defaultGraph,
   blankNode,
-} from "@rdfjs/data-model";
-import type { Quad, BlankNode } from "@rdfjs/types";
+} from "@ldo/rdf-utils";
+import type { Quad, BlankNode } from "@ldo/rdf-utils";
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
 describe("WrapperSubscribableDataset", () => {

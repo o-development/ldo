@@ -5,7 +5,7 @@ import type {
 } from "@ldo/jsonld-dataset-proxy";
 import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
 import type { UpdateManager } from "./UpdateManager";
-import { namedNode } from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 
 export class TrackingProxyContext extends ProxyContext {
   private updateManager: UpdateManager;
@@ -34,13 +34,13 @@ export class TrackingProxyContext extends ProxyContext {
         // Do Nothing
       } else if (key === "@id") {
         this.updateManager.registerListener(
-          [subject, null, null],
+          [subject, null, null, null],
           this.listener,
         );
       } else if (!this.contextUtil.isArray(key)) {
         const predicate = namedNode(this.contextUtil.keyToIri(key));
         this.updateManager.registerListener(
-          [subject, predicate, null],
+          [subject, predicate, null, null],
           this.listener,
         );
       }
@@ -66,7 +66,7 @@ export class TrackingProxyContext extends ProxyContext {
     ) => {
       if (qualifiedArrayMethods.has(key)) {
         this.updateManager.registerListener(
-          [target[0][0], target[0][1], target[0][2]],
+          [target[0][0], target[0][1], target[0][2], null],
           this.listener,
         );
       }

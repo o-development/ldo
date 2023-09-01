@@ -1,6 +1,13 @@
-import type { Dataset, Literal, Quad, Quad_Object } from "@rdfjs/types";
+import type {
+  Dataset,
+  Literal,
+  Quad,
+  ObjectNode,
+  PredicateNode,
+  SubjectNode,
+  Quad_Object,
+} from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
-import type { PredicateType, SubjectType } from "../types";
 import type { LanguageKey, LanguageOrdering } from "./languageTypes";
 
 /**
@@ -13,8 +20,8 @@ import type { LanguageKey, LanguageOrdering } from "./languageTypes";
  */
 export function languageMatch(
   dataset: Dataset,
-  subject: SubjectType,
-  predicate: PredicateType,
+  subject: ObjectNode,
+  predicate: PredicateNode,
   languageKey: LanguageKey,
 ): Dataset<LiteralObjectQuad> {
   const literalLanguage = languageKeyToLiteralLanguage(languageKey);
@@ -34,8 +41,8 @@ export function languageMatch(
  */
 export function languageDeleteMatch(
   dataset: Dataset,
-  subject: SubjectType,
-  predicate: PredicateType,
+  subject: SubjectNode,
+  predicate: PredicateNode,
   languageKey: LanguageKey,
 ): void {
   const quadsToDelete = languageMatch(dataset, subject, predicate, languageKey);

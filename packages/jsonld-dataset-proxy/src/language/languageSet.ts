@@ -1,20 +1,24 @@
-import type { Dataset, Literal } from "@rdfjs/types";
-import type { PredicateType, SubjectType } from "../types";
+import { literal, quad } from "@ldo/rdf-utils";
+import type {
+  Dataset,
+  Literal,
+  PredicateNode,
+  SubjectNode,
+} from "@ldo/rdf-utils";
 import type { LanguageKey } from "./languageTypes";
 import type { LiteralObjectQuad } from "./languageUtils";
 import { languageDeleteMatch, languageMatch } from "./languageUtils";
-import { literal, quad } from "@rdfjs/data-model";
 import type { ProxyContext } from "../ProxyContext";
 
 export default class LanguageSet implements Set<string> {
-  private subject: SubjectType;
-  private predicate: PredicateType;
+  private subject: SubjectNode;
+  private predicate: PredicateNode;
   private languageKey: LanguageKey;
   private proxyContext: ProxyContext;
 
   constructor(
-    subject: SubjectType,
-    predicate: PredicateType,
+    subject: SubjectNode,
+    predicate: PredicateNode,
     languageKey: LanguageKey,
     proxyContext: ProxyContext,
   ) {

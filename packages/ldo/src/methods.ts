@@ -1,18 +1,15 @@
-import type { Dataset } from "@rdfjs/types";
 import type { JsonLdDocument } from "jsonld";
-import type { GraphType, InteractOptions } from "@ldo/jsonld-dataset-proxy";
+import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
+import type { InteractOptions } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
   write as writeDependency,
 } from "@ldo/jsonld-dataset-proxy";
-import type { Quad, WriterOptions } from "n3";
-import type {
-  DatasetChanges,
-  SubscribableDataset,
-} from "@ldo/subscribable-dataset";
-import { datasetToString } from "./datasetConverters";
+import type { SubscribableDataset } from "@ldo/subscribable-dataset";
+import type { WriterOptions, Dataset, Quad } from "@ldo/rdf-utils";
+import { changesToSparqlUpdate, datasetToString } from "@ldo/rdf-utils";
 import type { LdoBase } from "./util";
 import {
   canDatasetStartTransaction,
@@ -26,7 +23,7 @@ export {
   setLanguagePreferences,
 } from "@ldo/jsonld-dataset-proxy";
 
-export function write(...graphs: (GraphType | string)[]): InteractOptions {
+export function write(...graphs: (GraphNode | string)[]): InteractOptions {
   return writeDependency(...normalizeNodeNames(graphs));
 }
 
@@ -72,21 +69,7 @@ export function getDataset(ldo: LdoBase): Dataset {
 export async function toSparqlUpdate(ldo: LdoBase): Promise<string> {
   const [dataset] = getTransactionalDatasetFromLdo(ldo);
   const changes = dataset.getChanges();
-  let output = "";
-  if (changes.removed) {
-    output += `DELETE DATA { ${await datasetToString(changes.removed, {
-      format: "N-Triples",
-    })} }`;
-  }
-  if (changes.added && changes.removed) {
-    output += "; ";
-  }
-  if (changes.added) {
-    output += `INSERT DATA { ${await datasetToString(changes.added, {
-      format: "N-Triples",
-    })} }`;
-  }
-  return output.replaceAll("\n", " ");
+  return changesToSparqlUpdate(changes);
 }
 
 export async function serialize(

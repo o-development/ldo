@@ -1,9 +1,8 @@
-import { defaultGraph } from "@rdfjs/data-model";
-import type { Quad } from "@rdfjs/types";
+import { defaultGraph } from "@ldo/rdf-utils";
+import type { Quad, ObjectNode } from "@ldo/rdf-utils";
 import { ProxyTransactionalDataset } from "@ldo/subscribable-dataset";
 import { createDatasetFactory } from "@ldo/dataset";
 import type { ProxyContext } from "../ProxyContext";
-import type { ObjectType } from "../types";
 import { addObjectToDataset } from "../util/addObjectToDataset";
 import {
   getNodeFromRawObject,
@@ -121,7 +120,7 @@ export function modifyArray<ReturnType>(
         .map((addedValue) => {
           return getNodeFromRawValue(key, addedValue, proxyContext);
         })
-        .filter((val) => val != undefined) as ObjectType[])
+        .filter((val) => val != undefined) as ObjectNode[])
     : [];
 
   // Allow the base array to be modified

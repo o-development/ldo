@@ -26,7 +26,6 @@
     "@babel/preset-env": "^7.22.10",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.11",
-    "@rdfjs/types": "^1.1.0",
     "@types/jest": "^29.0.3",
     "@types/jsonld": "^1.5.8",
     "@types/n3": "^1.10.4",

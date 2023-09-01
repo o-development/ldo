@@ -1,4 +1,4 @@
-import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
+import type { Dataset, DatasetFactory, Quad } from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
 import { LdoDatasetFactory } from "./LdoDatasetFactory";
 

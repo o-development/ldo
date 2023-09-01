@@ -1,12 +1,13 @@
-import { namedNode, literal, quad } from "@rdfjs/data-model";
-import type { Quad_Object, Quad_Predicate } from "n3";
+import { namedNode, literal, quad } from "@ldo/rdf-utils";
 import type {
+  SubjectNode,
+  ObjectNode,
+  PredicateNode,
   BaseQuad,
   Dataset,
-  Quad_Subject,
   DatasetFactory,
   Quad,
-} from "@rdfjs/types";
+} from "@ldo/rdf-utils";
 import { Readable } from "stream";
 
 export default function testDataset(
@@ -476,9 +477,9 @@ export default function testDataset(
       initializeDataset();
       const mappedDataset = dataset.map((curQuad) => {
         return quad(
-          curQuad.predicate as Quad_Subject,
-          curQuad.predicate as Quad_Predicate,
-          curQuad.predicate as Quad_Object,
+          curQuad.predicate as SubjectNode,
+          curQuad.predicate as PredicateNode,
+          curQuad.predicate as ObjectNode,
         );
       });
       expect(mappedDataset.size).toBe(2);

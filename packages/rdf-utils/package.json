@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
   "devDependencies": {
-    "@rdfjs/types": "^1.1.0",
     "@types/jsonld": "^1.5.9"
   },
   "dependencies": {
     "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/types": "^1.1.0",
     "n3": "^1.17.1",
     "rdf-string": "^1.6.3"
   }

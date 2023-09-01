@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy";
 import type { ObjectLike } from "../types";
 import { _getUnderlyingNode, _proxyContext } from "../types";
