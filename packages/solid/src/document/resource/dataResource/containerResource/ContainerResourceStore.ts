@@ -1,4 +1,7 @@
-import type { DocumentStoreDependencies } from "../../../DocumentStore";
+import type {
+  DocumentGetterOptions,
+  DocumentStoreDependencies,
+} from "../../../DocumentStore";
 import { DocumentStore } from "../../../DocumentStore";
 import type { Resource } from "../../Resource";
 import type { ContainerResourceDependencies } from "./ContainerResource";
@@ -13,8 +16,14 @@ export class ContainerResourceStore extends DocumentStore<
   string,
   ContainerResourceStoreDependencies
 > {
-  protected create(initializer: string) {
-    return new ContainerResource(initializer, this.dependencies);
+  protected create(
+    initializer: string,
+    documentGetterOptions: DocumentGetterOptions,
+  ) {
+    return new ContainerResource(initializer, {
+      ...this.dependencies,
+      documentGetterOptions,
+    });
   }
 
   protected normalizeInitializer(initializer: string) {

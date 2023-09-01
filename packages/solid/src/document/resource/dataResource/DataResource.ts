@@ -1,4 +1,3 @@
-import type { LdoDataset } from "@ldo/ldo";
 import { parseRdf } from "@ldo/ldo";
 import type { ResourceDependencies } from "../Resource";
 import { Resource } from "../Resource";
@@ -8,11 +7,10 @@ import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { DatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import { changesToSparqlUpdate } from "../../../util/changesToSparqlUpdate";
-import type { UpdateManager } from "../../../ldoHooks/helpers/UpdateManager";
+import type { SolidLdoDataset } from "../../../SolidLdoDataset";
 
 export interface DataResourceDependencies extends ResourceDependencies {
-  dataset: LdoDataset;
-  updateManager: UpdateManager;
+  dataset: SolidLdoDataset;
 }
 
 export class DataResource extends Resource {

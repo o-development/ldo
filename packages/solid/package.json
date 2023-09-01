@@ -1,7 +1,7 @@
 {
-  "name": "@ldo/solid-react",
+  "name": "@ldo/solid",
   "version": "0.0.0",
-  "description": "A React library for LDO and Solid",
+  "description": "A library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
@@ -23,25 +23,17 @@
   },
   "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
   "devDependencies": {
-    "@babel/preset-env": "^7.22.10",
-    "@babel/preset-react": "^7.22.5",
-    "@babel/preset-typescript": "^7.22.11",
+    "@ldo/cli": "^0.0.0",
+    "@ldo/jsonld-dataset-proxy": "^0.0.0",
     "@rdfjs/types": "^1.1.0",
     "@types/jest": "^29.0.3",
-    "@types/jsonld": "^1.5.8",
-    "@types/n3": "^1.10.4",
-    "@types/shexj": "2.1.4",
     "ts-jest": "^29.0.2"
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.29.0",
     "@ldo/dataset": "^0.0.0",
-    "@ldo/jsonld-dataset-proxy": "^0.0.0",
     "@ldo/ldo": "^0.0.0",
-    "@ldo/solid": "^0.0.0",
     "@ldo/subscribable-dataset": "^0.0.0",
-    "cross-fetch": "^3.1.6",
-    "solid-authn-react-native": "^2.0.3",
-    "stream": "^0.0.2"
+    "cross-fetch": "^3.1.6"
   }
 }

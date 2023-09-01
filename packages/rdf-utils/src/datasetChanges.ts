@@ -1,10 +1,20 @@
-import type { DatasetChanges } from "@ldo/subscribable-dataset";
-import { datasetToString } from "@ldo/ldo";
-import type { Quad } from "@rdfjs/types";
+import type { BaseQuad, Dataset, Quad } from "@rdfjs/types";
 import { quad as createQuad } from "@rdfjs/data-model";
+import { datasetToString } from "./datasetConverters";
 
-// TODO: This file is a clone from the one in the base ldo library. This resused
-// code should be put into a helper library once everything becomes a monorepo.
+/**
+ * An interface representing the changes made
+ */
+export interface DatasetChanges<InAndOutQuad extends BaseQuad = BaseQuad> {
+  added?: Dataset<InAndOutQuad, InAndOutQuad>;
+  removed?: Dataset<InAndOutQuad, InAndOutQuad>;
+}
+
+/**
+ * Takes Dataset Changes and converts them to SPARQL UPDATE
+ * @param changes: Dataset Changes
+ * @returns String SPARQL Update
+ */
 export async function changesToSparqlUpdate(changes: DatasetChanges<Quad>) {
   let output = "";
   if (changes.removed) {

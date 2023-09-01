@@ -5,18 +5,7 @@ import type {
   DefaultGraph,
   BaseQuad,
 } from "@rdfjs/types";
-/**
- * An interface representing the changes made
- */
-export interface DatasetChanges<InAndOutQuad extends BaseQuad = BaseQuad> {
-  added?: Dataset<InAndOutQuad, InAndOutQuad>;
-  removed?: Dataset<InAndOutQuad, InAndOutQuad>;
-}
 
-/**
- * Types of nodes a subscribable dataset can subscribe to
- */
-export type SubscribableTerms = NamedNode | BlankNode | DefaultGraph;
 
 /**
  * An event listeners for nodes
@@ -58,7 +47,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @returns
    */
   addListener(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -70,7 +59,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @returns true if the event had listeners, false otherwise.
    */
   emit(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     dataset: Dataset<InAndOutQuad, InAndOutQuad>,
     datasetChanges: DatasetChanges<InAndOutQuad>,
   ): boolean;
@@ -78,7 +67,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns an array listing the events for which the emitter has registered listeners. The values in the array are strings or Symbols.
    */
-  eventNames(): SubscribableTerms[];
+  eventNames(): DatasetEventMatch[];
 
   /**
    * Returns the current max listener value for the EventEmitter which is either set by emitter.setMaxListeners(n) or defaults to events.defaultMaxListeners.
@@ -88,18 +77,18 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns the number of listeners listening to the event named eventName.
    */
-  listenerCount(eventName: SubscribableTerms): number;
+  listenerCount(eventName: DatasetEventMatch): number;
 
   /**
    * Returns a copy of the array of listeners for the event named eventName.
    */
-  listeners(eventName: SubscribableTerms): nodeEventListener<InAndOutQuad>[];
+  listeners(eventName: DatasetEventMatch): nodeEventListener<InAndOutQuad>[];
 
   /**
    * Alias for emitter.removeListener()
    */
   off(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): void;
 
@@ -107,7 +96,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Adds the listener function to the end of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
   on(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -115,7 +104,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Adds a one-time listener function for the event named eventName. The next time eventName is triggered, this listener is removed and then invoked.
    */
   once(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -123,7 +112,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Adds the listener function to the beginning of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
   prependListener(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -131,20 +120,20 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Adds a one-time listener function for the event named eventName to the beginning of the listeners array. The next time eventName is triggered, this listener is removed, and then invoked.
    */
   prependOnceListener(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
   /**
    * Removes all listeners, or those of the specified eventName.
    */
-  removeAllListeners(eventName: SubscribableTerms): this;
+  removeAllListeners(eventName: DatasetEventMatch): this;
 
   /**
    * Removes the specified listener from the listener array for the event named eventName.
    */
   removeListener(
-    eventName: SubscribableTerms,
+    eventName: DatasetEventMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this;
 
@@ -156,7 +145,7 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns a copy of the array of listeners for the event named eventName, including any wrappers (such as those created by .once()).
    */
-  rawListeners(eventName: SubscribableTerms): nodeEventListener<InAndOutQuad>[];
+  rawListeners(eventName: DatasetEventMatch): nodeEventListener<InAndOutQuad>[];
 
   /**
    * ==================================================================

@@ -11,15 +11,3 @@ export const _writeGraphs = Symbol("_writeGraphs");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ObjectLike = Record<string | number | symbol, any>;
-
-export type SubjectType = NamedNode | BlankNode;
-export type PredicateType = NamedNode;
-export type ObjectType = NamedNode | BlankNode | Literal;
-export type GraphType = NamedNode | BlankNode | DefaultGraph;
-
-export type QuadMatch = [
-  SubjectType | undefined | null,
-  PredicateType | undefined | null,
-  ObjectType | undefined | null,
-  GraphType | undefined | null,
-];

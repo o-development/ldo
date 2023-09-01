@@ -1,4 +1,7 @@
-import type { DocumentStoreDependencies } from "../../DocumentStore";
+import type {
+  DocumentGetterOptions,
+  DocumentStoreDependencies,
+} from "../../DocumentStore";
 import { DocumentStore } from "../../DocumentStore";
 import type { BinaryResourceDependencies } from "./BinaryResource";
 import { BinaryResource } from "./BinaryResource";
@@ -12,8 +15,14 @@ export class BinaryResourceStore extends DocumentStore<
   string,
   BinaryResourceStoreDependencies
 > {
-  create(initializer: string) {
-    return new BinaryResource(initializer, this.dependencies);
+  protected create(
+    initializer: string,
+    documentGetterOptions: DocumentGetterOptions,
+  ) {
+    return new BinaryResource(initializer, {
+      ...this.dependencies,
+      documentGetterOptions,
+    });
   }
 
   protected normalizeInitializer(initializer: string): string {

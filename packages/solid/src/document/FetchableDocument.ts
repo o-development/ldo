@@ -1,8 +1,10 @@
 import EventEmitter from "events";
 import type { DocumentError } from "./errors/DocumentError";
+import type { DocumentGetterOptions } from "./DocumentStore";
 
 export interface FetchableDocumentDependencies {
   onDocumentError?: (error: DocumentError) => void;
+  documentGetterOptions?: DocumentGetterOptions;
 }
 
 const STATE_UPDATE = "stateUpdate";
@@ -12,7 +14,7 @@ export abstract class FetchableDocument extends EventEmitter {
   protected _isWriting: boolean;
   protected _didInitialFetch: boolean;
   protected _error?: DocumentError;
-  private dependencies;
+  private dependencies: FetchableDocumentDependencies;
 
   constructor(dependencies: FetchableDocumentDependencies) {
     super();
@@ -20,6 +22,11 @@ export abstract class FetchableDocument extends EventEmitter {
     this._isWriting = false;
     this._didInitialFetch = false;
     this.dependencies = dependencies;
+    // Trigger load if autoload is true
+    if (this.dependencies.documentGetterOptions?.autoLoad) {
+      this._isLoading = true;
+      this.read();
+    }
   }
   /**
    * ===========================================================================
@@ -32,6 +39,14 @@ export abstract class FetchableDocument extends EventEmitter {
 
   get didInitialFetch() {
     return this._didInitialFetch;
+  }
+
+  get isLoadingInitial() {
+    return this._isLoading && !this._didInitialFetch;
+  }
+
+  get isReloading() {
+    return this._isLoading && this._didInitialFetch;
   }
 
   get error() {
