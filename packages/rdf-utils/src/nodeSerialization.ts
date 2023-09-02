@@ -234,7 +234,7 @@ export function stringToQuad(input: string) {
  * @param input String Inupt
  * @returns QuadMatch
  */
-export function stringToQuadMatch(input: string) {
+export function stringToQuadMatch(input: string): QuadMatch {
   const jsonRep = JSON.parse(input);
   return [
     jsonRep.subject ? stringToSubjectNode(jsonRep.subject) : undefined,

@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { namedNode, blankNode, defaultGraph } from "@ldo/rdf-utils";
+import { quadMatchToString, stringToQuadMatch } from "@ldo/rdf-utils";
 import type {
   DatasetChanges,
   Dataset,
@@ -7,9 +7,12 @@ import type {
   Stream,
   Term,
   DatasetFactory,
+  QuadMatch,
+  SubjectNode,
+  PredicateNode,
+  ObjectNode,
 } from "@ldo/rdf-utils";
 import type {
-  SubscribableTerms,
   nodeEventListener,
   SubscribableDataset,
   TransactionalDataset,
@@ -36,6 +39,10 @@ export default class WrapperSubscribableDataset<
    * The underlying event emitter
    */
   private eventEmitter: EventEmitter;
+  /**
+   * EventNames as a Set for O(1) lookup
+   */
+  private eventNamesSet: Set<string>;
 
   /**
    *
@@ -49,6 +56,7 @@ export default class WrapperSubscribableDataset<
     this.datasetFactory = datasetFactory;
     this.dataset = initialDataset || this.datasetFactory.dataset();
     this.eventEmitter = new EventEmitter();
+    this.eventNamesSet = new Set();
   }
 
   /**
@@ -345,42 +353,6 @@ export default class WrapperSubscribableDataset<
    * EVENTEMITTER METHODS
    * ==================================================================
    */
-  private NAMED_NODE_KEY_PREFIX = "NamedNode";
-  private BLANK_NODE_KEY_PREFIX = "BlankNode";
-  private DEFAULT_GRAPH_KEY_PREFIX = "DefaultGraph";
-  private SUBSCRIBABLE_TERMS = [
-    this.NAMED_NODE_KEY_PREFIX,
-    this.BLANK_NODE_KEY_PREFIX,
-    this.DEFAULT_GRAPH_KEY_PREFIX,
-  ];
-
-  /**
-   * Given a term, returns the string key to be used in an event emitter
-   */
-  private getKeyFromNode(term: SubscribableTerms): string {
-    if (term.termType === "NamedNode") {
-      return `${this.NAMED_NODE_KEY_PREFIX}${term.value}`;
-    } else if (term.termType === "BlankNode") {
-      return `${this.BLANK_NODE_KEY_PREFIX}${term.value}`;
-    } else if (term.termType === "DefaultGraph") {
-      return `${this.DEFAULT_GRAPH_KEY_PREFIX}${term.value}`;
-    }
-    throw new Error("Invalid term type for subscription");
-  }
-
-  /**
-   * Given a key, returns the node
-   */
-  private getNodeFromKey(key: string): SubscribableTerms {
-    if (key.startsWith(this.NAMED_NODE_KEY_PREFIX)) {
-      return namedNode(key.slice(this.NAMED_NODE_KEY_PREFIX.length));
-    } else if (key.startsWith(this.BLANK_NODE_KEY_PREFIX)) {
-      return blankNode(key.slice(this.BLANK_NODE_KEY_PREFIX.length));
-    } else if (key.startsWith(this.DEFAULT_GRAPH_KEY_PREFIX)) {
-      return defaultGraph();
-    }
-    throw Error("Invalid Subscription Key");
-  }
 
   /**
    * Triggers all subscriptions based on an updated quads
@@ -389,82 +361,62 @@ export default class WrapperSubscribableDataset<
   private triggerSubscriptionForQuads(
     changed: DatasetChanges<InAndOutQuad>,
   ): void {
-    const triggeredTermsMap: Record<string, SubscribableTerms> = {};
-    const forEachQuad = (quad: BaseQuad) => {
-      const subject = quad.subject;
-      const predicate = quad.predicate;
-      const object = quad.object;
-      const graph = quad.graph;
-      const quadTerms = [subject, predicate, object, graph];
-      quadTerms.forEach((quadTerm) => {
-        if (this.SUBSCRIBABLE_TERMS.includes(quadTerm.termType)) {
-          triggeredTermsMap[`${quadTerm.termType}${quadTerm.value}`] =
-            quadTerm as SubscribableTerms;
-        }
+    // A mapping of serialized QuadMatches to the changed quads
+    const matchingDatasetChanges: Record<
+      string,
+      DatasetChanges<InAndOutQuad>
+    > = {};
+
+    // Population MatchingDatasetChanges
+    const populateMatchingDatasetChanges = (
+      changeType: "added" | "removed",
+    ) => {
+      const changedQuads = changed[changeType];
+      changedQuads?.forEach((changedQuad) => {
+        // Cast the input because RDFJS types assume RDF 1.2 where a Subject can
+        // be a Quad
+        const quad = changedQuad as {
+          subject: SubjectNode;
+          predicate: PredicateNode;
+          object: ObjectNode;
+        };
+        // All possible matches that could match with this triple
+        const quadMatches: QuadMatch[] = [
+          [null, null, null, null],
+          [quad.subject, null, null, null],
+          [quad.subject, quad.predicate, null, null],
+          [quad.subject, null, quad.object, null],
+          [null, quad.predicate, null, null],
+          [null, quad.predicate, quad.object, null],
+          [null, null, quad.object, null],
+          [quad.subject, quad.predicate, quad.object, null],
+        ];
+        quadMatches.forEach((quadMatch) => {
+          const eventName = quadMatchToString(quadMatch);
+          // Only add to the map if there's actually a listener for this
+          if (this.eventEmitter.listenerCount(eventName) > 0) {
+            // Set matchingDatasetChanges to include data to emit
+            if (!matchingDatasetChanges[eventName]) {
+              matchingDatasetChanges[eventName] = {};
+            }
+            if (!matchingDatasetChanges[eventName][changeType]) {
+              matchingDatasetChanges[eventName][changeType] =
+                this.datasetFactory.dataset();
+            }
+            matchingDatasetChanges[eventName][changeType]?.add(changedQuad);
+          }
+        });
       });
     };
-    changed.added?.forEach(forEachQuad);
-    changed.removed?.forEach(forEachQuad);
-    const triggeredTerms = Object.values(triggeredTermsMap);
-    triggeredTerms.forEach((triggeredTerm) => {
-      this.triggerSubscriptionForNode(triggeredTerm, changed);
-    });
-  }
+    populateMatchingDatasetChanges("added");
+    populateMatchingDatasetChanges("removed");
 
-  /**
-   * Triggers all subscriptions for a given term
-   * @param term The term that should be triggered
-   * @param changed The changed triples of a certain transaction
-   */
-  private triggerSubscriptionForNode(
-    term: SubscribableTerms,
-    changed: DatasetChanges<InAndOutQuad>,
-  ): void {
-    if (this.listenerCount(term) > 0) {
-      let allQuads: Dataset<InAndOutQuad, InAndOutQuad> =
-        this.datasetFactory.dataset();
-      if (term.termType !== "DefaultGraph") {
-        allQuads = allQuads.union(this.match(term, null, null, null));
-        allQuads = allQuads.union(this.match(null, null, term, null));
-        if (term.termType !== "BlankNode") {
-          allQuads = allQuads.union(this.match(null, term, null, null));
-          allQuads = allQuads.union(this.match(null, null, null, term));
-        }
-      } else {
-        allQuads = allQuads.union(this.match(null, null, null, term));
-      }
-      let changedForThisNode: DatasetChanges<InAndOutQuad> = {
-        added: changed.added
-          ? changed.added.filter(
-              (addedQuad) =>
-                addedQuad.subject.equals(term) ||
-                addedQuad.predicate.equals(term) ||
-                addedQuad.object.equals(term) ||
-                addedQuad.graph.equals(term),
-            )
-          : undefined,
-        removed: changed.removed
-          ? changed.removed.filter(
-              (removedQuad) =>
-                removedQuad.subject.equals(term) ||
-                removedQuad.predicate.equals(term) ||
-                removedQuad.object.equals(term) ||
-                removedQuad.graph.equals(term),
-            )
-          : undefined,
-      };
-      changedForThisNode = {
-        added:
-          changedForThisNode.added && changedForThisNode.added.size > 0
-            ? changedForThisNode.added
-            : undefined,
-        removed:
-          changedForThisNode.removed && changedForThisNode.removed.size > 0
-            ? changedForThisNode.removed
-            : undefined,
-      };
-      this.emit(term, allQuads, changedForThisNode);
-    }
+    // Alert all listeners
+    Object.entries(matchingDatasetChanges).forEach(
+      ([quadMatchString, changes]) => {
+        this.eventEmitter.emit(quadMatchString, changes);
+      },
+    );
   }
 
   /**
@@ -474,7 +426,7 @@ export default class WrapperSubscribableDataset<
    * @returns
    */
   public addListener(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
     return this.on(eventName, listener);
@@ -488,24 +440,19 @@ export default class WrapperSubscribableDataset<
    * @returns true if the event had listeners, false otherwise.
    */
   public emit(
-    eventName: SubscribableTerms,
-    dataset: Dataset<InAndOutQuad, InAndOutQuad>,
-    datasetChanges: DatasetChanges<InAndOutQuad>,
+    eventName: QuadMatch,
+    changes: DatasetChanges<InAndOutQuad>,
   ): boolean {
-    return this.eventEmitter.emit(
-      this.getKeyFromNode(eventName),
-      dataset,
-      datasetChanges,
-    );
+    return this.eventEmitter.emit(quadMatchToString(eventName), changes);
   }
 
   /**
    * Returns an array listing the events for which the emitter has registered listeners. The values in the array are strings or Symbols.
    */
-  public eventNames(): SubscribableTerms[] {
+  public eventNames(): QuadMatch[] {
     return this.eventEmitter
       .eventNames()
-      .map((eventName) => this.getNodeFromKey(eventName as string));
+      .map((eventName) => stringToQuadMatch(eventName as string));
   }
 
   /**
@@ -518,18 +465,16 @@ export default class WrapperSubscribableDataset<
   /**
    * Returns the number of listeners listening to the event named eventName.
    */
-  public listenerCount(eventName: SubscribableTerms): number {
-    return this.eventEmitter.listenerCount(this.getKeyFromNode(eventName));
+  public listenerCount(eventName: QuadMatch): number {
+    return this.eventEmitter.listenerCount(quadMatchToString(eventName));
   }
 
   /**
    * Returns a copy of the array of listeners for the event named eventName.
    */
-  public listeners(
-    eventName: SubscribableTerms,
-  ): nodeEventListener<InAndOutQuad>[] {
+  public listeners(eventName: QuadMatch): nodeEventListener<InAndOutQuad>[] {
     return this.eventEmitter.listeners(
-      this.getKeyFromNode(eventName),
+      quadMatchToString(eventName),
     ) as nodeEventListener<InAndOutQuad>[];
   }
 
@@ -537,7 +482,7 @@ export default class WrapperSubscribableDataset<
    * Alias for emitter.removeListener()
    */
   public off(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): void {
     this.removeListener(eventName, listener);
@@ -547,10 +492,10 @@ export default class WrapperSubscribableDataset<
    * Adds the listener function to the end of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
   public on(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
-    this.eventEmitter.on(this.getKeyFromNode(eventName), listener);
+    this.eventEmitter.on(quadMatchToString(eventName), listener);
     return this;
   }
 
@@ -558,10 +503,10 @@ export default class WrapperSubscribableDataset<
    * Adds a one-time listener function for the event named eventName. The next time eventName is triggered, this listener is removed and then invoked.
    */
   public once(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
-    this.eventEmitter.once(this.getKeyFromNode(eventName), listener);
+    this.eventEmitter.once(quadMatchToString(eventName), listener);
     return this;
   }
 
@@ -569,10 +514,10 @@ export default class WrapperSubscribableDataset<
    * Adds the listener function to the beginning of the listeners array for the event named eventName. No checks are made to see if the listener has already been added. Multiple calls passing the same combination of eventName and listener will result in the listener being added, and called, multiple times.
    */
   public prependListener(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
-    this.eventEmitter.prependListener(this.getKeyFromNode(eventName), listener);
+    this.eventEmitter.prependListener(quadMatchToString(eventName), listener);
     return this;
   }
 
@@ -580,11 +525,11 @@ export default class WrapperSubscribableDataset<
    * Adds a one-time listener function for the event named eventName to the beginning of the listeners array. The next time eventName is triggered, this listener is removed, and then invoked.
    */
   public prependOnceListener(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
     this.eventEmitter.prependOnceListener(
-      this.getKeyFromNode(eventName),
+      quadMatchToString(eventName),
       listener,
     );
     return this;
@@ -593,8 +538,8 @@ export default class WrapperSubscribableDataset<
   /**
    * Removes all listeners, or those of the specified eventName.
    */
-  public removeAllListeners(eventName: SubscribableTerms): this {
-    this.eventEmitter.removeAllListeners(this.getKeyFromNode(eventName));
+  public removeAllListeners(eventName: QuadMatch): this {
+    this.eventEmitter.removeAllListeners(quadMatchToString(eventName));
     return this;
   }
 
@@ -602,10 +547,10 @@ export default class WrapperSubscribableDataset<
    * Removes the specified listener from the listener array for the event named eventName.
    */
   public removeListener(
-    eventName: SubscribableTerms,
+    eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
-    this.eventEmitter.removeListener(this.getKeyFromNode(eventName), listener);
+    this.eventEmitter.removeListener(quadMatchToString(eventName), listener);
     return this;
   }
 
@@ -620,11 +565,9 @@ export default class WrapperSubscribableDataset<
   /**
    * Returns a copy of the array of listeners for the event named eventName, including any wrappers (such as those created by .once()).
    */
-  public rawListeners(
-    eventName: SubscribableTerms,
-  ): nodeEventListener<InAndOutQuad>[] {
+  public rawListeners(eventName: QuadMatch): nodeEventListener<InAndOutQuad>[] {
     return this.eventEmitter.rawListeners(
-      this.getKeyFromNode(eventName),
+      quadMatchToString(eventName),
     ) as nodeEventListener[];
   }
 
@@ -638,9 +581,6 @@ export default class WrapperSubscribableDataset<
    * Returns a transactional dataset that will update this dataset when its transaction is committed.
    */
   public startTransaction(): TransactionalDataset<InAndOutQuad> {
-    // Type problem again
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     return new ProxyTransactionalDataset(this, this.datasetFactory);
   }
 }

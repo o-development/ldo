@@ -9,7 +9,6 @@ import type {
  * An event listeners for nodes
  */
 export type nodeEventListener<InAndOutQuad extends BaseQuad = BaseQuad> = (
-  dataset: Dataset<InAndOutQuad, InAndOutQuad>,
   changes: DatasetChanges<InAndOutQuad>,
 ) => void;
 
@@ -52,15 +51,10 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Synchronously calls each of the listeners registered for the event named eventName, in the order they were registered, passing the supplied arguments to each.
    * @param eventName
-   * @param dataset
-   * @param datasetChanges
+   * @param changes
    * @returns true if the event had listeners, false otherwise.
    */
-  emit(
-    eventName: QuadMatch,
-    dataset: Dataset<InAndOutQuad, InAndOutQuad>,
-    datasetChanges: DatasetChanges<InAndOutQuad>,
-  ): boolean;
+  emit(eventName: QuadMatch, changes: DatasetChanges<InAndOutQuad>): boolean;
 
   /**
    * Returns an array listing the events for which the emitter has registered listeners. The values in the array are strings or Symbols.

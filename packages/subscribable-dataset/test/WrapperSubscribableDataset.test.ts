@@ -55,53 +55,44 @@ describe("WrapperSubscribableDataset", () => {
   it("Alerts when a node is added", () => {
     const callbackFunc = jest.fn();
     subscribableDatastet.addListener(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
     );
     subscribableDatastet.add(tomColorQuad);
     expect(callbackFunc).toBeCalledTimes(1);
-    expect(callbackFunc.mock.calls[0][0].size).toBe(3);
-    expect(callbackFunc.mock.calls[0][0].has(tomNameQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][0].has(tomTypeQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][0].has(tomColorQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1].added.size).toBe(1);
-    expect(callbackFunc.mock.calls[0][1].added.has(tomColorQuad)).toBe(true);
+    expect(callbackFunc.mock.calls[0][0].added.size).toBe(1);
+    expect(callbackFunc.mock.calls[0][0].added.has(tomColorQuad)).toBe(true);
   });
 
   it("Alerts when a node is removed", () => {
     const callbackFunc = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
     );
     subscribableDatastet.delete(tomTypeQuad);
     expect(callbackFunc).toBeCalledTimes(1);
-    expect(callbackFunc.mock.calls[0][0].size).toBe(1);
-    expect(callbackFunc.mock.calls[0][0].has(tomNameQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1].removed.size).toBe(1);
-    expect(callbackFunc.mock.calls[0][1].removed.has(tomTypeQuad)).toBe(true);
+    expect(callbackFunc.mock.calls[0][0].removed.size).toBe(1);
+    expect(callbackFunc.mock.calls[0][0].removed.has(tomTypeQuad)).toBe(true);
   });
 
   it("Alerts when multiple quads are added", () => {
     const callbackFunc = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Licky"),
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       callbackFunc,
     );
     subscribableDatastet.addAll([lickyNameQuad, lickyTypeQuad]);
     expect(callbackFunc).toBeCalledTimes(1);
-    expect(callbackFunc.mock.calls[0][0].size).toBe(2);
-    expect(callbackFunc.mock.calls[0][0].has(lickyTypeQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][0].has(lickyNameQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1].added.size).toBe(2);
-    expect(callbackFunc.mock.calls[0][1].added.has(lickyNameQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1].added.has(lickyTypeQuad)).toBe(true);
+    expect(callbackFunc.mock.calls[0][0].added.size).toBe(2);
+    expect(callbackFunc.mock.calls[0][0].added.has(lickyNameQuad)).toBe(true);
+    expect(callbackFunc.mock.calls[0][0].added.has(lickyTypeQuad)).toBe(true);
   });
 
   it("Alerts when bulk updated by only adding", () => {
     const callbackFuncLicky = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Licky"),
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       callbackFuncLicky,
     );
     subscribableDatastet.bulk({
@@ -109,20 +100,17 @@ describe("WrapperSubscribableDataset", () => {
     });
     expect(callbackFuncLicky).toBeCalledTimes(1);
     expect(
-      callbackFuncLicky.mock.calls[0][0].equals(createDataset([lickyTypeQuad])),
-    ).toBe(true);
-    expect(
-      callbackFuncLicky.mock.calls[0][1].added.equals(
+      callbackFuncLicky.mock.calls[0][0].added.equals(
         createDataset([lickyTypeQuad]),
       ),
     ).toBe(true);
-    expect(callbackFuncLicky.mock.calls[0][1].removed).toBe(undefined);
+    expect(callbackFuncLicky.mock.calls[0][0].removed).toBe(undefined);
   });
 
   it("Alerts when bulk updated by only removing", () => {
     const callbackFuncTom = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFuncTom,
     );
     subscribableDatastet.bulk({
@@ -130,25 +118,22 @@ describe("WrapperSubscribableDataset", () => {
     });
     expect(callbackFuncTom).toBeCalledTimes(1);
     expect(
-      callbackFuncTom.mock.calls[0][0].equals(createDataset([tomNameQuad])),
-    ).toBe(true);
-    expect(
-      callbackFuncTom.mock.calls[0][1].removed.equals(
+      callbackFuncTom.mock.calls[0][0].removed.equals(
         createDataset([tomTypeQuad]),
       ),
     ).toBe(true);
-    expect(callbackFuncTom.mock.calls[0][1].added).toBe(undefined);
+    expect(callbackFuncTom.mock.calls[0][0].added).toBe(undefined);
   });
 
   it("Alerts when bulk updated", () => {
     const callbackFuncLicky = jest.fn();
     const callbackFuncTom = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFuncTom,
     );
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Licky"),
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       callbackFuncLicky,
     );
     subscribableDatastet.bulk({
@@ -158,28 +143,22 @@ describe("WrapperSubscribableDataset", () => {
     expect(callbackFuncLicky).toBeCalledTimes(1);
     expect(callbackFuncTom).toBeCalledTimes(1);
     expect(
-      callbackFuncLicky.mock.calls[0][0].equals(createDataset([lickyTypeQuad])),
-    ).toBe(true);
-    expect(
-      callbackFuncTom.mock.calls[0][0].equals(createDataset([tomNameQuad])),
-    ).toBe(true);
-    expect(
-      callbackFuncLicky.mock.calls[0][1].added.equals(
+      callbackFuncLicky.mock.calls[0][0].added.equals(
         createDataset([lickyTypeQuad]),
       ),
     ).toBe(true);
-    expect(callbackFuncLicky.mock.calls[0][1].removed).toBe(undefined);
+    expect(callbackFuncLicky.mock.calls[0][0].removed).toBe(undefined);
     expect(
-      callbackFuncTom.mock.calls[0][1].removed.equals(
+      callbackFuncTom.mock.calls[0][0].removed.equals(
         createDataset([tomTypeQuad]),
       ),
     ).toBe(true);
-    expect(callbackFuncTom.mock.calls[0][1].added).toBe(undefined);
+    expect(callbackFuncTom.mock.calls[0][0].added).toBe(undefined);
   });
 
   it("Alerts when the default graph is updated but not when another graph is", () => {
     const callbackFunc = jest.fn();
-    subscribableDatastet.on(defaultGraph(), callbackFunc);
+    subscribableDatastet.on([null, null, null, defaultGraph()], callbackFunc);
     subscribableDatastet.add(lickyNameQuad);
     subscribableDatastet.add(
       quad(
@@ -191,15 +170,18 @@ describe("WrapperSubscribableDataset", () => {
     );
     expect(callbackFunc).toHaveBeenCalledTimes(1);
     expect(
-      callbackFunc.mock.calls[0][0].equals(
-        createDataset([tomNameQuad, lickyNameQuad, tomTypeQuad]),
+      callbackFunc.mock.calls[0][0].added.equals(
+        createDataset([lickyNameQuad]),
       ),
     ).toBe(true);
   });
 
   it("Alerts when a named graph is updated", () => {
     const callbackFunc = jest.fn();
-    subscribableDatastet.on(namedNode("https://coolgraphs.com"), callbackFunc);
+    subscribableDatastet.on(
+      [null, null, null, namedNode("https://coolgraphs.com")],
+      callbackFunc,
+    );
     const quadWithGraph = quad(
       namedNode("https://example.com/books#Dumbledoor"),
       namedNode("http://example.org/books#name"),
@@ -209,7 +191,9 @@ describe("WrapperSubscribableDataset", () => {
     subscribableDatastet.add(quadWithGraph);
     expect(callbackFunc).toHaveBeenCalledTimes(1);
     expect(
-      callbackFunc.mock.calls[0][0].equals(createDataset([quadWithGraph])),
+      callbackFunc.mock.calls[0][0].added.equals(
+        createDataset([quadWithGraph]),
+      ),
     ).toBe(true);
   });
 
@@ -226,7 +210,10 @@ describe("WrapperSubscribableDataset", () => {
     );
     subscribableDatastet.addAll([blankNodeQuadA, blankNodeQuadB]);
     const callbackFunc = jest.fn();
-    subscribableDatastet.on(blankNodeQuadA.object as BlankNode, callbackFunc);
+    subscribableDatastet.on(
+      [blankNodeQuadA.object as BlankNode, null, null, null],
+      callbackFunc,
+    );
     const blankNodeAdditionA = quad(
       blankNodeQuadA.object as BlankNode,
       namedNode("http://example.org/cartoons#StreetNumber"),
@@ -241,46 +228,43 @@ describe("WrapperSubscribableDataset", () => {
     subscribableDatastet.add(blankNodeAdditionB);
     expect(callbackFunc).toBeCalledTimes(1);
     expect(
-      callbackFunc.mock.calls[0][0].equals(
+      callbackFunc.mock.calls[0][0].added.equals(
         createDataset([blankNodeQuadA, blankNodeAdditionA]),
       ),
     ).toBe(true);
   });
 
-  it("Throws an error if you try to subscribe to an invalid node type", () => {
-    expect(() =>
-      // Used incorrect parameter for test
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      subscribableDatastet.on(literal("YOLO"), () => {
-        /* Do nothing */
-      }),
-    ).toThrowError("Invalid term type for subscription");
-  });
-
   it("Provides event names", () => {
     const sampleBlankNode = blankNode();
-    subscribableDatastet.on(namedNode("https://example.com"), () => {
+    subscribableDatastet.on(
+      [namedNode("https://example.com"), null, null, null],
+      () => {
+        /* Do nothing */
+      },
+    );
+    subscribableDatastet.on([null, null, sampleBlankNode, null], () => {
       /* Do nothing */
     });
-    subscribableDatastet.on(sampleBlankNode, () => {
-      /* Do nothing */
-    });
-    subscribableDatastet.on(defaultGraph(), () => {
+    subscribableDatastet.on([null, null, null, defaultGraph()], () => {
       /* Do nothing */
     });
     const subscribableTerms = subscribableDatastet.eventNames();
     expect(subscribableTerms.length).toBe(3);
     expect(
-      subscribableTerms.some((curTerm) =>
-        curTerm.equals(namedNode("https://example.com")),
+      subscribableTerms.some(
+        (curQuadMatch) =>
+          curQuadMatch[0]?.equals(namedNode("https://example.com")),
       ),
     ).toBe(true);
     expect(
-      subscribableTerms.some((curTerm) => curTerm.equals(sampleBlankNode)),
+      subscribableTerms.some(
+        (curQuadMatch) => curQuadMatch[2]?.equals(sampleBlankNode),
+      ),
     ).toBe(true);
     expect(
-      subscribableTerms.some((curTerm) => curTerm.equals(defaultGraph())),
+      subscribableTerms.some(
+        (curQuadMatch) => curQuadMatch[3]?.equals(defaultGraph()),
+      ),
     ).toBe(true);
   });
 
@@ -308,16 +292,19 @@ describe("WrapperSubscribableDataset", () => {
       /* Do Nothing */
     };
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       dummyListener1,
     );
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Licky"),
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       dummyListener2,
     );
-    const listeners = subscribableDatastet.listeners(
+    const listeners = subscribableDatastet.listeners([
       namedNode("http://example.org/cartoons#Tom"),
-    );
+      null,
+      null,
+      null,
+    ]);
     expect(listeners.length).toBe(1);
     expect(listeners[0]).toBe(dummyListener1);
   });
@@ -325,11 +312,11 @@ describe("WrapperSubscribableDataset", () => {
   it("Unsubscribes from a listener", () => {
     const callbackFunc = jest.fn();
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
     );
     subscribableDatastet.off(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
     );
     subscribableDatastet.add(tomColorQuad);
@@ -339,7 +326,7 @@ describe("WrapperSubscribableDataset", () => {
   it("Runs 'once' without erroring", () => {
     expect(
       subscribableDatastet.once(
-        namedNode("http://example.org/cartoons#Tom"),
+        [namedNode("http://example.org/cartoons#Tom"), null, null, null],
         () => {
           /* Do Nothing */
         },
@@ -350,7 +337,7 @@ describe("WrapperSubscribableDataset", () => {
   it("Runs 'prependListener' without erroring", () => {
     expect(
       subscribableDatastet.prependListener(
-        namedNode("http://example.org/cartoons#Tom"),
+        [namedNode("http://example.org/cartoons#Tom"), null, null, null],
         () => {
           /* Do Nothing */
         },
@@ -361,7 +348,7 @@ describe("WrapperSubscribableDataset", () => {
   it("Runs the 'prependOnceListener' without erroring", () => {
     expect(
       subscribableDatastet.prependOnceListener(
-        namedNode("http://example.org/cartoons#Tom"),
+        [namedNode("http://example.org/cartoons#Tom"), null, null, null],
         () => {
           /* Do Nothing */
         },
@@ -377,25 +364,34 @@ describe("WrapperSubscribableDataset", () => {
       /* Do Nothing */
     };
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       dummyListener1,
     );
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Licky"),
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       dummyListener2,
     );
-    subscribableDatastet.removeAllListeners(
+    subscribableDatastet.removeAllListeners([
       namedNode("http://example.org/cartoons#Tom"),
-    );
+      null,
+      null,
+      null,
+    ]);
     expect(
-      subscribableDatastet.listenerCount(
+      subscribableDatastet.listenerCount([
         namedNode("http://example.org/cartoons#Tom"),
-      ),
+        null,
+        null,
+        null,
+      ]),
     ).toBe(0);
     expect(
-      subscribableDatastet.listenerCount(
+      subscribableDatastet.listenerCount([
         namedNode("http://example.org/cartoons#Licky"),
-      ),
+        null,
+        null,
+        null,
+      ]),
     ).toBe(1);
   });
 
@@ -409,12 +405,15 @@ describe("WrapperSubscribableDataset", () => {
       /* Do Nothing */
     };
     subscribableDatastet.on(
-      namedNode("http://example.org/cartoons#Tom"),
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       dummyListener1,
     );
-    const rawListeners = subscribableDatastet.rawListeners(
+    const rawListeners = subscribableDatastet.rawListeners([
       namedNode("http://example.org/cartoons#Tom"),
-    );
+      null,
+      null,
+      null,
+    ]);
     expect(rawListeners.length).toBe(1);
     expect(rawListeners[0]).toBe(dummyListener1);
   });

@@ -25,8 +25,8 @@
     "@types/jsonld": "^1.5.9"
   },
   "dependencies": {
-    "@rdfjs/data-model": "^2.0.1",
-    "@rdfjs/types": "^1.1.0",
+    "@rdfjs/data-model": "^1.2.0",
+    "@rdfjs/types": "^1.0.1",
     "n3": "^1.17.1",
     "rdf-string": "^1.6.3"
   }
