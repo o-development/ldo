@@ -1,10 +1,6 @@
-import { literal, quad } from "@ldo/rdf-utils";
-import type {
-  Dataset,
-  Literal,
-  PredicateNode,
-  SubjectNode,
-} from "@ldo/rdf-utils";
+import { literal, quad } from "@rdfjs/data-model";
+import type { PredicateNode, SubjectNode } from "@ldo/rdf-utils";
+import type { Dataset, Literal } from "@rdfjs/types";
 import type { LanguageKey } from "./languageTypes";
 import type { LiteralObjectQuad } from "./languageUtils";
 import { languageDeleteMatch, languageMatch } from "./languageUtils";

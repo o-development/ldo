@@ -1,10 +1,6 @@
-import { quad } from "@ldo/rdf-utils";
-import type {
-  NamedNode,
-  ObjectNode,
-  QuadMatch,
-  SubjectNode,
-} from "@ldo/rdf-utils";
+import { quad } from "@rdfjs/data-model";
+import type { NamedNode } from "@rdfjs/types";
+import type { ObjectNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { ObjectJsonRepresentation } from "../util/nodeToJsonldRepresentation";
 import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
 import type { ArrayMethodBuildersType } from "./arrayMethods";

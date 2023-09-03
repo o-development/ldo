@@ -1,5 +1,5 @@
-import { defaultGraph } from "@ldo/rdf-utils";
-import type { Dataset } from "@ldo/rdf-utils";
+import { defaultGraph } from "@rdfjs/data-model";
+import type { Dataset } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 import { ContextUtil } from "./ContextUtil";
 import { JsonldDatasetProxyBuilder } from "./JsonldDatasetProxyBuilder";

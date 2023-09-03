@@ -42,6 +42,9 @@ export const arrayMethodsBuilders: ArrayMethodBuildersType = {
           target,
           key,
           quadsToDelete: (quads) => {
+            if (!start) {
+              return [];
+            }
             const realEnd = end || quads.length;
             return quads.slice(targetIndex, targetIndex + (realEnd - start));
           },

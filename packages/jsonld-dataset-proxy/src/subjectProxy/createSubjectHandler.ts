@@ -1,5 +1,5 @@
-import { namedNode, quad } from "@ldo/rdf-utils";
-import type { BlankNode, NamedNode } from "@ldo/rdf-utils";
+import { namedNode, quad } from "@rdfjs/data-model";
+import type { BlankNode, NamedNode } from "@rdfjs/types";
 import { addObjectToDataset } from "../util/addObjectToDataset";
 import { deleteValueFromDataset } from "./deleteFromDataset";
 import {

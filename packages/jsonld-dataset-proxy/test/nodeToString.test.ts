@@ -1,4 +1,4 @@
-import { blankNode, defaultGraph, literal, namedNode } from "@ldo/rdf-utils";
+import { blankNode, defaultGraph, literal, namedNode } from "@rdfjs/data-model";
 import { nodeToString } from "../src";
 
 describe("nodeToString", () => {

@@ -1,12 +1,5 @@
-import type {
-  Dataset,
-  Literal,
-  Quad,
-  ObjectNode,
-  PredicateNode,
-  SubjectNode,
-  Quad_Object,
-} from "@ldo/rdf-utils";
+import type { Dataset, Literal, Quad, Quad_Object } from "@rdfjs/types";
+import type { ObjectNode, PredicateNode, SubjectNode } from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
 import type { LanguageKey, LanguageOrdering } from "./languageTypes";
 

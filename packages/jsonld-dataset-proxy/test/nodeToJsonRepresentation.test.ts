@@ -1,7 +1,7 @@
 import { createDataset } from "@ldo/dataset";
 import { ContextUtil } from "../src/ContextUtil";
 import { nodeToJsonldRepresentation } from "../src/util/nodeToJsonldRepresentation";
-import { literal, defaultGraph } from "@ldo/rdf-utils";
+import { literal, defaultGraph } from "@rdfjs/data-model";
 import { ProxyContext } from "../src";
 
 describe("objectToJsonRepresentation", () => {

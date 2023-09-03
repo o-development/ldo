@@ -25,8 +25,8 @@ import {
   tinyPatientDataWithBlankNodes,
   tinyPatientDataWithLanguageTags,
 } from "./patientExampleData";
-import { namedNode, quad, literal, defaultGraph } from "@ldo/rdf-utils";
-import type { Dataset, NamedNode } from "@ldo/rdf-utils";
+import { namedNode, quad, literal, defaultGraph } from "@rdfjs/data-model";
+import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 
 describe("jsonldDatasetProxy", () => {

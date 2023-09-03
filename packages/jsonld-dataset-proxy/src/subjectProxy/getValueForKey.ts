@@ -1,5 +1,5 @@
 import type { SubjectProxyTarget } from "./createSubjectHandler";
-import { namedNode } from "@ldo/rdf-utils";
+import { namedNode } from "@rdfjs/data-model";
 import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
 import type { SubjectProxy } from "./SubjectProxy";
 import type { ArrayProxy } from "../arrayProxy/ArrayProxy";

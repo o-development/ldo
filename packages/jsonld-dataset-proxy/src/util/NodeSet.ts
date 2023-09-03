@@ -1,10 +1,5 @@
-import type {
-  BlankNode,
-  DefaultGraph,
-  Literal,
-  NamedNode,
-  ObjectNode,
-} from "@ldo/rdf-utils";
+import type { BlankNode, DefaultGraph, Literal, NamedNode } from "@rdfjs/types";
+import type { ObjectNode } from "@ldo/rdf-utils";
 
 export function nodeToString(
   node: NamedNode | BlankNode | DefaultGraph | Literal | null | undefined,

@@ -1,5 +1,5 @@
-import { namedNode, quad } from "@ldo/rdf-utils";
-import type { Term } from "@ldo/rdf-utils";
+import { namedNode, quad } from "@rdfjs/data-model";
+import type { Term } from "@rdfjs/types";
 import type { SubjectProxyTarget } from "./createSubjectHandler";
 import type { ProxyContext } from "../ProxyContext";
 
