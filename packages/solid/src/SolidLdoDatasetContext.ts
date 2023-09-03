@@ -6,8 +6,10 @@ import type { DataResourceStore } from "./document/resource/dataResource/DataRes
 import type { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";
 import type { DocumentError } from "./document/errors/DocumentError";
 
+export type OnDocumentErrorCallback = (error: DocumentError) => void;
+
 export type DocumentEventEmitter = TypedEmitter<{
-  documentError: (error: DocumentError) => void;
+  documentError: OnDocumentErrorCallback;
 }>;
 
 export interface SolidLdoDatasetContext {

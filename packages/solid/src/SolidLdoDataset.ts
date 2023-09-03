@@ -6,11 +6,13 @@ import type { BinaryResource } from "./document/resource/binaryResource/BinaryRe
 import type { DocumentGetterOptions } from "./document/DocumentStore";
 import type { Dataset, DatasetFactory } from "@rdfjs/types";
 import type { Resource } from "./document/resource/Resource";
-import type { DocumentError } from "./document/errors/DocumentError";
-import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
+import type {
+  OnDocumentErrorCallback,
+  SolidLdoDatasetContext,
+} from "./SolidLdoDatasetContext";
 
 export class SolidLdoDataset extends LdoDataset {
-  protected context: SolidLdoDatasetContext;
+  public context: SolidLdoDatasetContext;
 
   constructor(
     context: SolidLdoDatasetContext,
@@ -50,7 +52,11 @@ export class SolidLdoDataset extends LdoDataset {
     return this.context.binaryResourceStore.get(uri, options);
   }
 
-  onDocumentError(_callback: (error: DocumentError) => void): void {
-    throw new Error("Not Implemented");
+  onDocumentError(callback: OnDocumentErrorCallback): void {
+    this.context.documentEventEmitter.on("documentError", callback);
+  }
+
+  offDocumentError(callback: OnDocumentErrorCallback): void {
+    this.context.documentEventEmitter.off("documentError", callback);
   }
 }

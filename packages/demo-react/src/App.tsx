@@ -1,19 +1,13 @@
 import type { FunctionComponent } from "react";
 import React from "react";
-import Profile from "./Profile";
-import { SolidAuthProvider, LdoProvider } from "@ldo/solid-react";
-import { fetch } from "solid-authn-react-native";
-import Layout from "./Layout";
+import { Layout } from "./Layout";
+import { BrowserSolidLdoProvider } from "@ldo/solid-react";
 
 const ProfileApp: FunctionComponent = () => {
   return (
-    <SolidAuthProvider>
-      <LdoProvider fetch={fetch}>
-        <Layout>
-          <Profile />
-        </Layout>
-      </LdoProvider>
-    </SolidAuthProvider>
+    <BrowserSolidLdoProvider>
+      <Layout />
+    </BrowserSolidLdoProvider>
   );
 };
 export default ProfileApp;

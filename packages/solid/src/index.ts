@@ -24,3 +24,8 @@ export * from "./document/resource/dataResource/DataResourceStore";
 // document/resource/containerResource
 export * from "./document/resource/dataResource/containerResource/ContainerResource";
 export * from "./document/resource/dataResource/containerResource/ContainerResourceStore";
+
+// /
+export * from "./createSolidLdoDataset";
+export * from "./SolidLdoDataset";
+export * from "./SolidLdoDatasetContext";
