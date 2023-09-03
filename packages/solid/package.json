@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
   "devDependencies": {
+    "@rdfjs/data-model": "^1.2.0",
+    "@rdfjs/types": "^1.0.1",
     "@ldo/cli": "^0.0.0",
     "@types/jest": "^29.0.3",
     "ts-jest": "^29.0.2"

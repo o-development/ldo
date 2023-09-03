@@ -5,7 +5,7 @@ import { createLdoDataset } from "@ldo/ldo";
 import type { LdoContextData } from "./LdoContext";
 import { LdoContextProvider } from "./LdoContext";
 import { UpdateManager } from "./ldoHooks/helpers/UpdateManager";
-import type { Dataset } from "@ldo/rdf-utils";
+import type { Dataset } from "@rdfjs/types";
 
 export interface LdoProviderProps extends PropsWithChildren {
   fetch?: typeof fetch;

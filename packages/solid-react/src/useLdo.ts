@@ -8,8 +8,8 @@ import type { DataResource } from "./document/resource/dataResource/DataResource
 import type { BinaryResource } from "./document/resource/binaryResource/BinaryResource";
 import type { ContainerResource } from "./document/resource/dataResource/containerResource/ContainerResource";
 import type { AccessRules } from "./document/accessRules/AccessRules";
-import type { DatasetChanges } from "@ldo/subscribable-dataset";
-import type { Quad, SubjectNode } from "@ldo/rdf-utils";
+import type { DatasetChanges, SubjectNode } from "@ldo/rdf-utils";
+import type { Quad } from "@rdfjs/types";
 
 export interface UseLdoReturn {
   changeData<Type extends LdoBase>(input: Type, ...resources: Resource[]): Type;

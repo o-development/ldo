@@ -1,4 +1,4 @@
-import type { Dataset } from "@ldo/rdf-utils";
+import type { Dataset } from "@rdfjs/types";
 import type { SolidLdoDataset } from "./SolidLdoDataset";
 import { AccessRulesStore } from "./document/accessRules/AccessRulesStore";
 import { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";

@@ -8,7 +8,7 @@ import type { DataResourceStore } from "./document/resource/dataResource/DataRes
 import type { ContainerResourceStore } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
 import type { AccessRulesStore } from "./document/accessRules/AccessRulesStore";
 import type { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";
-import type { Dataset, DatasetFactory } from "@ldo/rdf-utils";
+import type { Dataset, DatasetFactory } from "@rdfjs/types";
 import type { Resource } from "./document/resource/Resource";
 import type { DocumentError } from "./document/errors/DocumentError";
 

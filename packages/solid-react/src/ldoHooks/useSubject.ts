@@ -1,4 +1,4 @@
-import { defaultGraph } from "@ldo/rdf-utils";
+import { defaultGraph } from "@rdfjs/data-model";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import {
   ContextUtil,

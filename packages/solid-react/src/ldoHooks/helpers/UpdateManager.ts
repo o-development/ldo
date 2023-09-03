@@ -1,13 +1,13 @@
-import type { DatasetChanges } from "@ldo/subscribable-dataset";
-import { createDataset } from "@ldo/dataset";
-import { quadMatchToString } from "@ldo/rdf-utils";
 import type {
-  Quad,
+  DatasetChanges,
   QuadMatch,
   SubjectNode,
   PredicateNode,
   ObjectNode,
 } from "@ldo/rdf-utils";
+import { createDataset } from "@ldo/dataset";
+import { quadMatchToString } from "@ldo/rdf-utils";
+import type { Quad } from "@rdfjs/types";
 
 export class UpdateManager {
   private quadMatchListenerMap: Record<string, Set<() => void>> = {};

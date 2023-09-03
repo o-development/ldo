@@ -1,6 +1,7 @@
 import { createDataset } from "@ldo/dataset";
-import type { GraphNode, DatasetChanges, Quad } from "@ldo/rdf-utils";
-import { defaultGraph, namedNode, quad as createQuad } from "@ldo/rdf-utils";
+import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
+import type { Quad } from "@rdfjs/types";
+import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
 
 export function graphNodeToString(graphNode: GraphNode): string {
   return graphNode.termType === "DefaultGraph"

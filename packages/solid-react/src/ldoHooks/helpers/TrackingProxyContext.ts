@@ -5,7 +5,7 @@ import type {
 } from "@ldo/jsonld-dataset-proxy";
 import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
 import type { UpdateManager } from "./UpdateManager";
-import { namedNode } from "@ldo/rdf-utils";
+import { namedNode } from "@rdfjs/data-model";
 
 export class TrackingProxyContext extends ProxyContext {
   private updateManager: UpdateManager;
