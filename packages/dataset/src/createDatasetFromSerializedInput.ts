@@ -1,4 +1,4 @@
-import type { Dataset, DatasetFactory, Quad } from "@ldo/rdf-utils";
+import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ParserOptions } from "@ldo/rdf-utils";
 import { serializedToQuads } from "@ldo/rdf-utils";
 

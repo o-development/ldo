@@ -3,7 +3,7 @@ import type {
   BaseQuad,
   Dataset,
   DatasetCoreFactory,
-} from "@ldo/rdf-utils";
+} from "@rdfjs/types";
 import ExtendedDataset from "./ExtendedDataset";
 
 /**

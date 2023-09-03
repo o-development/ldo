@@ -6,8 +6,8 @@ import {
   type Term,
   type DatasetCoreFactory,
   type Quad,
-  datasetToString,
-} from "@ldo/rdf-utils";
+} from "@rdfjs/types";
+import { datasetToString } from "@ldo/rdf-utils";
 import { Readable } from "readable-stream";
 
 /**

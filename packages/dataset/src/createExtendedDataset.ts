@@ -3,7 +3,7 @@ import type {
   DatasetCoreFactory,
   DatasetCore,
   Quad,
-} from "@ldo/rdf-utils";
+} from "@rdfjs/types";
 import ExtendedDatasetFactory from "./ExtendedDatasetFactory";
 import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
 import type ExtendedDataset from "./ExtendedDataset";
