@@ -42,11 +42,11 @@ export const arrayMethodsBuilders: ArrayMethodBuildersType = {
           target,
           key,
           quadsToDelete: (quads) => {
-            if (!start) {
-              return [];
-            }
-            const realEnd = end || quads.length;
-            return quads.slice(targetIndex, targetIndex + (realEnd - start));
+            const oldQuads = [...quads];
+            const newQuadSet = new Set(
+              quads.copyWithin(targetIndex, start, end),
+            );
+            return oldQuads.filter((oldQuad) => !newQuadSet.has(oldQuad));
           },
           modifyCoreArray: (coreArray) => {
             coreArray.copyWithin(targetIndex, start, end);

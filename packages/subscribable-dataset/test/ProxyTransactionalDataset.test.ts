@@ -1,10 +1,10 @@
-import { namedNode, literal, quad } from "@ldo/rdf-utils";
+import { namedNode, literal, quad } from "@rdfjs/data-model";
 import type {
   Dataset,
   DatasetCoreFactory,
   Quad,
   DatasetCore,
-} from "@ldo/rdf-utils";
+} from "@rdfjs/types";
 import type { BulkEditableDataset } from "../src";
 import { ExtendedDatasetFactory } from "@ldo/dataset";
 import { ProxyTransactionalDataset } from "../src";

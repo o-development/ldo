@@ -2,16 +2,19 @@ import { EventEmitter } from "events";
 import { quadMatchToString, stringToQuadMatch } from "@ldo/rdf-utils";
 import type {
   DatasetChanges,
+  QuadMatch,
+  SubjectNode,
+  PredicateNode,
+  ObjectNode,
+  GraphNode,
+} from "@ldo/rdf-utils";
+import type {
   Dataset,
   BaseQuad,
   Stream,
   Term,
   DatasetFactory,
-  QuadMatch,
-  SubjectNode,
-  PredicateNode,
-  ObjectNode,
-} from "@ldo/rdf-utils";
+} from "@rdfjs/types";
 import type {
   nodeEventListener,
   SubscribableDataset,
@@ -39,10 +42,6 @@ export default class WrapperSubscribableDataset<
    * The underlying event emitter
    */
   private eventEmitter: EventEmitter;
-  /**
-   * EventNames as a Set for O(1) lookup
-   */
-  private eventNamesSet: Set<string>;
 
   /**
    *
@@ -56,7 +55,6 @@ export default class WrapperSubscribableDataset<
     this.datasetFactory = datasetFactory;
     this.dataset = initialDataset || this.datasetFactory.dataset();
     this.eventEmitter = new EventEmitter();
-    this.eventNamesSet = new Set();
   }
 
   /**
@@ -379,6 +377,7 @@ export default class WrapperSubscribableDataset<
           subject: SubjectNode;
           predicate: PredicateNode;
           object: ObjectNode;
+          graph: GraphNode;
         };
         // All possible matches that could match with this triple
         const quadMatches: QuadMatch[] = [
@@ -390,6 +389,14 @@ export default class WrapperSubscribableDataset<
           [null, quad.predicate, quad.object, null],
           [null, null, quad.object, null],
           [quad.subject, quad.predicate, quad.object, null],
+          [null, null, null, quad.graph],
+          [quad.subject, null, null, quad.graph],
+          [quad.subject, quad.predicate, null, quad.graph],
+          [quad.subject, null, quad.object, quad.graph],
+          [null, quad.predicate, null, quad.graph],
+          [null, quad.predicate, quad.object, quad.graph],
+          [null, null, quad.object, quad.graph],
+          [quad.subject, quad.predicate, quad.object, quad.graph],
         ];
         quadMatches.forEach((quadMatch) => {
           const eventName = quadMatchToString(quadMatch);

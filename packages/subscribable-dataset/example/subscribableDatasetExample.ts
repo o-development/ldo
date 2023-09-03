@@ -1,6 +1,6 @@
 import { createSubscribableDataset } from "../src";
-import { quad, namedNode, literal } from "@ldo/rdf-utils";
-import type { Dataset, DatasetChanges } from "@ldo/rdf-utils";
+import { quad, namedNode, literal } from "@rdfjs/data-model";
+import type { DatasetChanges } from "@ldo/rdf-utils";
 
 // Create an empty subscribable dataset
 const subscribableDataset = createSubscribableDataset();
@@ -23,10 +23,8 @@ subscribableDataset.addAll([
 // Listener that will trigger whenever a quad containing the named
 // node "http://example.org/cartoons#Zuko" is added or removed.
 subscribableDataset.on(
-  namedNode("http://example.org/cartoons#Zuko"),
-  (zukoQuads: Dataset, changes: DatasetChanges) => {
-    console.log("ZUKO NODE CHANGED ============");
-    console.log(zukoQuads.toString());
+  [namedNode("http://example.org/cartoons#Zuko"), null, null, null],
+  (changes: DatasetChanges) => {
     console.log("Added Quads:");
     console.log(changes.added?.toString());
     console.log("Removed Quads:");
@@ -38,10 +36,9 @@ subscribableDataset.on(
 // node "http://example.org/cartoons" is added or removed. This is
 // useful for keeping track of the cartoons graph.
 subscribableDataset.on(
-  namedNode("http://example.org/cartoons"),
-  (cartoonGraphQuads: Dataset, changes: DatasetChanges) => {
+  [namedNode("http://example.org/cartoons"), null, null, null],
+  (changes: DatasetChanges) => {
     console.log("CARTOON GRAPH CHANGED ============");
-    console.log(cartoonGraphQuads.toString());
     console.log("Added Quads:");
     console.log(changes.added?.toString());
     console.log("Removed Quads:");

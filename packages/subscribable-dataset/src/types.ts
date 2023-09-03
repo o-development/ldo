@@ -1,9 +1,5 @@
-import type {
-  Dataset,
-  BaseQuad,
-  DatasetChanges,
-  QuadMatch,
-} from "@ldo/rdf-utils";
+import type { DatasetChanges, QuadMatch } from "@ldo/rdf-utils";
+import type { Dataset, BaseQuad } from "@rdfjs/types";
 
 /**
  * An event listeners for nodes

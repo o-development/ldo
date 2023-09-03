@@ -7,8 +7,8 @@ import {
   quad,
   defaultGraph,
   blankNode,
-} from "@ldo/rdf-utils";
-import type { Quad, BlankNode } from "@ldo/rdf-utils";
+} from "@rdfjs/data-model";
+import type { Quad, BlankNode } from "@rdfjs/types";
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
 describe("WrapperSubscribableDataset", () => {
@@ -125,6 +125,19 @@ describe("WrapperSubscribableDataset", () => {
     expect(callbackFuncTom.mock.calls[0][0].added).toBe(undefined);
   });
 
+  it("Alerts when emit is called", () => {
+    const callbackFuncTom = jest.fn();
+    subscribableDatastet.on(
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
+      callbackFuncTom,
+    );
+    subscribableDatastet.emit(
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
+      {},
+    );
+    expect(callbackFuncTom.mock.calls[0][0]).toEqual({});
+  });
+
   it("Alerts when bulk updated", () => {
     const callbackFuncLicky = jest.fn();
     const callbackFuncTom = jest.fn();
@@ -229,7 +242,7 @@ describe("WrapperSubscribableDataset", () => {
     expect(callbackFunc).toBeCalledTimes(1);
     expect(
       callbackFunc.mock.calls[0][0].added.equals(
-        createDataset([blankNodeQuadA, blankNodeAdditionA]),
+        createDataset([blankNodeAdditionA]),
       ),
     ).toBe(true);
   });
@@ -262,9 +275,9 @@ describe("WrapperSubscribableDataset", () => {
       ),
     ).toBe(true);
     expect(
-      subscribableTerms.some(
-        (curQuadMatch) => curQuadMatch[3]?.equals(defaultGraph()),
-      ),
+      subscribableTerms.some((curQuadMatch) => {
+        return curQuadMatch[3]?.equals(defaultGraph());
+      }),
     ).toBe(true);
   });
 
@@ -276,7 +289,7 @@ describe("WrapperSubscribableDataset", () => {
       /* Do Nothing */
     });
     expect(() => subscribableDatastet.eventNames()).toThrowError(
-      "Invalid Subscription Key",
+      "Invalid Quad Match String",
     );
   });
 

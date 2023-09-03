@@ -854,6 +854,18 @@ describe("jsonldDatasetProxy", () => {
         );
       });
 
+      it("handles copyWithin with the optional start variable missing", async () => {
+        const [dataset, patient] = await getArrayLoadedDataset();
+        const arr = patient.name as string[];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        expect(() => arr.copyWithin(0, undefined, 2)).not.toThrowError();
+        expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
+        expect(dataset.toString()).toEqual(
+          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+        );
+      });
+
       it("handles fill", async () => {
         const [dataset, patient] = await getArrayLoadedDataset();
         const arr = patient.name as string[];

@@ -1,4 +1,4 @@
-import type { DatasetFactory, BaseQuad, Dataset } from "@ldo/rdf-utils";
+import type { DatasetFactory, BaseQuad, Dataset } from "@rdfjs/types";
 import WrapperSubscribableDataset from "./WrapperSubscribableDataset";
 
 /**

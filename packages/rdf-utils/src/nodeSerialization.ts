@@ -209,12 +209,13 @@ export function stringToNode(
   expectTermType?: NodeTermTypes<Term>,
 ): AnyNode {
   const node = stringToTerm(input);
-  if (expectTermType && expectTermType.has(node.termType)) {
+  if (expectTermType && !expectTermType.has(node.termType)) {
     throw new Error(
-      `Expected term one of term type: [${Array.from(expectTermType).reduce(
-        (agg, termType) => `${agg}${termType}, `,
-        "",
-      )}], but got ${node.termType}.`,
+      `Expected term to be one of term type: [${Array.from(
+        expectTermType,
+      ).reduce((agg, termType) => `${agg}${termType}, `, "")}], but got ${
+        node.termType
+      }.`,
     );
   }
   return node as AnyNode;
@@ -226,7 +227,11 @@ export function stringToNode(
  * @returns Quad
  */
 export function stringToQuad(input: string) {
-  return stringQuadToQuad(JSON.parse(input));
+  try {
+    return stringQuadToQuad(JSON.parse(input));
+  } catch (err) {
+    throw new Error("Invalid Quad String");
+  }
 }
 
 /**
@@ -235,11 +240,21 @@ export function stringToQuad(input: string) {
  * @returns QuadMatch
  */
 export function stringToQuadMatch(input: string): QuadMatch {
-  const jsonRep = JSON.parse(input);
-  return [
-    jsonRep.subject ? stringToSubjectNode(jsonRep.subject) : undefined,
-    jsonRep.predicate ? stringToPredicateNode(jsonRep.predicate) : undefined,
-    jsonRep.object ? stringToObjectNode(jsonRep.object) : undefined,
-    jsonRep.graph ? stringToGraphNode(jsonRep.graph) : undefined,
-  ];
+  try {
+    const jsonRep = JSON.parse(input);
+    return [
+      jsonRep.subject != undefined
+        ? stringToSubjectNode(jsonRep.subject)
+        : undefined,
+      jsonRep.predicate != undefined
+        ? stringToPredicateNode(jsonRep.predicate)
+        : undefined,
+      jsonRep.object != undefined
+        ? stringToObjectNode(jsonRep.object)
+        : undefined,
+      jsonRep.graph != undefined ? stringToGraphNode(jsonRep.graph) : undefined,
+    ];
+  } catch (err) {
+    throw new Error("Invalid Quad Match String");
+  }
 }
