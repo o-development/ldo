@@ -1,31 +1,51 @@
-import type { Dataset } from "@rdfjs/types";
-import type { SolidLdoDataset } from "./SolidLdoDataset";
+import type { Dataset, DatasetFactory } from "@rdfjs/types";
+import { SolidLdoDataset } from "./SolidLdoDataset";
 import { AccessRulesStore } from "./document/accessRules/AccessRulesStore";
 import { BinaryResourceStore } from "./document/resource/binaryResource/BinaryResourceStore";
 import { DataResourceStore } from "./document/resource/dataResource/DataResourceStore";
 import { ContainerResourceStore } from "./document/resource/dataResource/containerResource/ContainerResourceStore";
+import type {
+  DocumentEventEmitter,
+  SolidLdoDatasetContext,
+} from "./SolidLdoDatasetContext";
+import crossFetch from "cross-fetch";
+import { EventEmitter } from "stream";
+import { createDataset, createDatasetFactory } from "@ldo/dataset";
 
 export interface CreateSolidLdoDatasetOptions {
   fetch?: typeof fetch;
   dataset?: Dataset;
+  datasetFactory?: DatasetFactory;
 }
 
 export function createSolidLdoDataset(
   options?: CreateSolidLdoDatasetOptions,
 ): SolidLdoDataset {
-  const finalFetch = fetch ||  vbhyg
+  const finalFetch = options?.fetch || crossFetch;
+  const finalDatasetFactory = options?.datasetFactory || createDatasetFactory();
+  const finalDataset = options?.dataset || createDataset();
 
-  // Ingnoring this because we're setting up circular dependencies
+  // Ignoring because of circular dependency
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const dependencies: LdoContextData = {
-    onDocumentError,
+  const context: SolidLdoDatasetContext = {
+    documentEventEmitter: new EventEmitter() as DocumentEventEmitter,
     fetch: finalFetch,
-    dataset: ldoDataset,
-    updateManager: new UpdateManager(),
   };
-  const binaryResourceStore = new BinaryResourceStore(dependencies);
-  const dataResourceStore = new DataResourceStore(dependencies);
-  const containerResourceStore = new ContainerResourceStore(dependencies);
-  const accessRulesStore = new AccessRulesStore(dependencies);
+  const binaryResourceStore = new BinaryResourceStore(context);
+  const dataResourceStore = new DataResourceStore(context);
+  const containerResourceStore = new ContainerResourceStore(context);
+  const accessRulesStore = new AccessRulesStore(context);
+  const solidLdoDataset = new SolidLdoDataset(
+    context,
+    finalDatasetFactory,
+    finalDataset,
+  );
+  context.binaryResourceStore = binaryResourceStore;
+  context.dataResourceStore = dataResourceStore;
+  context.containerResourceStore = containerResourceStore;
+  context.accessRulesStore = accessRulesStore;
+  context.solidLdoDataset = solidLdoDataset;
+
+  return solidLdoDataset;
 }

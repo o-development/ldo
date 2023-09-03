@@ -1,24 +1,19 @@
-import type { FetchableDocumentDependencies } from "../FetchableDocument";
+import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
+import type { DocumentGetterOptions } from "../DocumentStore";
 import { FetchableDocument } from "../FetchableDocument";
-import type { AccessRulesStore } from "../accessRules/AccessRulesStore";
 import { DocumentFetchError } from "../errors/DocumentFetchError";
 import type { ContainerResource } from "./dataResource/containerResource/ContainerResource";
-import type { ContainerResourceStore } from "./dataResource/containerResource/ContainerResourceStore";
-
-export interface ResourceDependencies extends FetchableDocumentDependencies {
-  fetch: typeof fetch;
-  accessRulesStore: AccessRulesStore;
-  containerResourceStore: ContainerResourceStore;
-}
 
 export abstract class Resource extends FetchableDocument {
   public readonly uri: string;
-  private dependencies1;
 
-  constructor(uri: string, dependencies: ResourceDependencies) {
-    super(dependencies);
+  constructor(
+    uri: string,
+    context: SolidLdoDatasetContext,
+    documentGetterOptions?: DocumentGetterOptions,
+  ) {
+    super(context, documentGetterOptions);
     this.uri = uri;
-    this.dependencies1 = dependencies;
   }
 
   /**
@@ -27,27 +22,15 @@ export abstract class Resource extends FetchableDocument {
    * ===========================================================================
    */
   get accessRules() {
-    return this.accessRulesStore.get(this);
+    return this.context.accessRulesStore.get(this);
   }
 
   get parentContainer(): ContainerResource | undefined {
-    return this.containerResourceStore.getContainerForResouce(this);
+    return this.context.containerResourceStore.getContainerForResouce(this);
   }
 
   get ["@id"]() {
     return this.uri;
-  }
-
-  protected get fetch() {
-    return this.dependencies1.fetch;
-  }
-
-  protected get accessRulesStore() {
-    return this.dependencies1.accessRulesStore;
-  }
-
-  protected get containerResourceStore() {
-    return this.dependencies1.containerResourceStore;
   }
 
   /**
@@ -57,7 +40,7 @@ export abstract class Resource extends FetchableDocument {
    */
   async delete() {
     this.beginWrite();
-    const response = await this.fetch(this.uri, {
+    const response = await this.context.fetch(this.uri, {
       method: "DELETE",
     });
     if (response.status >= 200 && response.status < 300) {

@@ -1,28 +1,13 @@
-import type {
-  DocumentGetterOptions,
-  DocumentStoreDependencies,
-} from "../../DocumentStore";
+import type { DocumentGetterOptions } from "../../DocumentStore";
 import { DocumentStore } from "../../DocumentStore";
-import type { DataResourceDependencies } from "./DataResource";
 import { DataResource } from "./DataResource";
 
-export interface DataResourceStoreDependencies
-  extends DocumentStoreDependencies,
-    DataResourceDependencies {}
-
-export class DataResourceStore extends DocumentStore<
-  DataResource,
-  string,
-  DataResourceStoreDependencies
-> {
+export class DataResourceStore extends DocumentStore<DataResource, string> {
   protected create(
     initializer: string,
-    documentGetterOptions: DocumentGetterOptions,
+    documentGetterOptions?: DocumentGetterOptions,
   ) {
-    return new DataResource(initializer, {
-      ...this.dependencies,
-      documentGetterOptions,
-    });
+    return new DataResource(initializer, this.context, documentGetterOptions);
   }
 
   protected normalizeInitializer(initializer: string): string {

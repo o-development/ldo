@@ -1,28 +1,13 @@
-import type {
-  DocumentGetterOptions,
-  DocumentStoreDependencies,
-} from "../DocumentStore";
+import type { DocumentGetterOptions } from "../DocumentStore";
 import { DocumentStore } from "../DocumentStore";
 import type { Resource } from "../resource/Resource";
-import type { AccessRulesDependencies } from "./AccessRules";
 import { AccessRules } from "./AccessRules";
 
-export interface AccessRulesStoreDependencies
-  extends DocumentStoreDependencies,
-    AccessRulesDependencies {}
-
-export class AccessRulesStore extends DocumentStore<
-  AccessRules,
-  Resource,
-  AccessRulesStoreDependencies
-> {
+export class AccessRulesStore extends DocumentStore<AccessRules, Resource> {
   protected create(
     initializer: Resource,
-    documentGetterOptions: DocumentGetterOptions,
+    documentGetterOptions?: DocumentGetterOptions,
   ) {
-    return new AccessRules(initializer, {
-      ...this.dependencies,
-      documentGetterOptions,
-    });
+    return new AccessRules(initializer, this.context, documentGetterOptions);
   }
 }

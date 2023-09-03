@@ -1,29 +1,31 @@
 import EventEmitter from "events";
 import type { DocumentError } from "./errors/DocumentError";
 import type { DocumentGetterOptions } from "./DocumentStore";
+import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
+import type TypedEventEmitter from "typed-emitter";
 
-export interface FetchableDocumentDependencies {
-  onDocumentError?: (error: DocumentError) => void;
-  documentGetterOptions?: DocumentGetterOptions;
-}
+export type FetchableDocumentEventEmitter = TypedEventEmitter<{
+  stateUpdate: () => void;
+}>;
 
-const STATE_UPDATE = "stateUpdate";
-
-export abstract class FetchableDocument extends EventEmitter {
+export abstract class FetchableDocument extends (EventEmitter as new () => FetchableDocumentEventEmitter) {
   protected _isLoading: boolean;
   protected _isWriting: boolean;
   protected _didInitialFetch: boolean;
   protected _error?: DocumentError;
-  private dependencies: FetchableDocumentDependencies;
+  protected context: SolidLdoDatasetContext;
 
-  constructor(dependencies: FetchableDocumentDependencies) {
+  constructor(
+    context: SolidLdoDatasetContext,
+    documentGetterOptions?: DocumentGetterOptions,
+  ) {
     super();
     this._isLoading = false;
     this._isWriting = false;
     this._didInitialFetch = false;
-    this.dependencies = dependencies;
+    this.context = context;
     // Trigger load if autoload is true
-    if (this.dependencies.documentGetterOptions?.autoLoad) {
+    if (documentGetterOptions?.autoLoad) {
       this._isLoading = true;
       this.read();
     }
@@ -55,10 +57,6 @@ export abstract class FetchableDocument extends EventEmitter {
 
   get isWriting() {
     return this._isWriting;
-  }
-
-  protected get onDocumentError() {
-    return this.dependencies.onDocumentError;
   }
 
   /**
@@ -100,23 +98,21 @@ export abstract class FetchableDocument extends EventEmitter {
   setError(error: DocumentError) {
     this._error = error;
     this.emitStateUpdate();
-    if (this.onDocumentError) {
-      this.onDocumentError(error);
-    }
+    this.context.documentEventEmitter.emit("documentError", error);
   }
 
   /**
    * Emitter Information
    */
   protected emitStateUpdate() {
-    this.emit(STATE_UPDATE);
+    this.emit("stateUpdate");
   }
 
   onStateUpdate(callback: () => void) {
-    this.on(STATE_UPDATE, callback);
+    this.on("stateUpdate", callback);
   }
 
   offStateUpdate(callback: () => void) {
-    this.off(STATE_UPDATE, callback);
+    this.off("stateUpdate", callback);
   }
 }

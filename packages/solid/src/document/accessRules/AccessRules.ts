@@ -1,27 +1,26 @@
 import type { AccessModes as IAccessModes } from "@inrupt/solid-client";
 import { universalAccess } from "@inrupt/solid-client";
-import type { FetchableDocumentDependencies } from "../FetchableDocument";
 import { FetchableDocument } from "../FetchableDocument";
 import type { Resource } from "../resource/Resource";
 import { DocumentError } from "../errors/DocumentError";
+import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
+import type { DocumentGetterOptions } from "../DocumentStore";
 
 export type AccessModes = IAccessModes;
-
-export interface AccessRulesDependencies extends FetchableDocumentDependencies {
-  fetch: typeof fetch;
-}
 
 export class AccessRules extends FetchableDocument {
   readonly resource: Resource;
   private _publicAccess: IAccessModes | null;
   private _agentAccess: Record<string, IAccessModes> | null;
-  private dependencies0;
 
-  constructor(resource: Resource, dependencies: AccessRulesDependencies) {
-    super(dependencies);
+  constructor(
+    resource: Resource,
+    context: SolidLdoDatasetContext,
+    documentGetterOptions?: DocumentGetterOptions,
+  ) {
+    super(context, documentGetterOptions);
     this._publicAccess = null;
     this._agentAccess = null;
-    this.dependencies0 = dependencies;
     this.resource = resource;
   }
 
@@ -38,10 +37,6 @@ export class AccessRules extends FetchableDocument {
     return this._agentAccess;
   }
 
-  protected get fetch() {
-    return this.dependencies0.fetch;
-  }
-
   /**
    * ===========================================================================
    * Methods
@@ -51,10 +46,10 @@ export class AccessRules extends FetchableDocument {
     try {
       const [publicAccess, agentAccess] = await Promise.all([
         universalAccess.getPublicAccess(this.resource.uri, {
-          fetch: this.fetch,
+          fetch: this.context.fetch,
         }),
         universalAccess.getAgentAccessAll(this.resource.uri, {
-          fetch: this.fetch,
+          fetch: this.context.fetch,
         }),
       ]);
       this._publicAccess = publicAccess || {

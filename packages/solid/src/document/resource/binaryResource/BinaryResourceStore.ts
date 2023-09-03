@@ -1,28 +1,13 @@
-import type {
-  DocumentGetterOptions,
-  DocumentStoreDependencies,
-} from "../../DocumentStore";
+import type { DocumentGetterOptions } from "../../DocumentStore";
 import { DocumentStore } from "../../DocumentStore";
-import type { BinaryResourceDependencies } from "./BinaryResource";
 import { BinaryResource } from "./BinaryResource";
 
-export interface BinaryResourceStoreDependencies
-  extends DocumentStoreDependencies,
-    BinaryResourceDependencies {}
-
-export class BinaryResourceStore extends DocumentStore<
-  BinaryResource,
-  string,
-  BinaryResourceStoreDependencies
-> {
+export class BinaryResourceStore extends DocumentStore<BinaryResource, string> {
   protected create(
     initializer: string,
-    documentGetterOptions: DocumentGetterOptions,
+    documentGetterOptions?: DocumentGetterOptions,
   ) {
-    return new BinaryResource(initializer, {
-      ...this.dependencies,
-      documentGetterOptions,
-    });
+    return new BinaryResource(initializer, this.context, documentGetterOptions);
   }
 
   protected normalizeInitializer(initializer: string): string {

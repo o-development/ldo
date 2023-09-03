@@ -57,6 +57,9 @@ export interface Resource {
     | {
         "@id": "Resource2";
       }
+    | {
+        "@id": "Container";
+      }
   )[];
   /**
    * Date modified

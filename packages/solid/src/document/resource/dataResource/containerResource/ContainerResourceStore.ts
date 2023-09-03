@@ -1,29 +1,21 @@
-import type {
-  DocumentGetterOptions,
-  DocumentStoreDependencies,
-} from "../../../DocumentStore";
+import type { DocumentGetterOptions } from "../../../DocumentStore";
 import { DocumentStore } from "../../../DocumentStore";
 import type { Resource } from "../../Resource";
-import type { ContainerResourceDependencies } from "./ContainerResource";
 import { ContainerResource } from "./ContainerResource";
-
-export interface ContainerResourceStoreDependencies
-  extends ContainerResourceDependencies,
-    DocumentStoreDependencies {}
 
 export class ContainerResourceStore extends DocumentStore<
   ContainerResource,
-  string,
-  ContainerResourceStoreDependencies
+  string
 > {
   protected create(
     initializer: string,
-    documentGetterOptions: DocumentGetterOptions,
+    documentGetterOptions?: DocumentGetterOptions,
   ) {
-    return new ContainerResource(initializer, {
-      ...this.dependencies,
+    return new ContainerResource(
+      initializer,
+      this.context,
       documentGetterOptions,
-    });
+    );
   }
 
   protected normalizeInitializer(initializer: string) {

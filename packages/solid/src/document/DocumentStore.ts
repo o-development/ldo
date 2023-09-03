@@ -1,8 +1,5 @@
+import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import type { FetchableDocument } from "./FetchableDocument";
-
-// This may eventually have fields
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DocumentStoreDependencies {}
 
 export interface DocumentGetterOptions {
   autoLoad?: boolean;
@@ -11,14 +8,13 @@ export interface DocumentGetterOptions {
 export abstract class DocumentStore<
   DocumentType extends FetchableDocument,
   Initializer,
-  Dependencies extends DocumentStoreDependencies,
 > {
   protected documentMap: Map<Initializer, DocumentType>;
-  protected dependencies: Dependencies;
+  protected context: SolidLdoDatasetContext;
 
-  constructor(dependencies: Dependencies) {
+  constructor(context: SolidLdoDatasetContext) {
     this.documentMap = new Map();
-    this.dependencies = dependencies;
+    this.context = context;
   }
 
   get(

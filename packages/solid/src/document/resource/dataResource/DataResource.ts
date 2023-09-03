@@ -1,5 +1,4 @@
 import { parseRdf } from "@ldo/ldo";
-import type { ResourceDependencies } from "../Resource";
 import { Resource } from "../Resource";
 import { DocumentFetchError } from "../../errors/DocumentFetchError";
 import { DocumentError } from "../../errors/DocumentError";
@@ -7,33 +6,8 @@ import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import { changesToSparqlUpdate } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
-import type { SolidLdoDataset } from "../../../SolidLdoDataset";
-
-export interface DataResourceDependencies extends ResourceDependencies {
-  dataset: SolidLdoDataset;
-}
 
 export class DataResource extends Resource {
-  private dependencies2;
-
-  constructor(uri: string, dependencies: DataResourceDependencies) {
-    super(uri, dependencies);
-    this.dependencies2 = dependencies;
-  }
-
-  /**
-   * ===========================================================================
-   * Getters
-   * ===========================================================================
-   */
-  protected get dataset() {
-    return this.dependencies2.dataset;
-  }
-
-  protected get updateManager() {
-    return this.dependencies2.updateManager;
-  }
-
   /**
    * ===========================================================================
    * Methods
@@ -45,7 +19,7 @@ export class DataResource extends Resource {
 
   protected async fetchDocument(): Promise<DocumentError | undefined> {
     // Fetch the document using auth fetch
-    const response = await this.fetch(this.uri, {
+    const response = await this.context.fetch(this.uri, {
       headers: {
         accept: "text/turtle",
       },
@@ -73,7 +47,8 @@ export class DataResource extends Resource {
       return new DocumentError(this, "Server returned poorly formatted Turtle");
     }
     // Start transaction
-    const transactionalDataset = this.dataset.startTransaction();
+    const transactionalDataset =
+      this.context.solidLdoDataset.startTransaction();
     const graphNode = namedNode(this.uri);
     // Destroy all triples that were once a part of this resouce
     loadedDataset.deleteMatches(undefined, undefined, undefined, graphNode);
@@ -83,8 +58,6 @@ export class DataResource extends Resource {
         createQuad(quad.subject, quad.predicate, quad.object, graphNode),
       );
     });
-    const changes = transactionalDataset.getChanges();
-    this.updateManager.notifyListenersOfChanges(changes);
     transactionalDataset.commit();
     return undefined;
   }
@@ -94,15 +67,15 @@ export class DataResource extends Resource {
   ): Promise<DocumentError | undefined> {
     this.beginWrite();
     // Convert changes to transactional Dataset
-    const transactionalDataset = this.dataset.startTransaction();
+    const transactionalDataset =
+      this.context.solidLdoDataset.startTransaction();
     changes.added?.forEach((quad) => transactionalDataset.add(quad));
     changes.removed?.forEach((quad) => transactionalDataset.delete(quad));
     // Commit data optimistically
     transactionalDataset.commit();
-    this.updateManager.notifyListenersOfChanges(changes);
     // Make request
     const sparqlUpdate = await changesToSparqlUpdate(changes);
-    const response = await this.fetch(this.uri, {
+    const response = await this.context.fetch(this.uri, {
       method: "PATCH",
       body: sparqlUpdate,
       headers: {
@@ -112,7 +85,6 @@ export class DataResource extends Resource {
     if (response.status < 200 || response.status > 299) {
       // Handle Error by rollback
       transactionalDataset.rollback();
-      this.updateManager.notifyListenersOfChanges(changes);
       this.endWrite(
         new DocumentFetchError(
           this,

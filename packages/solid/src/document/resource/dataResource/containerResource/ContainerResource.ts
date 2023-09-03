@@ -1,25 +1,9 @@
 import { ContainerShapeType } from "../../../../ldo/solid.shapeTypes";
 import type { Resource } from "../../Resource";
-import type { BinaryResourceStore } from "../../binaryResource/BinaryResourceStore";
-import type { DataResourceDependencies } from "../DataResource";
 import { DataResource } from "../DataResource";
-import type { DataResourceStore } from "../DataResourceStore";
-
-export interface ContainerResourceDependencies
-  extends DataResourceDependencies {
-  dataResourceStore: DataResourceStore;
-  binaryResourceStore: BinaryResourceStore;
-}
 
 export class ContainerResource extends DataResource {
-  private _contains: Set<Resource>;
-  private dependencies3: ContainerResourceDependencies;
-
-  constructor(uri: string, dependencies: ContainerResourceDependencies) {
-    super(uri, dependencies);
-    this._contains = new Set();
-    this.dependencies3 = dependencies;
-  }
+  private _contains: Set<Resource> = new Set();
 
   /**
    * ===========================================================================
@@ -30,13 +14,6 @@ export class ContainerResource extends DataResource {
     return Array.from(this._contains);
   }
 
-  protected get binaryResourceStore() {
-    return this.dependencies3.binaryResourceStore;
-  }
-
-  protected get dataResourceStore() {
-    return this.dependencies3.dataResourceStore;
-  }
   /**
    * ===========================================================================
    * Methods
@@ -48,7 +25,7 @@ export class ContainerResource extends DataResource {
       return error;
     }
     // Update the contains
-    const container = this.dataset
+    const container = this.context.solidLdoDataset
       .usingType(ContainerShapeType)
       .fromSubject(this.uri);
     const resourcesToAdd: Resource[] = [];
@@ -56,16 +33,16 @@ export class ContainerResource extends DataResource {
       if (resourceData["@id"]) {
         if (resourceData.type?.some((type) => type["@id"] === "Container")) {
           resourcesToAdd.push(
-            this.containerResourceStore.get(resourceData["@id"]),
+            this.context.containerResourceStore.get(resourceData["@id"]),
           );
         } else {
           if (resourceData["@id"].endsWith(".ttl")) {
             resourcesToAdd.push(
-              this.dataResourceStore.get(resourceData["@id"]),
+              this.context.dataResourceStore.get(resourceData["@id"]),
             );
           } else {
             resourcesToAdd.push(
-              this.binaryResourceStore.get(resourceData["@id"]),
+              this.context.binaryResourceStore.get(resourceData["@id"]),
             );
           }
         }
