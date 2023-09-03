@@ -1,4 +1,4 @@
-import { literal, namedNode, quad } from "@ldo/rdf-utils";
+import { literal, namedNode, quad } from "@rdfjs/data-model";
 import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
@@ -27,7 +27,7 @@ describe("LdoDataset", () => {
     );
     profile.fn = "Diplo";
     expect(await toTurtle(profile)).toBe(
-      '<https://example.com/person1#me> <http://www.w3.org/2006/vcard/ns#fn> "Diplo".\n',
+      '<https://example.com/person1#me> <http://www.w3.org/2006/vcard/ns#fn> "Diplo" .\n',
     );
   });
 

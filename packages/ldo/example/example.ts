@@ -1,4 +1,4 @@
-import { parseRdf, startTransaction, toSparqlUpdate, toTurtle } from "../lib";
+import { parseRdf, startTransaction, toSparqlUpdate, toTurtle } from "../src";
 import { FoafProfileShapeType } from "./ldo/foafProfile.shapeTypes";
 
 async function run() {

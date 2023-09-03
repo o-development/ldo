@@ -6,4 +6,3 @@ export * from "./LdoBuilder";
 export * from "./createLdoDataset";
 import type { LdoBase as LdoBaseImport } from "./util";
 export type LdoBase = LdoBaseImport;
-export { datasetToString } from "./datasetConverters";

@@ -8,7 +8,8 @@ import {
   write as writeDependency,
 } from "@ldo/jsonld-dataset-proxy";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
-import type { WriterOptions, Dataset, Quad } from "@ldo/rdf-utils";
+import type { WriterOptions } from "@ldo/rdf-utils";
+import type { Dataset, Quad } from "@rdfjs/types";
 import { changesToSparqlUpdate, datasetToString } from "@ldo/rdf-utils";
 import type { LdoBase } from "./util";
 import {

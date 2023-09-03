@@ -1,12 +1,12 @@
-import { namedNode } from "@ldo/rdf-utils";
-import type { Dataset } from "@ldo/rdf-utils";
+import { namedNode } from "@rdfjs/data-model";
+import type { Dataset, Quad } from "@rdfjs/types";
 import type { ArrayProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
 } from "@ldo/jsonld-dataset-proxy";
-import type { Quad, AnyNode } from "@ldo/rdf-utils";
+import type { AnyNode } from "@ldo/rdf-utils";
 import type {
   SubscribableDataset,
   TransactionalDataset,

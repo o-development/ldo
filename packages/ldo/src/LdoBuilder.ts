@@ -1,9 +1,7 @@
+import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type {
-  GraphType,
-  JsonldDatasetProxyBuilder,
-  QuadMatch,
-  SubjectType,
   LanguageOrdering,
+  JsonldDatasetProxyBuilder,
 } from "@ldo/jsonld-dataset-proxy";
 import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./util";
@@ -29,7 +27,7 @@ export class LdoBuilder<Type extends LdoBase> {
    * Designates that all Linked Data Objects created should write to the
    * specified graphs
    */
-  write(...graphs: (GraphType | string)[]): LdoBuilder<Type> {
+  write(...graphs: (GraphNode | string)[]): LdoBuilder<Type> {
     return new LdoBuilder(
       this.jsonldDatasetProxyBuilder.write(...normalizeNodeNames(graphs)),
       this.shapeType,
@@ -55,7 +53,7 @@ export class LdoBuilder<Type extends LdoBase> {
    * Creates a Linked Data Object that matches the given subject
    * @param subject The node to match
    */
-  fromSubject(subject: SubjectType | string): Type {
+  fromSubject(subject: SubjectNode | string): Type {
     return this.jsonldDatasetProxyBuilder.fromSubject<Type>(
       normalizeNodeName(subject),
     );
