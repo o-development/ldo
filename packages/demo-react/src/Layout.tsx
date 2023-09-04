@@ -28,18 +28,10 @@ export const Layout: FunctionComponent = () => {
   }
   return (
     <div>
-      <header
-        style={{
-          height: 50,
-          borderBottom: "1px solid black",
-          display: "flex",
-          alignItems: "center",
-          padding: 10,
-        }}
-      >
+      <header style={{ display: "flex" }}>
         {session.isLoggedIn ? (
           <>
-            <p>Logged in as {session.webId}</p>
+            <span>Logged in as {session.webId}</span>
             <button onClick={logout}>Log Out</button>
           </>
         ) : (
@@ -54,6 +46,7 @@ export const Layout: FunctionComponent = () => {
           </>
         )}
       </header>
+      <hr />
       {session.isLoggedIn ? <RouterProvider router={router} /> : undefined}
     </div>
   );

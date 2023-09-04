@@ -39,7 +39,7 @@
     "dist"
   ],
   "dependencies": {
-    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/data-model": "^1.2.0",
     "@ldo/rdf-utils": "^0.0.0",
     "@ldo/subscribable-dataset": "^0.0.0",
     "@rdfjs/dataset": "^1.1.0",

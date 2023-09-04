@@ -63,9 +63,11 @@ export class AccessRules extends FetchableDocument {
       return undefined;
     } catch (err: unknown) {
       if (typeof err === "object" && (err as Error).message) {
-        this.setError(new DocumentError(this, (err as Error).message));
+        this.setError(new DocumentError(this, 500, (err as Error).message));
       }
-      this.setError(new DocumentError(this, "Error Fetching Access Rules"));
+      this.setError(
+        new DocumentError(this, 500, "Error Fetching Access Rules"),
+      );
     }
   }
 }

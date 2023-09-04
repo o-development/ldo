@@ -9,7 +9,7 @@ import type {
   SolidLdoDatasetContext,
 } from "./SolidLdoDatasetContext";
 import crossFetch from "cross-fetch";
-import { EventEmitter } from "stream";
+import { EventEmitter } from "events";
 import { createDataset, createDatasetFactory } from "@ldo/dataset";
 
 export interface CreateSolidLdoDatasetOptions {

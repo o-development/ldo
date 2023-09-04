@@ -1,6 +1,5 @@
 import { parseRdf } from "@ldo/ldo";
 import { Resource } from "../Resource";
-import { DocumentFetchError } from "../../errors/DocumentFetchError";
 import { DocumentError } from "../../errors/DocumentError";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { DatasetChanges } from "@ldo/rdf-utils";
@@ -27,7 +26,7 @@ export class DataResource extends Resource {
     // Handle Error
     if (response.status !== 200) {
       // TODO: Handle edge cases
-      return new DocumentFetchError(
+      return new DocumentError(
         this,
         response.status,
         `Error fetching resource ${this.uri}`,
@@ -42,9 +41,13 @@ export class DataResource extends Resource {
       });
     } catch (err) {
       if (typeof err === "object" && (err as Error).message) {
-        return new DocumentError(this, (err as Error).message);
+        return new DocumentError(this, 500, (err as Error).message);
       }
-      return new DocumentError(this, "Server returned poorly formatted Turtle");
+      return new DocumentError(
+        this,
+        500,
+        "Server returned poorly formatted Turtle",
+      );
     }
     // Start transaction
     const transactionalDataset =
@@ -86,7 +89,7 @@ export class DataResource extends Resource {
       // Handle Error by rollback
       transactionalDataset.rollback();
       this.endWrite(
-        new DocumentFetchError(
+        new DocumentError(
           this,
           response.status,
           `Problem writing to ${this.uri}`,

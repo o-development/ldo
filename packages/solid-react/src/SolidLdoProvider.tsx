@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import {
   useMemo,
   type FunctionComponent,
@@ -15,6 +15,10 @@ export const SolidLdoDatasetReactContext =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   createContext<SolidLdoDataset>(undefined);
+
+export function useSolidLdoDataset() {
+  return useContext(SolidLdoDatasetReactContext);
+}
 
 export interface SolidLdoProviderProps extends PropsWithChildren {
   onDocumentError?: OnDocumentErrorCallback;

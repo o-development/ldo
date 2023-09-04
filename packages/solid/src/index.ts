@@ -4,7 +4,6 @@ export * from "./document/DocumentStore";
 
 // document/errors
 export * from "./document/errors/DocumentError";
-export * from "./document/errors/DocumentFetchError";
 
 // document/accessRules
 export * from "./document/accessRules/AccessRules";

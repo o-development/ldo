@@ -1,7 +1,7 @@
 import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
 import type { DocumentGetterOptions } from "../DocumentStore";
 import { FetchableDocument } from "../FetchableDocument";
-import { DocumentFetchError } from "../errors/DocumentFetchError";
+import { DocumentError } from "../errors/DocumentError";
 import type { ContainerResource } from "./dataResource/containerResource/ContainerResource";
 
 export abstract class Resource extends FetchableDocument {
@@ -49,12 +49,15 @@ export abstract class Resource extends FetchableDocument {
       return;
     }
     this.endWrite(
-      new DocumentFetchError(
-        this,
-        response.status,
-        `Could not delete ${this.uri}`,
-      ),
+      new DocumentError(this, response.status, `Could not delete ${this.uri}`),
     );
+  }
+
+  async checkExists() {
+    const response = await this.context.fetch(this.uri, {
+      method: "OPTIONS",
+    });
+    return response.status === 404;
   }
 
   /**
