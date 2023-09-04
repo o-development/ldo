@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import type { FunctionComponent } from "react";
 import { UploadButton } from "./UploadButton";
-import { useSolidAuth } from "@ldo/solid-react";
+import { useContainerResource, useDataResource, useSolidAuth } from "@ldo/solid-react";
+import { AccessRules, ContainerResource } from "@ldo/solid";
 
 export const Dashboard: FunctionComponent = () => {
   const { session } = useSolidAuth();
@@ -14,18 +15,32 @@ export const Dashboard: FunctionComponent = () => {
     return `${rootContainer}demo-ldo/`;
   }, [session.webId]);
 
-  // const mainContainer = useContainerResource(containerUri);
+  const mainContainer = useDataResource(containerUri);
 
-  // useEffect(() => {
-  //   // Upon load check to see if the root folder exists
-  //   mainContainer.checkExists().then(async (doesExist) => {
-  //     // If not, create it
-  //     if (!doesExist) {
-  //       await mainContainer.create();
-  //       const accessRules = mainContainer.accessRules;
-  //     }
-  //   });
-  // }, [mainContainer]);
+
+  if (mainContainer instanceof AccessRules) {
+    console.log("here");
+  }
+
+  useEffect(() => {
+    // Upon load check to see if the root folder exists
+    mainContainer.checkExists().then(async (doesExist) => {
+      console.log(doesExist);
+
+
+      const error: DocumentError = await mainContainer.create();
+      if (error) {
+        // hanldle
+        return;
+      }
+
+      // // If not, create it
+      // if (!doesExist) {
+      //   await mainContainer.create();
+      //   const accessRules = mainContainer.accessRules;
+      // }
+    });
+  }, [mainContainer]);
 
   return (
     <div>
@@ -33,6 +48,7 @@ export const Dashboard: FunctionComponent = () => {
         <UploadButton />
       </div>
       <hr />
+      <div>{mainContainer.isLoading ? "Loading" : "Not Loading"}</div>
     </div>
   );
 };

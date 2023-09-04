@@ -39,6 +39,7 @@ export const SolidLdoProvider: FunctionComponent<SolidLdoProviderProps> = ({
     if (curOnDocumentError.current) {
       ldoDataset.onDocumentError(curOnDocumentError.current);
     }
+    console.log("ldodatset1", ldoDataset);
     return ldoDataset;
   }, []);
 
@@ -58,6 +59,7 @@ export const SolidLdoProvider: FunctionComponent<SolidLdoProviderProps> = ({
     }
   }, [onDocumentError]);
 
+  console.log("ldoDataset 2", solidLdoDataset);
   return (
     <SolidLdoDatasetReactContext.Provider value={solidLdoDataset}>
       {children}

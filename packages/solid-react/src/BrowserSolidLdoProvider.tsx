@@ -9,6 +9,7 @@ import {
   logout as libraryLogout,
   fetch as libraryFetch,
 } from "@inrupt/solid-client-authn-browser";
+import { SolidLdoProvider } from "./SolidLdoProvider";
 
 const PRE_REDIRECT_URI = "PRE_REDIRECT_URI";
 
@@ -90,7 +91,7 @@ export const BrowserSolidLdoProvider: FunctionComponent<PropsWithChildren> = ({
 
   return (
     <SolidAuthContext.Provider value={solidAuthFunctions}>
-      {children}
+      <SolidLdoProvider>{children}</SolidLdoProvider>
     </SolidAuthContext.Provider>
   );
 };
