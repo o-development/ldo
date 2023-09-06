@@ -17,7 +17,6 @@ export const Dashboard: FunctionComponent = () => {
 
   const mainContainer = useDataResource(containerUri);
 
-
   if (mainContainer instanceof AccessRules) {
     console.log("here");
   }

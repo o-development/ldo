@@ -4,6 +4,8 @@ import type { BranchContainer } from "../../concrete/BranchContainer";
 import type { RootContainer } from "../../concrete/RootContainer";
 import type { UnfetchedContainer } from "../../concrete/UnfetchedContainer";
 import type { UnfetchedLeaf } from "../../concrete/UnfetchedLeaf";
+import type { SolidLdoError } from "../../error/SolidLdoError";
+import type { ResourceClass } from "../Resource";
 import { Resource } from "../Resource";
 import type { DataResource } from "./DataResource";
 
@@ -15,4 +17,10 @@ export type PotentialDataResourceClass =
   | AbsentLeaf
   | UnfetchedContainer
   | UnfetchedLeaf;
-export class PotentialDataResource extends Resource {}
+export abstract class PotentialDataResource extends Resource<
+  ResourceClass,
+  SolidLdoError
+> {
+
+  abstract 
+}

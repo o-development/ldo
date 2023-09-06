@@ -29,9 +29,9 @@ const thing = {
   "AbsentContainerResource|AbsentChildDataResource|": ["create"],
   "AbsentContainerResource|AbsentChildDataResource|UnfetchedContainerResource|UnfetchedChildDataResource|":
     ["createIfAbsent"],
+  "AbsentBinaryResource|": ["upload"],
   "AbsentBinaryResource|UnfetchedBinaryResource|": ["uploadIfAbsent"],
 };
-
 
 import { LdoDataset } from "@ldo/ldo";
 import { Quad } from "@rdfjs/types";
@@ -39,11 +39,9 @@ import { create } from "domain";
 import { URL } from "url";
 import { SolidLdoDataset } from "../SolidLdoDataset";
 
-
 export type ResourceStatus = BinaryResourceStatus | DataResourceStatus | ErrorResource | ErrorResourceStatus;
 
 export type BinaryResourceStore;
-
 
 /**
  * Method and information definitions
@@ -70,7 +68,6 @@ export interface IContainerResource extends IResource {
  */
 
 clearIfPresent
-
 
 export interface BinaryResource {
   uri: string;
@@ -246,8 +243,6 @@ export interface UnfetchedContainerResource {
   load(): Promise<ContainerResource | RootContainerResource | LdoSolidError>;
   clearIfPresent(): Promise<ContainerResource | AbsentContainerResource | LdoSolidError>;
 }
-
-
 
 export interface LdoSolidError extends Error {
   forResource: unknown // Some Kind of Resource

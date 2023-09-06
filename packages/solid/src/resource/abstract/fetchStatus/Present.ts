@@ -9,7 +9,7 @@ export type PresentClass =
   | BranchContainer
   | DataLeaf
   | BinaryLeaf;
-export class Present extends Fetched {
+export abstract class Present extends Fetched {
   public get isAbsent(): false {
     return false;
   }

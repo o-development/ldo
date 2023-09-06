@@ -17,4 +17,8 @@ export abstract class Fetched extends FetchStatus {
   public get didInitialFetch(): true {
     return true;
   }
+
+  async readIfUnfetched(): Promise<this> {
+    return this;
+  }
 }
