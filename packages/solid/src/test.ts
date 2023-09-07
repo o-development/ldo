@@ -7,16 +7,15 @@ class Foo {
 }
 
 class Bar {
-  protected makeFoo() {
+  protected makeBar() {
     return "bar";
   }
 }
 
 class FooBar extends Mixin(Foo, Bar) {
   public makeFooBar() {
-    return this.makeFoo() + this.makeFoo();
+    return this.makeFoo() + this.makeBar();
   }
 }
 
 const fooBar = new FooBar();
-console.log(fooBar.makeFooBar());
