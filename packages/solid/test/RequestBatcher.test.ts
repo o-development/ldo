@@ -1,5 +1,5 @@
-import type { WaitingProcess } from "../src/LeafRequestBatcher";
-import { RequestBatcher } from "../src/RequestBatcher";
+import type { WaitingProcess } from "../src/util/RequestBatcher";
+import { RequestBatcher } from "../src/util/RequestBatcher";
 
 describe("RequestBatcher", () => {
   type ReadWaitingProcess = WaitingProcess<[string], string>;
@@ -12,7 +12,8 @@ describe("RequestBatcher", () => {
     const perform3 = jest.fn(perform);
     const perform4 = jest.fn(perform);
 
-    const modifyLastProcess = (last, input: [string]) => {
+    const modifyQueue = (queue, isLoading, input: [string]) => {
+      const last = queue[queue.length - 1];
       if (last.name === "read") {
         (last as ReadWaitingProcess).args[0] += input;
         return true;
@@ -31,7 +32,7 @@ describe("RequestBatcher", () => {
           name: "read",
           args: ["a"],
           perform: perform1,
-          modifyLastProcess,
+          modifyQueue,
         })
         .then((val) => (return1 = val)),
       requestBatcher
@@ -39,7 +40,7 @@ describe("RequestBatcher", () => {
           name: "read",
           args: ["b"],
           perform: perform2,
-          modifyLastProcess,
+          modifyQueue,
         })
         .then((val) => (return2 = val)),
       ,
@@ -48,7 +49,7 @@ describe("RequestBatcher", () => {
           name: "read",
           args: ["c"],
           perform: perform3,
-          modifyLastProcess,
+          modifyQueue,
         })
         .then((val) => (return3 = val)),
       ,
@@ -57,7 +58,7 @@ describe("RequestBatcher", () => {
           name: "read",
           args: ["d"],
           perform: perform4,
-          modifyLastProcess,
+          modifyQueue,
         })
         .then((val) => (return4 = val)),
       ,

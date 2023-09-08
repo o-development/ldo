@@ -11,14 +11,23 @@ export interface WaitingProcessOptions<Args extends any[], Return> {
   name: string;
   args: Args;
   perform: (...args: Args) => Promise<Return>;
-  modifyLastProcess: (
-    lastProcess: WaitingProcess<any[], any>,
+  /**
+   *
+   * @param processQueue The current process queue
+   * @param isLoading The current is loading
+   * @param args provided args
+   * @returns true if the process queue has been modified and a new process should not be added to the queue
+   */
+  modifyQueue: (
+    processQueue: WaitingProcess<any[], any>[],
+    isLoading: Record<string, boolean>,
     args: Args,
   ) => boolean;
 }
 
 export class RequestBatcher {
   private lastRequestTimestampMap: Record<string, number> = {};
+  private isLoading: Record<string, boolean> = {};
   private isWaiting: boolean = false;
   private processQueue: WaitingProcess<any[], any>[] = [];
   public shouldBatchAllRequests: boolean;
@@ -68,7 +77,21 @@ export class RequestBatcher {
             callback(err);
           });
         }
-        this.triggerOrWaitProcess();
+
+        // Reset loading
+        if (
+          !this.processQueue.some(
+            (process) => process.name === processToTrigger.name,
+          )
+        ) {
+          this.isLoading[processToTrigger.name] = false;
+        }
+
+        if (this.processQueue.length > 0) {
+          this.triggerOrWaitProcess();
+        } else {
+          this.isLoading["any"] = false;
+        }
       }
     };
 
@@ -88,7 +111,7 @@ export class RequestBatcher {
         this.processQueue[this.processQueue.length - 1];
       if (lastProcessInQueue) {
         const didModifyLast = lastProcessInQueue
-          ? options.modifyLastProcess(lastProcessInQueue, options.args)
+          ? options.modifyQueue(this.processQueue, this.isLoading, options.args)
           : false;
         if (didModifyLast) {
           lastProcessInQueue.awaitingResolutions.push(resolve);
@@ -107,6 +130,7 @@ export class RequestBatcher {
       this.processQueue.push(
         waitingProcess as unknown as WaitingProcess<any[], any>,
       );
+      this.isLoading[waitingProcess.name] = true;
       this.triggerOrWaitProcess();
     });
   }
