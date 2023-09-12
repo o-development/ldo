@@ -247,6 +247,14 @@ export default class ProxyTransactionalDataset<
       } else {
         this.datasetChanges.added = this.datasetFactory.dataset(changes.added);
       }
+      // Delete from removed if present
+      const changesIntersection = this.datasetChanges.removed?.intersection(
+        this.datasetFactory.dataset(changes.added),
+      );
+      if (changesIntersection && changesIntersection.size > 0) {
+        this.datasetChanges.removed =
+          this.datasetChanges.removed?.difference(changesIntersection);
+      }
     }
     // Add removed
     if (changes.removed) {
@@ -257,18 +265,13 @@ export default class ProxyTransactionalDataset<
           changes.removed,
         );
       }
-    }
-
-    // Remove duplicates between the two datasets
-    if (this.datasetChanges.added && this.datasetChanges.removed) {
-      const changesIntersection = this.datasetChanges.added.intersection(
-        this.datasetChanges.removed,
+      // Delete from added if present
+      const changesIntersection = this.datasetChanges.added?.intersection(
+        this.datasetFactory.dataset(changes.removed),
       );
-      if (changesIntersection.size > 0) {
+      if (changesIntersection && changesIntersection.size > 0) {
         this.datasetChanges.added =
-          this.datasetChanges.added.difference(changesIntersection);
-        this.datasetChanges.removed =
-          this.datasetChanges.removed.difference(changesIntersection);
+          this.datasetChanges.added?.difference(changesIntersection);
       }
     }
 

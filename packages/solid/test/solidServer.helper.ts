@@ -13,11 +13,14 @@ import fetch from "cross-fetch";
 
 const config = [
   {
-    
+    podName: process.env.USER_NAME,
+    email: process.env.EMAIL,
+    password: process.env.PASSWORD,
   },
 ];
 
-const SERVER_DOMAIN = "https://solidweb.me";
+export const SERVER_DOMAIN = process.env.SERVER;
+export const ROOT_COONTAINER = `${process.env.SERVER}${process.env.ROOT_CONTAINER}`;
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -49,7 +52,7 @@ export interface ISecretData {
 
 // From https://communitysolidserver.github.io/CommunitySolidServer/5.x/usage/client-credentials/
 export async function getSecret(): Promise<ISecretData> {
-  const result = await fetch(`${SERVER_DOMAIN}/idp/credentials/`, {
+  const result = await fetch(`${SERVER_DOMAIN}idp/credentials/`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -74,7 +77,7 @@ export async function refreshToken({
 }: ISecretData): Promise<ITokenData> {
   const dpopKey = await generateDpopKeyPair();
   const authString = `${encodeURIComponent(id)}:${encodeURIComponent(secret)}`;
-  const tokenUrl = `${SERVER_DOMAIN}/.oidc/token`;
+  const tokenUrl = `${SERVER_DOMAIN}.oidc/token`;
   const accessToken = await fetch(tokenUrl, {
     method: "POST",
     headers: {

@@ -120,6 +120,17 @@ describe("ProxyTransactionalDataset", () => {
     expect(arr.some((curQuad) => curQuad.equals(tomTypeQuad))).toBe(true);
   });
 
+  it("Removes then adds a quad and the quad is still added", () => {
+    const addedQuad = lickyNameQuad;
+    transactionalDataset.delete(addedQuad);
+    transactionalDataset.add(addedQuad);
+    const arr = transactionalDataset.toArray();
+    expect(arr.length).toBe(3);
+    expect(arr.some((curQuad) => curQuad.equals(tomNameQuad))).toBe(true);
+    expect(arr.some((curQuad) => curQuad.equals(tomTypeQuad))).toBe(true);
+    expect(arr.some((curQuad) => curQuad.equals(lickyNameQuad))).toBe(true);
+  });
+
   it("Commits added changes", () => {
     transactionalDataset.add(lickyNameQuad);
     transactionalDataset.commit();

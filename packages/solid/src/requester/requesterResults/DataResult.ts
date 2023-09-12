@@ -11,5 +11,5 @@ export class DataResult extends RequesterResult {
 }
 
 export class TurtleFormattingError extends ErrorResult {
-  errorType = "turtleFormatting";
+  errorType = "turtleFormatting" as const;
 }

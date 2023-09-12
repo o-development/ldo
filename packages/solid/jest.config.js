@@ -3,4 +3,5 @@ const sharedConfig = require("../../jest.config.js");
 module.exports = {
   ...sharedConfig,
   rootDir: "./",
+  setupFiles: ["<rootDir>/test/setup-tests.ts"],
 };

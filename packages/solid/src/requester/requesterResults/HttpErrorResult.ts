@@ -33,11 +33,10 @@ export class UnexpectedHttpError extends HttpErrorResult {
 }
 
 export class UnauthenticatedHttpError extends HttpErrorResult {
-  status: 401;
   errorType = "unauthenticated" as const;
 
   static is(response: Response) {
-    return response.status === 404;
+    return response.status === 401;
   }
 }
 
