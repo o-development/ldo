@@ -4,6 +4,8 @@ import type { SolidLdoDataset } from "../src/SolidLdoDataset";
 import { createSolidLdoDataset } from "../src/createSolidLdoDataset";
 import { LeafRequester } from "../src/requester/LeafRequester";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
+import type { BinaryResult } from "../src/requester/requestResults/BinaryResult";
+import { Readable } from "stream";
 
 describe("Leaf Requester", () => {
   let app: App;
@@ -68,6 +70,11 @@ describe("Leaf Requester", () => {
     ]);
   });
 
+  /**
+   * ===========================================================================
+   * Read
+   * ===========================================================================
+   */
   it("reads data", async () => {
     const leafRequester = new LeafRequester(
       `${ROOT_COONTAINER}test_leaf/sample.ttl`,
@@ -94,6 +101,11 @@ describe("Leaf Requester", () => {
     expect(result.type).toBe("absent");
   });
 
+  /**
+   * ===========================================================================
+   * Create
+   * ===========================================================================
+   */
   it("creates a data resource that doesn't exist while not overwriting", async () => {
     const leafRequester = new LeafRequester(
       `${ROOT_COONTAINER}test_leaf/sample2.ttl`,
@@ -120,7 +132,6 @@ describe("Leaf Requester", () => {
     );
     const result = await leafRequester.createDataResource(true);
     expect(result.type).toBe("data");
-    console.log(solidLdoDataset.toString());
     expect(
       solidLdoDataset.has(
         createQuad(
@@ -191,6 +202,11 @@ describe("Leaf Requester", () => {
     ).toBe(true);
   });
 
+  /**
+   * ===========================================================================
+   * Delete
+   * ===========================================================================
+   */
   it("deletes data", async () => {
     solidLdoDataset.add(
       createQuad(

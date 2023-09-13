@@ -1,10 +1,9 @@
 import { parseRdf } from "@ldo/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import { DataResult } from "../requester/requesterResults/DataResult";
-import { TurtleFormattingError } from "../requester/requesterResults/DataResult";
+import { DataResult } from "../requester/requestResults/DataResult";
+import { TurtleFormattingError } from "../requester/requestResults/DataResult";
 import type { Dataset } from "@rdfjs/types";
 import { isContainerUri } from "./uriTypes";
-import { TransactionalDataset } from "@ldo/subscribable-dataset";
 
 const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
 const rdfType = namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
@@ -55,15 +54,10 @@ export function addResourceRdfToContainer(
   dataset: Dataset,
 ) {
   const parentUri = getParentUri(resourceUri);
-  console.log("Before thing");
-  console.log(dataset.toString());
   if (parentUri) {
     const parentNode = namedNode(parentUri);
     const resourceNode = namedNode(resourceUri);
     dataset.add(createQuad(parentNode, ldpContains, resourceNode, parentNode));
-    console.log("In Between thing");
-    console.log(dataset.toString());
-    console.log((dataset as TransactionalDataset).getChanges());
     dataset.add(createQuad(resourceNode, rdfType, ldpResource, parentNode));
     if (isContainerUri(resourceUri)) {
       dataset.add(
@@ -71,9 +65,8 @@ export function addResourceRdfToContainer(
       );
       dataset.add(createQuad(resourceNode, rdfType, ldpContainer, parentNode));
     }
+    addResourceRdfToContainer(parentUri, dataset);
   }
-  console.log("After thing");
-  console.log(dataset.toString());
 }
 
 export async function addRawTurtleToDataset(

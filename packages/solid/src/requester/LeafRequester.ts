@@ -1,55 +1,22 @@
 import type { LeafUri } from "../util/uriTypes";
 import { RequestBatcher } from "../util/RequestBatcher";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
-import { AbsentResult } from "./requesterResults/AbsentResult";
-import type { TurtleFormattingError } from "./requesterResults/DataResult";
-import { DataResult } from "./requesterResults/DataResult";
-import { BinaryResult } from "./requesterResults/BinaryResult";
-import {
-  HttpErrorResult,
-  ServerHttpError,
-  UnauthenticatedHttpError,
-  UnexpectedHttpError,
-} from "./requesterResults/HttpErrorResult";
-import { UnexpectedError } from "./requesterResults/ErrorResult";
-import type { LdoDataset } from "@ldo/ldo";
-import { parseRdf } from "@ldo/ldo";
-import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import {
-  addRawTurtleToDataset,
-  addResourceRdfToContainer,
-  deleteResourceRdfFromContainer,
-  getParentUri,
-  getSlug,
-} from "../util/rdfUtils";
-import type { TransactionalDataset } from "@ldo/subscribable-dataset";
-import type { Quad } from "@rdfjs/types";
-
-export type ReadResult =
-  | AbsentResult
-  | DataResult
-  | BinaryResult
-  | ServerHttpError
-  | UnauthenticatedHttpError
-  | UnexpectedHttpError
-  | UnexpectedError
-  | TurtleFormattingError;
-
-export type CreateResult =
-  | DataResult
-  | BinaryResult
-  | ServerHttpError
-  | UnauthenticatedHttpError
-  | UnexpectedError
-  | UnexpectedHttpError;
-export type CreateResultWithoutOverwrite = CreateResult | TurtleFormattingError;
-
-export type DeleteResult =
-  | AbsentResult
-  | ServerHttpError
-  | UnauthenticatedHttpError
-  | UnexpectedError
-  | UnexpectedHttpError;
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import type {
+  CreateResult,
+  CreateResultWithoutOverwrite,
+} from "./requests/createDataResource";
+import { createDataResource } from "./requests/createDataResource";
+import type { ReadResult } from "./requests/readResource";
+import { readResource } from "./requests/readResource";
+import type {
+  UploadResult,
+  UploadResultWithoutOverwrite,
+} from "./requests/uploadResource";
+import { uploadResource } from "./requests/uploadResource";
+import type { DeleteResult } from "./requests/deleteResource";
+import { deleteResource } from "./requests/deleteResource";
+import type { UpdateResult } from "./requests/updateDataResource";
 
 export class LeafRequester {
   private requestBatcher = new RequestBatcher();
@@ -71,9 +38,8 @@ export class LeafRequester {
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: READ_KEY,
-      args: [transaction],
-      perform: (transaction: TransactionalDataset<Quad>) =>
-        this.performRead(transaction),
+      args: [{ uri: this.uri, transaction, fetch: this.context.fetch }],
+      perform: readResource,
       modifyQueue: (queue, isLoading) => {
         if (queue.length === 0) {
           return isLoading[READ_KEY];
@@ -86,45 +52,6 @@ export class LeafRequester {
       transaction.commit();
     }
     return result;
-  }
-
-  /**
-   * Helper method to perform the read action
-   */
-  private async performRead(
-    transaction: TransactionalDataset<Quad>,
-  ): Promise<ReadResult> {
-    try {
-      // Fetch options to determine the document type
-      const response = await this.context.fetch(this.uri);
-      if (AbsentResult.is(response)) {
-        return new AbsentResult(this.uri);
-      }
-      if (ServerHttpError.is(response)) {
-        return new ServerHttpError(this.uri, response);
-      }
-      if (UnauthenticatedHttpError.is(response)) {
-        return new UnauthenticatedHttpError(this.uri, response);
-      }
-      if (HttpErrorResult.isnt(response)) {
-        return new UnexpectedHttpError(this.uri, response);
-      }
-
-      // Add this resource to the container
-      addResourceRdfToContainer(this.uri, transaction);
-
-      if (DataResult.is(response)) {
-        // Parse Turtle
-        const rawTurtle = await response.text();
-        return addRawTurtleToDataset(rawTurtle, transaction, this.uri);
-      } else {
-        // Load Blob
-        const blob = await response.blob();
-        return new BinaryResult(this.uri, blob);
-      }
-    } catch (err) {
-      return UnexpectedError.fromThrown(this.uri, err);
-    }
   }
 
   /**
@@ -146,9 +73,11 @@ export class LeafRequester {
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: CREATE_KEY,
-      args: [transaction, overwrite],
-      perform: (transaction: TransactionalDataset<Quad>, overwrite?: boolean) =>
-        this.performCreateDataResource(transaction, overwrite),
+      args: [
+        { uri: this.uri, transaction, fetch: this.context.fetch },
+        overwrite,
+      ],
+      perform: createDataResource,
       modifyQueue: (queue, isLoading, args) => {
         const lastElementInQueue = queue[queue.length - 1];
         return (
@@ -165,75 +94,64 @@ export class LeafRequester {
   }
 
   /**
-   * Helper Method to perform the createDataResourceAction
-   * @param overwrite
+   * Upload a binary
+   * @param blob
+   * @param mimeType
+   * @param overwrite: If true, will overwrite an existing file
    */
-  private async performCreateDataResource(
-    transaction: TransactionalDataset<Quad>,
+  async upload(
+    blob: Blob,
+    mimeType: string,
     overwrite?: false,
-  ): Promise<CreateResultWithoutOverwrite>;
-  private async performCreateDataResource(
-    transaction: TransactionalDataset<Quad>,
+  ): Promise<UploadResultWithoutOverwrite>;
+  async upload(
+    blob: Blob,
+    mimeType: string,
     overwrite: true,
-  ): Promise<CreateResult>;
-  private async performCreateDataResource(
-    transaction: TransactionalDataset<Quad>,
+  ): Promise<UploadResult>;
+  async upload(
+    blob: Blob,
+    mimeType: string,
     overwrite?: boolean,
-  ): Promise<CreateResultWithoutOverwrite | CreateResult>;
-  private async performCreateDataResource(
-    transaction: TransactionalDataset<Quad>,
+  ): Promise<UploadResultWithoutOverwrite | UploadResult>;
+  async upload(
+    blob: Blob,
+    mimeType: string,
     overwrite?: boolean,
-  ): Promise<CreateResultWithoutOverwrite> {
-    try {
-      if (overwrite) {
-        const deleteResult = await this.performDelete(transaction);
-        // Return if it wasn't deleted
-        if (deleteResult.type !== "absent") {
-          return deleteResult;
-        }
-      } else {
-        // Perform a read to check if it exists
-        const readResult = await this.performRead(transaction);
-        // If it does exist stop and return.
-        if (readResult.type !== "absent") {
-          return readResult;
-        }
-      }
-      // Create the document
-      const parentUri = getParentUri(this.uri)!;
-      const response = await this.context.fetch(parentUri, {
-        method: "post",
-        headers: {
-          "content-type": "text/turtle",
-          slug: getSlug(this.uri),
-        },
-      });
-
-      if (ServerHttpError.is(response)) {
-        return new ServerHttpError(this.uri, response);
-      }
-      if (UnauthenticatedHttpError.is(response)) {
-        return new UnauthenticatedHttpError(this.uri, response);
-      }
-      if (HttpErrorResult.isnt(response)) {
-        return new UnexpectedHttpError(this.uri, response);
-      }
-      addResourceRdfToContainer(this.uri, transaction);
-      return new DataResult(this.uri);
-    } catch (err) {
-      return UnexpectedError.fromThrown(this.uri, err);
+  ): Promise<UploadResultWithoutOverwrite | UploadResult> {
+    const UPLOAD_KEY = "upload";
+    const transaction = this.context.solidLdoDataset.startTransaction();
+    const result = await this.requestBatcher.queueProcess({
+      name: UPLOAD_KEY,
+      args: [
+        { uri: this.uri, transaction, fetch: this.context.fetch },
+        blob,
+        mimeType,
+        overwrite,
+      ],
+      perform: uploadResource,
+      modifyQueue: (queue, isLoading, args) => {
+        const lastElementInQueue = queue[queue.length - 1];
+        return (
+          lastElementInQueue &&
+          lastElementInQueue.name === UPLOAD_KEY &&
+          !!lastElementInQueue.args[3] === !!args[3]
+        );
+      },
+    });
+    if (result.type !== "error") {
+      transaction.commit();
     }
+    return result;
   }
 
-  // abstract upload(
-  //   blob: Blob,
-  //   mimeType: string,
-  //   overwrite?: boolean,
-  // ): Promise<BinaryLeaf | ResourceError>;
-
-  // abstract updateData(
-  //   changes: DatasetChanges,
-  // ): Promise<DataLeaf | ResourceError>;
+  /**
+   * Update the data on this resource
+   * @param changes
+   */
+  updateDataResource(_changes: DatasetChanges): Promise<UpdateResult> {
+    throw new Error("Not Implemented");
+  }
 
   /**
    * Delete this resource
@@ -243,9 +161,8 @@ export class LeafRequester {
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: DELETE_KEY,
-      args: [transaction],
-      perform: (transaction: TransactionalDataset<Quad>) =>
-        this.performDelete(transaction),
+      args: [{ uri: this.uri, transaction, fetch: this.context.fetch }],
+      perform: deleteResource,
       modifyQueue: (queue, isLoading) => {
         if (queue.length === 0) {
           return isLoading[DELETE_KEY];
@@ -258,41 +175,5 @@ export class LeafRequester {
       transaction.commit();
     }
     return result;
-  }
-
-  /**
-   * Helper method to perform this delete action
-   */
-  private async performDelete(
-    transaction: TransactionalDataset<Quad>,
-  ): Promise<DeleteResult> {
-    try {
-      const response = await this.context.fetch(this.uri, {
-        method: "delete",
-      });
-
-      if (ServerHttpError.is(response)) {
-        return new ServerHttpError(this.uri, response);
-      }
-      if (UnauthenticatedHttpError.is(response)) {
-        return new UnauthenticatedHttpError(this.uri, response);
-      }
-      // Specifically check for a 205. Annoyingly, the server will return 200 even
-      // if it hasn't been deleted when you're unauthenticated. 404 happens when
-      // the document never existed
-      if (response.status === 205 || response.status === 404) {
-        transaction.deleteMatches(
-          undefined,
-          undefined,
-          undefined,
-          namedNode(this.uri),
-        );
-        deleteResourceRdfFromContainer(this.uri, transaction);
-        return new AbsentResult(this.uri);
-      }
-      return new UnexpectedHttpError(this.uri, response);
-    } catch (err) {
-      return UnexpectedError.fromThrown(this.uri, err);
-    }
   }
 }

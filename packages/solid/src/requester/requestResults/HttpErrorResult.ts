@@ -1,5 +1,10 @@
 import { ErrorResult } from "./ErrorResult";
 
+export type HttpErrorResultType =
+  | ServerHttpError
+  | UnexpectedHttpError
+  | UnauthenticatedHttpError;
+
 export abstract class HttpErrorResult extends ErrorResult {
   public readonly status: number;
   public readonly headers: Headers;
@@ -25,6 +30,19 @@ export abstract class HttpErrorResult extends ErrorResult {
 
   static isnt(response: Response) {
     return response.status < 200 || response.status >= 300;
+  }
+
+  static checkResponse(uri: string, response: Response) {
+    if (ServerHttpError.is(response)) {
+      return new ServerHttpError(uri, response);
+    }
+    if (UnauthenticatedHttpError.is(response)) {
+      return new UnauthenticatedHttpError(uri, response);
+    }
+    if (HttpErrorResult.isnt(response)) {
+      return new UnexpectedHttpError(uri, response);
+    }
+    return undefined;
   }
 }
 
