@@ -15,8 +15,12 @@ import type {
   CreateResultErrors,
   CreateResultWithoutOverwriteErrors,
 } from "../requester/requests/createDataResource";
+import type { DeleteResultError } from "../requester/requests/deleteResource";
 import type { ReadResultError } from "../requester/requests/readResource";
-import type { UploadResultError } from "../requester/requests/uploadResource";
+import type {
+  UploadResultError,
+  UploadResultWithoutOverwriteError,
+} from "../requester/requests/uploadResource";
 import type { LeafUri } from "../uriTypes";
 
 export interface ConcreteInstance {
@@ -151,13 +155,26 @@ export class Resource {
       | Resource
       | UploadResultError;
   }
-  abstract createIfAbsent(blob: Blob): Promise<LeafType | LdoSolidError>;
+
+  async uploadIfAbsent(
+    blob: Blob,
+    mimeType: string,
+  ): Promise<Resource | UploadResultWithoutOverwriteError> {
+    return this.parseResult(
+      await this.requester.upload(blob, mimeType, true),
+    ) as Resource | UploadResultWithoutOverwriteError;
+  }
+
   // Delete Method
-  abstract delete(): Promise<AbsentLeaf | LdoSolidError>;
+  async delete(): Promise<Resource | DeleteResultError> {
+    return this.parseResult(await this.requester.delete()) as
+      | Resource
+      | DeleteResultError;
+  }
+
   // Parent Container Methods -- Remember to change for Container
   abstract getCachedParentContainer(): ContainerType | LdoSolidError;
-  abstract getParentContainer(): Promise<PresentContainer | LdoSolidError>;
-  abstract reloadParentContainer(): Promise<PresentContainer | LdoSolidError>;
+  abstract getParentContainer(): Resource;
   abstract getRootContainerFromCache():
     | ContainerType
     | undefined
