@@ -13,11 +13,15 @@ import { deleteResource } from "./deleteResource";
 import { readResource } from "./readResource";
 import type { RequestParams } from "./requestParams";
 
-export type CreateResult = DataResult | HttpErrorResultType | UnexpectedError;
+export type CreateResult = DataResult | CreateResultErrors;
+export type CreateResultErrors = HttpErrorResultType | UnexpectedError;
 export type CreateResultWithoutOverwrite =
   | CreateResult
-  | TurtleFormattingError
+  | CreateResultWithoutOverwriteErrors
   | BinaryResult;
+export type CreateResultWithoutOverwriteErrors =
+  | TurtleFormattingError
+  | CreateResultErrors;
 
 export function createDataResource(
   params: RequestParams,

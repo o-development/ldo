@@ -6,7 +6,8 @@ import { UnexpectedHttpError } from "../requestResults/HttpErrorResult";
 import type { RequestParams } from "./requestParams";
 import { deleteResourceRdfFromContainer } from "../../util/rdfUtils";
 
-export type DeleteResult = AbsentResult | HttpErrorResultType | UnexpectedError;
+export type DeleteResult = AbsentResult | DeleteResultError;
+export type DeleteResultError = HttpErrorResultType | UnexpectedError;
 
 export async function deleteResource({
   uri,

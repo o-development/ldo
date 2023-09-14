@@ -7,6 +7,8 @@ export interface WaitingProcess<Args extends any[], Return> {
   awaitingRejections: ((err: any) => void)[];
 }
 
+export const ANY_KEY = "any";
+
 export interface WaitingProcessOptions<Args extends any[], Return> {
   name: string;
   args: Args;
@@ -27,7 +29,7 @@ export interface WaitingProcessOptions<Args extends any[], Return> {
 
 export class RequestBatcher {
   private lastRequestTimestampMap: Record<string, number> = {};
-  private isLoading: Record<string, boolean> = {};
+  private loadingMap: Record<string, boolean> = {};
   private isWaiting: boolean = false;
   private processQueue: WaitingProcess<any[], any>[] = [];
   public shouldBatchAllRequests: boolean;
@@ -43,12 +45,16 @@ export class RequestBatcher {
     this.batchMillis = options?.batchMillis || 1000;
   }
 
+  public isLoading(key: string): boolean {
+    return !!this.loadingMap[key];
+  }
+
   private triggerOrWaitProcess() {
     if (!this.processQueue[0]) {
       return;
     }
     const processName = this.shouldBatchAllRequests
-      ? "any"
+      ? ANY_KEY
       : this.processQueue[0].name;
 
     // Set last request timestamp if not available
@@ -62,7 +68,7 @@ export class RequestBatcher {
     const triggerProcess = async () => {
       this.isWaiting = false;
       this.lastRequestTimestampMap[processName] = Date.now();
-      this.lastRequestTimestampMap["any"] = Date.now();
+      this.lastRequestTimestampMap[ANY_KEY] = Date.now();
       const processToTrigger = this.processQueue.shift();
       if (processToTrigger) {
         try {
@@ -84,13 +90,13 @@ export class RequestBatcher {
             (process) => process.name === processToTrigger.name,
           )
         ) {
-          this.isLoading[processToTrigger.name] = false;
+          this.loadingMap[processToTrigger.name] = false;
         }
 
         if (this.processQueue.length > 0) {
           this.triggerOrWaitProcess();
         } else {
-          this.isLoading["any"] = false;
+          this.loadingMap[ANY_KEY] = false;
         }
       }
     };
@@ -111,7 +117,11 @@ export class RequestBatcher {
         this.processQueue[this.processQueue.length - 1];
       if (lastProcessInQueue) {
         const didModifyLast = lastProcessInQueue
-          ? options.modifyQueue(this.processQueue, this.isLoading, options.args)
+          ? options.modifyQueue(
+              this.processQueue,
+              this.loadingMap,
+              options.args,
+            )
           : false;
         if (didModifyLast) {
           lastProcessInQueue.awaitingResolutions.push(resolve);
@@ -130,7 +140,7 @@ export class RequestBatcher {
       this.processQueue.push(
         waitingProcess as unknown as WaitingProcess<any[], any>,
       );
-      this.isLoading[waitingProcess.name] = true;
+      this.loadingMap[waitingProcess.name] = true;
       this.triggerOrWaitProcess();
     });
   }

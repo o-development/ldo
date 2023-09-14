@@ -2,6 +2,7 @@ import { DataResult } from "../requestResults/DataResult";
 import type { TurtleFormattingError } from "../requestResults/DataResult";
 import {
   HttpErrorResult,
+  ServerHttpError,
   type HttpErrorResultType,
 } from "../requestResults/HttpErrorResult";
 import { UnexpectedError } from "../requestResults/ErrorResult";
@@ -17,6 +18,8 @@ export type ReadResult =
   | AbsentResult
   | DataResult
   | BinaryResult
+  | ReadResultError;
+export type ReadResultError =
   | HttpErrorResultType
   | TurtleFormattingError
   | UnexpectedError;
@@ -44,8 +47,16 @@ export async function readResource({
       return addRawTurtleToDataset(rawTurtle, transaction, uri);
     } else {
       // Load Blob
+      const contentType = response.headers.get("content-type");
+      if (!contentType) {
+        return new ServerHttpError(
+          uri,
+          response,
+          "Server provided no content-type",
+        );
+      }
       const blob = await response.blob();
-      return new BinaryResult(uri, blob);
+      return new BinaryResult(uri, blob, contentType);
     }
   } catch (err) {
     return UnexpectedError.fromThrown(uri, err);

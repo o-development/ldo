@@ -1,5 +1,5 @@
 import type { LeafUri } from "../util/uriTypes";
-import { RequestBatcher } from "../util/RequestBatcher";
+import { ANY_KEY, RequestBatcher } from "../util/RequestBatcher";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type {
@@ -18,8 +18,14 @@ import type { DeleteResult } from "./requests/deleteResource";
 import { deleteResource } from "./requests/deleteResource";
 import type { UpdateResult } from "./requests/updateDataResource";
 
+const READ_KEY = "read";
+const CREATE_KEY = "createDataResource";
+const UPLOAD_KEY = "upload";
+const UPDATE_KEY = "updateDataREsource";
+const DELETE_KEY = "delete";
+
 export class LeafRequester {
-  private requestBatcher = new RequestBatcher();
+  private readonly requestBatcher = new RequestBatcher();
 
   // All intance variables
   readonly uri: LeafUri;
@@ -30,11 +36,29 @@ export class LeafRequester {
     this.context = context;
   }
 
+  isLoading(): boolean {
+    return this.requestBatcher.isLoading(ANY_KEY);
+  }
+  isCreating(): boolean {
+    return this.requestBatcher.isLoading(CREATE_KEY);
+  }
+  isUploading(): boolean {
+    return this.requestBatcher.isLoading(UPLOAD_KEY);
+  }
+  isReading(): boolean {
+    return this.requestBatcher.isLoading(READ_KEY);
+  }
+  isUpdating(): boolean {
+    return this.requestBatcher.isLoading(UPDATE_KEY);
+  }
+  isDeletinng(): boolean {
+    return this.requestBatcher.isLoading(DELETE_KEY);
+  }
+
   /**
    * Read this resource.
    */
   async read(): Promise<ReadResult> {
-    const READ_KEY = "read";
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: READ_KEY,
@@ -69,7 +93,6 @@ export class LeafRequester {
   async createDataResource(
     overwrite?: boolean,
   ): Promise<CreateResultWithoutOverwrite> {
-    const CREATE_KEY = "createDataResource";
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: CREATE_KEY,
@@ -119,7 +142,6 @@ export class LeafRequester {
     mimeType: string,
     overwrite?: boolean,
   ): Promise<UploadResultWithoutOverwrite | UploadResult> {
-    const UPLOAD_KEY = "upload";
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: UPLOAD_KEY,
@@ -157,7 +179,6 @@ export class LeafRequester {
    * Delete this resource
    */
   async delete(): Promise<DeleteResult> {
-    const DELETE_KEY = "delete";
     const transaction = this.context.solidLdoDataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: DELETE_KEY,

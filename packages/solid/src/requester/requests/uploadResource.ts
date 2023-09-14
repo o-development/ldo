@@ -17,11 +17,15 @@ import { deleteResource } from "./deleteResource";
 import { readResource } from "./readResource";
 import type { RequestParams } from "./requestParams";
 
-export type UploadResult = BinaryResult | HttpErrorResultType | UnexpectedError;
+export type UploadResult = BinaryResult | UploadResultError;
+export type UploadResultError = HttpErrorResultType | UnexpectedError;
 export type UploadResultWithoutOverwrite =
   | UploadResult
-  | TurtleFormattingError
+  | UploadResultWithoutOverwriteError
   | DataResult;
+export type UploadResultWithoutOverwriteError =
+  | UploadResultError
+  | TurtleFormattingError;
 
 export function uploadResource(
   params: RequestParams,
@@ -78,7 +82,7 @@ export async function uploadResource(
     if (httpError) return httpError;
 
     addResourceRdfToContainer(uri, transaction);
-    return new BinaryResult(uri, blob);
+    return new BinaryResult(uri, blob, mimeType);
   } catch (err) {
     return UnexpectedError.fromThrown(uri, err);
   }

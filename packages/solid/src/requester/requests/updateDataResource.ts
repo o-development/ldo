@@ -4,7 +4,8 @@ import type { HttpErrorResultType } from "../requestResults/HttpErrorResult";
 import type { UnexpectedError } from "../requestResults/ErrorResult";
 import type { RequestParams } from "./requestParams";
 
-export type UpdateResult = DataResult | HttpErrorResultType | UnexpectedError;
+export type UpdateResult = DataResult | UpdateResultError;
+export type UpdateResultError = HttpErrorResultType | UnexpectedError;
 
 export async function updateDataResource(
   _params: RequestParams,
