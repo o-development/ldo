@@ -1,6 +1,11 @@
 import { LdoDataset } from "@ldo/ldo";
 import type { Dataset, DatasetFactory } from "@rdfjs/types";
+import type { Container } from "./resource/Container";
+import type { Leaf } from "./resource/Leaf";
+import type { Resource } from "./resource/Resource";
+import type { ResourceGetterOptions } from "./ResourceStore";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
+import type { ContainerUri, LeafUri } from "./util/uriTypes";
 
 export class SolidLdoDataset extends LdoDataset {
   public context: SolidLdoDatasetContext;
@@ -14,7 +19,9 @@ export class SolidLdoDataset extends LdoDataset {
     this.context = context;
   }
 
-  // getResourceStatus(): ResourceStatus {
-  //   throw new Error("Not Implemented");
-  // }
+  get(uri: ContainerUri, options?: ResourceGetterOptions): Container;
+  get(uri: LeafUri, options?: ResourceGetterOptions): Leaf;
+  get(uri: string, options?: ResourceGetterOptions): Resource {
+    return this.context.resourceStore.get(uri, options);
+  }
 }

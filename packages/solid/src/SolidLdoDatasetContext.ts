@@ -1,4 +1,5 @@
 // import type TypedEmitter from "typed-emitter";
+import type { ResourceStore } from "./ResourceStore";
 import type { SolidLdoDataset } from "./SolidLdoDataset";
 // import type { DocumentError } from "./document/errors/DocumentError";
 
@@ -10,6 +11,6 @@ import type { SolidLdoDataset } from "./SolidLdoDataset";
 
 export interface SolidLdoDatasetContext {
   solidLdoDataset: SolidLdoDataset;
-  // documentEventEmitter: DocumentEventEmitter;
+  resourceStore: ResourceStore;
   fetch: typeof fetch;
 }
