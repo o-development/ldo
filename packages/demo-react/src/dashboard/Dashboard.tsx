@@ -1,29 +1,18 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React from "react";
 import type { FunctionComponent } from "react";
-import { UploadButton } from "./UploadButton";
-import { useContainerResource, useDataResource, useSolidAuth } from "@ldo/solid-react";
-import { AccessRules, ContainerResource } from "@ldo/solid";
+import type { BuildRootContainerChildProps } from "./BuildRootContainer";
 
-export const Dashboard: FunctionComponent = () => {
-  const { session } = useSolidAuth();
-
-  const rootContainer = useRootContainer(session.webId);
-  const mainContainer = useContainerResource()
-  // useParentContainer
-
-  useEffect(() => {
-    if (rootContainer) {
-
-    }
-  }, [rootContainer]);
-
-  return (
-    <div>
-      <div>
-        <UploadButton />
-      </div>
-      <hr />
-      <div>{mainContainer.isLoading ? "Loading" : "Not Loading"}</div>
-    </div>
-  );
+export const Dashboard: FunctionComponent<BuildRootContainerChildProps> = ({
+  rootContainer,
+}) => {
+  return <p>{rootContainer.uri}</p>;
+  // return (
+  //   <div>
+  //     <div>
+  //       <UploadButton />
+  //     </div>
+  //     <hr />
+  //     <div>{mainContainer.isLoading ? "Loading" : "Not Loading"}</div>
+  //   </div>
+  // );
 };

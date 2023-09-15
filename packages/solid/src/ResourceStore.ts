@@ -33,7 +33,7 @@ export class ResourceStore {
       if (isContainerUri(normalizedUri)) {
         resource = new Container(normalizedUri, this.context);
       } else {
-        resource = new Leaf(normalizedUri, this.context);
+        resource = new Leaf(normalizedUri as LeafUri, this.context);
       }
       this.resourceMap.set(normalizedUri, resource);
     }

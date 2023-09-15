@@ -21,6 +21,6 @@ export interface SolidAuthFunctions {
 // @ts-ignore
 export const SolidAuthContext = createContext<SolidAuthFunctions>(undefined);
 
-export function useSolidAuth() {
+export function useSolidAuth(): SolidAuthFunctions {
   return useContext(SolidAuthContext);
 }

@@ -3,6 +3,7 @@ import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import { DataResult } from "../requester/requestResults/DataResult";
 import { TurtleFormattingError } from "../requester/requestResults/DataResult";
 import type { Dataset } from "@rdfjs/types";
+import type { ContainerUri } from "./uriTypes";
 import { isContainerUri } from "./uriTypes";
 
 const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
@@ -11,7 +12,7 @@ const ldpResource = namedNode("http://www.w3.org/ns/ldp#Resource");
 const ldpContainer = namedNode("http://www.w3.org/ns/ldp#Container");
 const ldpBasicContainer = namedNode("http://www.w3.org/ns/ldp#BasicContainer");
 
-export function getParentUri(uri: string): string | undefined {
+export function getParentUri(uri: string): ContainerUri | undefined {
   const urlObject = new URL(uri);
   const pathItems = urlObject.pathname.split("/");
   if (
@@ -25,7 +26,7 @@ export function getParentUri(uri: string): string | undefined {
   }
   pathItems.pop();
   urlObject.pathname = `${pathItems.join("/")}/`;
-  return urlObject.toString();
+  return urlObject.toString() as ContainerUri;
 }
 
 export function getSlug(uri: string): string {

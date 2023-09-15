@@ -39,6 +39,7 @@
     "@craco/craco": "^7.1.0",
     "@ldo/cli": "^0.0.0",
     "@types/jsonld": "^1.5.9",
+    "@types/react": "^18.2.21",
     "@types/shexj": "^2.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
   }

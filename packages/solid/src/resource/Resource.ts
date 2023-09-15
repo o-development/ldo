@@ -14,11 +14,13 @@ import type { DeleteResultError } from "../requester/requests/deleteResource";
 import type { ReadResultError } from "../requester/requests/readResource";
 import type { Container } from "./Container";
 import type { Requester } from "../requester/Requester";
+import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
 
 export abstract class Resource {
   // All intance variables
   protected readonly context: SolidLdoDatasetContext;
   readonly uri: string;
+  abstract readonly type: string;
   protected abstract readonly requester: Requester;
   protected didInitialFetch: boolean = false;
   protected absent: boolean | undefined;
@@ -89,6 +91,7 @@ export abstract class Resource {
           data: result.blob,
           mimeType: result.mimeType,
         };
+        return this;
       default:
         return new UnexpectedError(
           this.uri,
@@ -132,7 +135,7 @@ export abstract class Resource {
 
   // Parent Container Methods -- Remember to change for Container
   abstract getParentContainer(): Promise<Container | undefined>;
-  abstract getRootContainer(): Promise<Container>;
+  abstract getRootContainer(): Promise<Container | CheckRootResultError>;
   // Exclusing Methods =========================================================
   // Data Methods (Data Leaf Only)
 

@@ -1,8 +1,7 @@
 export * from "./BrowserSolidLdoProvider";
 export * from "./SolidAuthContext";
 
+export { useLdo } from "./SolidLdoProvider";
+
 // documentHooks
-export * from "./documentHooks/useAccessRules";
-export * from "./documentHooks/useBinaryResource";
-export * from "./documentHooks/useContainerResource";
-export * from "./documentHooks/useDataResource";
+export * from "./useResource";

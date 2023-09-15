@@ -4,11 +4,9 @@ import type { SolidLdoDataset } from "../src/SolidLdoDataset";
 import { createSolidLdoDataset } from "../src/createSolidLdoDataset";
 import { LeafRequester } from "../src/requester/LeafRequester";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import type { BinaryResult } from "../src/requester/requestResults/BinaryResult";
-import { Readable } from "stream";
 
 describe("Leaf Requester", () => {
-  let app: App;
+  let _app: App;
   let authFetch: typeof fetch;
   let fetchMock: typeof fetch;
   let solidLdoDataset: SolidLdoDataset;
@@ -25,7 +23,7 @@ describe("Leaf Requester", () => {
     fetchMock = jest.fn(authFetch);
     solidLdoDataset = createSolidLdoDataset({ fetch: fetchMock });
     // Create a new document called sample.ttl
-    const [result] = await Promise.all([
+    await Promise.all([
       authFetch(`${ROOT_COONTAINER}test_leaf/`, {
         method: "POST",
         headers: { "content-type": "text/turtle", slug: "sample.ttl" },

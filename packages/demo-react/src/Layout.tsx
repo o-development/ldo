@@ -4,11 +4,12 @@ import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./dashboard/Dashboard";
 import { Media } from "./media/Media";
+import { BuildRootContainer } from "./dashboard/BuildRootContainer";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <BuildRootContainer child={Dashboard} />,
   },
   {
     path: "/media/:uri",
@@ -16,13 +17,12 @@ const router = createBrowserRouter([
   },
 ]);
 
-const DEFAULT_ISSUER = "https://pod.lightover.com";
+const DEFAULT_ISSUER = "https://solidweb.me";
 
 export const Layout: FunctionComponent = () => {
   const { login, logout, signUp, session, ranInitialAuthCheck } =
     useSolidAuth();
   const [issuer, setIssuer] = useState(DEFAULT_ISSUER);
-  console.log(ranInitialAuthCheck);
   if (!ranInitialAuthCheck) {
     return <p>Loading</p>;
   }

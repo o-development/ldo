@@ -3,43 +3,45 @@ import {
   useMemo,
   type FunctionComponent,
   type PropsWithChildren,
-  useRef,
   useEffect,
 } from "react";
 import { useSolidAuth } from "./SolidAuthContext";
-import type { SolidLdoDataset, OnDocumentErrorCallback } from "@ldo/solid";
+import type { SolidLdoDataset } from "@ldo/solid";
 import { createSolidLdoDataset } from "@ldo/solid";
+import type { LdoBase, ShapeType } from "@ldo/ldo";
+import type { SubjectNode } from "@ldo/rdf-utils";
 
-export const SolidLdoDatasetReactContext =
+export const SolidLdoReactContext =
   // This will be set in the provider
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  createContext<SolidLdoDataset>(undefined);
+  createContext<UseLdoResult>(undefined);
 
-export function useSolidLdoDataset() {
-  return useContext(SolidLdoDatasetReactContext);
+export interface UseLdoResult {
+  dataset: SolidLdoDataset;
+  getResource: SolidLdoDataset["getResource"];
+  getSubject<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+    subject: string | SubjectNode,
+  ): Type | Error;
 }
 
-export interface SolidLdoProviderProps extends PropsWithChildren {
-  onDocumentError?: OnDocumentErrorCallback;
+export function useLdo(): UseLdoResult {
+  return useContext(SolidLdoReactContext);
 }
+
+export interface SolidLdoProviderProps extends PropsWithChildren {}
 
 export const SolidLdoProvider: FunctionComponent<SolidLdoProviderProps> = ({
-  onDocumentError,
   children,
 }) => {
   const { fetch } = useSolidAuth();
-  const curOnDocumentError = useRef(onDocumentError);
 
   // Initialize storeDependencies before render
-  const solidLdoDataset = useMemo(() => {
+  const solidLdoDataset: SolidLdoDataset = useMemo(() => {
     const ldoDataset = createSolidLdoDataset({
       fetch,
     });
-    if (curOnDocumentError.current) {
-      ldoDataset.onDocumentError(curOnDocumentError.current);
-    }
-    console.log("ldodatset1", ldoDataset);
     return ldoDataset;
   }, []);
 
@@ -47,22 +49,24 @@ export const SolidLdoProvider: FunctionComponent<SolidLdoProviderProps> = ({
   useEffect(() => {
     solidLdoDataset.context.fetch = fetch;
   }, [fetch]);
-  useEffect(() => {
-    if (curOnDocumentError.current) {
-      solidLdoDataset.offDocumentError(curOnDocumentError.current);
-    }
-    if (onDocumentError) {
-      solidLdoDataset.onDocumentError(onDocumentError);
-      curOnDocumentError.current = onDocumentError;
-    } else {
-      curOnDocumentError.current = undefined;
-    }
-  }, [onDocumentError]);
 
-  console.log("ldoDataset 2", solidLdoDataset);
+  const value: UseLdoResult = useMemo(
+    () => ({
+      dataset: solidLdoDataset,
+      getResource: solidLdoDataset.getResource.bind(solidLdoDataset),
+      getSubject<Type extends LdoBase>(
+        shapeType: ShapeType<Type>,
+        subject: string | SubjectNode,
+      ): Type | Error {
+        return solidLdoDataset.usingType(shapeType).fromSubject(subject);
+      },
+    }),
+    [solidLdoDataset],
+  );
+
   return (
-    <SolidLdoDatasetReactContext.Provider value={solidLdoDataset}>
+    <SolidLdoReactContext.Provider value={value}>
       {children}
-    </SolidLdoDatasetReactContext.Provider>
+    </SolidLdoReactContext.Provider>
   );
 };
