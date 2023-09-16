@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./dashboard/Dashboard";
-import { Media } from "./media/Media";
 import { BuildMainContainer } from "./dashboard/BuildMainContainer";
+import { MediaPage } from "./media/MediaPage";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +13,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/media/:uri",
-    element: <Media />,
+    element: <MediaPage />,
   },
 ]);
 

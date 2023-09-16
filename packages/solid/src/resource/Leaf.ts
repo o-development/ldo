@@ -19,13 +19,15 @@ import type { Container } from "./Container";
 import { Resource } from "./Resource";
 
 export class Leaf extends Resource {
+  readonly uri: LeafUri;
   protected requester: Requester;
   readonly type = "leaf" as const;
 
   protected binaryData: { data: Blob; mimeType: string } | undefined;
 
   constructor(uri: LeafUri, context: SolidLdoDatasetContext) {
-    super(uri, context);
+    super(context);
+    this.uri = uri;
     this.requester = new LeafRequester(uri, context);
   }
 

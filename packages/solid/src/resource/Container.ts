@@ -18,12 +18,14 @@ import type { Leaf } from "./Leaf";
 import { Resource } from "./Resource";
 
 export class Container extends Resource {
+  readonly uri: ContainerUri;
   protected requester: ContainerRequester;
   protected rootContainer: boolean | undefined;
   readonly type = "container" as const;
 
   constructor(uri: ContainerUri, context: SolidLdoDatasetContext) {
-    super(uri, context);
+    super(context);
+    this.uri = uri;
     this.requester = new ContainerRequester(uri, context);
   }
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import type { FunctionComponent } from "react";
-import type { Container, LeafUri } from "@ldo/solid";
+import type { Container, ContainerUri, LeafUri } from "@ldo/solid";
 import { useSolidAuth, useLdo } from "@ldo/solid-react";
 
 export interface BuildMainContainerChildProps {
-  mainContainer: Container;
+  mainContainerUri: ContainerUri;
 }
 
 export const BuildMainContainer: FunctionComponent<{
@@ -23,29 +23,28 @@ export const BuildMainContainer: FunctionComponent<{
           alert(rootContainer.message);
           return;
         }
-        const mainContainer =
-          await rootContainer.createChildIfAbsent("demo-react/");
-        if (mainContainer.type === "error") {
-          alert(mainContainer.message);
-          return;
-        }
+        const mainContainer = getResource(`${rootContainer.uri}demo-react/`);
         setMainContainer(mainContainer);
-        mainContainer.setAccessRules({
-          public: {
-            read: true,
-            write: false,
-            append: false,
-            control: false,
-          },
-          agent: {
-            [session.webId!]: {
+        await mainContainer.read();
+        if (mainContainer.isAbsent()) {
+          await mainContainer.createIfAbsent();
+          await mainContainer.setAccessRules({
+            public: {
               read: true,
-              write: true,
-              append: true,
-              control: true,
+              write: false,
+              append: false,
+              control: false,
             },
-          },
-        });
+            agent: {
+              [session.webId!]: {
+                read: true,
+                write: true,
+                append: true,
+                control: true,
+              },
+            },
+          });
+        }
       });
     }
   }, [session.webId]);
@@ -55,5 +54,5 @@ export const BuildMainContainer: FunctionComponent<{
     return <p>Loading</p>;
   }
 
-  return <Child mainContainer={mainContainer} />;
+  return <Child mainContainerUri={mainContainer.uri} />;
 };

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
-export function useForceUpdate() {
+export function useForceReload() {
   const [, setValue] = useState(0);
-  return () => setValue((value) => value + 1);
+  return useCallback(() => setValue((value) => value + 1), []);
 }

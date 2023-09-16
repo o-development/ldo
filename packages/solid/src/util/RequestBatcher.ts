@@ -141,6 +141,7 @@ export class RequestBatcher {
         waitingProcess as unknown as WaitingProcess<any[], any>,
       );
       this.loadingMap[waitingProcess.name] = true;
+      this.loadingMap[ANY_KEY] = true;
       this.triggerOrWaitProcess();
     });
   }

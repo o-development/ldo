@@ -21,8 +21,8 @@ export class SolidLdoDataset extends LdoDataset {
 
   getResource(uri: ContainerUri, options?: ResourceGetterOptions): Container;
   getResource(uri: LeafUri, options?: ResourceGetterOptions): Leaf;
-  getResource(uri: string, options?: ResourceGetterOptions): Resource;
-  getResource(uri: string, options?: ResourceGetterOptions): Resource {
+  getResource(uri: string, options?: ResourceGetterOptions): Leaf | Container;
+  getResource(uri: string, options?: ResourceGetterOptions): Leaf | Container {
     return this.context.resourceStore.get(uri, options);
   }
 }

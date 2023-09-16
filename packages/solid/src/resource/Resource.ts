@@ -19,18 +19,22 @@ import type {
 } from "../requester/requestResults/AccessRule";
 import { getAccessRules } from "../requester/requests/getAccessRules";
 import { setAccessRules } from "../requester/requests/setAccessRules";
+import type TypedEmitter from "typed-emitter";
+import EventEmitter from "events";
 
-export abstract class Resource {
+export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
+  update: () => void;
+}>) {
   // All intance variables
   protected readonly context: SolidLdoDatasetContext;
-  readonly uri: string;
+  abstract readonly uri: string;
   abstract readonly type: string;
   protected abstract readonly requester: Requester;
   protected didInitialFetch: boolean = false;
   protected absent: boolean | undefined;
 
-  constructor(uri: string, context: SolidLdoDatasetContext) {
-    this.uri = uri;
+  constructor(context: SolidLdoDatasetContext) {
+    super();
     this.context = context;
   }
 
@@ -74,18 +78,26 @@ export abstract class Resource {
   protected parseResult<PossibleErrors extends ErrorResult>(
     result: AbsentResult | BinaryResult | DataResult | PossibleErrors,
   ): this | PossibleErrors {
+    let toReturn: this | PossibleErrors;
     switch (result.type) {
       case "error":
-        return result;
+        toReturn = result;
+        break;
       case "absent":
         this.didInitialFetch = true;
         this.absent = true;
-        return this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        toReturn = this;
+        break;
       default:
         this.didInitialFetch = true;
         this.absent = false;
-        return this;
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        toReturn = this;
+        break;
     }
+    this.emit("update");
+    return toReturn;
   }
 
   // Read Methods
