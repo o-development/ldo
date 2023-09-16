@@ -2,19 +2,23 @@ import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import type { AbsentResult } from "../requester/requestResults/AbsentResult";
 import type { BinaryResult } from "../requester/requestResults/BinaryResult";
 import type { DataResult } from "../requester/requestResults/DataResult";
-import {
-  UnexpectedError,
-  type ErrorResult,
-} from "../requester/requestResults/ErrorResult";
+import { type ErrorResult } from "../requester/requestResults/ErrorResult";
 import type {
   CreateResultErrors,
   CreateResultWithoutOverwriteErrors,
 } from "../requester/requests/createDataResource";
-import type { DeleteResultError } from "../requester/requests/deleteResource";
 import type { ReadResultError } from "../requester/requests/readResource";
 import type { Container } from "./Container";
 import type { Requester } from "../requester/Requester";
 import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
+import type {
+  AccessRule,
+  AccessRuleChangeResult,
+  AccessRuleFetchError,
+  AccessRuleResult,
+} from "../requester/requestResults/AccessRule";
+import { getAccessRules } from "../requester/requests/getAccessRules";
+import { setAccessRules } from "../requester/requests/setAccessRules";
 
 export abstract class Resource {
   // All intance variables
@@ -24,7 +28,6 @@ export abstract class Resource {
   protected abstract readonly requester: Requester;
   protected didInitialFetch: boolean = false;
   protected absent: boolean | undefined;
-  protected binaryData: { data: Blob; mimeType: string } | undefined;
 
   constructor(uri: string, context: SolidLdoDatasetContext) {
     this.uri = uri;
@@ -68,43 +71,26 @@ export abstract class Resource {
     return this.absent === undefined ? undefined : !this.absent;
   }
 
-  protected parseResult(
-    result: AbsentResult | BinaryResult | DataResult | ErrorResult,
-  ) {
+  protected parseResult<PossibleErrors extends ErrorResult>(
+    result: AbsentResult | BinaryResult | DataResult | PossibleErrors,
+  ): this | PossibleErrors {
     switch (result.type) {
       case "error":
         return result;
       case "absent":
         this.didInitialFetch = true;
         this.absent = true;
-        delete this.binaryData;
-        return this;
-      case "data":
-        this.didInitialFetch = true;
-        this.absent = false;
-        delete this.binaryData;
-        return this;
-      case "binary":
-        this.didInitialFetch = true;
-        this.absent = false;
-        this.binaryData = {
-          data: result.blob,
-          mimeType: result.mimeType,
-        };
         return this;
       default:
-        return new UnexpectedError(
-          this.uri,
-          new Error("Unknown request result"),
-        );
+        this.didInitialFetch = true;
+        this.absent = false;
+        return this;
     }
   }
 
   // Read Methods
   async read(): Promise<this | ReadResultError> {
-    return this.parseResult(await this.requester.read()) as
-      | this
-      | ReadResultError;
+    return this.parseResult(await this.requester.read());
   }
   async readIfUnfetched(): Promise<this | ReadResultError> {
     if (this.didInitialFetch) {
@@ -115,30 +101,26 @@ export abstract class Resource {
 
   // Create Methods
   async createAndOverwrite(): Promise<this | CreateResultErrors> {
-    return this.parseResult(await this.requester.createDataResource(true)) as
-      | this
-      | CreateResultErrors;
+    return this.parseResult(await this.requester.createDataResource(true));
   }
 
   async createIfAbsent(): Promise<this | CreateResultWithoutOverwriteErrors> {
-    return this.parseResult(await this.requester.createDataResource()) as
-      | this
-      | CreateResultWithoutOverwriteErrors;
-  }
-
-  // Delete Method
-  async delete(): Promise<Resource | DeleteResultError> {
-    return this.parseResult(await this.requester.delete()) as
-      | Resource
-      | DeleteResultError;
+    return this.parseResult(await this.requester.createDataResource());
   }
 
   // Parent Container Methods -- Remember to change for Container
-  abstract getParentContainer(): Promise<Container | undefined>;
   abstract getRootContainer(): Promise<Container | CheckRootResultError>;
-  // Exclusing Methods =========================================================
-  // Data Methods (Data Leaf Only)
 
-  // Binary Methods (Binary Only)
-  abstract getMimeType(): string;
+  async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
+    return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
+  }
+
+  async setAccessRules(
+    newAccessRules: AccessRule,
+  ): Promise<AccessRuleChangeResult | AccessRuleFetchError> {
+    return setAccessRules(
+      { uri: this.uri, fetch: this.context.fetch },
+      newAccessRules,
+    );
+  }
 }

@@ -3,6 +3,7 @@ import {
   getParentUri,
   getSlug,
 } from "../../util/rdfUtils";
+import { isContainerUri } from "../../util/uriTypes";
 import type { BinaryResult } from "../requestResults/BinaryResult";
 import type { TurtleFormattingError } from "../requestResults/DataResult";
 import { DataResult } from "../requestResults/DataResult";
@@ -57,12 +58,17 @@ export async function createDataResource(
     }
     // Create the document
     const parentUri = getParentUri(uri)!;
+    console.log("This is the URI", uri);
+    const headers: HeadersInit = {
+      "content-type": "text/turtle",
+      slug: getSlug(uri),
+    };
+    if (isContainerUri(uri)) {
+      headers.link = '<http://www.w3.org/ns/ldp#Container>; rel="type"';
+    }
     const response = await fetch(parentUri, {
       method: "post",
-      headers: {
-        "content-type": "text/turtle",
-        slug: getSlug(uri),
-      },
+      headers,
     });
 
     const httpError = HttpErrorResult.checkResponse(uri, response);

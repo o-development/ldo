@@ -44,13 +44,13 @@ export function uploadResource(
   blob: Blob,
   mimeType: string,
   overwrite?: boolean,
-): Promise<UploadResultWithoutOverwrite | UploadResult>;
+): Promise<UploadResultWithoutOverwrite>;
 export async function uploadResource(
   params: RequestParams,
   blob: Blob,
   mimeType: string,
   overwrite?: boolean,
-): Promise<UploadResultWithoutOverwrite | UploadResult> {
+): Promise<UploadResultWithoutOverwrite> {
   const { uri, transaction, fetch } = params;
   try {
     if (overwrite) {

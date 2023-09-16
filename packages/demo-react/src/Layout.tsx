@@ -4,12 +4,12 @@ import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./dashboard/Dashboard";
 import { Media } from "./media/Media";
-import { BuildRootContainer } from "./dashboard/BuildRootContainer";
+import { BuildMainContainer } from "./dashboard/BuildMainContainer";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <BuildRootContainer child={Dashboard} />,
+    element: <BuildMainContainer child={Dashboard} />,
   },
   {
     path: "/media/:uri",

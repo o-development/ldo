@@ -6,11 +6,15 @@ import type { Dataset } from "@rdfjs/types";
 import type { ContainerUri } from "./uriTypes";
 import { isContainerUri } from "./uriTypes";
 
-const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
-const rdfType = namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-const ldpResource = namedNode("http://www.w3.org/ns/ldp#Resource");
-const ldpContainer = namedNode("http://www.w3.org/ns/ldp#Container");
-const ldpBasicContainer = namedNode("http://www.w3.org/ns/ldp#BasicContainer");
+export const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
+export const rdfType = namedNode(
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+);
+export const ldpResource = namedNode("http://www.w3.org/ns/ldp#Resource");
+export const ldpContainer = namedNode("http://www.w3.org/ns/ldp#Container");
+export const ldpBasicContainer = namedNode(
+  "http://www.w3.org/ns/ldp#BasicContainer",
+);
 
 export function getParentUri(uri: string): ContainerUri | undefined {
   const urlObject = new URL(uri);
@@ -32,7 +36,7 @@ export function getParentUri(uri: string): ContainerUri | undefined {
 export function getSlug(uri: string): string {
   const urlObject = new URL(uri);
   const pathItems = urlObject.pathname.split("/");
-  return pathItems[pathItems.length - 1];
+  return pathItems[pathItems.length - 1] || pathItems[pathItems.length - 2];
 }
 
 export function deleteResourceRdfFromContainer(

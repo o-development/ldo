@@ -1,11 +1,11 @@
 import React from "react";
 import type { FunctionComponent } from "react";
-import type { BuildRootContainerChildProps } from "./BuildRootContainer";
+import type { BuildMainContainerChildProps } from "./BuildMainContainer";
 
-export const Dashboard: FunctionComponent<BuildRootContainerChildProps> = ({
-  rootContainer,
+export const Dashboard: FunctionComponent<BuildMainContainerChildProps> = ({
+  mainContainer,
 }) => {
-  return <p>{rootContainer.uri}</p>;
+  return <p>{mainContainer.uri}</p>;
   // return (
   //   <div>
   //     <div>

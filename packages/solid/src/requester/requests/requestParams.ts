@@ -6,3 +6,5 @@ export interface RequestParams {
   fetch: typeof fetch;
   transaction: TransactionalDataset<Quad>;
 }
+
+export type SimpleRequestParams = Omit<RequestParams, "transaction">;

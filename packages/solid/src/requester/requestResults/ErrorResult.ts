@@ -11,7 +11,7 @@ export abstract class ErrorResult extends Error {
 
 export class UnexpectedError extends ErrorResult {
   error: Error;
-  readonly errorType = "unexpected";
+  readonly errorType = "unexpected" as const;
 
   constructor(uri: string, error: Error) {
     super(uri, error.message);
@@ -29,5 +29,36 @@ export class UnexpectedError extends ErrorResult {
         new Error(`Error of type ${typeof err} thrown: ${err}`),
       );
     }
+  }
+}
+
+export class AggregateError<ErrorType extends ErrorResult> extends ErrorResult {
+  readonly errorType = "aggregate" as const;
+  readonly errors: ErrorType[];
+
+  constructor(
+    uri: string,
+    errors: (ErrorType | AggregateError<ErrorType>)[],
+    message?: string,
+  ) {
+    const allErrors: ErrorType[] = [];
+    errors.forEach((error) => {
+      if (error instanceof AggregateError) {
+        error.errors.forEach((subError) => {
+          allErrors.push(subError);
+        });
+      } else {
+        allErrors.push(error);
+      }
+    });
+    super(
+      uri,
+      message ||
+        `Encountered multiple errors:${allErrors.reduce(
+          (agg, cur) => `${agg}\n${cur}`,
+          "",
+        )}`,
+    );
+    this.errors = allErrors;
   }
 }

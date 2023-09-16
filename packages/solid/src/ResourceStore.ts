@@ -1,6 +1,5 @@
 import { Container } from "./resource/Container";
 import { Leaf } from "./resource/Leaf";
-import type { Resource } from "./resource/Resource";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
 import { isContainerUri } from "./util/uriTypes";
@@ -10,7 +9,7 @@ export interface ResourceGetterOptions {
 }
 
 export class ResourceStore {
-  protected resourceMap: Map<string, Resource>;
+  protected resourceMap: Map<string, Leaf | Container>;
   protected context: SolidLdoDatasetContext;
 
   constructor(context: SolidLdoDatasetContext) {
@@ -20,8 +19,8 @@ export class ResourceStore {
 
   get(uri: ContainerUri, options?: ResourceGetterOptions): Container;
   get(uri: LeafUri, options?: ResourceGetterOptions): Leaf;
-  get(uri: string, options?: ResourceGetterOptions): Resource;
-  get(uri: string, options?: ResourceGetterOptions): Resource {
+  get(uri: string, options?: ResourceGetterOptions): Leaf | Container;
+  get(uri: string, options?: ResourceGetterOptions): Leaf | Container {
     // Normalize URI by removing hash
     const url = new URL(uri);
     url.hash = "";

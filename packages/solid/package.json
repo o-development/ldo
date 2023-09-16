@@ -37,6 +37,7 @@
     "typed-emitter": "^2.1.0"
   },
   "dependencies": {
+    "@inrupt/solid-client": "^1.30.0",
     "@ldo/dataset": "^0.0.0",
     "@ldo/ldo": "^0.0.0",
     "@ldo/rdf-utils": "^0.0.0",

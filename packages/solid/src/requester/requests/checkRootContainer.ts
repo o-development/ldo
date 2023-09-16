@@ -3,7 +3,7 @@ import {
   type HttpErrorResultType,
 } from "../requestResults/HttpErrorResult";
 import { UnexpectedError } from "../requestResults/ErrorResult";
-import type { RequestParams } from "./requestParams";
+import type { SimpleRequestParams } from "./requestParams";
 import { parse as parseLinkHeader } from "http-link-header";
 
 export type CheckRootResult = boolean | CheckRootResultError;
@@ -12,7 +12,7 @@ export type CheckRootResultError = HttpErrorResultType | UnexpectedError;
 export async function checkRootContainer({
   uri,
   fetch,
-}: Omit<RequestParams, "transaction">): Promise<CheckRootResult> {
+}: SimpleRequestParams): Promise<CheckRootResult> {
   try {
     // Fetch options to determine the document type
     const response = await fetch(uri, { method: "HEAD" });
