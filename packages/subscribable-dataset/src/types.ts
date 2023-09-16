@@ -117,6 +117,11 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   ): this;
 
   /**
+   * Removes the specified listener from all events
+   */
+  removeListenerFromAllEvents(listener: nodeEventListener<InAndOutQuad>): this;
+
+  /**
    * By default EventEmitters will print a warning if more than 10 listeners are added for a particular event. This is a useful default that helps finding memory leaks. The emitter.setMaxListeners() method allows the limit to be modified for this specific EventEmitter instance. The value can be set to Infinity (or 0) to indicate an unlimited number of listeners.
    */
   setMaxListeners(n: number): this;

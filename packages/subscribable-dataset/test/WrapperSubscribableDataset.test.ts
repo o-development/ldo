@@ -336,6 +336,22 @@ describe("WrapperSubscribableDataset", () => {
     expect(callbackFunc).toHaveBeenCalledTimes(0);
   });
 
+  it("Unsubscribes from all events for a particular listener", () => {
+    const callbackFunc = jest.fn();
+    subscribableDatastet.on(
+      [namedNode("http://example.org/cartoons#Tom"), null, null, null],
+      callbackFunc,
+    );
+    subscribableDatastet.on(
+      [namedNode("http://example.org/cartoons#Licky"), null, null, null],
+      callbackFunc,
+    );
+    subscribableDatastet.removeListenerFromAllEvents(callbackFunc);
+    subscribableDatastet.add(tomColorQuad);
+    subscribableDatastet.add(lickyNameQuad);
+    expect(callbackFunc).toHaveBeenCalledTimes(0);
+  });
+
   it("Runs 'once' without erroring", () => {
     expect(
       subscribableDatastet.once(

@@ -3,8 +3,8 @@ import fs from "fs-extra";
 import path from "path";
 import { renderFile } from "ejs";
 
-const DEFAULT_SHAPES_FOLDER = "./shapes";
-const DEFAULT_LDO_FOLDER = "./ldo";
+const DEFAULT_SHAPES_FOLDER = "./.shapes";
+const DEFAULT_LDO_FOLDER = "./.ldo";
 const POTENTIAL_PARENT_DIRECTORIES = ["src", "lib", "bin"];
 
 export interface InitOptions {

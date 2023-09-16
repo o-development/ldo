@@ -42,6 +42,11 @@ export default class WrapperSubscribableDataset<
    * The underlying event emitter
    */
   private eventEmitter: EventEmitter;
+  /**
+   * Helps find all the events for a given listener
+   */
+  private listenerHashMap: Map<nodeEventListener<InAndOutQuad>, Set<string>> =
+    new Map();
 
   /**
    *
@@ -502,7 +507,12 @@ export default class WrapperSubscribableDataset<
     eventName: QuadMatch,
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
-    this.eventEmitter.on(quadMatchToString(eventName), listener);
+    const eventString = quadMatchToString(eventName);
+    if (!this.listenerHashMap.has(listener)) {
+      this.listenerHashMap.set(listener, new Set());
+    }
+    this.listenerHashMap.get(listener)?.add(eventString);
+    this.eventEmitter.on(eventString, listener);
     return this;
   }
 
@@ -558,6 +568,19 @@ export default class WrapperSubscribableDataset<
     listener: nodeEventListener<InAndOutQuad>,
   ): this {
     this.eventEmitter.removeListener(quadMatchToString(eventName), listener);
+    return this;
+  }
+
+  /**
+   * Removes the specified listener from the listener array for the event named eventName.
+   */
+  removeListenerFromAllEvents(listener: nodeEventListener<InAndOutQuad>): this {
+    const eventStringSet = this.listenerHashMap.get(listener);
+    if (eventStringSet) {
+      eventStringSet.forEach((eventString) => {
+        this.eventEmitter.off(eventString, listener);
+      });
+    }
     return this;
   }
 
