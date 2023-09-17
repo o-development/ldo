@@ -21,6 +21,7 @@ import { getAccessRules } from "../requester/requests/getAccessRules";
 import { setAccessRules } from "../requester/requests/setAccessRules";
 import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
+import { getParentUri } from "../util/rdfUtils";
 
 export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   update: () => void;
@@ -51,9 +52,6 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   isReading(): boolean {
     return this.requester.isReading();
   }
-  isUpdating(): boolean {
-    return this.requester.isUpdating();
-  }
   isDeleting(): boolean {
     return this.requester.isDeletinng();
   }
@@ -78,26 +76,24 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   protected parseResult<PossibleErrors extends ErrorResult>(
     result: AbsentResult | BinaryResult | DataResult | PossibleErrors,
   ): this | PossibleErrors {
-    let toReturn: this | PossibleErrors;
-    switch (result.type) {
-      case "error":
-        toReturn = result;
-        break;
-      case "absent":
-        this.didInitialFetch = true;
-        this.absent = true;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        toReturn = this;
-        break;
-      default:
-        this.didInitialFetch = true;
-        this.absent = false;
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        toReturn = this;
-        break;
+    if (result.type === "error") {
+      return result;
+    }
+
+    if (result.type === "absent") {
+      this.didInitialFetch = true;
+      this.absent = true;
+    } else {
+      this.didInitialFetch = true;
+      this.absent = false;
     }
     this.emit("update");
-    return toReturn;
+    const parentUri = getParentUri(this.uri);
+    if (parentUri) {
+      const parentContainer = this.context.resourceStore.get(parentUri);
+      parentContainer.emit("update");
+    }
+    return this;
   }
 
   // Read Methods

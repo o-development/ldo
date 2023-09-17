@@ -16,7 +16,7 @@ export const Dashboard: FunctionComponent<BuildMainContainerChildProps> = ({
   return (
     <div>
       <div>
-        <UploadButton />
+        <UploadButton mainContainer={mainContainer} />
       </div>
       <hr />
       {mainContainer.children().map((child) => (

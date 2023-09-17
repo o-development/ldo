@@ -1,6 +1,5 @@
 import { ANY_KEY, RequestBatcher } from "../util/RequestBatcher";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
-import type { DatasetChanges } from "@ldo/rdf-utils";
 import type {
   CreateResult,
   CreateResultWithoutOverwrite,
@@ -15,12 +14,10 @@ import type {
 import { uploadResource } from "./requests/uploadResource";
 import type { DeleteResult } from "./requests/deleteResource";
 import { deleteResource } from "./requests/deleteResource";
-import type { UpdateResult } from "./requests/updateDataResource";
 
 const READ_KEY = "read";
 const CREATE_KEY = "createDataResource";
 const UPLOAD_KEY = "upload";
-const UPDATE_KEY = "updateDataREsource";
 const DELETE_KEY = "delete";
 
 export abstract class Requester {
@@ -46,9 +43,6 @@ export abstract class Requester {
   }
   isReading(): boolean {
     return this.requestBatcher.isLoading(READ_KEY);
-  }
-  isUpdating(): boolean {
-    return this.requestBatcher.isLoading(UPDATE_KEY);
   }
   isDeletinng(): boolean {
     return this.requestBatcher.isLoading(DELETE_KEY);
@@ -164,14 +158,6 @@ export abstract class Requester {
       transaction.commit();
     }
     return result;
-  }
-
-  /**
-   * Update the data on this resource
-   * @param changes
-   */
-  updateDataResource(_changes: DatasetChanges): Promise<UpdateResult> {
-    throw new Error("Not Implemented");
   }
 
   /**

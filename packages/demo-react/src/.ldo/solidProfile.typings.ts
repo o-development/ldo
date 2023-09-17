@@ -1,4 +1,4 @@
-import type { ContextDefinition } from "jsonld";
+import { ContextDefinition } from "jsonld";
 
 /**
  * =============================================================================

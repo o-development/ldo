@@ -12,4 +12,16 @@ export class DataResult extends RequesterResult {
 
 export class TurtleFormattingError extends ErrorResult {
   errorType = "turtleFormatting" as const;
+
+  constructor(uri: string, message?: string) {
+    super(uri, message || `Problem parsing turtle for ${uri}`);
+  }
+}
+
+export class InvalidUriError extends ErrorResult {
+  errorType = "invalidUri" as const;
+
+  constructor(uri: string, message?: string) {
+    super(uri, message || `${uri} is not a valid uri.`);
+  }
 }

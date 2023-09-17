@@ -1,11 +1,17 @@
 import { LdoDataset } from "@ldo/ldo";
-import type { Dataset, DatasetFactory } from "@rdfjs/types";
+import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
+import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
+import { CommitChangesSuccess } from "./requester/requestResults/CommitChangesSuccess";
+import { InvalidUriError } from "./requester/requestResults/DataResult";
+import { AggregateError } from "./requester/requestResults/ErrorResult";
+import type { UpdateResultError } from "./requester/requests/updateDataResource";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
-import type { Resource } from "./resource/Resource";
 import type { ResourceGetterOptions } from "./ResourceStore";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
+import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
+import { isContainerUri } from "./util/uriTypes";
 
 export class SolidLdoDataset extends LdoDataset {
   public context: SolidLdoDatasetContext;
@@ -24,5 +30,57 @@ export class SolidLdoDataset extends LdoDataset {
   getResource(uri: string, options?: ResourceGetterOptions): Leaf | Container;
   getResource(uri: string, options?: ResourceGetterOptions): Leaf | Container {
     return this.context.resourceStore.get(uri, options);
+  }
+
+  async commitChangesToPod(
+    changes: DatasetChanges<Quad>,
+  ): Promise<
+    CommitChangesSuccess | AggregateError<UpdateResultError | InvalidUriError>
+  > {
+    const changesByGraph = splitChangesByGraph(changes);
+    const results: [
+      GraphNode,
+      DatasetChanges<Quad>,
+      UpdateResultError | InvalidUriError | Leaf | { type: "defaultGraph" },
+    ][] = await Promise.all(
+      Array.from(changesByGraph.entries()).map(
+        async ([graph, datasetChanges]) => {
+          if (graph.termType === "DefaultGraph") {
+            // Undefined means that this is the default graph
+            this.bulk(datasetChanges);
+            return [graph, datasetChanges, { type: "defaultGraph" }];
+          }
+          if (isContainerUri(graph.value)) {
+            return [
+              graph,
+              datasetChanges,
+              new InvalidUriError(
+                graph.value,
+                `Container URIs are not allowed for custom data.`,
+              ),
+            ];
+          }
+          const resource = this.getResource(graph.value as LeafUri);
+          return [graph, datasetChanges, await resource.update(datasetChanges)];
+        },
+      ),
+    );
+
+    // If one has errored, return error
+    const errors = results.filter((result) => result[2].type === "error");
+    if (errors.length > 0) {
+      return new AggregateError(
+        "",
+        errors.map(
+          (result) => result[2] as UpdateResultError | InvalidUriError,
+        ),
+      );
+    }
+    return new CommitChangesSuccess(
+      "",
+      results
+        .map((result) => result[2])
+        .filter((result): result is Leaf => result.type === "leaf"),
+    );
   }
 }

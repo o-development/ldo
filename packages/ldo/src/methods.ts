@@ -57,7 +57,7 @@ export function commitTransaction(ldo: LdoBase): void {
   });
 }
 
-export function transactionChanges(ldo: LdoBase): DatasetChanges {
+export function transactionChanges(ldo: LdoBase): DatasetChanges<Quad> {
   const [dataset] = getTransactionalDatasetFromLdo(ldo);
   return dataset.getChanges();
 }

@@ -11,6 +11,10 @@ import type {
 } from "../requester/requests/createDataResource";
 import type { DeleteResultError } from "../requester/requests/deleteResource";
 import type { ReadResultError } from "../requester/requests/readResource";
+import type {
+  UploadResultError,
+  UploadResultWithoutOverwriteError,
+} from "../requester/requests/uploadResource";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import { getParentUri, ldpContains } from "../util/rdfUtils";
 import type { ContainerUri, LeafUri } from "../util/uriTypes";
@@ -89,6 +93,13 @@ export class Container extends Resource {
     });
   }
 
+  child(slug: ContainerUri): Container;
+  child(slug: LeafUri): Leaf;
+  child(slug: string): Leaf | Container;
+  child(slug: string): Leaf | Container {
+    return this.context.resourceStore.get(`${this.uri}${slug}`);
+  }
+
   createChildAndOverwrite(
     slug: ContainerUri,
   ): Promise<Container | CreateResultErrors>;
@@ -97,8 +108,7 @@ export class Container extends Resource {
   createChildAndOverwrite(
     slug: string,
   ): Promise<Resource | CreateResultErrors> {
-    const resource = this.context.resourceStore.get(`${this.uri}${slug}`);
-    return resource.createAndOverwrite();
+    return this.child(slug).createAndOverwrite();
   }
 
   createChildIfAbsent(
@@ -109,12 +119,41 @@ export class Container extends Resource {
   ): Promise<Leaf | CreateResultWithoutOverwriteErrors>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<Resource | CreateResultWithoutOverwriteErrors>;
+  ): Promise<Container | Leaf | CreateResultWithoutOverwriteErrors>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<Resource | CreateResultWithoutOverwriteErrors> {
-    const resource = this.context.resourceStore.get(`${this.uri}${slug}`);
-    return resource.createIfAbsent();
+  ): Promise<Container | Leaf | CreateResultWithoutOverwriteErrors> {
+    return this.child(slug).createIfAbsent();
+  }
+
+  async uploadChildAndOverwrite(
+    slug: string,
+    blob: Blob,
+    mimeType: string,
+  ): Promise<Leaf | UploadResultError> {
+    const child = this.child(slug);
+    if (child.type === "leaf") {
+      return child.uploadAndOverwrite(blob, mimeType);
+    }
+    return new UnexpectedError(
+      child.uri,
+      new Error(`${slug} is not a leaf uri.`),
+    );
+  }
+
+  async uploadIfAbsent(
+    slug: string,
+    blob: Blob,
+    mimeType: string,
+  ): Promise<Leaf | UploadResultWithoutOverwriteError> {
+    const child = this.child(slug);
+    if (child.type === "leaf") {
+      return child.uploadIfAbsent(blob, mimeType);
+    }
+    return new UnexpectedError(
+      child.uri,
+      new Error(`${slug} is not a leaf uri.`),
+    );
   }
 
   async clear(): Promise<

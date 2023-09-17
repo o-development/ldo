@@ -7,3 +7,4 @@ export { default as ProxyTransactionalDataset } from "./ProxyTransactionalDatase
 export { default as WrapperSubscribableDataset } from "./WrapperSubscribableDataset";
 export { default as WrapperSubscribableDatasetFactory } from "./WrapperSubscribableDatasetFactory";
 export * from "./types";
+export * from "./mergeDatasetChanges";

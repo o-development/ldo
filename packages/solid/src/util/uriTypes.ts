@@ -8,7 +8,7 @@ export function isContainerUri(uri: string): uri is ContainerUri {
 }
 
 export function isLeafUri(uri: string): uri is LeafUri {
-  return !isContainerUri;
+  return !isContainerUri(uri);
 }
 
 type NonPathnameEnding = "" | `?${string}` | `#${string}`;

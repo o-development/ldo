@@ -1,6 +1,6 @@
 import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { Quad } from "@rdfjs/types";
 import { LeafRequester } from "../requester/LeafRequester";
-import type { Requester } from "../requester/Requester";
 import type { AbsentResult } from "../requester/requestResults/AbsentResult";
 import type { BinaryResult } from "../requester/requestResults/BinaryResult";
 import type { DataResult } from "../requester/requestResults/DataResult";
@@ -20,7 +20,7 @@ import { Resource } from "./Resource";
 
 export class Leaf extends Resource {
   readonly uri: LeafUri;
-  protected requester: Requester;
+  protected requester: LeafRequester;
   readonly type = "leaf" as const;
 
   protected binaryData: { data: Blob; mimeType: string } | undefined;
@@ -29,6 +29,10 @@ export class Leaf extends Resource {
     super(context);
     this.uri = uri;
     this.requester = new LeafRequester(uri, context);
+  }
+
+  isUpdating(): boolean {
+    return this.requester.isUpdating();
   }
 
   protected parseResult<PossibleErrors extends ErrorResult>(
@@ -84,8 +88,10 @@ export class Leaf extends Resource {
     return this.parseResult(await this.requester.upload(blob, mimeType));
   }
 
-  update(_changes: DatasetChanges): Promise<this | UpdateResultError> {
-    throw new Error("Method not implemented");
+  async update(
+    changes: DatasetChanges<Quad>,
+  ): Promise<this | UpdateResultError> {
+    return this.parseResult(await this.requester.updateDataResource(changes));
   }
 
   // Delete Method

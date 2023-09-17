@@ -2,6 +2,7 @@ import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { BulkEditableDataset, TransactionalDataset } from "./types";
 import { ExtendedDataset } from "@ldo/dataset";
+import { mergeDatasetChanges } from "./mergeDatasetChanges";
 
 /**
  * Proxy Transactional Dataset is a transactional dataset that does not duplicate
@@ -240,48 +241,14 @@ export default class ProxyTransactionalDataset<
   }): void {
     this.checkIfTransactionCommitted();
 
-    // Add added
-    if (changes.added) {
-      if (this.datasetChanges.added) {
-        this.datasetChanges.added.addAll(changes.added);
-      } else {
-        this.datasetChanges.added = this.datasetFactory.dataset(changes.added);
-      }
-      // Delete from removed if present
-      const changesIntersection = this.datasetChanges.removed?.intersection(
-        this.datasetFactory.dataset(changes.added),
-      );
-      if (changesIntersection && changesIntersection.size > 0) {
-        this.datasetChanges.removed =
-          this.datasetChanges.removed?.difference(changesIntersection);
-      }
-    }
-    // Add removed
-    if (changes.removed) {
-      if (this.datasetChanges.removed) {
-        this.datasetChanges.removed.addAll(changes.removed);
-      } else {
-        this.datasetChanges.removed = this.datasetFactory.dataset(
-          changes.removed,
-        );
-      }
-      // Delete from added if present
-      const changesIntersection = this.datasetChanges.added?.intersection(
-        this.datasetFactory.dataset(changes.removed),
-      );
-      if (changesIntersection && changesIntersection.size > 0) {
-        this.datasetChanges.added =
-          this.datasetChanges.added?.difference(changesIntersection);
-      }
-    }
-
-    // Make undefined if size is zero
-    if (this.datasetChanges.added && this.datasetChanges.added.size === 0) {
-      this.datasetChanges.added = undefined;
-    }
-    if (this.datasetChanges.removed && this.datasetChanges.removed.size === 0) {
-      this.datasetChanges.removed = undefined;
-    }
+    mergeDatasetChanges(this.datasetChanges, {
+      added: changes.added
+        ? this.datasetFactory.dataset(changes.added)
+        : undefined,
+      removed: changes.removed
+        ? this.datasetFactory.dataset(changes.removed)
+        : undefined,
+    });
   }
 
   /**

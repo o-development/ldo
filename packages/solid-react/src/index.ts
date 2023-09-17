@@ -3,5 +3,6 @@ export * from "./SolidAuthContext";
 
 export { useLdo } from "./SolidLdoProvider";
 
-// documentHooks
+// hooks
 export * from "./useResource";
+export * from "./useSubject";
