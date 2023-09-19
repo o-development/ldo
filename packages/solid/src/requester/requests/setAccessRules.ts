@@ -1,6 +1,4 @@
 import type { AclDataset, WithChangeLog } from "@inrupt/solid-client";
-import { getAgentAccessAll } from "@inrupt/solid-client";
-import { getPublicAccess } from "@inrupt/solid-client";
 import {
   getSolidDatasetWithAcl,
   hasResourceAcl,
@@ -14,17 +12,25 @@ import {
   setPublicResourceAccess,
   setAgentDefaultAccess,
 } from "@inrupt/solid-client";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { isContainerUri } from "../../util/uriTypes";
-import type { AccessRule } from "../requestResults/AccessRule";
-import { AccessRuleChangeResult } from "../requestResults/AccessRule";
-import { AccessRuleFetchError } from "../requestResults/AccessRule";
-import type { SimpleRequestParams } from "./requestParams";
+import type { AccessRule } from "../results/success/AccessRule";
+import { SetAccessRuleSuccess } from "../results/success/AccessRule";
+import { AccessRuleFetchError } from "../results/success/AccessRule";
+import type { BasicRequestOptions } from "./requestOptions";
+
+export type SetAccessRulesResult =
+  | SetAccessRuleSuccess
+  | SetAccessRulesResultError;
+export type SetAccessRulesResultError = AccessRuleFetchError;
 
 export async function setAccessRules(
-  { uri, fetch }: SimpleRequestParams,
+  uri: string,
   newAccessRules: AccessRule,
-): Promise<AccessRuleChangeResult | AccessRuleFetchError> {
+  options?: BasicRequestOptions,
+): Promise<SetAccessRulesResult> {
   console.warn("Access Control is stil underdeveloped. Use with caution.");
+  const fetch = guaranteeFetch(options?.fetch);
   const isContainer = isContainerUri(uri);
 
   // Code Copied from https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/manage-wac/
@@ -72,9 +78,5 @@ export async function setAccessRules(
 
   // Now save the ACL:
   await saveAclFor(myDatasetWithAcl, updatedAcl, { fetch });
-  return new AccessRuleChangeResult(
-    uri,
-    getPublicAccess(myDatasetWithAcl) || undefined,
-    getAgentAccessAll(myDatasetWithAcl) || undefined,
-  );
+  return new SetAccessRuleSuccess(uri);
 }

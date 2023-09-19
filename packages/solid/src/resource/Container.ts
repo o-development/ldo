@@ -1,84 +1,131 @@
 import { namedNode } from "@rdfjs/data-model";
 import { ContainerRequester } from "../requester/ContainerRequester";
-import {
-  AggregateError,
-  UnexpectedError,
-} from "../requester/requestResults/ErrorResult";
-import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
 import type {
-  CreateResultErrors,
-  CreateResultWithoutOverwriteErrors,
+  CheckRootResult,
+  CheckRootResultError,
+} from "../requester/requests/checkRootContainer";
+import type {
+  ContainerCreateAndOverwriteResult,
+  ContainerCreateIfAbsentResult,
+  LeafCreateAndOverwriteResult,
+  LeafCreateIfAbsentResult,
 } from "../requester/requests/createDataResource";
-import type { DeleteResultError } from "../requester/requests/deleteResource";
-import type { ReadResultError } from "../requester/requests/readResource";
 import type {
-  UploadResultError,
-  UploadResultWithoutOverwriteError,
-} from "../requester/requests/uploadResource";
+  DeleteResult,
+  DeleteResultError,
+} from "../requester/requests/deleteResource";
+import type {
+  ReadContainerResult,
+  ReadResultError,
+} from "../requester/requests/readResource";
+import { AggregateError } from "../requester/results/error/ErrorResult";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
+import {
+  AbsentReadSuccess,
+  ContainerReadSuccess,
+} from "../requester/results/success/ReadSuccess";
+import { AggregateSuccess } from "../requester/results/success/SuccessResult";
+import { Unfetched } from "../requester/results/success/Unfetched";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import { getParentUri, ldpContains } from "../util/rdfUtils";
 import type { ContainerUri, LeafUri } from "../util/uriTypes";
 import type { Leaf } from "./Leaf";
+import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
+import { GetRootContainerSuccess } from "./resourceResults/GetRootContainerSuccess";
 
 export class Container extends Resource {
   readonly uri: ContainerUri;
   protected requester: ContainerRequester;
   protected rootContainer: boolean | undefined;
   readonly type = "container" as const;
+  readonly isError = false as const;
+  status:
+    | SharedStatuses
+    | ReadContainerResult
+    | ContainerCreateAndOverwriteResult
+    | ContainerCreateIfAbsentResult
+    | CheckRootResult;
 
   constructor(uri: ContainerUri, context: SolidLdoDatasetContext) {
     super(context);
     this.uri = uri;
     this.requester = new ContainerRequester(uri, context);
+    this.status = new Unfetched(this.uri);
   }
 
   isRootContainer(): boolean | undefined {
     return this.rootContainer;
   }
 
-  private async checkIfIsRootContainer(): Promise<
-    CheckRootResultError | undefined
-  > {
-    if (this.rootContainer === undefined) {
-      const rootContainerResult = await this.requester.isRootContainer();
-      if (typeof rootContainerResult !== "boolean") {
-        return rootContainerResult;
-      }
-      this.rootContainer = rootContainerResult;
+  // Read Methods
+  protected updateWithReadSuccess(
+    result: ContainerReadSuccess | AbsentReadSuccess,
+  ): void {
+    if (result.type === "containerReadSuccess") {
+      this.rootContainer = result.isRootContainer;
     }
+  }
+
+  async read(): Promise<ReadContainerResult> {
+    return (await super.read()) as ReadContainerResult;
+  }
+
+  protected toReadResult(): ReadContainerResult {
+    if (this.isAbsent()) {
+      return new AbsentReadSuccess(this.uri, true);
+    } else {
+      return new ContainerReadSuccess(this.uri, true, this.isRootContainer()!);
+    }
+  }
+
+  async readIfUnfetched(): Promise<ReadContainerResult> {
+    return super.readIfUnfetched() as Promise<ReadContainerResult>;
+  }
+
+  // Parent Container Methods
+  private async checkIfIsRootContainer(): Promise<CheckRootResult> {
+    const rootContainerResult = await this.requester.isRootContainer();
+    this.status = rootContainerResult;
+    if (rootContainerResult.isError) return rootContainerResult;
+    this.rootContainer = rootContainerResult.isRootContainer;
+    this.emit("update");
+    return rootContainerResult;
+  }
+
+  async getRootContainer(): Promise<
+    GetRootContainerSuccess | CheckRootResultError
+  > {
+    const checkResult = await this.checkIfIsRootContainer();
+    if (checkResult.isError) return checkResult;
+    if (this.rootContainer) {
+      return new GetRootContainerSuccess(this);
+    }
+    const parentUri = getParentUri(this.uri);
+    if (!parentUri) {
+      return new NoncompliantPodError(
+        this.uri,
+        "Resource does not have a root container",
+      );
+    }
+    return this.context.resourceStore.get(parentUri).getRootContainer();
   }
 
   async getParentContainer(): Promise<
     Container | CheckRootResultError | undefined
   > {
     const checkResult = await this.checkIfIsRootContainer();
-    if (checkResult) return checkResult;
+    if (checkResult.isError) return checkResult;
     if (this.rootContainer) return undefined;
     const parentUri = getParentUri(this.uri);
     if (!parentUri) {
-      return new UnexpectedError(
+      return new NoncompliantPodError(
         this.uri,
-        new Error("Resource does not have a root container"),
+        `${this.uri} is not root does not have a parent container`,
       );
     }
     return this.context.resourceStore.get(parentUri);
-  }
-
-  async getRootContainer(): Promise<Container | CheckRootResultError> {
-    const checkResult = await this.checkIfIsRootContainer();
-    if (checkResult) return checkResult;
-    if (this.rootContainer) {
-      return this;
-    }
-    const parentUri = getParentUri(this.uri);
-    if (!parentUri) {
-      return new UnexpectedError(
-        this.uri,
-        new Error("Resource does not have a root container"),
-      );
-    }
-    return this.context.resourceStore.get(parentUri).getRootContainer();
   }
 
   children(): (Leaf | Container)[] {
@@ -100,99 +147,78 @@ export class Container extends Resource {
     return this.context.resourceStore.get(`${this.uri}${slug}`);
   }
 
+  // Child Creators
   createChildAndOverwrite(
     slug: ContainerUri,
-  ): Promise<Container | CreateResultErrors>;
-  createChildAndOverwrite(slug: LeafUri): Promise<Leaf | CreateResultErrors>;
-  createChildAndOverwrite(slug: string): Promise<Resource | CreateResultErrors>;
+  ): Promise<ContainerCreateAndOverwriteResult>;
+  createChildAndOverwrite(slug: LeafUri): Promise<LeafCreateAndOverwriteResult>;
   createChildAndOverwrite(
     slug: string,
-  ): Promise<Resource | CreateResultErrors> {
+  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult>;
+  createChildAndOverwrite(
+    slug: string,
+  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult> {
     return this.child(slug).createAndOverwrite();
   }
 
-  createChildIfAbsent(
-    slug: ContainerUri,
-  ): Promise<Container | CreateResultWithoutOverwriteErrors>;
-  createChildIfAbsent(
-    slug: LeafUri,
-  ): Promise<Leaf | CreateResultWithoutOverwriteErrors>;
+  createChildIfAbsent(slug: ContainerUri): Promise<LeafCreateIfAbsentResult>;
+  createChildIfAbsent(slug: LeafUri): Promise<LeafCreateIfAbsentResult>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<Container | Leaf | CreateResultWithoutOverwriteErrors>;
+  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<Container | Leaf | CreateResultWithoutOverwriteErrors> {
+  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult> {
     return this.child(slug).createIfAbsent();
   }
 
   async uploadChildAndOverwrite(
-    slug: string,
+    slug: LeafUri,
     blob: Blob,
     mimeType: string,
-  ): Promise<Leaf | UploadResultError> {
-    const child = this.child(slug);
-    if (child.type === "leaf") {
-      return child.uploadAndOverwrite(blob, mimeType);
-    }
-    return new UnexpectedError(
-      child.uri,
-      new Error(`${slug} is not a leaf uri.`),
-    );
+  ): Promise<LeafCreateAndOverwriteResult> {
+    return this.child(slug).uploadAndOverwrite(blob, mimeType);
   }
 
-  async uploadIfAbsent(
-    slug: string,
+  async uploadChildIfAbsent(
+    slug: LeafUri,
     blob: Blob,
     mimeType: string,
-  ): Promise<Leaf | UploadResultWithoutOverwriteError> {
-    const child = this.child(slug);
-    if (child.type === "leaf") {
-      return child.uploadIfAbsent(blob, mimeType);
-    }
-    return new UnexpectedError(
-      child.uri,
-      new Error(`${slug} is not a leaf uri.`),
-    );
+  ): Promise<LeafCreateIfAbsentResult> {
+    return this.child(slug).uploadIfAbsent(blob, mimeType);
   }
 
   async clear(): Promise<
-    AggregateError<DeleteResultError | ReadResultError> | this
+    | AggregateSuccess<DeleteSuccess>
+    | AggregateError<DeleteResultError | ReadResultError>
   > {
     const readResult = await this.read();
-    if (readResult.type === "error")
-      return new AggregateError(this.uri, [readResult]);
-    const errors = (
+    if (readResult.isError) return new AggregateError([readResult]);
+    const results = (
       await Promise.all(
         this.children().map(async (child) => {
-          const deleteError = await child.delete();
-          if (deleteError.type === "error") return deleteError;
+          return child.delete();
         }),
       )
-    )
-      .flat()
-      .filter(
-        (
-          value,
-        ): value is
-          | DeleteResultError
-          | AggregateError<DeleteResultError | ReadResultError> => !!value,
-      );
+    ).flat();
+    const errors = results.filter(
+      (
+        value,
+      ): value is
+        | DeleteResultError
+        | AggregateError<DeleteResultError | ReadResultError> => value.isError,
+    );
     if (errors.length > 0) {
-      return new AggregateError(this.uri, errors);
+      return new AggregateError(errors);
     }
-    return this;
+    return new AggregateSuccess<DeleteSuccess>(results as DeleteSuccess[]);
   }
 
   async delete(): Promise<
-    | this
-    | AggregateError<ReadResultError | DeleteResultError>
-    | DeleteResultError
+    DeleteResult | AggregateError<DeleteResultError | ReadResultError>
   > {
     const clearResult = await this.clear();
-    if (clearResult.type === "error") return clearResult;
-    return this.parseResult(await this.requester.delete()) as
-      | this
-      | DeleteResultError;
+    if (clearResult.isError) return clearResult;
+    return this.handleDelete();
   }
 }

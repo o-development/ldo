@@ -1,11 +1,11 @@
-import { ErrorResult } from "./ErrorResult";
+import { ResourceError } from "./ErrorResult";
 
 export type HttpErrorResultType =
   | ServerHttpError
   | UnexpectedHttpError
   | UnauthenticatedHttpError;
 
-export abstract class HttpErrorResult extends ErrorResult {
+export abstract class HttpErrorResult extends ResourceError {
   public readonly status: number;
   public readonly headers: Headers;
   public readonly response: Response;
@@ -47,11 +47,11 @@ export abstract class HttpErrorResult extends ErrorResult {
 }
 
 export class UnexpectedHttpError extends HttpErrorResult {
-  errorType = "unexpectedHttp" as const;
+  readonly type = "unexpectedHttpError" as const;
 }
 
 export class UnauthenticatedHttpError extends HttpErrorResult {
-  errorType = "unauthenticated" as const;
+  readonly type = "unauthenticatedError" as const;
 
   static is(response: Response) {
     return response.status === 401;
@@ -59,7 +59,7 @@ export class UnauthenticatedHttpError extends HttpErrorResult {
 }
 
 export class ServerHttpError extends HttpErrorResult {
-  errorType = "server" as const;
+  readonly type = "serverError" as const;
 
   static is(response: Response) {
     return response.status >= 500 && response.status < 600;

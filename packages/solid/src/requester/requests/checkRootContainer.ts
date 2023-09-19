@@ -1,35 +1,52 @@
-import {
-  UnexpectedHttpError,
-  type HttpErrorResultType,
-} from "../requestResults/HttpErrorResult";
-import { UnexpectedError } from "../requestResults/ErrorResult";
-import type { SimpleRequestParams } from "./requestParams";
+import type { BasicRequestOptions } from "./requestOptions";
 import { parse as parseLinkHeader } from "http-link-header";
+import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
+import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
+import type {
+  HttpErrorResultType,
+  UnexpectedHttpError,
+} from "../results/error/HttpErrorResult";
+import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import { UnexpectedResourceError } from "../results/error/ErrorResult";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
+import type { ContainerUri } from "../../util/uriTypes";
 
-export type CheckRootResult = boolean | CheckRootResultError;
-export type CheckRootResultError = HttpErrorResultType | UnexpectedError;
+export type CheckRootResult = CheckRootContainerSuccess | CheckRootResultError;
+export type CheckRootResultError =
+  | HttpErrorResultType
+  | NoncompliantPodError
+  | UnexpectedHttpError
+  | UnexpectedResourceError;
 
-export async function checkRootContainer({
-  uri,
-  fetch,
-}: SimpleRequestParams): Promise<CheckRootResult> {
+export function checkHeadersForRootContainer(
+  uri: ContainerUri,
+  headers: Headers,
+): CheckRootContainerSuccess | NoncompliantPodError {
+  const linkHeader = headers.get("link");
+  if (!linkHeader) {
+    return new NoncompliantPodError(uri, "No link header present in request.");
+  }
+  const parsedLinkHeader = parseLinkHeader(linkHeader);
+  const types = parsedLinkHeader.get("rel", "type");
+  const isRoot = types.some(
+    (type) => type.uri === "http://www.w3.org/ns/pim/space#Storage",
+  );
+  return new CheckRootContainerSuccess(uri, isRoot);
+}
+
+export async function checkRootContainer(
+  uri: ContainerUri,
+  options?: BasicRequestOptions,
+): Promise<CheckRootResult> {
   try {
+    const fetch = guaranteeFetch(options?.fetch);
     // Fetch options to determine the document type
     const response = await fetch(uri, { method: "HEAD" });
-    const linkHeader = response.headers.get("link");
-    if (!linkHeader) {
-      return new UnexpectedHttpError(
-        uri,
-        response,
-        "No link header present in request.",
-      );
-    }
-    const parsedLinkHeader = parseLinkHeader(linkHeader);
-    const types = parsedLinkHeader.get("rel", "type");
-    return types.some(
-      (type) => type.uri === "http://www.w3.org/ns/pim/space#Storage",
-    );
+    const httpErrorResult = HttpErrorResult.checkResponse(uri, response);
+    if (httpErrorResult) return httpErrorResult;
+
+    return checkHeadersForRootContainer(uri, response.headers);
   } catch (err) {
-    return UnexpectedError.fromThrown(uri, err);
+    return UnexpectedResourceError.fromThrown(uri, err);
   }
 }

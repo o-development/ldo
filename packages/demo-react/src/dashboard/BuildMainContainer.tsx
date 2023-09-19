@@ -18,12 +18,14 @@ export const BuildMainContainer: FunctionComponent<{
   useEffect(() => {
     if (session.webId) {
       const webIdResource = getResource(session.webId as LeafUri);
-      webIdResource.getRootContainer().then(async (rootContainer) => {
-        if (rootContainer.type === "error") {
-          alert(rootContainer.message);
+      webIdResource.getRootContainer().then(async (rootContainerResult) => {
+        if (rootContainerResult.isError) {
+          alert(rootContainerResult.message);
           return;
         }
-        const mainContainer = getResource(`${rootContainer.uri}demo-react/`);
+        const mainContainer = getResource(
+          `${rootContainerResult.rootContainer.uri}demo-react/`,
+        );
         setMainContainer(mainContainer);
         await mainContainer.read();
         if (mainContainer.isAbsent()) {

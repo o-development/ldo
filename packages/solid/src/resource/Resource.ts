@@ -1,27 +1,36 @@
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
-import type { AbsentResult } from "../requester/requestResults/AbsentResult";
-import type { BinaryResult } from "../requester/requestResults/BinaryResult";
-import type { DataResult } from "../requester/requestResults/DataResult";
-import { type ErrorResult } from "../requester/requestResults/ErrorResult";
 import type {
-  CreateResultErrors,
-  CreateResultWithoutOverwriteErrors,
+  ContainerCreateAndOverwriteResult,
+  ContainerCreateIfAbsentResult,
+  LeafCreateAndOverwriteResult,
+  LeafCreateIfAbsentResult,
 } from "../requester/requests/createDataResource";
-import type { ReadResultError } from "../requester/requests/readResource";
-import type { Container } from "./Container";
+import type {
+  ReadContainerResult,
+  ReadLeafResult,
+} from "../requester/requests/readResource";
 import type { Requester } from "../requester/Requester";
 import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
-import type {
-  AccessRule,
-  AccessRuleChangeResult,
-  AccessRuleFetchError,
-  AccessRuleResult,
-} from "../requester/requestResults/AccessRule";
-import { getAccessRules } from "../requester/requests/getAccessRules";
+import type { AccessRule } from "../requester/results/success/AccessRule";
+import type { SetAccessRulesResult } from "../requester/requests/setAccessRules";
 import { setAccessRules } from "../requester/requests/setAccessRules";
 import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
+import type { RequesterResult } from "../requester/results/RequesterResult";
+import type { DeleteResult } from "../requester/requests/deleteResource";
+import { ReadSuccess } from "../requester/results/success/ReadSuccess";
+import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
+import type { ResourceSuccess } from "../requester/results/success/SuccessResult";
+import type { Unfetched } from "../requester/results/success/Unfetched";
+import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
+import type { GetRootContainerSuccess } from "./resourceResults/GetRootContainerSuccess";
+import type {
+  ReadResourceSuccessContainerTypes,
+  ReadResourceSuccessLeafTypes,
+} from "./resourceResults/ReadResourceSuccess";
+
+export type SharedStatuses = Unfetched | DeleteResult | CreateSuccess;
 
 export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   update: () => void;
@@ -30,6 +39,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   protected readonly context: SolidLdoDatasetContext;
   abstract readonly uri: string;
   abstract readonly type: string;
+  abstract status: RequesterResult;
   protected abstract readonly requester: Requester;
   protected didInitialFetch: boolean = false;
   protected absent: boolean | undefined;
@@ -45,9 +55,6 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   }
   isCreating(): boolean {
     return this.requester.isCreating();
-  }
-  isUploading(): boolean {
-    return this.requester.isUploading();
   }
   isReading(): boolean {
     return this.requester.isReading();
@@ -73,62 +80,105 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return this.absent === undefined ? undefined : !this.absent;
   }
 
-  protected parseResult<PossibleErrors extends ErrorResult>(
-    result: AbsentResult | BinaryResult | DataResult | PossibleErrors,
-  ): this | PossibleErrors {
-    if (result.type === "error") {
-      return result;
-    }
-
-    if (result.type === "absent") {
-      this.didInitialFetch = true;
-      this.absent = true;
-    } else {
-      this.didInitialFetch = true;
-      this.absent = false;
-    }
+  // Helper Methods
+  protected emitThisAndParent() {
     this.emit("update");
     const parentUri = getParentUri(this.uri);
     if (parentUri) {
       const parentContainer = this.context.resourceStore.get(parentUri);
       parentContainer.emit("update");
     }
-    return this;
   }
 
   // Read Methods
-  async read(): Promise<this | ReadResultError> {
-    return this.parseResult(await this.requester.read());
+  protected updateWithReadSuccess(result: ReadSuccess) {
+    this.absent = result.type === "absentReadSuccess";
+    this.didInitialFetch = true;
   }
-  async readIfUnfetched(): Promise<this | ReadResultError> {
+
+  async read(): Promise<
+    ReadResourceSuccessContainerTypes | ReadResourceSuccessLeafTypes
+  > {
+    const result = await this.requester.read();
+    this.status = result;
+    if (result.isError) return result;
+    this.updateWithReadSuccess(result);
+    this.emitThisAndParent();
+    return result;
+  }
+
+  protected abstract toReadResult(): ReadContainerResult | ReadLeafResult;
+
+  async readIfUnfetched(): Promise<ReadContainerResult | ReadLeafResult> {
     if (this.didInitialFetch) {
-      return this;
+      const readResult = this.toReadResult();
+      this.status = readResult;
+      return readResult;
     }
     return this.read();
   }
 
-  // Create Methods
-  async createAndOverwrite(): Promise<this | CreateResultErrors> {
-    return this.parseResult(await this.requester.createDataResource(true));
+  // Delete Methods
+  protected updateWithDeleteSuccess(_result: DeleteSuccess) {
+    this.absent = true;
+    this.didInitialFetch = true;
   }
 
-  async createIfAbsent(): Promise<this | CreateResultWithoutOverwriteErrors> {
-    return this.parseResult(await this.requester.createDataResource());
+  protected async handleDelete(): Promise<DeleteResult> {
+    const result = await this.requester.delete();
+    this.status = result;
+    if (result.isError) return result;
+    this.updateWithDeleteSuccess(result);
+    this.emitThisAndParent();
+    return result;
+  }
+
+  // Create Methods
+  protected updateWithCreateSuccess(result: ResourceSuccess) {
+    this.absent = false;
+    this.didInitialFetch = true;
+    if (result instanceof ReadSuccess) {
+      this.updateWithReadSuccess(result);
+    }
+  }
+
+  async createAndOverwrite(): Promise<
+    ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult
+  > {
+    const result = await this.requester.createDataResource(true);
+    this.status = result;
+    if (result.isError) return result;
+    this.updateWithCreateSuccess(result);
+    this.emitThisAndParent();
+    return result;
+  }
+
+  async createIfAbsent(): Promise<
+    ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult
+  > {
+    const result = await this.requester.createDataResource(true);
+    this.status = result;
+    if (result.isError) return result;
+    this.updateWithCreateSuccess(result);
+    this.emitThisAndParent();
+    return result;
   }
 
   // Parent Container Methods -- Remember to change for Container
-  abstract getRootContainer(): Promise<Container | CheckRootResultError>;
+  abstract getRootContainer(): Promise<
+    GetRootContainerSuccess | CheckRootResultError
+  >;
 
-  async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
-    return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
-  }
+  // Access Rules Methods
+  // async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
+  //   return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
+  // }
 
   async setAccessRules(
     newAccessRules: AccessRule,
-  ): Promise<AccessRuleChangeResult | AccessRuleFetchError> {
-    return setAccessRules(
-      { uri: this.uri, fetch: this.context.fetch },
-      newAccessRules,
-    );
+  ): Promise<SetAccessRulesResult> {
+    return setAccessRules(this.uri, newAccessRules, {
+      fetch: this.context.fetch,
+    });
   }
 }

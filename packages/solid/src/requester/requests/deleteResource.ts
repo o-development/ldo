@@ -1,39 +1,45 @@
 import { namedNode } from "@rdfjs/data-model";
-import { AbsentResult } from "../requestResults/AbsentResult";
-import { UnexpectedError } from "../requestResults/ErrorResult";
-import type { HttpErrorResultType } from "../requestResults/HttpErrorResult";
-import { UnexpectedHttpError } from "../requestResults/HttpErrorResult";
-import type { RequestParams } from "./requestParams";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { deleteResourceRdfFromContainer } from "../../util/rdfUtils";
+import { UnexpectedResourceError } from "../results/error/ErrorResult";
+import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
+import { UnexpectedHttpError } from "../results/error/HttpErrorResult";
+import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import { DeleteSuccess } from "../results/success/DeleteSuccess";
+import type { DatasetRequestOptions } from "./requestOptions";
 
-export type DeleteResult = AbsentResult | DeleteResultError;
-export type DeleteResultError = HttpErrorResultType | UnexpectedError;
+export type DeleteResult = DeleteSuccess | DeleteResultError;
+export type DeleteResultError = HttpErrorResultType | UnexpectedResourceError;
 
-export async function deleteResource({
-  uri,
-  fetch,
-  transaction,
-}: RequestParams): Promise<DeleteResult> {
+export async function deleteResource(
+  uri: string,
+  options?: DatasetRequestOptions,
+): Promise<DeleteResult> {
   try {
+    const fetch = guaranteeFetch(options?.fetch);
     const response = await fetch(uri, {
       method: "delete",
     });
+    const errorResult = HttpErrorResult.checkResponse(uri, response);
+    if (errorResult) return errorResult;
 
     // Specifically check for a 205. Annoyingly, the server will return 200 even
     // if it hasn't been deleted when you're unauthenticated. 404 happens when
     // the document never existed
     if (response.status === 205 || response.status === 404) {
-      transaction.deleteMatches(
-        undefined,
-        undefined,
-        undefined,
-        namedNode(uri),
-      );
-      deleteResourceRdfFromContainer(uri, transaction);
-      return new AbsentResult(uri);
+      if (options?.dataset) {
+        options.dataset.deleteMatches(
+          undefined,
+          undefined,
+          undefined,
+          namedNode(uri),
+        );
+        deleteResourceRdfFromContainer(uri, options.dataset);
+      }
+      return new DeleteSuccess(uri, response.status === 205);
     }
     return new UnexpectedHttpError(uri, response);
   } catch (err) {
-    return UnexpectedError.fromThrown(uri, err);
+    return UnexpectedResourceError.fromThrown(uri, err);
   }
 }

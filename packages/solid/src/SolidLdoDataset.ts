@@ -1,10 +1,14 @@
 import { LdoDataset } from "@ldo/ldo";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import { CommitChangesSuccess } from "./requester/requestResults/CommitChangesSuccess";
-import { InvalidUriError } from "./requester/requestResults/DataResult";
-import { AggregateError } from "./requester/requestResults/ErrorResult";
-import type { UpdateResultError } from "./requester/requests/updateDataResource";
+import type {
+  UpdateResult,
+  UpdateResultError,
+} from "./requester/requests/updateDataResource";
+import { AggregateError } from "./requester/results/error/ErrorResult";
+import { InvalidUriError } from "./requester/results/error/InvalidUriError";
+import { AggregateSuccess } from "./requester/results/success/SuccessResult";
+import type { UpdateSuccess } from "./requester/results/success/UpdateSuccess";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
 import type { ResourceGetterOptions } from "./ResourceStore";
@@ -35,20 +39,25 @@ export class SolidLdoDataset extends LdoDataset {
   async commitChangesToPod(
     changes: DatasetChanges<Quad>,
   ): Promise<
-    CommitChangesSuccess | AggregateError<UpdateResultError | InvalidUriError>
+    | AggregateSuccess<UpdateSuccess>
+    | AggregateError<UpdateResultError | InvalidUriError>
   > {
     const changesByGraph = splitChangesByGraph(changes);
     const results: [
       GraphNode,
       DatasetChanges<Quad>,
-      UpdateResultError | InvalidUriError | Leaf | { type: "defaultGraph" },
+      UpdateResult | InvalidUriError | { type: "defaultGraph"; isError: false },
     ][] = await Promise.all(
       Array.from(changesByGraph.entries()).map(
         async ([graph, datasetChanges]) => {
           if (graph.termType === "DefaultGraph") {
             // Undefined means that this is the default graph
             this.bulk(datasetChanges);
-            return [graph, datasetChanges, { type: "defaultGraph" }];
+            return [
+              graph,
+              datasetChanges,
+              { type: "defaultGraph", isError: false },
+            ];
           }
           if (isContainerUri(graph.value)) {
             return [
@@ -67,20 +76,20 @@ export class SolidLdoDataset extends LdoDataset {
     );
 
     // If one has errored, return error
-    const errors = results.filter((result) => result[2].type === "error");
+    const errors = results.filter((result) => result[2].isError);
     if (errors.length > 0) {
       return new AggregateError(
-        "",
         errors.map(
           (result) => result[2] as UpdateResultError | InvalidUriError,
         ),
       );
     }
-    return new CommitChangesSuccess(
-      "",
+    return new AggregateSuccess(
       results
         .map((result) => result[2])
-        .filter((result): result is Leaf => result.type === "leaf"),
+        .filter(
+          (result): result is UpdateSuccess => result.type === "updateSuccess",
+        ),
     );
   }
 }

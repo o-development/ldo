@@ -1,69 +1,60 @@
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 import {
   addResourceRdfToContainer,
   getParentUri,
   getSlug,
 } from "../../util/rdfUtils";
-import { BinaryResult } from "../requestResults/BinaryResult";
+import type { LeafUri } from "../../util/uriTypes";
+import { UnexpectedResourceError } from "../results/error/ErrorResult";
+import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import { CreateSuccess } from "../results/success/CreateSuccess";
 import type {
-  DataResult,
-  TurtleFormattingError,
-} from "../requestResults/DataResult";
-import { UnexpectedError } from "../requestResults/ErrorResult";
-import {
-  HttpErrorResult,
-  type HttpErrorResultType,
-} from "../requestResults/HttpErrorResult";
+  LeafCreateAndOverwriteResult,
+  LeafCreateIfAbsentResult,
+} from "./createDataResource";
 import { deleteResource } from "./deleteResource";
 import { readResource } from "./readResource";
-import type { RequestParams } from "./requestParams";
-
-export type UploadResult = BinaryResult | UploadResultError;
-export type UploadResultError = HttpErrorResultType | UnexpectedError;
-export type UploadResultWithoutOverwrite =
-  | UploadResult
-  | UploadResultWithoutOverwriteError
-  | DataResult;
-export type UploadResultWithoutOverwriteError =
-  | UploadResultError
-  | TurtleFormattingError;
+import type { DatasetRequestOptions } from "./requestOptions";
 
 export function uploadResource(
-  params: RequestParams,
-  blob: Blob,
-  mimeType: string,
-  overwrite?: false,
-): Promise<UploadResultWithoutOverwrite>;
-export function uploadResource(
-  params: RequestParams,
+  uri: LeafUri,
   blob: Blob,
   mimeType: string,
   overwrite: true,
-): Promise<UploadResult>;
+  options?: DatasetRequestOptions,
+): Promise<LeafCreateAndOverwriteResult>;
 export function uploadResource(
-  params: RequestParams,
+  uri: LeafUri,
+  blob: Blob,
+  mimeType: string,
+  overwrite?: false,
+  options?: DatasetRequestOptions,
+): Promise<LeafCreateIfAbsentResult>;
+export function uploadResource(
+  uri: LeafUri,
   blob: Blob,
   mimeType: string,
   overwrite?: boolean,
-): Promise<UploadResultWithoutOverwrite>;
+  options?: DatasetRequestOptions,
+): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult>;
 export async function uploadResource(
-  params: RequestParams,
+  uri: LeafUri,
   blob: Blob,
   mimeType: string,
   overwrite?: boolean,
-): Promise<UploadResultWithoutOverwrite> {
-  const { uri, transaction, fetch } = params;
+  options?: DatasetRequestOptions,
+): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult> {
   try {
+    const fetch = guaranteeFetch(options?.fetch);
     if (overwrite) {
-      const deleteResult = await deleteResource(params);
+      const deleteResult = await deleteResource(uri, options);
       // Return if it wasn't deleted
-      if (deleteResult.type !== "absent") {
-        return deleteResult;
-      }
+      if (deleteResult.isError) return deleteResult;
     } else {
       // Perform a read to check if it exists
-      const readResult = await readResource(params);
+      const readResult = await readResource(uri, options);
       // If it does exist stop and return.
-      if (readResult.type !== "absent") {
+      if (readResult.type !== "absentReadSuccess") {
         return readResult;
       }
     }
@@ -81,9 +72,11 @@ export async function uploadResource(
     const httpError = HttpErrorResult.checkResponse(uri, response);
     if (httpError) return httpError;
 
-    addResourceRdfToContainer(uri, transaction);
-    return new BinaryResult(uri, blob, mimeType);
+    if (options?.dataset) {
+      addResourceRdfToContainer(uri, options.dataset);
+    }
+    return new CreateSuccess(uri, !!overwrite);
   } catch (err) {
-    return UnexpectedError.fromThrown(uri, err);
+    return UnexpectedResourceError.fromThrown(uri, err);
   }
 }

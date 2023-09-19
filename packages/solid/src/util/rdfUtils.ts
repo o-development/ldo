@@ -1,10 +1,10 @@
 import { parseRdf } from "@ldo/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import { DataResult } from "../requester/requestResults/DataResult";
-import { TurtleFormattingError } from "../requester/requestResults/DataResult";
 import type { Dataset } from "@rdfjs/types";
 import type { ContainerUri } from "./uriTypes";
 import { isContainerUri } from "./uriTypes";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import { UnexpectedResourceError } from "../requester/results/error/ErrorResult";
 
 export const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
 export const rdfType = namedNode(
@@ -78,16 +78,17 @@ export async function addRawTurtleToDataset(
   rawTurtle: string,
   dataset: Dataset,
   baseUri: string,
-): Promise<DataResult | TurtleFormattingError> {
+): Promise<undefined | NoncompliantPodError> {
   let loadedDataset: Dataset;
   try {
     loadedDataset = await parseRdf(rawTurtle, {
       baseIRI: baseUri,
     });
   } catch (err) {
-    return new TurtleFormattingError(
+    const error = UnexpectedResourceError.fromThrown(baseUri, err);
+    return new NoncompliantPodError(
       baseUri,
-      err instanceof Error ? err.message : "Failed to parse rdf",
+      `Request at ${baseUri} returned noncompliant turtle: ${error.message}`,
     );
   }
 
@@ -100,5 +101,4 @@ export async function addRawTurtleToDataset(
       createQuad(quad.subject, quad.predicate, quad.object, graphNode),
     ),
   );
-  return new DataResult(baseUri);
 }
