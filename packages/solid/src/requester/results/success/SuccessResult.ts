@@ -1,30 +1,15 @@
-import type { Container } from "../../../resource/Container";
-import type { Leaf } from "../../../resource/Leaf";
 import type { RequesterResult } from "../RequesterResult";
 
-export abstract class SuccessResult implements RequesterResult {
-  readonly isError = false as const;
-  abstract readonly type: string;
-  resource?: Leaf | Container;
+export interface SuccessResult extends RequesterResult {
+  isError: false;
 }
 
-export abstract class ResourceSuccess extends SuccessResult {
-  readonly uri: string;
-
-  constructor(uri: string) {
-    super();
-    this.uri = uri;
-  }
+export interface ResourceSuccess extends SuccessResult {
+  uri: string;
 }
 
-export class AggregateSuccess<
-  SuccessType extends SuccessResult,
-> extends SuccessResult {
-  readonly type = "aggregateError" as const;
-  readonly results: SuccessType[];
-
-  constructor(results: SuccessType[]) {
-    super();
-    this.results = results;
-  }
+export interface AggregateSuccess<SuccessType extends SuccessResult>
+  extends SuccessResult {
+  type: "aggregateSuccess";
+  results: SuccessType[];
 }

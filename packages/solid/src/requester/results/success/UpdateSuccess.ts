@@ -1,5 +1,5 @@
-import { ResourceSuccess } from "./SuccessResult";
+import type { ResourceSuccess } from "./SuccessResult";
 
-export class UpdateSuccess extends ResourceSuccess {
-  readonly type = "updateSuccess";
+export interface UpdateSuccess extends ResourceSuccess {
+  type: "updateSuccess";
 }

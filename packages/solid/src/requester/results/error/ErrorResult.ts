@@ -1,11 +1,8 @@
-import type { Container } from "../../../resource/Container";
-import type { Leaf } from "../../../resource/Leaf";
 import type { RequesterResult } from "../RequesterResult";
 
 export abstract class ErrorResult extends Error implements RequesterResult {
   abstract type: string;
   readonly isError = true as const;
-  resource?: Leaf | Container;
 
   constructor(message?: string) {
     super(message || "An error unkown error was encountered.");

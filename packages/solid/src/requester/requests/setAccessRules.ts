@@ -15,8 +15,8 @@ import {
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { isContainerUri } from "../../util/uriTypes";
 import type { AccessRule } from "../results/success/AccessRule";
-import { SetAccessRuleSuccess } from "../results/success/AccessRule";
-import { AccessRuleFetchError } from "../results/success/AccessRule";
+import type { SetAccessRuleSuccess } from "../results/success/AccessRule";
+import { AccessRuleFetchError } from "../results/error/AccessControlError";
 import type { BasicRequestOptions } from "./requestOptions";
 
 export type SetAccessRulesResult =
@@ -78,5 +78,9 @@ export async function setAccessRules(
 
   // Now save the ACL:
   await saveAclFor(myDatasetWithAcl, updatedAcl, { fetch });
-  return new SetAccessRuleSuccess(uri);
+  return {
+    isError: false,
+    uri,
+    type: "setAccessRuleSuccess",
+  };
 }

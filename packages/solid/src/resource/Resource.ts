@@ -19,16 +19,15 @@ import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
 import type { RequesterResult } from "../requester/results/RequesterResult";
 import type { DeleteResult } from "../requester/requests/deleteResource";
-import { ReadSuccess } from "../requester/results/success/ReadSuccess";
+import type { ReadSuccess } from "../requester/results/success/ReadSuccess";
+import { isReadSuccess } from "../requester/results/success/ReadSuccess";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
 import type { ResourceSuccess } from "../requester/results/success/SuccessResult";
 import type { Unfetched } from "../requester/results/success/Unfetched";
 import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
-import type { GetRootContainerSuccess } from "./resourceResults/GetRootContainerSuccess";
-import type {
-  ReadResourceSuccessContainerTypes,
-  ReadResourceSuccessLeafTypes,
-} from "./resourceResults/ReadResourceSuccess";
+import type { ResourceResult } from "./resourceResult/ResourceResult";
+import type { Container } from "./Container";
+import type { Leaf } from "./Leaf";
 
 export type SharedStatuses = Unfetched | DeleteResult | CreateSuccess;
 
@@ -96,9 +95,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     this.didInitialFetch = true;
   }
 
-  async read(): Promise<
-    ReadResourceSuccessContainerTypes | ReadResourceSuccessLeafTypes
-  > {
+  protected async handleRead(): Promise<ReadContainerResult | ReadLeafResult> {
     const result = await this.requester.read();
     this.status = result;
     if (result.isError) return result;
@@ -107,9 +104,18 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return result;
   }
 
-  protected abstract toReadResult(): ReadContainerResult | ReadLeafResult;
+  protected abstract toReadResult(): ResourceResult<
+    ReadLeafResult | ReadContainerResult,
+    Container | Leaf
+  >;
 
-  async readIfUnfetched(): Promise<ReadContainerResult | ReadLeafResult> {
+  abstract read(): Promise<
+    ResourceResult<ReadLeafResult | ReadContainerResult, Container | Leaf>
+  >;
+
+  async readIfUnfetched(): Promise<
+    ResourceResult<ReadLeafResult | ReadContainerResult, Container | Leaf>
+  > {
     if (this.didInitialFetch) {
       const readResult = this.toReadResult();
       this.status = readResult;
@@ -137,12 +143,19 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   protected updateWithCreateSuccess(result: ResourceSuccess) {
     this.absent = false;
     this.didInitialFetch = true;
-    if (result instanceof ReadSuccess) {
+    if (isReadSuccess(result)) {
       this.updateWithReadSuccess(result);
     }
   }
 
-  async createAndOverwrite(): Promise<
+  abstract createAndOverwrite(): Promise<
+    ResourceResult<
+      ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult,
+      Leaf | Container
+    >
+  >;
+
+  protected async handleCreateAndOverwrite(): Promise<
     ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult
   > {
     const result = await this.requester.createDataResource(true);
@@ -153,7 +166,14 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return result;
   }
 
-  async createIfAbsent(): Promise<
+  abstract createIfAbsent(): Promise<
+    ResourceResult<
+      ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult,
+      Leaf | Container
+    >
+  >;
+
+  protected async handleCreateIfAbsent(): Promise<
     ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult
   > {
     const result = await this.requester.createDataResource(true);
@@ -165,20 +185,19 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   }
 
   // Parent Container Methods -- Remember to change for Container
-  abstract getRootContainer(): Promise<
-    GetRootContainerSuccess | CheckRootResultError
-  >;
+  abstract getRootContainer(): Promise<Container | CheckRootResultError>;
 
   // Access Rules Methods
   // async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
   //   return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
   // }
-
   async setAccessRules(
     newAccessRules: AccessRule,
-  ): Promise<SetAccessRulesResult> {
-    return setAccessRules(this.uri, newAccessRules, {
+  ): Promise<ResourceResult<SetAccessRulesResult, Leaf | Container>> {
+    const result = await setAccessRules(this.uri, newAccessRules, {
       fetch: this.context.fetch,
     });
+    if (result.isError) return result;
+    return { ...result, resource: this as unknown as Leaf | Container };
   }
 }

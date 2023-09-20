@@ -9,7 +9,7 @@ import { isContainerUri } from "../../util/uriTypes";
 import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import { CreateSuccess } from "../results/success/CreateSuccess";
+import type { CreateSuccess } from "../results/success/CreateSuccess";
 import type { AbsentReadSuccess } from "../results/success/ReadSuccess";
 import type { DeleteResultError } from "./deleteResource";
 import { deleteResource } from "./deleteResource";
@@ -134,7 +134,12 @@ export async function createDataResource(
     if (options?.dataset) {
       addResourceRdfToContainer(uri, options.dataset);
     }
-    return new CreateSuccess(uri, !!overwrite);
+    return {
+      isError: false,
+      type: "createSuccess",
+      uri,
+      didOverwrite: !!overwrite,
+    };
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);
   }

@@ -5,7 +5,7 @@ import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { UnexpectedHttpError } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import { DeleteSuccess } from "../results/success/DeleteSuccess";
+import type { DeleteSuccess } from "../results/success/DeleteSuccess";
 import type { DatasetRequestOptions } from "./requestOptions";
 
 export type DeleteResult = DeleteSuccess | DeleteResultError;
@@ -36,7 +36,12 @@ export async function deleteResource(
         );
         deleteResourceRdfFromContainer(uri, options.dataset);
       }
-      return new DeleteSuccess(uri, response.status === 205);
+      return {
+        isError: false,
+        type: "deleteSuccess",
+        uri,
+        resourceExisted: response.status === 205,
+      };
     }
     return new UnexpectedHttpError(uri, response);
   } catch (err) {

@@ -1,11 +1,6 @@
-import { ResourceSuccess } from "./SuccessResult";
+import type { ResourceSuccess } from "./SuccessResult";
 
-export class CreateSuccess extends ResourceSuccess {
-  readonly type = "createSuccess";
-  readonly didOverwrite: boolean;
-
-  constructor(uri: string, didOverwrite: boolean) {
-    super(uri);
-    this.didOverwrite = didOverwrite;
-  }
+export interface CreateSuccess extends ResourceSuccess {
+  type: "createSuccess";
+  didOverwrite: boolean;
 }

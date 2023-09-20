@@ -1,5 +1,5 @@
-import { ResourceSuccess } from "./SuccessResult";
+import type { ResourceSuccess } from "./SuccessResult";
 
-export class Unfetched extends ResourceSuccess {
-  readonly type = "unfetched" as const;
+export interface Unfetched extends ResourceSuccess {
+  type: "unfetched";
 }

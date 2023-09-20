@@ -7,10 +7,11 @@ import type {
 } from "./requester/requests/updateDataResource";
 import { AggregateError } from "./requester/results/error/ErrorResult";
 import { InvalidUriError } from "./requester/results/error/InvalidUriError";
-import { AggregateSuccess } from "./requester/results/success/SuccessResult";
+import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
 import type { UpdateSuccess } from "./requester/results/success/UpdateSuccess";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
+import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
 import type { ResourceGetterOptions } from "./ResourceStore";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
@@ -39,7 +40,7 @@ export class SolidLdoDataset extends LdoDataset {
   async commitChangesToPod(
     changes: DatasetChanges<Quad>,
   ): Promise<
-    | AggregateSuccess<UpdateSuccess>
+    | AggregateSuccess<ResourceResult<UpdateSuccess, Leaf>>
     | AggregateError<UpdateResultError | InvalidUriError>
   > {
     const changesByGraph = splitChangesByGraph(changes);
@@ -84,12 +85,15 @@ export class SolidLdoDataset extends LdoDataset {
         ),
       );
     }
-    return new AggregateSuccess(
-      results
+    return {
+      isError: false,
+      type: "aggregateSuccess",
+      results: results
         .map((result) => result[2])
         .filter(
-          (result): result is UpdateSuccess => result.type === "updateSuccess",
+          (result): result is ResourceResult<UpdateSuccess, Leaf> =>
+            result.type === "updateSuccess",
         ),
-    );
+    };
   }
 }

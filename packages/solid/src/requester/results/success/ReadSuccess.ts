@@ -1,56 +1,33 @@
-import { ResourceSuccess } from "./SuccessResult";
+import type { ResourceSuccess, SuccessResult } from "./SuccessResult";
 
-export abstract class ReadSuccess extends ResourceSuccess {
+export interface ReadSuccess extends ResourceSuccess {
   recalledFromMemory: boolean;
-  constructor(uri: string, recalledFromMemory: boolean) {
-    super(uri);
-    this.recalledFromMemory = recalledFromMemory;
-  }
 }
 
-export class BinaryReadSuccess extends ReadSuccess {
-  readonly type = "binaryReadSuccess" as const;
-  readonly blob: Blob;
-  readonly mimeType: string;
-
-  constructor(
-    uri: string,
-    recalledFromMemory: boolean,
-    blob: Blob,
-    mimeType: string,
-  ) {
-    super(uri, recalledFromMemory);
-    this.blob = blob;
-    this.mimeType = mimeType;
-  }
+export interface BinaryReadSuccess extends ReadSuccess {
+  type: "binaryReadSuccess";
+  blob: Blob;
+  mimeType: string;
 }
 
-export class DataReadSuccess extends ReadSuccess {
-  readonly type = "dataReadSuccess" as const;
-
-  constructor(uri: string, recalledFromMemory: boolean) {
-    super(uri, recalledFromMemory);
-  }
+export interface DataReadSuccess extends ReadSuccess {
+  type: "dataReadSuccess";
 }
 
-export class ContainerReadSuccess extends ReadSuccess {
-  readonly type = "containerReadSuccess" as const;
-  readonly isRootContainer: boolean;
-
-  constructor(
-    uri: string,
-    recalledFromMemory: boolean,
-    isRootContainer: boolean,
-  ) {
-    super(uri, recalledFromMemory);
-    this.isRootContainer = isRootContainer;
-  }
+export interface ContainerReadSuccess extends ReadSuccess {
+  type: "containerReadSuccess";
+  isRootContainer: boolean;
 }
 
-export class AbsentReadSuccess extends ReadSuccess {
-  readonly type = "absentReadSuccess" as const;
+export interface AbsentReadSuccess extends ReadSuccess {
+  type: "absentReadSuccess";
+}
 
-  constructor(uri: string, recalledFromMemory: boolean) {
-    super(uri, recalledFromMemory);
-  }
+export function isReadSuccess(result: SuccessResult): result is ReadSuccess {
+  return (
+    result.type === "binaryReadSuccess" ||
+    result.type === "dataReadSuccess" ||
+    result.type === "absentReadSuccess" ||
+    result.type === "containerReadSuccess"
+  );
 }

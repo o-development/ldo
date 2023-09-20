@@ -21,19 +21,16 @@ import type {
 import { AggregateError } from "../requester/results/error/ErrorResult";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import {
-  AbsentReadSuccess,
-  ContainerReadSuccess,
-} from "../requester/results/success/ReadSuccess";
-import { AggregateSuccess } from "../requester/results/success/SuccessResult";
-import { Unfetched } from "../requester/results/success/Unfetched";
+import type { AbsentReadSuccess } from "../requester/results/success/ReadSuccess";
+import type { ContainerReadSuccess } from "../requester/results/success/ReadSuccess";
+import type { AggregateSuccess } from "../requester/results/success/SuccessResult";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import { getParentUri, ldpContains } from "../util/rdfUtils";
 import type { ContainerUri, LeafUri } from "../util/uriTypes";
 import type { Leaf } from "./Leaf";
 import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
-import { GetRootContainerSuccess } from "./resourceResults/GetRootContainerSuccess";
+import type { ResourceResult } from "./ResourceResult";
 
 export class Container extends Resource {
   readonly uri: ContainerUri;
@@ -52,7 +49,7 @@ export class Container extends Resource {
     super(context);
     this.uri = uri;
     this.requester = new ContainerRequester(uri, context);
-    this.status = new Unfetched(this.uri);
+    this.status = { isError: false, type: "unfetched", uri };
   }
 
   isRootContainer(): boolean | undefined {
@@ -68,39 +65,58 @@ export class Container extends Resource {
     }
   }
 
-  async read(): Promise<ReadContainerResult> {
-    return (await super.read()) as ReadContainerResult;
+  async read(): Promise<ResourceResult<ReadContainerResult, Container>> {
+    const result = (await this.handleRead()) as ReadContainerResult;
+    if (result.isError) return result;
+    return { ...result, resource: this };
   }
 
-  protected toReadResult(): ReadContainerResult {
+  protected toReadResult(): ResourceResult<ReadContainerResult, Container> {
     if (this.isAbsent()) {
-      return new AbsentReadSuccess(this.uri, true);
+      return {
+        isError: false,
+        type: "absentReadSuccess",
+        uri: this.uri,
+        recalledFromMemory: true,
+        resource: this,
+      };
     } else {
-      return new ContainerReadSuccess(this.uri, true, this.isRootContainer()!);
+      return {
+        isError: false,
+        type: "containerReadSuccess",
+        uri: this.uri,
+        recalledFromMemory: true,
+        isRootContainer: this.isRootContainer()!,
+        resource: this,
+      };
     }
   }
 
-  async readIfUnfetched(): Promise<ReadContainerResult> {
-    return super.readIfUnfetched() as Promise<ReadContainerResult>;
+  async readIfUnfetched(): Promise<
+    ResourceResult<ReadContainerResult, Container>
+  > {
+    return super.readIfUnfetched() as Promise<
+      ResourceResult<ReadContainerResult, Container>
+    >;
   }
 
   // Parent Container Methods
-  private async checkIfIsRootContainer(): Promise<CheckRootResult> {
+  private async checkIfIsRootContainer(): Promise<
+    ResourceResult<CheckRootResult, Container>
+  > {
     const rootContainerResult = await this.requester.isRootContainer();
     this.status = rootContainerResult;
     if (rootContainerResult.isError) return rootContainerResult;
     this.rootContainer = rootContainerResult.isRootContainer;
     this.emit("update");
-    return rootContainerResult;
+    return { ...rootContainerResult, resource: this };
   }
 
-  async getRootContainer(): Promise<
-    GetRootContainerSuccess | CheckRootResultError
-  > {
+  async getRootContainer(): Promise<Container | CheckRootResultError> {
     const checkResult = await this.checkIfIsRootContainer();
     if (checkResult.isError) return checkResult;
     if (this.rootContainer) {
-      return new GetRootContainerSuccess(this);
+      return this;
     }
     const parentUri = getParentUri(this.uri);
     if (!parentUri) {
@@ -150,25 +166,51 @@ export class Container extends Resource {
   // Child Creators
   createChildAndOverwrite(
     slug: ContainerUri,
-  ): Promise<ContainerCreateAndOverwriteResult>;
-  createChildAndOverwrite(slug: LeafUri): Promise<LeafCreateAndOverwriteResult>;
+  ): Promise<ResourceResult<ContainerCreateAndOverwriteResult, Container>>;
+  createChildAndOverwrite(
+    slug: LeafUri,
+  ): Promise<ResourceResult<LeafCreateAndOverwriteResult, Leaf>>;
   createChildAndOverwrite(
     slug: string,
-  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult>;
+  ): Promise<
+    ResourceResult<
+      ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult,
+      Leaf | Container
+    >
+  >;
   createChildAndOverwrite(
     slug: string,
-  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult> {
+  ): Promise<
+    ResourceResult<
+      ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult,
+      Leaf | Container
+    >
+  > {
     return this.child(slug).createAndOverwrite();
   }
 
-  createChildIfAbsent(slug: ContainerUri): Promise<LeafCreateIfAbsentResult>;
-  createChildIfAbsent(slug: LeafUri): Promise<LeafCreateIfAbsentResult>;
+  createChildIfAbsent(
+    slug: ContainerUri,
+  ): Promise<ResourceResult<ContainerCreateIfAbsentResult, Container>>;
+  createChildIfAbsent(
+    slug: LeafUri,
+  ): Promise<ResourceResult<LeafCreateIfAbsentResult, Leaf>>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult>;
+  ): Promise<
+    ResourceResult<
+      ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult,
+      Leaf | Container
+    >
+  >;
   createChildIfAbsent(
     slug: string,
-  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult> {
+  ): Promise<
+    ResourceResult<
+      ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult,
+      Leaf | Container
+    >
+  > {
     return this.child(slug).createIfAbsent();
   }
 
@@ -176,7 +218,7 @@ export class Container extends Resource {
     slug: LeafUri,
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateAndOverwriteResult> {
+  ): Promise<ResourceResult<LeafCreateAndOverwriteResult, Leaf>> {
     return this.child(slug).uploadAndOverwrite(blob, mimeType);
   }
 
@@ -184,13 +226,16 @@ export class Container extends Resource {
     slug: LeafUri,
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateIfAbsentResult> {
+  ): Promise<ResourceResult<LeafCreateIfAbsentResult, Leaf>> {
     return this.child(slug).uploadIfAbsent(blob, mimeType);
   }
 
   async clear(): Promise<
-    | AggregateSuccess<DeleteSuccess>
-    | AggregateError<DeleteResultError | ReadResultError>
+    ResourceResult<
+      | AggregateSuccess<ResourceResult<DeleteSuccess, Container | Leaf>>
+      | AggregateError<DeleteResultError | ReadResultError>,
+      Container
+    >
   > {
     const readResult = await this.read();
     if (readResult.isError) return new AggregateError([readResult]);
@@ -211,14 +256,42 @@ export class Container extends Resource {
     if (errors.length > 0) {
       return new AggregateError(errors);
     }
-    return new AggregateSuccess<DeleteSuccess>(results as DeleteSuccess[]);
+    return {
+      isError: false,
+      type: "aggregateSuccess",
+      results: results as ResourceResult<DeleteSuccess, Container | Leaf>[],
+      resource: this,
+    };
   }
 
   async delete(): Promise<
-    DeleteResult | AggregateError<DeleteResultError | ReadResultError>
+    ResourceResult<
+      DeleteResult | AggregateError<DeleteResultError | ReadResultError>,
+      Container
+    >
   > {
     const clearResult = await this.clear();
     if (clearResult.isError) return clearResult;
-    return this.handleDelete();
+    const deleteResult = await this.handleDelete();
+    if (deleteResult.isError) return deleteResult;
+    return { ...deleteResult, resource: this };
+  }
+
+  async createAndOverwrite(): Promise<
+    ResourceResult<ContainerCreateAndOverwriteResult, Container>
+  > {
+    const createResult =
+      (await this.handleCreateAndOverwrite()) as ContainerCreateAndOverwriteResult;
+    if (createResult.isError) return createResult;
+    return { ...createResult, resource: this };
+  }
+
+  async createIfAbsent(): Promise<
+    ResourceResult<ContainerCreateIfAbsentResult, Container>
+  > {
+    const createResult =
+      (await this.handleCreateAndOverwrite()) as ContainerCreateIfAbsentResult;
+    if (createResult.isError) return createResult;
+    return { ...createResult, resource: this };
   }
 }

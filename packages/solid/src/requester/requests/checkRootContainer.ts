@@ -1,7 +1,7 @@
 import type { BasicRequestOptions } from "./requestOptions";
 import { parse as parseLinkHeader } from "http-link-header";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
-import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
+import type { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
 import type {
   HttpErrorResultType,
   UnexpectedHttpError,
@@ -28,10 +28,15 @@ export function checkHeadersForRootContainer(
   }
   const parsedLinkHeader = parseLinkHeader(linkHeader);
   const types = parsedLinkHeader.get("rel", "type");
-  const isRoot = types.some(
+  const isRootContainer = types.some(
     (type) => type.uri === "http://www.w3.org/ns/pim/space#Storage",
   );
-  return new CheckRootContainerSuccess(uri, isRoot);
+  return {
+    uri,
+    isRootContainer,
+    type: "checkRootContainerSuccess",
+    isError: false,
+  };
 }
 
 export async function checkRootContainer(
