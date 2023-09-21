@@ -29,7 +29,11 @@ export abstract class HttpErrorResult extends ResourceError {
   }
 
   static isnt(response: Response) {
-    return response.status < 200 || response.status >= 300;
+    return (
+      !(response.status >= 200 || response.status < 300) &&
+      response.status !== 404 &&
+      response.status !== 304
+    );
   }
 
   static checkResponse(uri: string, response: Response) {

@@ -109,6 +109,7 @@ export async function createDataResource(
     } else {
       // Perform a read to check if it exists
       const readResult = await readResource(uri, options);
+
       // If it does exist stop and return.
       if (readResult.type !== "absentReadSuccess") {
         return readResult;

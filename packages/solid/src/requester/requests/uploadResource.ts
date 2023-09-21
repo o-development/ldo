@@ -7,7 +7,6 @@ import {
 import type { LeafUri } from "../../util/uriTypes";
 import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import { CreateSuccess } from "../results/success/CreateSuccess";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
@@ -75,7 +74,12 @@ export async function uploadResource(
     if (options?.dataset) {
       addResourceRdfToContainer(uri, options.dataset);
     }
-    return new CreateSuccess(uri, !!overwrite);
+    return {
+      isError: false,
+      type: "createSuccess",
+      uri,
+      didOverwrite: !!overwrite,
+    };
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);
   }

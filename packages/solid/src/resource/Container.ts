@@ -30,7 +30,7 @@ import type { ContainerUri, LeafUri } from "../util/uriTypes";
 import type { Leaf } from "./Leaf";
 import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
-import type { ResourceResult } from "./ResourceResult";
+import type { ResourceResult } from "./resourceResult/ResourceResult";
 
 export class Container extends Resource {
   readonly uri: ContainerUri;
@@ -290,7 +290,7 @@ export class Container extends Resource {
     ResourceResult<ContainerCreateIfAbsentResult, Container>
   > {
     const createResult =
-      (await this.handleCreateAndOverwrite()) as ContainerCreateIfAbsentResult;
+      (await this.handleCreateIfAbsent()) as ContainerCreateIfAbsentResult;
     if (createResult.isError) return createResult;
     return { ...createResult, resource: this };
   }

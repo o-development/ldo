@@ -18,18 +18,16 @@ export const BuildMainContainer: FunctionComponent<{
   useEffect(() => {
     if (session.webId) {
       const webIdResource = getResource(session.webId as LeafUri);
-      webIdResource.getRootContainer().then(async (rootContainerResult) => {
-        if (rootContainerResult.isError) {
-          alert(rootContainerResult.message);
+      webIdResource.getRootContainer().then(async (rootContainer) => {
+        if (rootContainer.isError) {
+          alert(rootContainer.message);
           return;
         }
-        const mainContainer = getResource(
-          `${rootContainerResult.rootContainer.uri}demo-react/`,
-        );
+        const mainContainer = getResource(`${rootContainer.uri}demo-react/`);
         setMainContainer(mainContainer);
-        await mainContainer.read();
-        if (mainContainer.isAbsent()) {
-          await mainContainer.createIfAbsent();
+        const createResult = await mainContainer.createIfAbsent();
+        // Only set the access rules if the create was a success.
+        if (createResult.type === "createSuccess") {
           await mainContainer.setAccessRules({
             public: {
               read: true,

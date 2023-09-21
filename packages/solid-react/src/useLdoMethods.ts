@@ -2,8 +2,9 @@ import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { transactionChanges } from "@ldo/ldo";
 import { write } from "@ldo/ldo";
 import { startTransaction } from "@ldo/ldo";
-import type { SubjectNode } from "@ldo/rdf-utils";
+import type { DatasetChanges, SubjectNode } from "@ldo/rdf-utils";
 import type { Resource, SolidLdoDataset } from "@ldo/solid";
+import type { Quad } from "@rdfjs/types";
 
 export interface UseLdoMethods {
   dataset: SolidLdoDataset;
@@ -85,7 +86,7 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
       input: LdoBase,
     ): ReturnType<SolidLdoDataset["commitChangesToPod"]> {
       const changes = transactionChanges(input);
-      return dataset.commitChangesToPod(changes);
+      return dataset.commitChangesToPod(changes as DatasetChanges<Quad>);
     },
   };
 }

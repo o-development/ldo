@@ -1,6 +1,4 @@
-import type { AccessRuleFetchError } from "../results/success/AccessRule";
-
-export async function getAccessRules(): Promise<AccessRuleFetchError> {
+export async function getAccessRules(): Promise<undefined> {
   throw new Error("Not Implemented");
   // const [publicAccess, agentAccess] = await Promise.all([
   //   universalAccess.getPublicAccess(uri, { fetch }),

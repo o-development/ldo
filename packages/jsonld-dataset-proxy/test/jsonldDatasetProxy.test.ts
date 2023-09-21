@@ -581,6 +581,14 @@ describe("jsonldDatasetProxy", () => {
       );
     });
 
+    it("Does not overwrite the full object when a partial object is provided", async () => {
+      const [dataset, observation] = await getTinyLoadedDataset();
+      observation.subject = { "@id": "http://example.com/Patient2" };
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient2> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+      );
+    });
+
     it("Does not remove the full object when it is replaced on an array", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       const replacementPatient: PatientShape = {
@@ -643,7 +651,7 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDatasetWithBlankNodes();
       delete observation.subject?.roommate?.[0];
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> _:b25_Patient1 .\n_:b25_Patient1 <http://hl7.org/fhir/name> "Garrett" .\n',
+        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> _:b26_Patient1 .\n_:b26_Patient1 <http://hl7.org/fhir/name> "Garrett" .\n',
       );
     });
 
@@ -699,7 +707,7 @@ describe("jsonldDatasetProxy", () => {
       expect(observation[Symbol.search]).toBe(undefined);
     });
 
-    it("Removes old triples from a node that has the same id as the one it replaced", async () => {
+    it("Only replaces referenced triples on a node that has the same id as the one it replaced", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/Patient1",
@@ -707,7 +715,7 @@ describe("jsonldDatasetProxy", () => {
       };
       observation.subject = replacementPatient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mister Sneaky" .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mister Sneaky" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 

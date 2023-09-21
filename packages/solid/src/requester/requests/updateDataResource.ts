@@ -10,7 +10,7 @@ import type { LeafUri } from "../../util/uriTypes";
 import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import { UpdateSuccess } from "../results/success/UpdateSuccess";
+import type { UpdateSuccess } from "../results/success/UpdateSuccess";
 import type { BasicRequestOptions } from "./requestOptions";
 
 export type UpdateResult = UpdateSuccess | UpdateResultError;
@@ -49,7 +49,11 @@ export async function updateDataResource(
       }
       return httpError;
     }
-    return new UpdateSuccess(uri);
+    return {
+      isError: false,
+      type: "updateSuccess",
+      uri,
+    };
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);
   }

@@ -47,9 +47,10 @@ export function addRawValueToDatasetRecursive(
     });
   } else {
     // Delete any triples if the id is the same
-    if (!visitedObjects.has(object) && !isSubjectProxy(value)) {
-      dataset.deleteMatches(object, undefined, undefined);
-    }
+    // if (!visitedObjects.has(object) && !isSubjectProxy(value)) {
+    //   console.log("deleting 2", object.value);
+    //   dataset.deleteMatches(object, undefined, undefined);
+    // }
     proxyContext.writeGraphs.forEach((graph) => {
       dataset.add(quad(subject, predicate, object, graph));
     });

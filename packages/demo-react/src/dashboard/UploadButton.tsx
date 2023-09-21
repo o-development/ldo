@@ -1,9 +1,10 @@
 import React, { useCallback, useState, useRef } from "react";
 import type { FunctionComponent, FormEvent } from "react";
-import type { Container, Leaf } from "@ldo/solid";
+import type { Container, Leaf, LeafUri } from "@ldo/solid";
 import { v4 } from "uuid";
 import { useLdo, useSolidAuth } from "@ldo/solid-react";
 import { PostShShapeType } from "../.ldo/post.shapeTypes";
+import { transactionChanges } from "@ldo/ldo";
 
 export const UploadButton: FunctionComponent<{ mainContainer: Container }> = ({
   mainContainer,
@@ -18,28 +19,29 @@ export const UploadButton: FunctionComponent<{ mainContainer: Container }> = ({
       e.preventDefault();
 
       // Create the container file
-      const mediaContainer = await mainContainer.createChildAndOverwrite(
+      const mediaContainerResult = await mainContainer.createChildAndOverwrite(
         `${v4()}/`,
       );
-      if (mediaContainer.type === "error") {
-        alert(mediaContainer.message);
+      if (mediaContainerResult.isError) {
+        alert(mediaContainerResult.message);
         return;
       }
+      const mediaContainer = mediaContainerResult.resource;
 
       // Upload Image
       let uploadedImage: Leaf | undefined;
       if (selectedFile) {
         const result = await mediaContainer.uploadChildAndOverwrite(
-          selectedFile.name,
+          selectedFile.name as LeafUri,
           selectedFile,
           selectedFile.type,
         );
-        if (result.type === "error") {
+        if (result.isError) {
           alert(result.message);
           await mediaContainer.delete();
           return;
         }
-        uploadedImage = result;
+        uploadedImage = result.resource;
       }
 
       // Create Post
@@ -49,6 +51,12 @@ export const UploadButton: FunctionComponent<{ mainContainer: Container }> = ({
         indexResource.uri,
         indexResource,
       );
+      console.log("Created Data");
+      const changes = transactionChanges(post);
+      console.log("added");
+      console.log(changes.added?.toString());
+      console.log("removed");
+      console.log(changes.removed?.toString());
       post.articleBody = message;
       if (uploadedImage) {
         post.image = { "@id": uploadedImage.uri };
@@ -56,10 +64,16 @@ export const UploadButton: FunctionComponent<{ mainContainer: Container }> = ({
       if (session.webId) {
         post.publisher = { "@id": session.webId };
       }
+      console.log("Created Data 2");
+      const changes2 = transactionChanges(post);
+      console.log("added");
+      console.log(changes2.added?.toString());
+      console.log("removed");
+      console.log(changes2.removed?.toString());
       post.type = { "@id": "SocialMediaPosting" };
       post.uploadDate = new Date().toISOString();
       const result = await commitData(post);
-      if (result.type === "error") {
+      if (result.isError) {
         alert(result.message);
       }
 

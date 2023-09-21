@@ -176,7 +176,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   protected async handleCreateIfAbsent(): Promise<
     ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult
   > {
-    const result = await this.requester.createDataResource(true);
+    const result = await this.requester.createDataResource();
     this.status = result;
     if (result.isError) return result;
     this.updateWithCreateSuccess(result);

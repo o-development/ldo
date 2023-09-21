@@ -22,7 +22,7 @@ import type { LeafUri } from "../util/uriTypes";
 import type { Container } from "./Container";
 import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
-import type { ResourceResult } from "./ResourceResult";
+import type { ResourceResult } from "./resourceResult/ResourceResult";
 
 export class Leaf extends Resource {
   readonly uri: LeafUri;
@@ -199,7 +199,7 @@ export class Leaf extends Resource {
     ResourceResult<LeafCreateIfAbsentResult, Leaf>
   > {
     const createResult =
-      (await this.handleCreateAndOverwrite()) as LeafCreateIfAbsentResult;
+      (await this.handleCreateIfAbsent()) as LeafCreateIfAbsentResult;
     if (createResult.isError) return createResult;
     return { ...createResult, resource: this };
   }
