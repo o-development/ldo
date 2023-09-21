@@ -64,6 +64,9 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   isDoingInitialFetch(): boolean {
     return this.isReading() && !this.isFetched();
   }
+  isReloading(): boolean {
+    return this.isReading() && this.isFetched();
+  }
 
   // Checkers
   isFetched(): boolean {
@@ -116,6 +119,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   async readIfUnfetched(): Promise<
     ResourceResult<ReadLeafResult | ReadContainerResult, Container | Leaf>
   > {
+    console.log("didInitialFetch", this.didInitialFetch);
     if (this.didInitialFetch) {
       const readResult = this.toReadResult();
       this.status = readResult;

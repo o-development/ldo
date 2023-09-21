@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import type { FunctionComponent } from "react";
 import type { BuildMainContainerChildProps } from "./BuildMainContainer";
 import { useResource } from "@ldo/solid-react";
@@ -9,7 +9,7 @@ export const Dashboard: FunctionComponent<BuildMainContainerChildProps> = ({
   mainContainerUri,
 }) => {
   const mainContainer = useResource(mainContainerUri);
-  if (mainContainer.isLoading()) {
+  if (mainContainer.isDoingInitialFetch()) {
     return <p>Loading Main Container</p>;
   }
 
@@ -20,7 +20,10 @@ export const Dashboard: FunctionComponent<BuildMainContainerChildProps> = ({
       </div>
       <hr />
       {mainContainer.children().map((child) => (
-        <MediaPost key={child.uri} uri={child.uri} />
+        <Fragment key={child.uri}>
+          <MediaPost uri={child.uri} />
+          <hr />
+        </Fragment>
       ))}
     </div>
   );

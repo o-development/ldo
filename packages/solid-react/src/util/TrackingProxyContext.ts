@@ -4,6 +4,7 @@ import type {
   ProxyContextOptions,
 } from "@ldo/jsonld-dataset-proxy";
 import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
+import type { QuadMatch } from "@ldo/rdf-utils";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 import { namedNode } from "@rdfjs/data-model";
 import type { Quad } from "@rdfjs/types";
@@ -22,6 +23,14 @@ export class TrackingProxyContext extends ProxyContext {
     this.listener = listener;
   }
 
+  // Adds the listener to the subscribable dataset while ensuring deduping of the listener
+  private addListener(eventName: QuadMatch) {
+    const listeners = this.subscribableDataset.listeners(eventName);
+    if (!listeners.includes(this.listener)) {
+      this.subscribableDataset.on(eventName, this.listener);
+    }
+  }
+
   protected createSubjectHandler(): ProxyHandler<SubjectProxyTarget> {
     const baseHandler = super.createSubjectHandler();
     const oldGetFunction = baseHandler.get;
@@ -34,13 +43,10 @@ export class TrackingProxyContext extends ProxyContext {
       if (typeof key === "symbol") {
         // Do Nothing
       } else if (key === "@id") {
-        this.subscribableDataset.on([subject, null, null, null], this.listener);
+        this.addListener([subject, null, null, null]);
       } else if (!this.contextUtil.isArray(key)) {
         const predicate = namedNode(this.contextUtil.keyToIri(key));
-        this.subscribableDataset.on(
-          [subject, predicate, null, null],
-          this.listener,
-        );
+        this.addListener([subject, predicate, null, null]);
       }
       return oldGetFunction && oldGetFunction(target, key, receiver);
     };
@@ -63,10 +69,7 @@ export class TrackingProxyContext extends ProxyContext {
       receiver,
     ) => {
       if (qualifiedArrayMethods.has(key)) {
-        this.subscribableDataset.on(
-          [target[0][0], target[0][1], target[0][2], null],
-          this.listener,
-        );
+        this.addListener([target[0][0], target[0][1], target[0][2], null]);
       }
       return oldGetFunction && oldGetFunction(target, key, receiver);
     };

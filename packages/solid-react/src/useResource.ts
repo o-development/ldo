@@ -29,6 +29,7 @@ export function useResource(
 ): Leaf | Container {
   const { getResource } = useLdo();
   const resource = useMemo(() => {
+    console.log(uri);
     const resource = getResource(uri);
     if (!options?.suppressInitialRead) {
       if (options?.reloadOnMount) {

@@ -60,6 +60,7 @@ export class Container extends Resource {
   protected updateWithReadSuccess(
     result: ContainerReadSuccess | AbsentReadSuccess,
   ): void {
+    super.updateWithReadSuccess(result);
     if (result.type === "containerReadSuccess") {
       this.rootContainer = result.isRootContainer;
     }
@@ -113,9 +114,11 @@ export class Container extends Resource {
   }
 
   async getRootContainer(): Promise<Container | CheckRootResultError> {
-    const checkResult = await this.checkIfIsRootContainer();
-    if (checkResult.isError) return checkResult;
-    if (this.rootContainer) {
+    if (this.rootContainer === undefined) {
+      const checkResult = await this.checkIfIsRootContainer();
+      if (checkResult.isError) return checkResult;
+    }
+    if (this.rootContainer === true) {
       return this;
     }
     const parentUri = getParentUri(this.uri);
