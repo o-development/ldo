@@ -3,14 +3,13 @@ import React from "react";
 import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./dashboard/Dashboard";
-import { BuildMainContainer } from "./dashboard/BuildMainContainer";
 import { MediaPage } from "./media/MediaPage";
 import { Header } from "./Header";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <BuildMainContainer child={Dashboard} />,
+    element: <Dashboard />,
   },
   {
     path: "/media/:uri",

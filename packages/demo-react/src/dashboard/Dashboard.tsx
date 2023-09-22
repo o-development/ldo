@@ -1,17 +1,19 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import type { FunctionComponent } from "react";
-import type { BuildMainContainerChildProps } from "./BuildMainContainer";
-import { useResource } from "@ldo/solid-react";
+import { MainContainerContext } from "../MainContainerProvider";
 import { MediaPost } from "../media/MediaPost";
 import { UploadButton } from "./UploadButton";
 
-export const Dashboard: FunctionComponent<BuildMainContainerChildProps> = ({
-  mainContainerUri,
-}) => {
-  const mainContainer = useResource(mainContainerUri);
+export const Dashboard: FunctionComponent = () => {
+  const mainContainer = useContext(MainContainerContext);
+  if (mainContainer === undefined) {
+    return <p>Loading...</p>;
+  }
   if (mainContainer.isDoingInitialFetch()) {
     return <p>Loading Main Container</p>;
   }
+
+  console.log(mainContainer.children());
 
   return (
     <div>
