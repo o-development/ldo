@@ -28,8 +28,8 @@ export const Header: FunctionComponent = () => {
   const { login, signUp, session } = useSolidAuth();
   return (
     <header style={{ display: "flex" }}>
-      {session.webId ? (
-        <LoggedInHeader webId={session.webId} />
+      {session.isLoggedIn ? (
+        <LoggedInHeader webId={session.webId!} />
       ) : (
         <>
           <input

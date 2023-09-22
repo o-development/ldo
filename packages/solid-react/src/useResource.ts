@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, useState, useCallback } from "react";
 import type {
   Container,
   ContainerUri,
@@ -7,7 +7,6 @@ import type {
   Leaf,
 } from "@ldo/solid";
 import { useLdo } from "./SolidLdoProvider";
-import { useForceReload } from "./util/useForceReload";
 
 export interface UseResourceOptions {
   suppressInitialRead?: boolean;
@@ -28,9 +27,11 @@ export function useResource(
   options?: UseResourceOptions,
 ): Leaf | Container {
   const { getResource } = useLdo();
+
+  // Get the resource
   const resource = useMemo(() => {
-    console.log(uri);
     const resource = getResource(uri);
+    // Run read operations if necissary
     if (!options?.suppressInitialRead) {
       if (options?.reloadOnMount) {
         resource.read();
@@ -40,18 +41,37 @@ export function useResource(
     }
     return resource;
   }, [getResource, uri]);
-  const pastResource = useRef<Resource | undefined>();
-  const forceReload = useForceReload();
+  const [resourceRepresentation, setResourceRepresentation] =
+    useState(resource);
+  const pastResource = useRef<
+    { resource: Resource; callback: () => void } | undefined
+  >();
+
+  // Callback function to force the react dom to reload.
+  const forceReload = useCallback(
+    // Wrap the resource in a proxy so it's techically a different object
+    () => {
+      setResourceRepresentation(new Proxy(resource, {}));
+    },
+    [resource],
+  );
   useEffect(() => {
+    // Remove listeners for the previous resource
     if (pastResource.current) {
-      pastResource.current.off("update", forceReload);
+      pastResource.current.resource.off(
+        "update",
+        pastResource.current.callback,
+      );
     }
-    pastResource.current = resource;
+    // Set a new past resource to the current resource
+    pastResource.current = { resource, callback: forceReload };
+    // Add listener
     resource.on("update", forceReload);
 
+    // Unsubscribe on unmount
     return () => {
       resource.off("update", forceReload);
     };
   }, [resource]);
-  return resource;
+  return resourceRepresentation;
 }

@@ -13,8 +13,6 @@ export const Dashboard: FunctionComponent = () => {
     return <p>Loading Main Container</p>;
   }
 
-  console.log(mainContainer.children());
-
   return (
     <div>
       <div>

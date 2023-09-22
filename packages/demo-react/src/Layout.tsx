@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Dashboard } from "./dashboard/Dashboard";
 import { MediaPage } from "./media/MediaPage";
 import { Header } from "./Header";
+import { MainContainerProvider } from "./MainContainerProvider";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,9 @@ export const Layout: FunctionComponent = () => {
     <div>
       <Header />
       <hr />
-      {session.isLoggedIn ? <RouterProvider router={router} /> : undefined}
+      <MainContainerProvider>
+        {session.isLoggedIn ? <RouterProvider router={router} /> : undefined}
+      </MainContainerProvider>
     </div>
   );
 };

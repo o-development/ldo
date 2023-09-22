@@ -44,7 +44,6 @@ export class SolidLdoDataset extends LdoDataset {
     | AggregateError<UpdateResultError | InvalidUriError>
   > {
     const changesByGraph = splitChangesByGraph(changes);
-    console.log(changesByGraph);
     const results: [
       GraphNode,
       DatasetChanges<Quad>,

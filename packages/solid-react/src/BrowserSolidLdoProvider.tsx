@@ -28,7 +28,6 @@ export const BrowserSolidLdoProvider: FunctionComponent<PropsWithChildren> = ({
       restorePreviousSession: true,
     });
     setSession({ ...getDefaultSession().info });
-
     window.history.replaceState(
       {},
       "",
@@ -40,19 +39,14 @@ export const BrowserSolidLdoProvider: FunctionComponent<PropsWithChildren> = ({
   }, []);
 
   const login = useCallback(async (issuer: string, options?: LoginOptions) => {
-    console.log("Before full options");
     const fullOptions = {
       redirectUrl: window.location.href,
       clientName: "Solid App",
       oidcIssuer: issuer,
       ...options,
     };
-    console.log("After full options");
     window.localStorage.setItem(PRE_REDIRECT_URI, fullOptions.redirectUrl);
-    console.log("Set Item");
-    console.log(fullOptions);
     await libraryLogin(fullOptions);
-    console.log("After login");
     setSession({ ...getDefaultSession().info });
   }, []);
 
