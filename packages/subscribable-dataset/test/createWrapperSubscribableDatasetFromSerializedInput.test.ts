@@ -1,5 +1,5 @@
 import { serializedToSubscribableDataset } from "../src";
-import { turtleData, jsonLdData } from "@ldo/dataset/test/sampleData";
+import { turtleData, jsonLdData } from "@ldobjects/dataset/test/sampleData";
 
 describe("createExtendedDatasetFromSerializedInput", () => {
   it("creates a dataset with turtle", async () => {

@@ -1,4 +1,4 @@
-import type { ShapeType } from "@ldo/ldo";
+import type { ShapeType } from "@ldobjects/ldo";
 import { solidSchema } from "./solid.schema";
 import { solidContext } from "./solid.context";
 import type { Container, Resource } from "./solid.typings";

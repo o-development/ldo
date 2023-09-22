@@ -1,8 +1,8 @@
 import { defaultGraph } from "@rdfjs/data-model";
 import type { Quad } from "@rdfjs/types";
-import type { ObjectNode } from "@ldo/rdf-utils";
-import { ProxyTransactionalDataset } from "@ldo/subscribable-dataset";
-import { createDatasetFactory } from "@ldo/dataset";
+import type { ObjectNode } from "@ldobjects/rdf-utils";
+import { ProxyTransactionalDataset } from "@ldobjects/subscribable-dataset";
+import { createDatasetFactory } from "@ldobjects/dataset";
 import type { ProxyContext } from "../ProxyContext";
 import { addObjectToDataset } from "../util/addObjectToDataset";
 import {

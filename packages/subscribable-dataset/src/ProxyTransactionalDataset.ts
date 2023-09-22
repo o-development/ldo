@@ -1,7 +1,7 @@
 import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
-import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { DatasetChanges } from "@ldobjects/rdf-utils";
 import type { BulkEditableDataset, TransactionalDataset } from "./types";
-import { ExtendedDataset } from "@ldo/dataset";
+import { ExtendedDataset } from "@ldobjects/dataset";
 import { mergeDatasetChanges } from "./mergeDatasetChanges";
 
 /**

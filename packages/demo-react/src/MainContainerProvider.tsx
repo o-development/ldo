@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { Container, LeafUri } from "@ldo/solid";
-import { useSolidAuth, useLdo, useResource } from "@ldo/solid-react";
+import type { Container, LeafUri } from "@ldobjects/solid";
+import { useSolidAuth, useLdo, useResource } from "@ldobjects/solid-react";
 
 // Context will be set before any of it's children are rendered.
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

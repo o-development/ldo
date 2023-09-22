@@ -47,7 +47,9 @@ export class MultiSet<Key1, Key2> {
     return newMultiSet;
   }
   toString(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     key1Transformer: (key: Key1) => any = (key) => key,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     key2Transformer: (key: Key2) => any = (key) => key,
   ) {
     const multiSetValues: string[] = [];

@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { quadMatchToString, stringToQuadMatch } from "@ldo/rdf-utils";
+import { quadMatchToString, stringToQuadMatch } from "@ldobjects/rdf-utils";
 import type {
   DatasetChanges,
   QuadMatch,
@@ -7,7 +7,7 @@ import type {
   PredicateNode,
   ObjectNode,
   GraphNode,
-} from "@ldo/rdf-utils";
+} from "@ldobjects/rdf-utils";
 import type {
   Dataset,
   BaseQuad,

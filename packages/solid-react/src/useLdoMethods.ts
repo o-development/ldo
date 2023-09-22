@@ -1,9 +1,9 @@
-import type { LdoBase, ShapeType } from "@ldo/ldo";
-import { transactionChanges } from "@ldo/ldo";
-import { write } from "@ldo/ldo";
-import { startTransaction } from "@ldo/ldo";
-import type { DatasetChanges, SubjectNode } from "@ldo/rdf-utils";
-import type { Resource, SolidLdoDataset } from "@ldo/solid";
+import type { LdoBase, ShapeType } from "@ldobjects/ldo";
+import { transactionChanges } from "@ldobjects/ldo";
+import { write } from "@ldobjects/ldo";
+import { startTransaction } from "@ldobjects/ldo";
+import type { DatasetChanges, SubjectNode } from "@ldobjects/rdf-utils";
+import type { Resource, SolidLdoDataset } from "@ldobjects/solid";
 import type { Quad } from "@rdfjs/types";
 
 export interface UseLdoMethods {

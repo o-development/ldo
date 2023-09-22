@@ -4,7 +4,7 @@ Turn ShexJ into typescript typings and JSON-LD context.
 
 ## Installation
 ```bash
-npm i @ldo/schema-converter-shex
+npm i @ldobjects/schema-converter-shex
 ```
 
 ## API
@@ -14,7 +14,7 @@ See the [full API docs](docs/modules.md).
 
 ```typescript
 import { Schema } from "shexj";
-import shexjToTypeAndContext from "@ldo/schema-converter-shex";
+import shexjToTypeAndContext from "@ldobjects/schema-converter-shex";
 
 async function run() {
   /**

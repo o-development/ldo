@@ -1,6 +1,6 @@
 import type { FunctionComponent, PropsWithChildren } from "react";
 import React, { useCallback } from "react";
-import { useSolidAuth } from "@ldo/solid-react";
+import { useSolidAuth } from "@ldobjects/solid-react";
 
 const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   const { login, session, logout } = useSolidAuth();

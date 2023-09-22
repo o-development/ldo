@@ -7,7 +7,7 @@ import {
   type DatasetCoreFactory,
   type Quad,
 } from "@rdfjs/types";
-import { datasetToString } from "@ldo/rdf-utils";
+import { datasetToString } from "@ldobjects/rdf-utils";
 import { Readable } from "readable-stream";
 
 /**

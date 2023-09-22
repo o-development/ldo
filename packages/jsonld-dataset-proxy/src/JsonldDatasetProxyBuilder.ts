@@ -1,6 +1,6 @@
 import { blankNode, namedNode } from "@rdfjs/data-model";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
+import type { GraphNode, QuadMatch } from "@ldobjects/rdf-utils";
 import type { LanguageOrdering } from "./language/languageTypes";
 import type { ProxyContext } from "./ProxyContext";
 import type { ObjectLike } from "./types";

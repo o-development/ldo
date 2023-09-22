@@ -1,5 +1,5 @@
 {
-  "name": "@ldo/traverser-shexj",
+  "name": "@ldobjects/traverser-shexj",
   "version": "0.0.0",
   "description": "A type-traverser for ShexJ",
   "main": "dist/index.js",
@@ -29,6 +29,6 @@
     "dist"
   ],
   "dependencies": {
-    "@ldo/type-traverser": "^0.0.0"
+    "@ldobjects/type-traverser": "^0.0.0"
   }
 }

@@ -1,4 +1,4 @@
-import { createDataset, serializedToDataset } from "@ldo/dataset";
+import { createDataset, serializedToDataset } from "@ldobjects/dataset";
 import type { JsonldDatasetProxyBuilder, LanguageSet } from "../src";
 import {
   graphOf,

@@ -6,7 +6,7 @@ import type {
   DatasetCore,
 } from "@rdfjs/types";
 import type { BulkEditableDataset } from "../src";
-import { ExtendedDatasetFactory } from "@ldo/dataset";
+import { ExtendedDatasetFactory } from "@ldobjects/dataset";
 import { ProxyTransactionalDataset } from "../src";
 import datasetCoreFactory from "@rdfjs/dataset";
 

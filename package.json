@@ -7,7 +7,7 @@
   "scripts": {
     "test": "lerna run test",
     "build": "lerna run build",
-    "demo-react": "lerna run start --scope @ldo/demo-react",
+    "demo-react": "lerna run start --scope @ldobjects/demo-react",
     "lint": "lerna run lint"
   },
   "devDependencies": {

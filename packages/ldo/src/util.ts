@@ -1,16 +1,16 @@
 import { namedNode } from "@rdfjs/data-model";
 import type { Dataset, Quad } from "@rdfjs/types";
-import type { ArrayProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
+import type { ArrayProxy, SubjectProxy } from "@ldobjects/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
-} from "@ldo/jsonld-dataset-proxy";
-import type { AnyNode } from "@ldo/rdf-utils";
+} from "@ldobjects/jsonld-dataset-proxy";
+import type { AnyNode } from "@ldobjects/rdf-utils";
 import type {
   SubscribableDataset,
   TransactionalDataset,
-} from "@ldo/subscribable-dataset";
+} from "@ldobjects/subscribable-dataset";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LdoBase = Record<string, any>;

@@ -1,11 +1,11 @@
-import type { SubjectNode } from "@ldo/rdf-utils";
+import type { SubjectNode } from "@ldobjects/rdf-utils";
 import {
   ContextUtil,
   JsonldDatasetProxyBuilder,
-} from "@ldo/jsonld-dataset-proxy";
-import type { ShapeType } from "@ldo/ldo";
-import { LdoBuilder } from "@ldo/ldo";
-import type { LdoBase } from "@ldo/ldo";
+} from "@ldobjects/jsonld-dataset-proxy";
+import type { ShapeType } from "@ldobjects/ldo";
+import { LdoBuilder } from "@ldobjects/ldo";
+import type { LdoBase } from "@ldobjects/ldo";
 import { useLdo } from "./SolidLdoProvider";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TrackingProxyContext } from "./util/TrackingProxyContext";

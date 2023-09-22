@@ -1,4 +1,4 @@
-import type { GraphNode } from "@ldo/rdf-utils";
+import type { GraphNode } from "@ldobjects/rdf-utils";
 import type { InteractOptions } from "./util/createInteractOptions";
 import { createInteractOptions } from "./util/createInteractOptions";
 

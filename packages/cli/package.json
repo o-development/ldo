@@ -1,5 +1,5 @@
 {
-  "name": "@ldo/cli",
+  "name": "@ldobjects/cli",
   "version": "0.0.0",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@shexjs/parser": "^1.0.0-alpha.24",
-    "@ldo/schema-converter-shex": "^0.0.0",
+    "@ldobjects/schema-converter-shex": "^0.0.0",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",

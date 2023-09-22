@@ -1,4 +1,4 @@
-import { parseRdf } from "@ldo/ldo";
+import { parseRdf } from "@ldobjects/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { Dataset } from "@rdfjs/types";
 import type { ContainerUri } from "./uriTypes";

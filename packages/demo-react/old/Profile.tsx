@@ -7,7 +7,7 @@ import {
   useLdo,
   useDataResource,
   useSubject,
-} from "@ldo/solid-react";
+} from "@ldobjects/solid-react";
 
 const Profile: FunctionComponent = () => {
   const { changeData, commitData } = useLdo();

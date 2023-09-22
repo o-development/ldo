@@ -5,7 +5,7 @@ import type {
   LeafUri,
   Resource,
   Leaf,
-} from "@ldo/solid";
+} from "@ldobjects/solid";
 import { useLdo } from "./SolidLdoProvider";
 
 export interface UseResourceOptions {

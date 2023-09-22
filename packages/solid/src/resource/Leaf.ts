@@ -1,4 +1,4 @@
-import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { DatasetChanges } from "@ldobjects/rdf-utils";
 import type { Quad } from "@rdfjs/types";
 import { LeafRequester } from "../requester/LeafRequester";
 import type { CheckRootResultError } from "../requester/requests/checkRootContainer";

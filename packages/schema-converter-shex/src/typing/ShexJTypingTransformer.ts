@@ -1,4 +1,4 @@
-import ShexJTraverser from "@ldo/traverser-shexj";
+import ShexJTraverser from "@ldobjects/traverser-shexj";
 import * as dom from "dts-dom";
 import type { Annotation } from "shexj";
 import { nameFromObject } from "../context/JsonLdContextBuilder";

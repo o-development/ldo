@@ -1,5 +1,5 @@
 {
-  "name": "@ldo/jsonld-dataset-proxy",
+  "name": "@ldobjects/jsonld-dataset-proxy",
   "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -40,8 +40,8 @@
   ],
   "dependencies": {
     "@rdfjs/data-model": "^1.2.0",
-    "@ldo/rdf-utils": "^0.0.0",
-    "@ldo/subscribable-dataset": "^0.0.0",
+    "@ldobjects/rdf-utils": "^0.0.0",
+    "@ldobjects/subscribable-dataset": "^0.0.0",
     "@rdfjs/dataset": "^1.1.0",
     "jsonld2graphobject": "^0.0.4"
   }

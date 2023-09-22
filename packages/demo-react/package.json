@@ -1,9 +1,9 @@
 {
-  "name": "@ldo/demo-react",
+  "name": "@ldobjects/demo-react",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@ldo/solid-react": "^0.0.0",
+    "@ldobjects/solid-react": "^0.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@ldo/cli": "^0.0.0",
+    "@ldobjects/cli": "^0.0.0",
     "@types/jsonld": "^1.5.9",
     "@types/react": "^18.2.21",
     "@types/shexj": "^2.1.4",

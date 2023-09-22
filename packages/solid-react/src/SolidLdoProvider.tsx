@@ -6,8 +6,8 @@ import {
   useEffect,
 } from "react";
 import { useSolidAuth } from "./SolidAuthContext";
-import type { SolidLdoDataset } from "@ldo/solid";
-import { createSolidLdoDataset } from "@ldo/solid";
+import type { SolidLdoDataset } from "@ldobjects/solid";
+import { createSolidLdoDataset } from "@ldobjects/solid";
 import type { UseLdoMethods } from "./useLdoMethods";
 import { createUseLdoMethods } from "./useLdoMethods";
 
