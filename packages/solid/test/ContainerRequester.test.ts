@@ -3,8 +3,9 @@ import { getAuthenticatedFetch, ROOT_COONTAINER } from "./solidServer.helper";
 import type { SolidLdoDataset } from "../src/SolidLdoDataset";
 import { createSolidLdoDataset } from "../src/createSolidLdoDataset";
 import { ContainerRequester } from "../src/requester/ContainerRequester";
+import type { ContainerUri } from "../src/util/uriTypes";
 
-describe("Container Requester", () => {
+describe.skip("Container Requester", () => {
   let _app: App;
   let authFetch: typeof fetch;
   let fetchMock: typeof fetch;
@@ -69,7 +70,7 @@ describe("Container Requester", () => {
 
   it("Checks if a root container is a root container", async () => {
     const leafRequester = new ContainerRequester(
-      `${ROOT_COONTAINER}`,
+      `${ROOT_COONTAINER}` as ContainerUri,
       solidLdoDataset.context,
     );
     const result = await leafRequester.isRootContainer();

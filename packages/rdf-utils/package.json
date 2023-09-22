@@ -23,7 +23,8 @@
   "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
-    "@types/jsonld": "^1.5.9"
+    "@types/jsonld": "^1.5.9",
+    "ts-jest": "^29.1.1"
   },
   "dependencies": {
     "@rdfjs/data-model": "^1.2.0",
