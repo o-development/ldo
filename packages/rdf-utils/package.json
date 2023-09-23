@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/rdf-utils",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "Some RDF Utilities to support LDO librariers",
   "main": "dist/index.js",
   "scripts": {
@@ -31,8 +31,10 @@
     "n3": "^1.17.1",
     "rdf-string": "^1.6.3"
   },
-   "files": [ "dist" ],
-   "publishConfig": {
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
     "access": "public"
   }
 }
