@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/subscribable-dataset",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "An RDFJS dataset implementation that can be subscribed to for updates",
   "main": "dist/index.js",
   "scripts": {
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/o-dataset-pack.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/o-dataset-pack/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/o-dataset-pack#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/subscribable-dataset#readme",
   "devDependencies": {
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/dataset": "^1.1.0",
@@ -33,10 +33,13 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldobjects/dataset": "^0.0.1-alpha.0",
-    "@ldobjects/rdf-utils": "^0.0.1-alpha.0"
+    "@ldobjects/dataset": "^0.0.1-alpha.1",
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.1"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

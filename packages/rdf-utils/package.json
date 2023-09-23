@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/rdf-utils",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "Some RDF Utilities to support LDO librariers",
   "main": "dist/index.js",
   "scripts": {
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/devtool-boilerplate.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/devtool-boilerplate/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/rdf-utils#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
     "@types/jsonld": "^1.5.9",
@@ -30,5 +30,9 @@
     "@rdfjs/data-model": "^1.2.0",
     "n3": "^1.17.1",
     "rdf-string": "^1.6.3"
+  },
+   "files": [ "dist" ],
+   "publishConfig": {
+    "access": "public"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/cli",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "bin": {
@@ -23,14 +23,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/ldo-cli.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/ldo-cli/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/ldo-cli#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/cli#readme",
   "devDependencies": {
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
@@ -43,12 +43,16 @@
     "ts-jest": "^27.0.7"
   },
   "dependencies": {
-    "@ldobjects/schema-converter-shex": "^0.0.1-alpha.0",
+    "@ldobjects/schema-converter-shex": "^0.0.1-alpha.1",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "loading-cli": "^1.1.0"
+  },
+  "files": [ "dist" ],
+  "publishConfig": {
+    "access": "public"
   }
 }

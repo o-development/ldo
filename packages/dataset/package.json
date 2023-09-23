@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/dataset",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "An RDFJS dataset implementation",
   "main": "dist/index.js",
   "scripts": {
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/o-dataset-pack.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/o-dataset-pack/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/o-dataset-pack#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/dataset#readme",
   "devDependencies": {
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
@@ -34,12 +34,15 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldobjects/rdf-utils": "^0.0.1-alpha.0",
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.1",
     "@rdfjs/dataset": "^1.1.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.2.0"
   },
   "files": [
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/schema-converter-shex",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/shexj2typeandcontext.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/shexj2typeandcontext/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/shexj2typeandcontextr#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/schema-converter-shex#readme",
   "devDependencies": {
     "@shexjs/parser": "^1.0.0-alpha.24",
     "@types/jest": "^27.0.3",
@@ -33,8 +33,11 @@
     "dist"
   ],
   "dependencies": {
-    "@ldobjects/traverser-shexj": "^0.0.1-alpha.0",
+    "@ldobjects/traverser-shexj": "^0.0.1-alpha.1",
     "dts-dom": "^3.6.0",
     "jsonld2graphobject": "^0.0.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

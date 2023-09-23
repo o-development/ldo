@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/traverser-shexj",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "A type-traverser for ShexJ",
   "main": "dist/index.js",
   "scripts": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/json-ld-shex-mapper.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/json-ld-shex-mapper/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/json-ld-shex-mapper#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/traverser-shexj#readme",
   "devDependencies": {
     "@types/jest": "^29.0.3",
     "@types/shexj": "^2.1.3",
@@ -29,6 +29,9 @@
     "dist"
   ],
   "dependencies": {
-    "@ldobjects/type-traverser": "^0.0.1-alpha.0"
+    "@ldobjects/type-traverser": "^0.0.1-alpha.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
