@@ -3,13 +3,12 @@ import type { FunctionComponent, PropsWithChildren } from "react";
 import type { Container, LeafUri } from "@ldobjects/solid";
 import { useSolidAuth, useLdo, useResource } from "@ldobjects/solid-react";
 
-// Context will be set before any of it's children are rendered.
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const MainContainerContext = createContext<Container>(undefined);
+export const MainContainerContext = createContext<Container | undefined>(
+  undefined,
+);
 
 const MainContainerSubProvider: FunctionComponent<
-  PropsWithChildren<{ uri: string }>
+  PropsWithChildren<{ uri?: string }>
 > = ({ uri, children }) => {
   const mainContainer = useResource(uri);
   return (
@@ -60,12 +59,8 @@ export const MainContainerProvider: FunctionComponent<PropsWithChildren> = ({
     }
   }, [session.webId]);
 
-  if (!mainContainer) {
-    return null;
-  }
-
   return (
-    <MainContainerSubProvider uri={mainContainer.uri}>
+    <MainContainerSubProvider uri={mainContainer?.uri}>
       {children}
     </MainContainerSubProvider>
   );
