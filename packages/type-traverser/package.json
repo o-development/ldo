@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/type-traverser",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.3",
   "description": "An organized way to traverse over objects using typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/type-traverser.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/type-traverser/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/type-traverser#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/type=traverser#readme",
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "@types/uuid": "^8.3.4",
@@ -29,5 +29,12 @@
   },
   "dependencies": {
     "uuid": "^8.3.2"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "bcadb5da207dd1270d71b05fb5b7517ad5697625"
 }

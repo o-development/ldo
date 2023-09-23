@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/jsonld-dataset-proxy",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/jsonld-dataset-proxy.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/jsonld-dataset-proxy/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/jsonld-dataset-proxy#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/jsonld-dataset-proxy#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",
     "@types/jest": "^27.0.3",
@@ -39,10 +39,14 @@
     "dist"
   ],
   "dependencies": {
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.3",
+    "@ldobjects/subscribable-dataset": "^0.0.1-alpha.3",
     "@rdfjs/data-model": "^1.2.0",
-    "@ldobjects/rdf-utils": "^0.0.0",
-    "@ldobjects/subscribable-dataset": "^0.0.0",
     "@rdfjs/dataset": "^1.1.0",
     "jsonld2graphobject": "^0.0.4"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "bcadb5da207dd1270d71b05fb5b7517ad5697625"
 }

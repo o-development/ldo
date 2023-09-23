@@ -1,9 +1,8 @@
 {
   "name": "@ldobjects/demo-react",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1-alpha.3",
   "dependencies": {
-    "@ldobjects/solid-react": "^0.0.0",
+    "@ldobjects/solid-react": "^0.0.1-alpha.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
@@ -38,10 +37,14 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.1.0",
-    "@ldobjects/cli": "^0.0.0",
+    "@ldobjects/cli": "^0.0.1-alpha.3",
     "@types/jsonld": "^1.5.9",
     "@types/react": "^18.2.21",
     "@types/shexj": "^2.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
+  },
+  "gitHead": "bcadb5da207dd1270d71b05fb5b7517ad5697625",
+  "publishConfig": {
+    "access": "public"
   }
 }

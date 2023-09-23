@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/solid",
-  "version": "0.0.0",
+  "version": "0.0.1-alpha.3",
   "description": "A library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -15,17 +15,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/devtool-boilerplate.git"
+    "url": "git+https://github.com/o-development/ldobjects.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/devtool-boilerplate/issues"
+    "url": "https://github.com/o-development/ldobjects/issues"
   },
-  "homepage": "https://github.com/o-development/devtool-boilerplate#readme",
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.1",
-    "@ldobjects/cli": "^0.0.0",
+    "@ldobjects/cli": "^0.0.1-alpha.3",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "@solid/community-server": "^6.0.2",
@@ -38,12 +38,19 @@
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.30.0",
-    "@ldobjects/dataset": "^0.0.0",
-    "@ldobjects/ldo": "^0.0.0",
-    "@ldobjects/rdf-utils": "^0.0.0",
+    "@ldobjects/dataset": "^0.0.1-alpha.3",
+    "@ldobjects/ldo": "^0.0.1-alpha.3",
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.3",
     "@types/parse-link-header": "^2.0.1",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
     "ts-mixer": "^6.0.3"
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "bcadb5da207dd1270d71b05fb5b7517ad5697625"
 }
