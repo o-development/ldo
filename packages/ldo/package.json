@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/ldo",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/ldo#readme",
   "devDependencies": {
-    "@ldobjects/rdf-utils": "^0.0.1-alpha.3",
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.4",
     "@rdfjs/types": "^1.0.1",
     "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
@@ -35,9 +35,9 @@
     "ts-node": "^10.4.0"
   },
   "dependencies": {
-    "@ldobjects/dataset": "^0.0.1-alpha.3",
-    "@ldobjects/jsonld-dataset-proxy": "^0.0.1-alpha.3",
-    "@ldobjects/subscribable-dataset": "^0.0.1-alpha.3",
+    "@ldobjects/dataset": "^0.0.1-alpha.4",
+    "@ldobjects/jsonld-dataset-proxy": "^0.0.1-alpha.4",
+    "@ldobjects/subscribable-dataset": "^0.0.1-alpha.4",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
