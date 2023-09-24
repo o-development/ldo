@@ -33,6 +33,7 @@ export const SolidLdoProvider: FunctionComponent<SolidLdoProviderProps> = ({
     const ldoDataset = createSolidLdoDataset({
       fetch,
     });
+    ldoDataset.setMaxListeners(1000);
     return ldoDataset;
   }, []);
 

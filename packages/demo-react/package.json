@@ -43,7 +43,7 @@
     "@types/shexj": "^2.1.4",
     "tsconfig-paths-webpack-plugin": "^4.1.0"
   },
-  "gitHead": "bcadb5da207dd1270d71b05fb5b7517ad5697625",
+  "gitHead": "4548985c0de9b0ec83cf5ee93f2d7c1ca2c1b8d8",
   "publishConfig": {
     "access": "public"
   }
