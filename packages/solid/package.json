@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.30.0",
-    "@ldobjects/dataset": "^0.0.1-alpha.5",
-    "@ldobjects/ldo": "^0.0.1-alpha.5",
-    "@ldobjects/rdf-utils": "^0.0.1-alpha.5",
+    "@ldobjects/dataset": "^0.0.1-alpha.6",
+    "@ldobjects/ldo": "^0.0.1-alpha.6",
+    "@ldobjects/rdf-utils": "^0.0.1-alpha.6",
     "@types/parse-link-header": "^2.0.1",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
