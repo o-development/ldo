@@ -238,3 +238,4 @@ LDO uses ShEx "Shapes" as schemas to describe how data looks in an application. 
 ```bash
 npx @ldobjects/cli init
 ```
+

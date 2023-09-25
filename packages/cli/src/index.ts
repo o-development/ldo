@@ -11,7 +11,7 @@ program
 
 program
   .command("build")
-  .description("Build a shex folder into Shape Types")
+  .description("Build contents of a shex folder into Shape Types")
   .option("-i, --input <inputPath>", "Provide the input path", "./shapes")
   .option("-o, --output <outputPath>", "Provide the output path", "./ldo")
   .action(build);
