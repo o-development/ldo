@@ -1,6 +1,6 @@
 {
   "name": "@ldobjects/cli",
-  "version": "0.0.1-alpha.5",
+  "version": "0.0.1-alpha.6",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "bin": {
