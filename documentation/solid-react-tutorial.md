@@ -239,3 +239,155 @@ LDO uses ShEx "Shapes" as schemas to describe how data looks in an application. 
 npx @ldobjects/cli init
 ```
 
+This command will install required libraries and creates two folders: the `.shapes` folder and the `.ldo` folder.
+
+If you look in the `.shapes` folder, you'll find a default file called `foafProfile.shex`. This is a ShEx shape that defines a very simplified profile object.
+
+If you look in the `.ldo` folder, you'll files generated from the shape. For example, `foafProfile.typings.ts` contains the Typescript typings associated with the shape, `foafProfile.context.ts` conatians a JSON-LD context for the shape, and `foafProfile.shapeTypes.ts` contains a shape type, a special object that groups all the information for a shape together. We'll be using ShapeTypes later in this tutorial.
+
+For our project, we want to use a Solid Profile, so let's delete the "foafProfile" ShEx shape and make a new file for our Solid profile.
+
+```bash
+rm ./src/.shapes/foafProfile.shex
+touch ./src/.shapes/solidProfile.shex
+```
+
+Now, let's create a shape for the Solid Profile. The code for a Solid profile is listed below, but you can learn more about creating ShEx shapes of your own on the [ShEx website](https://shex.io)
+
+```shex
+PREFIX srs: <https://shaperepo.com/schemas/solidProfile#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schem: <http://schema.org/>
+PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX acl: <http://www.w3.org/ns/auth/acl#>
+PREFIX cert:  <http://www.w3.org/ns/auth/cert#>
+PREFIX ldp: <http://www.w3.org/ns/ldp#>
+PREFIX sp: <http://www.w3.org/ns/pim/space#>
+PREFIX solid: <http://www.w3.org/ns/solid/terms#>
+
+srs:SolidProfileShape EXTRA a {
+  a [ schem:Person ]
+    // rdfs:comment  "Defines the node as a Person (from Schema.org)" ;
+  a [ foaf:Person ]
+    // rdfs:comment  "Defines the node as a Person (from foaf)" ;
+  vcard:fn xsd:string ?
+    // rdfs:comment  "The formatted name of a person. Example: John Smith" ;
+  foaf:name xsd:string ?
+    // rdfs:comment  "An alternate way to define a person's name." ;
+  vcard:hasAddress @srs:AddressShape *
+    // rdfs:comment  "The person's street address." ;
+  vcard:hasEmail @srs:EmailShape *
+    // rdfs:comment  "The person's email." ;
+  vcard:hasPhoto IRI ?
+    // rdfs:comment  "A link to the person's photo" ;
+  foaf:img xsd:string ?
+    // rdfs:comment  "Photo link but in string form" ;
+  vcard:hasTelephone @srs:PhoneNumberShape *
+    // rdfs:comment  "Person's telephone number" ;
+  vcard:phone xsd:string ?
+    // rdfs:comment  "An alternative way to define a person's telephone number using a string" ;
+  vcard:organization-name xsd:string ?
+    // rdfs:comment  "The name of the organization with which the person is affiliated" ;
+  vcard:role xsd:string ?
+    // rdfs:comment  "The name of the person's role in their organization" ;
+  acl:trustedApp @srs:TrustedAppShape *
+    // rdfs:comment  "A list of app origins that are trusted by this user" ;
+  cert:key @srs:RSAPublicKeyShape *
+    // rdfs:comment  "A list of RSA public keys that are associated with private keys the user holds." ;
+  ldp:inbox IRI
+    // rdfs:comment  "The user's LDP inbox to which apps can post notifications" ;
+  sp:preferencesFile IRI ?
+    // rdfs:comment  "The user's preferences" ;
+  sp:storage IRI *
+    // rdfs:comment  "The location of a Solid storage server related to this WebId" ;
+  solid:account IRI ?
+    // rdfs:comment  "The user's account" ;
+  solid:privateTypeIndex IRI *
+    // rdfs:comment  "A registry of all types used on the user's Pod (for private access only)" ;
+  solid:publicTypeIndex IRI *
+    // rdfs:comment  "A registry of all types used on the user's Pod (for public access)" ;
+  foaf:knows IRI *
+    // rdfs:comment  "A list of WebIds for all the people this user knows." ;
+}
+
+srs:AddressShape {
+  vcard:country-name xsd:string ?
+    // rdfs:comment  "The name of the user's country of residence" ;
+  vcard:locality xsd:string ?
+    // rdfs:comment  "The name of the user's locality (City, Town etc.) of residence" ;
+  vcard:postal-code xsd:string ?
+    // rdfs:comment  "The user's postal code" ;
+  vcard:region xsd:string ?
+    // rdfs:comment  "The name of the user's region (State, Province etc.) of residence" ;
+  vcard:street-address xsd:string ?
+    // rdfs:comment  "The user's street address" ;
+}
+
+srs:EmailShape EXTRA a {
+  a [
+    vcard:Dom
+    vcard:Home
+    vcard:ISDN
+    vcard:Internet
+    vcard:Intl
+    vcard:Label
+    vcard:Parcel
+    vcard:Postal
+    vcard:Pref
+    vcard:Work
+    vcard:X400
+  ] ?
+    // rdfs:comment  "The type of email." ;
+  vcard:value IRI
+    // rdfs:comment  "The value of an email as a mailto link (Example <mailto:jane@example.com>)" ;
+}
+
+srs:PhoneNumberShape EXTRA a {
+  a [
+    vcard:Dom
+    vcard:Home
+    vcard:ISDN
+    vcard:Internet
+    vcard:Intl
+    vcard:Label
+    vcard:Parcel
+    vcard:Postal
+    vcard:Pref
+    vcard:Work
+    vcard:X400
+  ] ?
+    // rdfs:comment  "They type of Phone Number" ;
+  vcard:value IRI
+    // rdfs:comment  "The value of a phone number as a tel link (Example <tel:555-555-5555>)" ;
+}
+
+srs:TrustedAppShape {
+  acl:mode [acl:Append acl:Control acl:Read acl:Write] +
+    // rdfs:comment  "The level of access provided to this origin" ;
+  acl:origin IRI
+    // rdfs:comment "The app origin the user trusts"
+}
+
+srs:RSAPublicKeyShape {
+  cert:modulus xsd:string
+    // rdfs:comment  "RSA Modulus" ;
+  cert:exponent xsd:integer
+    // rdfs:comment  "RSA Exponent" ;
+}
+```
+
+Finally, we can run the command below to build the Solid Profile shape.
+
+```bash
+npm run build:ldo
+```
+
+You'll notice that the `.ldo` folder contains information about a _solid_ profile.
+
+## 6. Fetching and using information
+
+Let's go back to the header we built. Yeah it's cool, but if your profile includes a name, wouldn't it be better if it said, "You are logged in as Jackson Morgan" rather than "You are logged in with the webId https://solidweb.me/jackson3/profile/card#me?"
+
+Well, we can fix that by retrieving the user's profile document and using the data from it.

@@ -14,7 +14,15 @@ import { defaultGraph } from "@rdfjs/data-model";
 export function useSubject<Type extends LdoBase>(
   shapeType: ShapeType<Type>,
   subject: string | SubjectNode,
-): Type {
+): Type;
+export function useSubject<Type extends LdoBase>(
+  shapeType: ShapeType<Type>,
+  subject?: string | SubjectNode,
+): Type | undefined;
+export function useSubject<Type extends LdoBase>(
+  shapeType: ShapeType<Type>,
+  subject?: string | SubjectNode,
+): Type | undefined {
   const { dataset } = useLdo();
 
   const [forceUpdateCounter, setForceUpdateCounter] = useState(0);
@@ -25,6 +33,8 @@ export function useSubject<Type extends LdoBase>(
 
   // The main linked data object
   const linkedDataObject = useMemo(() => {
+    if (!subject) return;
+
     // Remove all current subscriptions
     dataset.removeListenerFromAllEvents(forceUpdate);
 
