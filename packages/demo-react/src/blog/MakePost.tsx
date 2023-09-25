@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import { useLdo, useSolidAuth } from "@ldobjects/solid-react";
 import { PostShShapeType } from "../.ldo/post.shapeTypes";
 
-export const UploadButton: FunctionComponent<{ mainContainer: Container }> = ({
+export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({
   mainContainer,
 }) => {
   const [message, setMessage] = useState("");

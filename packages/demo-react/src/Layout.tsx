@@ -2,19 +2,19 @@ import { useSolidAuth } from "@ldobjects/solid-react";
 import React from "react";
 import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Dashboard } from "./dashboard/Dashboard";
-import { MediaPage } from "./media/MediaPage";
+import { Blog } from "./blog/Blog";
+import { PostPage } from "./post/PostPage";
 import { Header } from "./Header";
 import { MainContainerProvider } from "./MainContainerProvider";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <Blog />,
   },
   {
     path: "/media/:uri",
-    element: <MediaPage />,
+    element: <PostPage />,
   },
 ]);
 

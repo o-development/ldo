@@ -1,27 +1,27 @@
 import React, { Fragment, useContext } from "react";
 import type { FunctionComponent } from "react";
 import { MainContainerContext } from "../MainContainerProvider";
-import { MediaPost } from "../media/MediaPost";
-import { UploadButton } from "./UploadButton";
+import { Post } from "../post/Post";
+import { MakePost } from "./MakePost";
 
-export const Dashboard: FunctionComponent = () => {
+export const Blog: FunctionComponent = () => {
   const mainContainer = useContext(MainContainerContext);
   if (mainContainer === undefined) {
     return <p>Loading...</p>;
   }
   if (mainContainer.isDoingInitialFetch()) {
-    return <p>Loading Main Container</p>;
+    return <p>Loading Blob</p>;
   }
 
   return (
     <div>
       <div>
-        <UploadButton mainContainer={mainContainer} />
+        <MakePost mainContainer={mainContainer} />
       </div>
       <hr />
       {mainContainer.children().map((child) => (
         <Fragment key={child.uri}>
-          <MediaPost uri={child.uri} />
+          <Post uri={child.uri} />
           <hr />
         </Fragment>
       ))}

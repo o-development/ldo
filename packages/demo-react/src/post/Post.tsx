@@ -5,7 +5,7 @@ import { PostShShapeType } from "../.ldo/post.shapeTypes";
 import { useNavigate } from "react-router-dom";
 import { PostedBy } from "./PostedBy";
 
-export const MediaPost: FunctionComponent<{ uri: string }> = ({ uri }) => {
+export const Post: FunctionComponent<{ uri: string }> = ({ uri }) => {
   const navigate = useNavigate();
   const mediaResource = useResource(`${uri}index.ttl`);
   const post = useSubject(PostShShapeType, mediaResource.uri);
