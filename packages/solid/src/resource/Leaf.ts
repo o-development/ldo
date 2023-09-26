@@ -55,6 +55,9 @@ export class Leaf extends Resource {
   getMimeType(): string | undefined {
     return this.binaryData?.mimeType;
   }
+  getBlob(): Blob | undefined {
+    return this.binaryData?.blob;
+  }
   isBinary(): boolean | undefined {
     if (!this.didInitialFetch) {
       return undefined;

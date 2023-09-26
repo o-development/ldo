@@ -228,7 +228,7 @@ Once you've implemented these changes, the application should look like this whe
 
 And this when logged in:
 
-![Your site when in out after completing step 4.](./images/Step4Login.png)
+![Your site when logged in after completing step 4.](./images/Step4Login.png)
 
 ## 5. Setting up a shape
 In step 6, we're going to use information from a user's Solid WebId profile. But, before we can do that, we want to set up a shape for the Solid Profile.
@@ -428,4 +428,303 @@ RDF data is automatically loaded into a central dataset inside your application.
 
 Once we have the subject, all we have to do is treat it like JSON. To get the "formalName" for a profile, just call `profile.fn`.
 
-## 7. 
+## 7. Getting the main container
+
+Let's move on to building the blog section of our site. One of the biggest questions when building Solid applications is "Where should I save new data?" While that question may have an different answer in the future, today apps traditionally create a new folder to save new data to.
+
+But, to create a new folder, we want to know what the root folder of the application is. At the time of login, the only URL we know is the WebId, so we want to find the root folder for that WebId. It's not always to root domain. For example, on some pod servers a WebId follows this format `https://example.pod/myusername/profile/card#me` and the root file is `https://example.pod/myusername/`. So, how do we know which container is the real root container? Well, we can use the `getRootContainer` method.
+
+Let's add the following hook to **Blog.tsx**
+
+```tsx
+// ...
+import { useLdo, useResource, useSolidAuth } from "@ldobjects/solid-react";
+import { ConatinerUri } from "@ldobjects/solid";
+
+export const Blog: FunctionComponent = () => {
+  const { session } = useSolidAuth();
+
+  const { getResource } = useLdo();
+  const [mainContainerUri, setMainContainerUri] = useState<
+    ContainerUri | undefined
+  >();
+
+  useEffect(() => {
+    if (session.webId) {
+      // Get the WebId resource
+      const webIdResource = getResource(session.webId);
+      // Get the root container associated with that WebId
+      webIdResource.getRootContainer().then((rootContainerResult) => {
+        // Check if there is an error
+        if (rootContainerResult.isError) return;
+        // Get a child of the root resource called "my-solid-app/"
+        const mainContainer = rootContainerResult.child("my-solid-app/");
+        setMainContainerUri(mainContainer.uri);
+        // Create the main container if it doesn't exist yet
+        mainContainer.createIfAbsent();
+      });
+    }
+  }, [getResource, session.webId]);
+
+  //...
+```
+
+Let's walk through what's happening here. First, we can use the `useLdo` hook to get a number of useful functions for interacting with data (and we'll use more in the future). In this case, we're getting the `getResource` function. This serves roughly the same purpose as the `useResource` hook, but in function form rather than hook form. Keep in mind that resources retrieved from the `getResource` function won't trigger rerenders on update, so it's best used when you need a resource for purposes other than the render.
+
+Using the `getResource` function, we get a resource representing the webId. Every resource has the `getRootContainer` method which returns a promise with either the root container, or an error. Everything returned by LDO methods has the `isError` parameter, so you can easily check if it's an error.
+
+We'll then save the URI of the main application container so we can use it in step 8.
+
+Any container resource has the `child` method which gets a representation of the any child, and with that representation we can call the `createIfAbsent` method to create the create out application's main container.
+
+## 8. Rendering Container Children
+
+Before we continue, let's talk a bit about the folder structure for this application. We just got our "main folder", the folder we'll save everything to. Inside that folder, we'll put our individual blog posts. These will be folders themselves with potentially two files: a post data file (index.ttl) and some image file. Overall, our folder layout will look like this:
+
+```
+rootContainer/
+├─ my-solid-app/
+│  ├─ post1/
+│  │  ├─ index.ttl
+│  │  ├─ some_image.png/
+│  ├─ post2/
+│  │  ├─ index.ttl
+│  │  ├─ another_image.jpg/
+```
+
+We've already created the `my-solid-app/` container, so let's add a bit of functionality to create the post folders. Let's modify **MakePost.tsx**.
+
+```tsx
+export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({
+  mainContainer,
+}) => {
+  const [message, setMessage] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | undefined>();
+
+  const onSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      // Create the container for the post
+      const postContainerResult = await mainContainer.createChildAndOverwrite(
+        `${v4()}/`
+      );
+      // Check if there was an error
+      if (postContainerResult.isError) {
+        alert(postContainerResult.message);
+        return;
+      }
+      const postContainer = postContainerResult.resource;
+    },
+    [message, selectedFile, mainContainer]
+  );
+  //...
+```
+
+Firstly, note that we've added a prop to include a main container. We use this in the `onSubmit` function to call the `createChildAndOverwrite` method. We can generate a name for the sub-folder any way we want, but in this example, we used UUID to generate a random name for the folder.
+
+Finally, we check to see if the result is an error, and if it isn't we extract our new Post container from the result.
+
+Now that we have the ability to create a container, let's view it.
+
+We'll modify **Post.tsx** to include the uri of the post:
+
+```tsx
+import { ContainerUri } from "@ldobjects/solid";
+
+export const Post: FunctionComponent<{ postUri: ContainerUri }> = ({
+  postUri,
+}) => {
+  return (
+    <div>
+      <p>ContainerURI is: {postUri}</p>
+    </div>
+  );
+};
+```
+
+And, in **Blog.tsx** we'll use the `useResource` hook on the main container keep track of the status of the main container. 
+
+```tsx
+export const Blog: FunctionComponent = () => {
+  const { session } = useSolidAuth();
+
+  const { getResource } = useLdo();
+  const [mainContainerUri, setMainContainerUri] = useState<
+    ContainerUri | undefined
+  >();
+  const mainContainer = useResource(mainContainerUri);
+
+  // ...
+
+  return (
+    <main>
+      <MakePost mainContainer={mainContainer} />
+      <hr />
+      {mainContainer
+        // Get all the children of the main container
+        .children()
+        // Filter out children that aren't containers themselves
+        .filter((child): child is Container => child.type === "container")
+        // Render a "Post" for each child
+        .map((child) => (
+          <Fragment key={child.uri}> 
+            <Post key={child.uri} postUri={child.uri} />
+            <hr />
+          </Fragment>
+        ))}
+    </main>
+  );
+};
+```
+
+In the render, we can use the `children()` method on the main container to get all the child elements of our container. As discussed earlier, the only children of this container should be containers themselves, so we'll filter out all non-containers. And finally, we render the post for each child.
+
+Once this step is done, you should be able to press the "Post" button to create posts (or at least the container for the post. We'll make the rest of the post in future steps). It should look like this.
+
+![Your site when after completing step 8.](./images/Step8.png)
+
+## 9. Uploading unstructured data
+
+Pods aren't just for storing containers, of course. They can also about storing raw data like images and videos. Let's add the ability to upload an image to our application.
+
+```tsx
+  const onSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      // ...
+      // Upload Image
+      let uploadedImage: Leaf | undefined;
+      if (selectedFile) {
+        const result = await postContainer.uploadChildAndOverwrite(
+          selectedFile.name as LeafUri,
+          selectedFile,
+          selectedFile.type
+        );
+        if (result.isError) {
+          alert(result.message);
+          await postContainer.delete();
+          return;
+        }
+        uploadedImage = result.resource;
+      }
+    },
+    [message, selectedFile, mainContainer]
+  );
+```
+
+We added the above section to the onSubmit function in **MakePost.tsx**. In this part of code, we use the selected file created in Step 2 as well as the post container's `uploadChildAndOverwrite` method to upload the file. This method takes in three parameters:
+ * The name of the file.
+ * The file itself (or any Blob)
+ * The file's mime-type
+
+Finally, we check if there's an error, and if there isn't, we assign the result to a variable, `uploadedImage`. We'll use this in step 10.
+
+After implementing this step, your application should now be able to upload photos to your Pod.
+
+## 10. Addeding structured data.
+
+Unstructured data is good, but the real lifeblood of Solid comes from its structured data. In this step, we'll create a Post document that contains the Post's text body, a link to the image, and it's time of posting.
+
+Before we can do that, like we did with the profile, we want to have a ShEx shape for a social media posting. Create a new file called **./.shapes.post.shex** and paste the following ShEx shape.
+
+**./.shapes/post.shex**
+```shex
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ex: <https://example.com/>
+BASE <http://schema.org/>
+
+ex:PostSh {
+  a [<SocialMediaPosting> <CreativeWork> <Thing>] ;
+  <articleBody> xsd:string?
+      // rdfs:label '''articleBody'''
+      // rdfs:comment '''The actual body of the article. ''' ;
+  <uploadDate> xsd:date
+      // rdfs:label '''uploadDate'''
+      // rdfs:comment '''Date when this media object was uploaded to this site.''' ;
+  <image> IRI ?
+      // rdfs:label '''image'''
+      // rdfs:comment '''A media object that encodes this CreativeWork. This property is a synonym for encoding.''' ;
+  <publisher> IRI
+      // rdfs:label '''publisher'''
+      // rdfs:comment '''The publisher of the creative work.''' ;
+}
+// rdfs:label '''SocialMediaPost'''
+// rdfs:comment '''A post to a social media platform, including blog posts, tweets, Facebook posts, etc.'''
+```
+
+Now we can build the shapes again by running:
+
+```bash
+npm run build:ldo
+```
+
+With the new shape in order, let's add some code to **MakePost.tsx** to create the structured data we need.
+
+```tsx
+import { PostShShapeType } from "./.ldo/post.shapeTypes";
+
+export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({
+  mainContainer,
+}) => {
+  // ...
+  const { createData, commitData } = useLdo();
+
+  const onSubmit = useCallback(
+    async (e: FormEvent<HTMLFormElement>) => {
+      // ...
+
+      // Create Post
+      const indexResource = postContainer.child("index.ttl");
+      // Create new data of type "Post" where the subject is the index
+      // resource's uri, and write any changes to the indexResource.
+      const post = createData(
+        PostShShapeType,
+        indexResource.uri,
+        indexResource
+      );
+      // Set the article body
+      post.articleBody = message;
+      if (uploadedImage) {
+        // Link the URI to the 
+        post.image = { "@id": uploadedImage.uri };
+      }
+      // Say that the type is a "SocialMediaPosting"
+      post.type = { "@id": "SocialMediaPosting" };
+      // Add an upload date
+      post.uploadDate = new Date().toISOString();
+      // The commitData function handles sending the data to the Pod.
+      const result = await commitData(post);
+      if (result.isError) {
+        alert(result.message);
+      }
+    },
+    [mainContainer, selectedFile, createData, message, commitData]
+  );
+  // ...
+```
+
+Structured data is a little different than unstructured data. Data can potentially exist in multiple resources. That isn't the case here, but we're still going to treat index.ttl, the resource, separately from the data we put on the resource.
+
+When we want to create data we can use the `createData` function (which we can get through the `useLdo` hook). `createData` takes three arguments:
+* The ShapeType of the data. In this case, we're asserting that this data is a "Post."
+* The uri for the data's "subject." In this case, it's the same as the index.ttl resource.
+* A list of resources that this data will be written to. All triples that are created when you modify this data will be saved to this list of resources.
+
+From there, we can just modify the data as if it were normal JSON. Note that in some cases we set a field to `{ "@id": uri }`. This means that the field should point to the given URI.
+
+Finally the `commitData()` method takes the modified data and syncs it with the Solid Pods.
+
+When all is saved, the data on the Pod should look something like this:
+
+```turtle
+<https://solidweb.me/jackson3/my-solid-app/7780dac6-7ed2-4ab1-ab31-e63257bc4b3f/index.ttl> <http://schema.org/articleBody> "Hello this is a post";
+    <http://schema.org/image> <https://solidweb.me/jackson3/my-solid-app/7780dac6-7ed2-4ab1-ab31-e63257bc4b3f/coolImage.png>;
+    a <http://schema.org/SocialMediaPosting>;
+    <http://schema.org/uploadDate> "2023-09-26T19:01:17.263Z"^^<http://www.w3.org/2001/XMLSchema#date>.
+
+```
+
+## 11. Displaying the Post
+Finally, let's bring it all together and modify **Post.tsx** to display the uploaded data.
