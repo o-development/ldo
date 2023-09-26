@@ -31,7 +31,8 @@
     "uuid": "^8.3.2"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"

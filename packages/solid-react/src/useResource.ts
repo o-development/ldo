@@ -83,11 +83,14 @@ export function useResource(
     if (resource) {
       // Add listener
       resource.on("update", forceReload);
+      setResourceRepresentation(new Proxy(resource, {}));
 
       // Unsubscribe on unmount
       return () => {
         resource.off("update", forceReload);
       };
+    } else {
+      setResourceRepresentation(undefined);
     }
   }, [resource]);
   return resourceRepresentation;

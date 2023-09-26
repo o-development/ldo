@@ -32,7 +32,8 @@
     "rdf-string": "^1.6.3"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"

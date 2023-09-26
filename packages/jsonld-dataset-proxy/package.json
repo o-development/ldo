@@ -36,7 +36,8 @@
     "tsc-watch": "^6.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@ldobjects/rdf-utils": "^0.0.1-alpha.11",

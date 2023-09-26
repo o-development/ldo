@@ -40,7 +40,8 @@
     "readable-stream": "^4.2.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
