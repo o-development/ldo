@@ -19,7 +19,7 @@ program
 program
   .command("init")
   .option("-d --directory>", "A parent directory for ldo files")
-  .description("Initializes a project for ldo")
+  .description("Initializes a project for LDO.")
   .action(init);
 
 program.parse();
