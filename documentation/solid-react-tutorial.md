@@ -728,3 +728,60 @@ When all is saved, the data on the Pod should look something like this:
 
 ## 11. Displaying the Post
 Finally, let's bring it all together and modify **Post.tsx** to display the uploaded data.
+
+**Post.tsx**
+```tsx
+import { FunctionComponent, useCallback, useMemo } from "react";
+import { ContainerUri, LeafUri } from "@ldobjects/solid";
+import { useLdo, useResource, useSubject } from "@ldobjects/solid-react";
+import { PostShShapeType } from "./.ldo/post.shapeTypes";
+
+export const Post: FunctionComponent<{ postUri: ContainerUri }> = ({
+  postUri,
+}) => {
+  const postIndexUri = `${postUri}index.ttl`;
+  const postResource = useResource(postIndexUri);
+  const post = useSubject(PostShShapeType, postIndexUri);
+  const { getResource } = useLdo();
+  const imageResource = useResource(
+    post?.image?.["@id"] as LeafUri | undefined
+  );
+
+  // Convert the blob into a URL to be used in the img tag
+  const blobUrl = useMemo(() => {
+    if (imageResource && imageResource.isBinary()) {
+      return URL.createObjectURL(imageResource.getBlob()!);
+    }
+    return undefined;
+  }, [imageResource]);
+
+  const deletePost = useCallback(async () => {
+    const postContainer = getResource(postUri);
+    await postContainer.delete();
+  }, [postUri, getResource]);
+
+  if (postResource.status.isError) {
+    return <p>postResource.status.message</p>;
+  }
+
+  return (
+    <div>
+      <p>{post.articleBody}</p>
+      {blobUrl && (
+        <img src={blobUrl} alt={post.articleBody} style={{ height: 300 }} />
+      )}
+      <button onClick={deletePost}>Delete Post</button>
+    </div>
+  );
+};
+```
+
+Here, we've employed a few concepts that we're already familiar with as well as a few new tricks. Of course, we're using "useResource" and "useSubject" to get data about the Post. Then we can render that information by treating it just like JSON. For example `<p>{post.articleBody}</p>`.
+
+Notice that we can get the URL for the image with `post.image["@id"]`, but we're not using that directly in the img tag (eg `<img src={post.image["@id"]} />`). Why? Many resources on a Solid Pod (these included) are not open to the public. If we put the image URL directly in the the img tag, the request to get that image would be unauthorized. Instead, we perform an authenticated fetch on the image the same way we do with anything else: using `useResource`. Once we have the resource, we can convert the resource to a blob url with `URL.createObjectURL(imageResource.getBlob())`.
+
+We've also added a delete button. Deleting containers and resources is just as simple as running `resource.delete()`.
+
+## Conclusion
+
+And with that, you have a fully functional Solid application. LDO's React/Solid integration keeps track of state and makes sure everything is run efficiently so you can focus on developing your application.
