@@ -1,6 +1,6 @@
 # LDO Monorepo
 
-This is a monorepo that conains all libraries associated with Linked Data Objects (LDO).
+This is a monorepo that contains all libraries associated with Linked Data Objects (LDO).
 
 ## Tutorial
 [A tutorial for how to use LDO](./documentation/solid-react-tutorial.md) is available here. 
