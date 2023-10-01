@@ -1,4 +1,4 @@
-import { useSolidAuth } from "@ldobjects/solid-react";
+import { useSolidAuth } from "@ldo/solid-react";
 import React from "react";
 import type { FunctionComponent } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

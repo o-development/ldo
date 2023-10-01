@@ -1,8 +1,8 @@
-import type { GraphNode, QuadMatch, SubjectNode } from "@ldobjects/rdf-utils";
+import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type {
   LanguageOrdering,
   JsonldDatasetProxyBuilder,
-} from "@ldobjects/jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./util";
 import { normalizeNodeName, normalizeNodeNames } from "./util";

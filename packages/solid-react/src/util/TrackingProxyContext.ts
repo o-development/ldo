@@ -2,10 +2,10 @@ import type {
   ArrayProxyTarget,
   SubjectProxyTarget,
   ProxyContextOptions,
-} from "@ldobjects/jsonld-dataset-proxy";
-import { ProxyContext } from "@ldobjects/jsonld-dataset-proxy";
-import type { QuadMatch } from "@ldobjects/rdf-utils";
-import type { SubscribableDataset } from "@ldobjects/subscribable-dataset";
+} from "@ldo/jsonld-dataset-proxy";
+import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
+import type { QuadMatch } from "@ldo/rdf-utils";
+import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 import { namedNode } from "@rdfjs/data-model";
 import type { Quad } from "@rdfjs/types";
 

@@ -1,16 +1,16 @@
 import type { JsonLdDocument } from "jsonld";
-import type { GraphNode, DatasetChanges } from "@ldobjects/rdf-utils";
-import type { InteractOptions } from "@ldobjects/jsonld-dataset-proxy";
+import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
+import type { InteractOptions } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
   write as writeDependency,
-} from "@ldobjects/jsonld-dataset-proxy";
-import type { SubscribableDataset } from "@ldobjects/subscribable-dataset";
-import type { WriterOptions } from "@ldobjects/rdf-utils";
+} from "@ldo/jsonld-dataset-proxy";
+import type { SubscribableDataset } from "@ldo/subscribable-dataset";
+import type { WriterOptions } from "@ldo/rdf-utils";
 import type { Dataset, Quad } from "@rdfjs/types";
-import { changesToSparqlUpdate, datasetToString } from "@ldobjects/rdf-utils";
+import { changesToSparqlUpdate, datasetToString } from "@ldo/rdf-utils";
 import type { LdoBase } from "./util";
 import {
   canDatasetStartTransaction,
@@ -22,7 +22,7 @@ export {
   graphOf,
   languagesOf,
   setLanguagePreferences,
-} from "@ldobjects/jsonld-dataset-proxy";
+} from "@ldo/jsonld-dataset-proxy";
 
 export function write(...graphs: (GraphNode | string)[]): InteractOptions {
   return writeDependency(...normalizeNodeNames(graphs));

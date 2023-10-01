@@ -1,4 +1,4 @@
-import ShexJTraverser from "@ldobjects/traverser-shexj";
+import ShexJTraverser from "@ldo/traverser-shexj";
 import type { JsonLdContextBuilder } from "./JsonLdContextBuilder";
 
 /**

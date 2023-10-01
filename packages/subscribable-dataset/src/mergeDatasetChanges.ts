@@ -1,4 +1,4 @@
-import type { DatasetChanges } from "@ldobjects/rdf-utils";
+import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { BaseQuad } from "@rdfjs/types";
 
 /**

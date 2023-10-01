@@ -1,4 +1,4 @@
-import type { ObjectNode, GraphNode } from "@ldobjects/rdf-utils";
+import type { ObjectNode, GraphNode } from "@ldo/rdf-utils";
 import { namedNode } from "@rdfjs/data-model";
 import {
   getSubjectProxyFromObject,

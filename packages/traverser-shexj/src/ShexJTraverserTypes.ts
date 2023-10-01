@@ -42,7 +42,7 @@ import type {
   valueSetValue,
   Wildcard,
 } from "shexj";
-import type { ValidateTraverserTypes } from "@ldobjects/type-traverser";
+import type { ValidateTraverserTypes } from "@ldo/type-traverser";
 
 export type ShexJTraverserTypes = ValidateTraverserTypes<{
   Schema: {

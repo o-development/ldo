@@ -1,6 +1,6 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import type { ParserOptions } from "@ldobjects/rdf-utils";
-import { serializedToQuads } from "@ldobjects/rdf-utils";
+import type { ParserOptions } from "@ldo/rdf-utils";
+import { serializedToQuads } from "@ldo/rdf-utils";
 
 /**
  * Creates a dataset with a string input that could be JON-LD, Turtle, N-Triples, TriG, RDF*, or N3.

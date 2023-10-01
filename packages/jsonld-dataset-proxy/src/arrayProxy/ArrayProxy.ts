@@ -1,5 +1,5 @@
 import type { Dataset } from "@rdfjs/types";
-import type { ObjectNode } from "@ldobjects/rdf-utils";
+import type { ObjectNode } from "@ldo/rdf-utils";
 import type { ArrayProxyTarget } from "./createArrayHandler";
 import type {
   _getNodeAtIndex,

@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useRef } from "react";
 import type { FunctionComponent, FormEvent } from "react";
-import type { Container, Leaf, LeafUri } from "@ldobjects/solid";
+import type { Container, Leaf, LeafUri } from "@ldo/solid";
 import { v4 } from "uuid";
-import { useLdo, useSolidAuth } from "@ldobjects/solid-react";
+import { useLdo, useSolidAuth } from "@ldo/solid-react";
 import { PostShShapeType } from "../.ldo/post.shapeTypes";
 
 export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({

@@ -1,5 +1,5 @@
 {
-  "name": "@ldobjects/subscribable-dataset",
+  "name": "@ldo/subscribable-dataset",
   "version": "0.0.1-alpha.13",
   "description": "An RDFJS dataset implementation that can be subscribed to for updates",
   "main": "dist/index.js",
@@ -33,8 +33,8 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldobjects/dataset": "^0.0.1-alpha.13",
-    "@ldobjects/rdf-utils": "^0.0.1-alpha.13"
+    "@ldo/dataset": "^0.0.1-alpha.13",
+    "@ldo/rdf-utils": "^0.0.1-alpha.13"
   },
   "files": [
     "dist",

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { Container, LeafUri } from "@ldobjects/solid";
-import { useSolidAuth, useLdo, useResource } from "@ldobjects/solid-react";
+import type { Container, LeafUri } from "@ldo/solid";
+import { useSolidAuth, useLdo, useResource } from "@ldo/solid-react";
 
 export const MainContainerContext = createContext<Container | undefined>(
   undefined,

@@ -1,5 +1,5 @@
-import type { DatasetChanges } from "@ldobjects/rdf-utils";
-import { mergeDatasetChanges } from "@ldobjects/subscribable-dataset";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import { mergeDatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import type { LeafUri } from "../util/uriTypes";

@@ -1,5 +1,5 @@
 {
-  "name": "@ldobjects/type-traverser",
+  "name": "@ldo/type-traverser",
   "version": "0.0.1-alpha.13",
   "description": "An organized way to traverse over objects using typescript",
   "main": "dist/index.js",

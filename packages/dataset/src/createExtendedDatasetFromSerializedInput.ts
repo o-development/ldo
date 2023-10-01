@@ -1,5 +1,5 @@
 import type { Quad } from "@rdfjs/types";
-import type { ParserOptions } from "@ldobjects/rdf-utils";
+import type { ParserOptions } from "@ldo/rdf-utils";
 import createDatasetFromSerializedInput from "./createDatasetFromSerializedInput";
 import { createExtendedDatasetFactory } from "./createExtendedDataset";
 import type ExtendedDataset from "./ExtendedDataset";

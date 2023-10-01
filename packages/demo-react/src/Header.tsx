@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FunctionComponent } from "react";
 import React from "react";
-import { useResource, useSolidAuth, useSubject } from "@ldobjects/solid-react";
+import { useResource, useSolidAuth, useSubject } from "@ldo/solid-react";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 
 const DEFAULT_ISSUER = "https://solidweb.me";

@@ -1,4 +1,4 @@
-import type { GraphNode } from "@ldobjects/rdf-utils";
+import type { GraphNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 import type { ProxyContext } from "../ProxyContext";

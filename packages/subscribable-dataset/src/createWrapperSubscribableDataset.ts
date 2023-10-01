@@ -1,6 +1,6 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { WrapperSubscribableDataset } from ".";
-import { createDataset } from "@ldobjects/dataset";
+import { createDataset } from "@ldo/dataset";
 import WrapperSubscribableDatasetFactory from "./WrapperSubscribableDatasetFactory";
 
 /**

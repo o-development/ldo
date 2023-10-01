@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import type { Schema } from "shexj";
 import parser from "@shexjs/parser";
-import schemaConverterShex from "@ldobjects/schema-converter-shex";
+import schemaConverterShex from "@ldo/schema-converter-shex";
 import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";

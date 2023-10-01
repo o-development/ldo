@@ -1,4 +1,4 @@
-import { ShapeType } from "@ldobjects/ldo";
+import { ShapeType } from "@ldo/ldo";
 import { solidProfileSchema } from "./solidProfile.schema";
 import { solidProfileContext } from "./solidProfile.context";
 import {

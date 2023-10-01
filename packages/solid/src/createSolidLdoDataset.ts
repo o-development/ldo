@@ -3,7 +3,7 @@ import { SolidLdoDataset } from "./SolidLdoDataset";
 
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import crossFetch from "cross-fetch";
-import { createDataset, createDatasetFactory } from "@ldobjects/dataset";
+import { createDataset, createDatasetFactory } from "@ldo/dataset";
 import { ResourceStore } from "./ResourceStore";
 
 export interface CreateSolidLdoDatasetOptions {

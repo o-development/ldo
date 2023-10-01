@@ -1,4 +1,4 @@
-import type { PredicateNode, SubjectNode } from "@ldobjects/rdf-utils";
+import type { PredicateNode, SubjectNode } from "@ldo/rdf-utils";
 import { literal, quad } from "@rdfjs/data-model";
 import type { ProxyContext } from "../ProxyContext";
 import {

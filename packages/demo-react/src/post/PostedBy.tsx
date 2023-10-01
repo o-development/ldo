@@ -1,6 +1,6 @@
 import type { FunctionComponent } from "react";
 import React from "react";
-import { useResource, useSubject } from "@ldobjects/solid-react";
+import { useResource, useSubject } from "@ldo/solid-react";
 import { SolidProfileShapeShapeType } from "../.ldo/solidProfile.shapeTypes";
 
 export const PostedBy: FunctionComponent<{ webId: string }> = ({ webId }) => {

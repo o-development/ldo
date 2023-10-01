@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import type { FunctionComponent } from "react";
-import { useLdo, useResource, useSubject } from "@ldobjects/solid-react";
+import { useLdo, useResource, useSubject } from "@ldo/solid-react";
 import { PostShShapeType } from "../.ldo/post.shapeTypes";
 import { useNavigate } from "react-router-dom";
 import { PostedBy } from "./PostedBy";

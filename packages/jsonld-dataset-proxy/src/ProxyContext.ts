@@ -1,4 +1,4 @@
-import type { GraphNode, QuadMatch } from "@ldobjects/rdf-utils";
+import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
 import type { ArrayProxyTarget } from "./arrayProxy/createArrayHandler";
 import { createArrayHandler } from "./arrayProxy/createArrayHandler";

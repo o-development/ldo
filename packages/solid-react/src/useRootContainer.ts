@@ -1,4 +1,4 @@
-import type { Container, ContainerUri } from "@ldobjects/solid";
+import type { Container, ContainerUri } from "@ldo/solid";
 import { useEffect, useState } from "react";
 import { useResource } from "./useResource";
 import { useLdo } from "./SolidLdoProvider";

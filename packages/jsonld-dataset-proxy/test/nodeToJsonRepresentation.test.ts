@@ -1,4 +1,4 @@
-import { createDataset } from "@ldobjects/dataset";
+import { createDataset } from "@ldo/dataset";
 import { ContextUtil } from "../src/ContextUtil";
 import { nodeToJsonldRepresentation } from "../src/util/nodeToJsonldRepresentation";
 import { literal, defaultGraph } from "@rdfjs/data-model";

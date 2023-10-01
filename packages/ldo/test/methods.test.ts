@@ -1,12 +1,12 @@
 import { namedNode } from "@rdfjs/data-model";
-import type { SubjectProxy } from "@ldobjects/jsonld-dataset-proxy";
+import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   graphOf,
   _getUnderlyingDataset,
   _proxyContext,
-} from "@ldobjects/jsonld-dataset-proxy";
-import { createDataset } from "@ldobjects/dataset";
+} from "@ldo/jsonld-dataset-proxy";
+import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
 import type { LdoDataset } from "../src";

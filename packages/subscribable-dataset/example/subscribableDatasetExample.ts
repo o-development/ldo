@@ -1,6 +1,6 @@
 import { createSubscribableDataset } from "../src";
 import { quad, namedNode, literal } from "@rdfjs/data-model";
-import type { DatasetChanges } from "@ldobjects/rdf-utils";
+import type { DatasetChanges } from "@ldo/rdf-utils";
 
 // Create an empty subscribable dataset
 const subscribableDataset = createSubscribableDataset();

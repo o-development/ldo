@@ -1,9 +1,9 @@
-import type { DatasetChanges } from "@ldobjects/rdf-utils";
-import { changesToSparqlUpdate } from "@ldobjects/rdf-utils";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import { changesToSparqlUpdate } from "@ldo/rdf-utils";
 import type {
   SubscribableDataset,
   TransactionalDataset,
-} from "@ldobjects/subscribable-dataset";
+} from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { LeafUri } from "../../util/uriTypes";

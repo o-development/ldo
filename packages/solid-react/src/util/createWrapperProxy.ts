@@ -1,4 +1,4 @@
-import type { Resource } from "@ldobjects/solid";
+import type { Resource } from "@ldo/solid";
 
 export function createWrapperProxy<ResourceType extends Resource>(
   target: ResourceType,

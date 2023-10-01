@@ -1,5 +1,5 @@
-import { LdoDataset } from "@ldobjects/ldo";
-import type { DatasetChanges, GraphNode } from "@ldobjects/rdf-utils";
+import { LdoDataset } from "@ldo/ldo";
+import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type {
   UpdateResult,

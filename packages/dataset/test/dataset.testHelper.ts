@@ -1,10 +1,6 @@
 import { namedNode, literal, quad } from "@rdfjs/data-model";
 import type { BaseQuad, Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import type {
-  SubjectNode,
-  ObjectNode,
-  PredicateNode,
-} from "@ldobjects/rdf-utils";
+import type { SubjectNode, ObjectNode, PredicateNode } from "@ldo/rdf-utils";
 import { Readable } from "stream";
 
 export default function testDataset(

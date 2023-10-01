@@ -1,6 +1,6 @@
 import type { SubscribableDataset } from "../src";
 import { ProxyTransactionalDataset, createSubscribableDataset } from "../src";
-import { createDataset } from "@ldobjects/dataset";
+import { createDataset } from "@ldo/dataset";
 import {
   namedNode,
   literal,
@@ -9,7 +9,7 @@ import {
   blankNode,
 } from "@rdfjs/data-model";
 import type { Quad, BlankNode } from "@rdfjs/types";
-import testDataset from "@ldobjects/dataset/test/dataset.testHelper";
+import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
 describe("WrapperSubscribableDataset", () => {
   // Regular dataset tests

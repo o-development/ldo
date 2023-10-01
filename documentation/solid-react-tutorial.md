@@ -2,7 +2,7 @@
 
 Solid separates the application from the storage, allowing users to put their data wherever they choose. Core to achieving this is application interoparability, the ability to use multiple apps on the same dataset. In order to make applications interoperable, Solid is standardized around RDF (Resource Description Framework), a standard for representing data. While RDF is extremely flexible, it is sometimes cumbersome to work with, that's where LDO (Linked Data Objects) comes in.
 
-In this tutorial, we'll build a web application for Solid using React and LDO. LDO's react library, "@ldobjects/solid-react" is designed to make it easy to manipulate data on a Solid Pod.
+In this tutorial, we'll build a web application for Solid using React and LDO. LDO's react library, "@ldo/solid-react" is designed to make it easy to manipulate data on a Solid Pod.
 
 We'll be making a simple micro-blogging website that allows you to write notes and upload photos.
 
@@ -128,7 +128,7 @@ When everything's done, run `npm run start` and your application should look lik
 With the main infrastructure set up, let's install LDO's Solid/React library.
 
 ```bash
-npm install @ldobjects/solid-react
+npm install @ldo/solid-react
 ```
 
 This library will give us many useful hooks and components for building a Solid application, but it can't be used unless we wrap the application in a provider. Because we're building a React application in the web browser, we'll wrap the application using the `BrowserSolidLdoProvider`.
@@ -136,7 +136,7 @@ This library will give us many useful hooks and components for building a Solid 
 **App.tsx**
 ```tsx
 // ...
-import { BrowserSolidLdoProvider } from '@ldobjects/solid-react';
+import { BrowserSolidLdoProvider } from '@ldo/solid-react';
 
 export const App: FunctionComponent = () => {
   return (
@@ -162,7 +162,7 @@ Finally, the `logout()` function lets you easily trigger a log out.
 
 **Header.tsx**
 ```tsx
-import { useSolidAuth } from "@ldobjects/solid-react";
+import { useSolidAuth } from "@ldo/solid-react";
 import { FunctionComponent } from "react";
 
 export const Header: FunctionComponent = () => {
@@ -207,7 +207,7 @@ Because `useSolidAuth` is a hook, you can use it anywhere in the application, ev
 import { FunctionComponent } from "react";
 import { MakePost } from "./MakePost";
 import { Post } from "./Post";
-import { useSolidAuth } from "@ldobjects/solid-react";
+import { useSolidAuth } from "@ldo/solid-react";
 
 export const Blog: FunctionComponent = () => {
   const { session } = useSolidAuth();
@@ -236,7 +236,7 @@ In step 6, we're going to use information from a user's Solid WebId profile. But
 LDO uses ShEx "Shapes" as schemas to describe how data looks in an application. We can get started by using the `init` command line tool to get the project ready to use shapes.
 
 ```bash
-npx @ldobjects/cli init
+npx @ldo/cli init
 ```
 
 This command will install required libraries and creates two folders: the `.shapes` folder and the `.ldo` folder.
@@ -396,7 +396,7 @@ We can use the `useResource` and `useSubject` hooks to do this.
 
 ```tsx
 import { FunctionComponent } from "react";
-import { useResource, useSolidAuth, useSubject } from "@ldobjects/solid-react";
+import { useResource, useSolidAuth, useSubject } from "@ldo/solid-react";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 
 export const Header: FunctionComponent = () => {
@@ -438,8 +438,8 @@ Let's add the following hook to **Blog.tsx**
 
 ```tsx
 // ...
-import { useLdo, useResource, useSolidAuth } from "@ldobjects/solid-react";
-import { ConatinerUri } from "@ldobjects/solid";
+import { useLdo, useResource, useSolidAuth } from "@ldo/solid-react";
+import { ConatinerUri } from "@ldo/solid";
 
 export const Blog: FunctionComponent = () => {
   const { session } = useSolidAuth();
@@ -530,7 +530,7 @@ Now that we have the ability to create a container, let's view it.
 We'll modify **Post.tsx** to include the uri of the post:
 
 ```tsx
-import { ContainerUri } from "@ldobjects/solid";
+import { ContainerUri } from "@ldo/solid";
 
 export const Post: FunctionComponent<{ postUri: ContainerUri }> = ({
   postUri,
@@ -732,8 +732,8 @@ Finally, let's bring it all together and modify **Post.tsx** to display the uplo
 **Post.tsx**
 ```tsx
 import { FunctionComponent, useCallback, useMemo } from "react";
-import { ContainerUri, LeafUri } from "@ldobjects/solid";
-import { useLdo, useResource, useSubject } from "@ldobjects/solid-react";
+import { ContainerUri, LeafUri } from "@ldo/solid";
+import { useLdo, useResource, useSubject } from "@ldo/solid-react";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 
 export const Post: FunctionComponent<{ postUri: ContainerUri }> = ({

@@ -1,5 +1,5 @@
-import { createDataset } from "@ldobjects/dataset";
-import type { GraphNode, DatasetChanges } from "@ldobjects/rdf-utils";
+import { createDataset } from "@ldo/dataset";
+import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
 import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
 

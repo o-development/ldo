@@ -1,12 +1,12 @@
 import { literal, namedNode, quad } from "@rdfjs/data-model";
-import { createDataset } from "@ldobjects/dataset";
+import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
 import type { LdoBuilder, LdoDataset } from "../src";
 import { createLdoDataset, graphOf, parseRdf, toTurtle } from "../src";
 import { sampleJsonld, sampleTurtle } from "./sampleData";
-import type { SubjectProxy } from "@ldobjects/jsonld-dataset-proxy";
-import { _proxyContext } from "@ldobjects/jsonld-dataset-proxy";
+import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
+import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
 
 describe("LdoDataset", () => {
   let ldoDataset: LdoDataset;
