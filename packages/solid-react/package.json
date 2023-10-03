@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "0.0.1-alpha.14",
+  "version": "0.0.1-alpha.15",
   "description": "A React library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -35,7 +35,7 @@
     "@ldo/dataset": "^0.0.1-alpha.14",
     "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.14",
     "@ldo/ldo": "^0.0.1-alpha.14",
-    "@ldo/solid": "^0.0.1-alpha.14",
+    "@ldo/solid": "^0.0.1-alpha.15",
     "@ldo/subscribable-dataset": "^0.0.1-alpha.14",
     "@rdfjs/data-model": "^1.2.0",
     "cross-fetch": "^3.1.6"

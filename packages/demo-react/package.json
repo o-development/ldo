@@ -1,8 +1,8 @@
 {
   "name": "@ldo/demo-react",
-  "version": "0.0.1-alpha.14",
+  "version": "0.0.1-alpha.15",
   "dependencies": {
-    "@ldo/solid-react": "^0.0.1-alpha.14",
+    "@ldo/solid-react": "^0.0.1-alpha.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
