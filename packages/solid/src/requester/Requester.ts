@@ -52,12 +52,13 @@ export abstract class Requester {
       name: READ_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: readResource,
-      modifyQueue: (queue, isLoading) => {
-        if (queue.length === 0) {
-          return isLoading[READ_KEY];
-        } else {
-          return queue[queue.length - 1].name === READ_KEY;
+      modifyQueue: (queue, currentlyLoading) => {
+        if (queue.length === 0 && currentlyLoading?.name === READ_KEY) {
+          return currentlyLoading;
+        } else if (queue[queue.length - 1]?.name === READ_KEY) {
+          return queue[queue.length - 1];
         }
+        return undefined;
       },
     });
     if (!result.isError) {
@@ -75,12 +76,13 @@ export abstract class Requester {
       name: DELETE_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: deleteResource,
-      modifyQueue: (queue, isLoading) => {
-        if (queue.length === 0) {
-          return isLoading[DELETE_KEY];
-        } else {
-          return queue[queue.length - 1].name === DELETE_KEY;
+      modifyQueue: (queue, currentlyLoading) => {
+        if (queue.length === 0 && currentlyLoading?.name === DELETE_KEY) {
+          return currentlyLoading;
+        } else if (queue[queue.length - 1]?.name === DELETE_KEY) {
+          return queue[queue.length - 1];
         }
+        return undefined;
       },
     });
     if (!result.isError) {
@@ -125,13 +127,23 @@ export abstract class Requester {
         { dataset: transaction, fetch: this.context.fetch },
       ],
       perform: createDataResource,
-      modifyQueue: (queue, isLoading, args) => {
+      modifyQueue: (queue, currentlyLoading, args) => {
         const lastElementInQueue = queue[queue.length - 1];
-        return (
+        if (
           lastElementInQueue &&
           lastElementInQueue.name === CREATE_KEY &&
           !!lastElementInQueue.args[1] === !!args[1]
-        );
+        ) {
+          return lastElementInQueue;
+        }
+        if (
+          currentlyLoading &&
+          currentlyLoading.name === CREATE_KEY &&
+          !!currentlyLoading.args[1] === !!args[1]
+        ) {
+          return currentlyLoading;
+        }
+        return undefined;
       },
     });
     if (!result.isError) {

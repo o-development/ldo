@@ -45,12 +45,16 @@ export class ContainerRequester extends Requester {
       name: IS_ROOT_CONTAINER_KEY,
       args: [this.uri as ContainerUri, { fetch: this.context.fetch }],
       perform: checkRootContainer,
-      modifyQueue: (queue, isLoading) => {
-        if (queue.length === 0) {
-          return isLoading[IS_ROOT_CONTAINER_KEY];
-        } else {
-          return queue[queue.length - 1].name === IS_ROOT_CONTAINER_KEY;
+      modifyQueue: (queue, currentlyLoading) => {
+        if (
+          queue.length === 0 &&
+          currentlyLoading?.name === IS_ROOT_CONTAINER_KEY
+        ) {
+          return currentlyLoading;
+        } else if (queue[queue.length - 1]?.name === IS_ROOT_CONTAINER_KEY) {
+          return queue[queue.length - 1];
         }
+        return undefined;
       },
     });
   }

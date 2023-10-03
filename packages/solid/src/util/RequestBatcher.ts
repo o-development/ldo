@@ -16,21 +16,24 @@ export interface WaitingProcessOptions<Args extends any[], Return> {
   /**
    *
    * @param processQueue The current process queue
-   * @param isLoading The current is loading
+   * @param currentlyProcessing: The Process that is currently executing
    * @param args provided args
-   * @returns true if the process queue has been modified and a new process should not be added to the queue
+   * @returns A WaitingProcess that this request should listen to, or undefined if it should create its own
    */
   modifyQueue: (
     processQueue: WaitingProcess<any[], any>[],
-    isLoading: Record<string, boolean>,
+    currentlyProcessing: WaitingProcess<any[], any> | undefined,
     args: Args,
-  ) => boolean;
+  ) => WaitingProcess<any[], any> | undefined;
 }
 
+/**
+ * Request Batcher
+ */
 export class RequestBatcher {
   private lastRequestTimestampMap: Record<string, number> = {};
-  private loadingMap: Record<string, boolean> = {};
-  private isWaiting: boolean = false;
+  private currentlyProcessing: WaitingProcess<any[], any> | undefined =
+    undefined;
   private processQueue: WaitingProcess<any[], any>[] = [];
   public shouldBatchAllRequests: boolean;
   public batchMillis: number;
@@ -46,7 +49,7 @@ export class RequestBatcher {
   }
 
   public isLoading(key: string): boolean {
-    return !!this.loadingMap[key];
+    return this.currentlyProcessing?.name === key;
   }
 
   private triggerOrWaitProcess() {
@@ -66,14 +69,14 @@ export class RequestBatcher {
     const timeSinceLastTrigger = Date.now() - lastRequestTimestamp;
 
     const triggerProcess = async () => {
-      if (this.isWaiting) {
+      if (this.currentlyProcessing) {
         return;
       }
       this.lastRequestTimestampMap[processName] = Date.now();
       this.lastRequestTimestampMap[ANY_KEY] = Date.now();
       const processToTrigger = this.processQueue.shift();
       if (processToTrigger) {
-        this.isWaiting = true;
+        this.currentlyProcessing = processToTrigger;
         try {
           const returnValue = await processToTrigger.perform(
             ...processToTrigger.args,
@@ -86,22 +89,9 @@ export class RequestBatcher {
             callback(err);
           });
         }
-        this.isWaiting = false;
+        this.currentlyProcessing = undefined;
 
-        // Reset loading
-        if (
-          !this.processQueue.some(
-            (process) => process.name === processToTrigger.name,
-          )
-        ) {
-          this.loadingMap[processToTrigger.name] = false;
-        }
-
-        if (this.processQueue.length > 0) {
-          this.triggerOrWaitProcess();
-        } else {
-          this.loadingMap[ANY_KEY] = false;
-        }
+        this.triggerOrWaitProcess();
       }
     };
 
@@ -116,22 +106,18 @@ export class RequestBatcher {
     options: WaitingProcessOptions<Args, ReturnType>,
   ): Promise<ReturnType> {
     return new Promise((resolve, reject) => {
-      const lastProcessInQueue =
-        this.processQueue[this.processQueue.length - 1];
-      if (lastProcessInQueue) {
-        const didModifyLast = lastProcessInQueue
-          ? options.modifyQueue(
-              this.processQueue,
-              this.loadingMap,
-              options.args,
-            )
-          : false;
-        if (didModifyLast) {
-          lastProcessInQueue.awaitingResolutions.push(resolve);
-          lastProcessInQueue.awaitingRejections.push(reject);
-          return;
-        }
+      const shouldAwait = options.modifyQueue(
+        this.processQueue,
+        this.currentlyProcessing,
+        options.args,
+      );
+
+      if (shouldAwait) {
+        shouldAwait.awaitingResolutions.push(resolve);
+        shouldAwait.awaitingRejections.push(reject);
+        return;
       }
+
       const waitingProcess: WaitingProcess<Args, ReturnType> = {
         name: options.name,
         args: options.args,
@@ -143,8 +129,6 @@ export class RequestBatcher {
       this.processQueue.push(
         waitingProcess as unknown as WaitingProcess<any[], any>,
       );
-      this.loadingMap[waitingProcess.name] = true;
-      this.loadingMap[ANY_KEY] = true;
       this.triggerOrWaitProcess();
     });
   }

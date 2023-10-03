@@ -70,14 +70,14 @@ export class LeafRequester extends Requester {
         { fetch: this.context.fetch, onRollback: () => transaction.rollback() },
       ],
       perform: updateDataResource,
-      modifyQueue: (queue, isLoading, [, changes]) => {
-        if (queue[queue.length - 1].name === UPDATE_KEY) {
+      modifyQueue: (queue, currentlyProcessing, [, changes]) => {
+        if (queue[queue.length - 1]?.name === UPDATE_KEY) {
           // Merge Changes
           const originalChanges = queue[queue.length - 1].args[1];
           mergeDatasetChanges(originalChanges, changes);
-          return true;
+          return queue[queue.length - 1];
         }
-        return false;
+        return undefined;
       },
     });
     return result;
@@ -120,13 +120,23 @@ export class LeafRequester extends Requester {
         { dataset: transaction, fetch: this.context.fetch },
       ],
       perform: uploadResource,
-      modifyQueue: (queue, isLoading, args) => {
+      modifyQueue: (queue, currentlyLoading, args) => {
         const lastElementInQueue = queue[queue.length - 1];
-        return (
+        if (
           lastElementInQueue &&
           lastElementInQueue.name === UPLOAD_KEY &&
           !!lastElementInQueue.args[3] === !!args[3]
-        );
+        ) {
+          return lastElementInQueue;
+        }
+        if (
+          currentlyLoading &&
+          currentlyLoading.name === UPLOAD_KEY &&
+          !!currentlyLoading.args[3] === !!args[3]
+        ) {
+          return currentlyLoading;
+        }
+        return undefined;
       },
     });
     if (!result.isError) {
