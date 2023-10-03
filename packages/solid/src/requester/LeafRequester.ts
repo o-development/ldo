@@ -56,12 +56,18 @@ export class LeafRequester extends Requester {
   async updateDataResource(
     changes: DatasetChanges<Quad>,
   ): Promise<UpdateResult> {
+    const transaction = this.context.solidLdoDataset.startTransaction();
+    transaction.addAll(changes.added || []);
+    changes.removed?.forEach((quad) => transaction.delete(quad));
+    // Commit data optimistically
+    transaction.commit();
+
     const result = await this.requestBatcher.queueProcess({
       name: UPDATE_KEY,
       args: [
         this.uri,
         changes,
-        { fetch: this.context.fetch, dataset: this.context.solidLdoDataset },
+        { fetch: this.context.fetch, onRollback: () => transaction.rollback() },
       ],
       perform: updateDataResource,
       modifyQueue: (queue, isLoading, [, changes]) => {

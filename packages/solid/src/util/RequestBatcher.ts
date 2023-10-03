@@ -66,11 +66,14 @@ export class RequestBatcher {
     const timeSinceLastTrigger = Date.now() - lastRequestTimestamp;
 
     const triggerProcess = async () => {
-      this.isWaiting = false;
+      if (this.isWaiting) {
+        return;
+      }
       this.lastRequestTimestampMap[processName] = Date.now();
       this.lastRequestTimestampMap[ANY_KEY] = Date.now();
       const processToTrigger = this.processQueue.shift();
       if (processToTrigger) {
+        this.isWaiting = true;
         try {
           const returnValue = await processToTrigger.perform(
             ...processToTrigger.args,
@@ -83,6 +86,7 @@ export class RequestBatcher {
             callback(err);
           });
         }
+        this.isWaiting = false;
 
         // Reset loading
         if (
@@ -101,8 +105,7 @@ export class RequestBatcher {
       }
     };
 
-    if (timeSinceLastTrigger < this.batchMillis && !this.isWaiting) {
-      this.isWaiting = true;
+    if (timeSinceLastTrigger < this.batchMillis) {
       setTimeout(triggerProcess, this.batchMillis - timeSinceLastTrigger);
     } else {
       triggerProcess();
