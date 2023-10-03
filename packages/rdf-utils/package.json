@@ -1,6 +1,6 @@
 {
   "name": "@ldo/rdf-utils",
-  "version": "0.0.1-alpha.14",
+  "version": "0.0.1-alpha.15",
   "description": "Some RDF Utilities to support LDO librariers",
   "main": "dist/index.js",
   "scripts": {

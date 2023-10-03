@@ -24,7 +24,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid-react#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.1",
-    "@ldo/rdf-utils": "^0.0.1-alpha.14",
+    "@ldo/rdf-utils": "^0.0.1-alpha.15",
     "@rdfjs/types": "^1.0.1",
     "@types/jest": "^29.0.3",
     "ts-jest": "^29.0.2"
@@ -32,11 +32,11 @@
   "dependencies": {
     "@inrupt/solid-client": "^1.29.0",
     "@inrupt/solid-client-authn-browser": "^1.17.1",
-    "@ldo/dataset": "^0.0.1-alpha.14",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.14",
-    "@ldo/ldo": "^0.0.1-alpha.14",
+    "@ldo/dataset": "^0.0.1-alpha.15",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.15",
+    "@ldo/ldo": "^0.0.1-alpha.15",
     "@ldo/solid": "^0.0.1-alpha.15",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.14",
+    "@ldo/subscribable-dataset": "^0.0.1-alpha.15",
     "@rdfjs/data-model": "^1.2.0",
     "cross-fetch": "^3.1.6"
   },
@@ -47,5 +47,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "4548985c0de9b0ec83cf5ee93f2d7c1ca2c1b8d8"
+  "gitHead": "1c242d645fc488f8d0e9f4da7425d9928abf1e9d"
 }

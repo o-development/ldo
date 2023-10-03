@@ -25,7 +25,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.1",
-    "@ldo/cli": "^0.0.1-alpha.14",
+    "@ldo/cli": "^0.0.1-alpha.15",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "@solid/community-server": "^6.0.2",
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.30.0",
-    "@ldo/dataset": "^0.0.1-alpha.14",
-    "@ldo/ldo": "^0.0.1-alpha.14",
-    "@ldo/rdf-utils": "^0.0.1-alpha.14",
+    "@ldo/dataset": "^0.0.1-alpha.15",
+    "@ldo/ldo": "^0.0.1-alpha.15",
+    "@ldo/rdf-utils": "^0.0.1-alpha.15",
     "@types/parse-link-header": "^2.0.1",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
@@ -53,5 +53,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "4548985c0de9b0ec83cf5ee93f2d7c1ca2c1b8d8"
+  "gitHead": "1c242d645fc488f8d0e9f4da7425d9928abf1e9d"
 }
