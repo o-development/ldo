@@ -12,13 +12,13 @@ describe("RequestBatcher", () => {
     const perform3 = jest.fn(perform);
     const perform4 = jest.fn(perform);
 
-    const modifyQueue = (queue, isLoading, input: [string]) => {
+    const modifyQueue = (queue, currentlyProcessing, input: [string]) => {
       const last = queue[queue.length - 1];
-      if (last.name === "read") {
+      if (last?.name === "read") {
         (last as ReadWaitingProcess).args[0] += input;
-        return true;
+        return last;
       }
-      return false;
+      return undefined;
     };
 
     let return1: string = "";

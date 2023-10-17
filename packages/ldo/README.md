@@ -7,11 +7,11 @@ For a full tutorial of using LDO to build React Solid applications, see [this tu
 ## Setup
 
 ### Automatic Setup
-To setup LDO, `cd` into your typescript project and run `npx ldo-cli init`.
+To setup LDO, `cd` into your typescript project and run `npx @ldo/cli init`.
 
 ```bash
 cd my-typescript-project
-npx ldo-cli init
+npx @ldo/cli init
 ```
 
 ### Manual Setup
@@ -19,8 +19,8 @@ The following is handled by the __automatic setup__:
 
 Install the LDO dependencies.
 ```bash
-npm install ldo
-npm install ldo-cli --save-dev
+npm install @ldo/ldo
+npm install @ldo/cli --save-dev
 ```
 
 Create a folder to store your ShEx shapes:

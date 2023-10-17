@@ -1,8 +1,6 @@
-# @ldo/solid-react
+# @ldo/rdf-utils
 
-Alpha
-
-// TODO: Write readme
+Utilities for common use in LDO libraries.
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
