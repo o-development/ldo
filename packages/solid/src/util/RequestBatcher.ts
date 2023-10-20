@@ -35,16 +35,13 @@ export class RequestBatcher {
   private currentlyProcessing: WaitingProcess<any[], any> | undefined =
     undefined;
   private processQueue: WaitingProcess<any[], any>[] = [];
-  public shouldBatchAllRequests: boolean;
   public batchMillis: number;
 
   constructor(
     options?: Partial<{
-      shouldBatchAllRequests: boolean;
       batchMillis: number;
     }>,
   ) {
-    this.shouldBatchAllRequests = options?.shouldBatchAllRequests || false;
     this.batchMillis = options?.batchMillis || 1000;
   }
 
@@ -56,9 +53,7 @@ export class RequestBatcher {
     if (!this.processQueue[0]) {
       return;
     }
-    const processName = this.shouldBatchAllRequests
-      ? ANY_KEY
-      : this.processQueue[0].name;
+    const processName = this.processQueue[0].name;
 
     // Set last request timestamp if not available
     if (!this.lastRequestTimestampMap[processName]) {

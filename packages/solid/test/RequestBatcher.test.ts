@@ -5,11 +5,17 @@ describe("RequestBatcher", () => {
   type ReadWaitingProcess = WaitingProcess<[string], string>;
 
   it("Batches a request", async () => {
-    const requestBatcher = new RequestBatcher({ batchMillis: 1000 });
-    const perform = async (input: string): Promise<string> => `Hello ${input}`;
+    const requestBatcher = new RequestBatcher({ batchMillis: 500 });
+    const perform = async (input: string): Promise<string> => {
+      await wait(100);
+      return `Hello ${input}`;
+    };
     const perform1 = jest.fn(perform);
     const perform2 = jest.fn(perform);
-    const perform3 = jest.fn(perform);
+    const perform3 = jest.fn((input: string): Promise<string> => {
+      expect(requestBatcher.isLoading("read")).toBe(true);
+      return perform(input);
+    });
     const perform4 = jest.fn(perform);
 
     const modifyQueue = (queue, currentlyProcessing, input: [string]) => {
@@ -25,6 +31,8 @@ describe("RequestBatcher", () => {
     let return2: string = "";
     let return3: string = "";
     let return4: string = "";
+
+    expect(requestBatcher.isLoading("read")).toBe(false);
 
     await Promise.all([
       requestBatcher
@@ -76,4 +84,29 @@ describe("RequestBatcher", () => {
     expect(perform3).toHaveBeenCalledTimes(0);
     expect(perform4).toHaveBeenCalledTimes(0);
   });
+
+  it("sets a default batch millis", () => {
+    const requestBatcher = new RequestBatcher();
+    expect(requestBatcher.batchMillis).toBe(1000);
+  });
+
+  it("handles an error being thrown in the process", () => {
+    const requestBatcher = new RequestBatcher({ batchMillis: 500 });
+    const perform = async (_input: string): Promise<string> => {
+      throw new Error("Test Error");
+    };
+    const perform1 = jest.fn(perform);
+    expect(() =>
+      requestBatcher.queueProcess<[string], string>({
+        name: "read",
+        args: ["a"],
+        perform: perform1,
+        modifyQueue: () => undefined,
+      }),
+    ).rejects.toThrowError("Test Error");
+  });
 });
+
+function wait(millis: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, millis));
+}
