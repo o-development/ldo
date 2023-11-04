@@ -6,7 +6,8 @@ import {
   createApp,
   getAuthenticatedFetch,
 } from "./solidServer.helper";
-import { namedNode } from "@rdfjs/data-model";
+import { namedNode, quad as createQuad } from "@rdfjs/data-model";
+import { wait } from "./utils.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -30,6 +31,24 @@ const SPIDER_MAN_TTL = `@base <http://example.org/> .
     rel:enemyOf <#green-goblin> ;
     a foaf:Person ;
     foaf:name "Spiderman", "Человек-паук"@ru .`;
+const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
+@prefix ldp: <http://www.w3.org/ns/ldp#>.
+@prefix posix: <http://www.w3.org/ns/posix/stat#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+<> <urn:npm:solid:community-server:http:slug> "sample.txt";
+    a ldp:Container, ldp:BasicContainer, ldp:Resource;
+    dc:modified "2023-10-20T13:57:14.000Z"^^xsd:dateTime.
+<sample.ttl> a ldp:Resource, <http://www.w3.org/ns/iana/media-types/text/turtle#Resource>;
+    dc:modified "2023-10-20T13:57:14.000Z"^^xsd:dateTime.
+<sample.txt> a ldp:Resource, <http://www.w3.org/ns/iana/media-types/text/plain#Resource>;
+    dc:modified "2023-10-20T13:57:14.000Z"^^xsd:dateTime.
+<> posix:mtime 1697810234;
+    ldp:contains <sample.ttl>, <sample.txt>.
+<sample.ttl> posix:mtime 1697810234;
+    posix:size 522.
+<sample.txt> posix:mtime 1697810234;
+    posix:size 10.`;
 
 describe("SolidLdoDataset", () => {
   let app: App;
@@ -95,6 +114,9 @@ describe("SolidLdoDataset", () => {
     ]);
   });
 
+  /**
+   * Read
+   */
   describe("read", () => {
     it("Reads a data leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
@@ -199,7 +221,7 @@ describe("SolidLdoDataset", () => {
 
     it("Returns an error if there is no link header for a container request", async () => {
       fetchMock.mockResolvedValueOnce(
-        new Response(SPIDER_MAN_TTL, {
+        new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
         }),
@@ -213,5 +235,177 @@ describe("SolidLdoDataset", () => {
         "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
       );
     });
+  });
+
+  /**
+   * Get Root Container
+   */
+  describe("rootContainer", () => {
+    it("Finds the root container", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
+      const result = await resource.getRootContainer();
+      expect(result.type).toBe("container");
+      if (result.type !== "container") return;
+      expect(result.uri).toBe(ROOT_CONTAINER);
+    });
+
+    it("Returns an error if there is no link header for a container request", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle" }),
+        }),
+      );
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await resource.getRootContainer();
+      expect(result.isError).toBe(true);
+      if (!result.isError) return;
+      expect(result.type).toBe("noncompliantPodError");
+      expect(result.message).toBe(
+        "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
+      );
+    });
+
+    it("An error to be returned if a common http error is encountered", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 500,
+        }),
+      );
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await resource.getRootContainer();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await resource.getRootContainer();
+      expect(result.isError).toBe(true);
+      if (!result.isError) return;
+      expect(result.type).toBe("unexpectedResourceError");
+      expect(result.message).toBe("Something happened.");
+    });
+  });
+
+  /**
+   * Create Data Resource
+   */
+  describe("createDataResource", () => {
+    it("creates a document that doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockImplementationOnce(async (...args) => {
+        console.log("before");
+        await wait(500);
+        console.log("after");
+        return authFetch(...args);
+      });
+      const [result] = await Promise.all([
+        resource.createAndOverwrite(),
+        (async () => {
+          await wait(100);
+          console.log("Checking");
+          expect(resource.isLoading()).toBe(true);
+          expect(resource.isCreating()).toBe(true);
+          expect(resource.isReading()).toBe(false);
+          expect(resource.isUploading).toBe(false);
+          expect(resource.isReloading()).toBe(false);
+          expect(resource.isDeleting()).toBe(false);
+        })(),
+      ]);
+      expect(result.type).toBe("createSuccess");
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE2_DATA_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE2_DATA_URI),
+      ).toBe(true);
+    });
+
+    // it("creates a data resource that doesn't exist while overwriting", async () => {
+    //   const leafRequester = new LeafRequester(
+    //     `${ROOT_COONTAINER}test_leaf/sample2.ttl`,
+    //     solidLdoDataset.context,
+    //   );
+    //   const result = await leafRequester.createDataResource(true);
+    //   expect(result.type).toBe("data");
+    //   expect(
+    //     solidLdoDataset.has(
+    //       createQuad(
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //         namedNode("http://www.w3.org/ns/ldp#contains"),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample2.ttl`),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //       ),
+    //     ),
+    //   ).toBe(true);
+    // });
+
+    // it("creates a data resource that does exist while not overwriting", async () => {
+    //   const leafRequester = new LeafRequester(
+    //     `${ROOT_COONTAINER}test_leaf/sample.ttl`,
+    //     solidLdoDataset.context,
+    //   );
+    //   const result = await leafRequester.createDataResource();
+    //   expect(result.type).toBe("data");
+    //   expect(
+    //     solidLdoDataset.has(
+    //       createQuad(
+    //         namedNode("http://example.org/#spiderman"),
+    //         namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+    //         namedNode("http://example.org/#green-goblin"),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
+    //       ),
+    //     ),
+    //   ).toBe(true);
+    //   expect(
+    //     solidLdoDataset.has(
+    //       createQuad(
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //         namedNode("http://www.w3.org/ns/ldp#contains"),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //       ),
+    //     ),
+    //   ).toBe(true);
+    // });
+
+    // it("creates a data resource that does exist while overwriting", async () => {
+    //   const leafRequester = new LeafRequester(
+    //     `${ROOT_COONTAINER}test_leaf/sample.ttl`,
+    //     solidLdoDataset.context,
+    //   );
+    //   const result = await leafRequester.createDataResource(true);
+    //   expect(result.type).toBe("data");
+    //   expect(
+    //     solidLdoDataset.has(
+    //       createQuad(
+    //         namedNode("http://example.org/#spiderman"),
+    //         namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+    //         namedNode("http://example.org/#green-goblin"),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
+    //       ),
+    //     ),
+    //   ).toBe(false);
+    //   expect(
+    //     solidLdoDataset.has(
+    //       createQuad(
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //         namedNode("http://www.w3.org/ns/ldp#contains"),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
+    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
+    //       ),
+    //     ),
+    //   ).toBe(true);
+    // });
   });
 });

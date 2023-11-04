@@ -2,7 +2,9 @@ import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
 import type { LdoBase } from "./util";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * A collection of information required by LDO
+ */
 export type ShapeType<Type extends LdoBase> = {
   schema: Schema;
   shape: string;

@@ -49,9 +49,8 @@ export default class WrapperSubscribableDataset<
     new Map();
 
   /**
-   *
-   * @param datasetFactory
-   * @param initialDataset
+   * @param datasetFactory A RDF/JS Dataset Factory
+   * @param initialDataset An RDF/JS Dataset with initial Quads
    */
   constructor(
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,
