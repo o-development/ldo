@@ -297,20 +297,17 @@ describe("SolidLdoDataset", () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       fetchMock.mockImplementationOnce(async (...args) => {
-        console.log("before");
         await wait(500);
-        console.log("after");
         return authFetch(...args);
       });
       const [result] = await Promise.all([
         resource.createAndOverwrite(),
         (async () => {
           await wait(100);
-          console.log("Checking");
           expect(resource.isLoading()).toBe(true);
           expect(resource.isCreating()).toBe(true);
           expect(resource.isReading()).toBe(false);
-          expect(resource.isUploading).toBe(false);
+          expect(resource.isUploading()).toBe(false);
           expect(resource.isReloading()).toBe(false);
           expect(resource.isDeleting()).toBe(false);
         })(),

@@ -5,6 +5,12 @@
 // import { LeafRequester } from "../src/requester/LeafRequester";
 // import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 
+describe("Leaf Requester", () => {
+  it("trivial", () => {
+    expect(true).toBe(true);
+  });
+});
+
 // describe.skip("Leaf Requester", () => {
 //   let _app: App;
 //   let authFetch: typeof fetch;

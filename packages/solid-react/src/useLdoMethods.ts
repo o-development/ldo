@@ -1,10 +1,7 @@
 import type { LdoBase, ShapeType } from "@ldo/ldo";
-import { transactionChanges } from "@ldo/ldo";
-import { write } from "@ldo/ldo";
-import { startTransaction } from "@ldo/ldo";
-import type { DatasetChanges, SubjectNode } from "@ldo/rdf-utils";
+import type { SubjectNode } from "@ldo/rdf-utils";
 import type { Resource, SolidLdoDataset } from "@ldo/solid";
-import type { Quad } from "@rdfjs/types";
+import { changeData, commitData } from "@ldo/solid";
 
 export interface UseLdoMethods {
   dataset: SolidLdoDataset;
@@ -53,40 +50,18 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
       subject: string | SubjectNode,
       ...resources: Resource[]
     ): Type {
-      const linkedDataObject = dataset
-        .usingType(shapeType)
-        .write(...resources.map((r) => r.uri))
-        .fromSubject(subject);
-      startTransaction(linkedDataObject);
-      return linkedDataObject;
+      return dataset.createData(shapeType, subject, ...resources);
     },
     /**
      * Begins tracking changes to eventually commit
      * @param input A linked data object to track changes on
      * @param resources
      */
-    changeData<Type extends LdoBase>(
-      input: Type,
-      ...resources: Resource[]
-    ): Type {
-      // Clone the input and set a graph
-      const [transactionLdo] = write(...resources.map((r) => r.uri)).usingCopy(
-        input,
-      );
-      // Start a transaction with the input
-      startTransaction(transactionLdo);
-      // Return
-      return transactionLdo;
-    },
+    changeData: changeData,
     /**
      * Commits the transaction to the global dataset, syncing all subscribing
      * components and Solid Pods
      */
-    commitData(
-      input: LdoBase,
-    ): ReturnType<SolidLdoDataset["commitChangesToPod"]> {
-      const changes = transactionChanges(input);
-      return dataset.commitChangesToPod(changes as DatasetChanges<Quad>);
-    },
+    commitData: commitData,
   };
 }

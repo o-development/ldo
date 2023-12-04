@@ -46,6 +46,7 @@ export class RequestBatcher {
   }
 
   public isLoading(key: string): boolean {
+    if (key === ANY_KEY) return !!this.currentlyProcessing;
     return this.currentlyProcessing?.name === key;
   }
 

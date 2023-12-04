@@ -7,3 +7,5 @@ export * from "./resource/Container";
 export * from "./resource/Leaf";
 
 export * from "./util/uriTypes";
+
+export * from "./methods";
