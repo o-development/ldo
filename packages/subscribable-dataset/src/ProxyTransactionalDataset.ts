@@ -9,9 +9,7 @@ import { mergeDatasetChanges } from "./mergeDatasetChanges";
  * the parent dataset, it will dynamically determine the correct return value for
  * methods in real time when the method is called.
  */
-export default class ProxyTransactionalDataset<
-    InAndOutQuad extends BaseQuad = BaseQuad,
-  >
+export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   extends ExtendedDataset<InAndOutQuad>
   implements
     BulkEditableDataset<InAndOutQuad>,

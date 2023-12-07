@@ -1,7 +1,7 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import type { WrapperSubscribableDataset } from ".";
+import type { WrapperSubscribableDataset } from "./WrapperSubscribableDataset";
 import { createDataset } from "@ldo/dataset";
-import WrapperSubscribableDatasetFactory from "./WrapperSubscribableDatasetFactory";
+import { WrapperSubscribableDatasetFactory } from "./WrapperSubscribableDatasetFactory";
 
 /**
  * Creates a dataset factory that generates a SubscribableDataset
@@ -21,7 +21,7 @@ export function createWrapperSubscribableDatasetFactory(): WrapperSubscribableDa
  * @param quads: A dataset or array of Quads to initialize the dataset.
  * @returns Dataset
  */
-export default function createWrapperSubscribableDataset(
+export function createWrapperSubscribableDataset(
   quads?: Dataset<Quad> | Quad[],
 ): WrapperSubscribableDataset<Quad> {
   const wrapperSubscribableDatasetFactory =

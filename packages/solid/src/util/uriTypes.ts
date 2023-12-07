@@ -1,6 +1,6 @@
-export type ContainerUri = `${string}/${NonPathnameEnding}`;
+export type ContainerUri = `${string}/${NonPathnameEnding}` & {};
 export type LeafUri =
-  `${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}`;
+  `${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
 
 export function isContainerUri(uri: string): uri is ContainerUri {
   const url = new URL(uri);

@@ -1,13 +1,6 @@
 # @ldo/solid
 
-Alpha
 
-## Notes:
- - Any quads in the default graph will not be synced to Solid Pods, but will be added to the dataset without any syncing
-
-## TODO:
- - Add Documentation
- - Access rule stuff just doesn't work. I might need to program a custom implementation for that
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

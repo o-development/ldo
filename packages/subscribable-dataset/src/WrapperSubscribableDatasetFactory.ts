@@ -1,10 +1,10 @@
 import type { DatasetFactory, BaseQuad, Dataset } from "@rdfjs/types";
-import WrapperSubscribableDataset from "./WrapperSubscribableDataset";
+import { WrapperSubscribableDataset } from "./WrapperSubscribableDataset";
 
 /**
  * A DatasetFactory that returns a WrapperSubscribableDataset given a generic DatasetFactory.
  */
-export default class WrapperSubscribableDatasetFactory<
+export class WrapperSubscribableDatasetFactory<
   InAndOutQuad extends BaseQuad = BaseQuad,
 > implements DatasetFactory<InAndOutQuad, InAndOutQuad>
 {

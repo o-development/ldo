@@ -1,6 +1,7 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import { createDataset } from "@ldo/dataset";
 import { LdoDatasetFactory } from "./LdoDatasetFactory";
+import type { LdoDataset } from "./LdoDataset";
 
 /**
  * Creates an LDO Dataset Factory
@@ -18,11 +19,11 @@ export function createLdoDatasetFactory() {
 /**
  * Create an LDO Dataset
  * @param initialDataset
- * @returns An LDO Dataset Factory
+ * @returns An LDO Dataset
  */
 export function createLdoDataset(
   initialDataset?: Dataset<Quad, Quad> | Quad[],
-) {
+): LdoDataset {
   const ldoDatasetFactory = createLdoDatasetFactory();
   return ldoDatasetFactory.dataset(initialDataset);
 }
