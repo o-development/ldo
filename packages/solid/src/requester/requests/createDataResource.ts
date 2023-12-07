@@ -102,10 +102,12 @@ export async function createDataResource(
 > {
   try {
     const fetch = guaranteeFetch(options?.fetch);
+    let didOverwrite = false;
     if (overwrite) {
       const deleteResult = await deleteResource(uri, options);
       // Return if it wasn't deleted
       if (deleteResult.isError) return deleteResult;
+      didOverwrite = deleteResult.resourceExisted;
     } else {
       // Perform a read to check if it exists
       const readResult = await readResource(uri, options);
@@ -139,7 +141,7 @@ export async function createDataResource(
       isError: false,
       type: "createSuccess",
       uri,
-      didOverwrite: !!overwrite,
+      didOverwrite,
     };
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);

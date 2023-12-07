@@ -1,5 +1,11 @@
 import type { App } from "@solid/community-server";
-import type { ContainerUri, LeafUri, SolidLdoDataset } from "../src";
+import type {
+  Container,
+  ContainerUri,
+  Leaf,
+  LeafUri,
+  SolidLdoDataset,
+} from "../src";
 import { createSolidLdoDataset } from "../src";
 import {
   ROOT_CONTAINER,
@@ -7,7 +13,7 @@ import {
   getAuthenticatedFetch,
 } from "./solidServer.helper";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import { wait } from "./utils.helper";
+import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -16,6 +22,8 @@ const SAMPLE_DATA_URI = `${TEST_CONTAINER_URI}sample.ttl` as LeafUri;
 const SAMPLE2_DATA_URI = `${TEST_CONTAINER_URI}sample2.ttl` as LeafUri;
 const SAMPLE_BINARY_URI = `${TEST_CONTAINER_URI}sample.txt` as LeafUri;
 const SAMPLE2_BINARY_URI = `${TEST_CONTAINER_URI}sample2.txt` as LeafUri;
+const SAMPLE_CONTAINER_URI =
+  `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
 const SPIDER_MAN_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -49,6 +57,41 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
+
+async function testRequestLoads<ReturnVal>(
+  request: () => Promise<ReturnVal>,
+  loadingResource: Leaf | Container,
+  loadingValues: Partial<{
+    isLoading: boolean;
+    isCreating: boolean;
+    isReading: boolean;
+    isUploading: boolean;
+    isReloading: boolean;
+    isDeleting: boolean;
+  }>,
+): Promise<ReturnVal> {
+  const allLoadingValues = {
+    isLoading: false,
+    isCreating: false,
+    isReading: false,
+    isUploading: false,
+    isReloading: false,
+    isDeleting: false,
+    ...loadingValues,
+  };
+  const [returnVal] = await Promise.all([
+    request(),
+    (async () => {
+      Object.entries(allLoadingValues).forEach(([key, value]) => {
+        if (loadingResource.type === "container" && key === "isUploading") {
+          return;
+        }
+        expect(loadingResource[key]()).toBe(value);
+      });
+    })(),
+  ]);
+  return returnVal;
+}
 
 describe("SolidLdoDataset", () => {
   let app: App;
@@ -111,6 +154,9 @@ describe("SolidLdoDataset", () => {
       authFetch(SAMPLE2_BINARY_URI, {
         method: "DELETE",
       }),
+      authFetch(SAMPLE_CONTAINER_URI, {
+        method: "DELETE",
+      }),
     ]);
   });
 
@@ -120,7 +166,10 @@ describe("SolidLdoDataset", () => {
   describe("read", () => {
     it("Reads a data leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.type).toBe("dataReadSuccess");
       expect(
         solidLdoDataset.match(
@@ -133,14 +182,20 @@ describe("SolidLdoDataset", () => {
 
     it("Reads a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.type).toBe("containerReadSuccess");
       expect(resource.children().length).toBe(2);
     });
 
     it("Reads a binary leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.type).toBe("binaryReadSuccess");
       expect(resource.isBinary()).toBe(true);
       expect(await resource.getBlob()?.text()).toBe("some text.");
@@ -148,7 +203,10 @@ describe("SolidLdoDataset", () => {
 
     it("Returns an absent result if the document doesn't exist", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.type).toBe("absentReadSuccess");
       if (result.type !== "absentReadSuccess") return;
       expect(result.resource.isAbsent()).toBe(true);
@@ -157,7 +215,10 @@ describe("SolidLdoDataset", () => {
     it("Returns an ServerError when an 500 error is returned", async () => {
       fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("serverError");
     });
@@ -165,7 +226,10 @@ describe("SolidLdoDataset", () => {
     it("Returns an UnauthenticatedError on an 401 error is returned", async () => {
       fetchMock.mockResolvedValueOnce(new Response("Error", { status: 401 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unauthenticatedError");
     });
@@ -173,7 +237,10 @@ describe("SolidLdoDataset", () => {
     it("Returns an UnexpectedHttpError on a strange number error is returned", async () => {
       fetchMock.mockResolvedValueOnce(new Response("Error", { status: 3942 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedHttpError");
     });
@@ -183,7 +250,10 @@ describe("SolidLdoDataset", () => {
         new Response(undefined, { status: 200, headers: {} }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
@@ -200,7 +270,10 @@ describe("SolidLdoDataset", () => {
         }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
@@ -212,7 +285,10 @@ describe("SolidLdoDataset", () => {
     it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
       fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("unexpectedResourceError");
@@ -227,7 +303,10 @@ describe("SolidLdoDataset", () => {
         }),
       );
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const result = await resource.read();
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+      });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
@@ -292,27 +371,22 @@ describe("SolidLdoDataset", () => {
   /**
    * Create Data Resource
    */
-  describe("createDataResource", () => {
+  describe("createAndOverwrite", () => {
     it("creates a document that doesn't exist", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockImplementationOnce(async (...args) => {
-        await wait(500);
-        return authFetch(...args);
-      });
-      const [result] = await Promise.all([
-        resource.createAndOverwrite(),
-        (async () => {
-          await wait(100);
-          expect(resource.isLoading()).toBe(true);
-          expect(resource.isCreating()).toBe(true);
-          expect(resource.isReading()).toBe(false);
-          expect(resource.isUploading()).toBe(false);
-          expect(resource.isReloading()).toBe(false);
-          expect(resource.isDeleting()).toBe(false);
-        })(),
-      ]);
+      const result = await testRequestLoads(
+        () => resource.createAndOverwrite(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+
       expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
           createQuad(
@@ -328,81 +402,188 @@ describe("SolidLdoDataset", () => {
       ).toBe(true);
     });
 
-    // it("creates a data resource that doesn't exist while overwriting", async () => {
-    //   const leafRequester = new LeafRequester(
-    //     `${ROOT_COONTAINER}test_leaf/sample2.ttl`,
-    //     solidLdoDataset.context,
-    //   );
-    //   const result = await leafRequester.createDataResource(true);
-    //   expect(result.type).toBe("data");
-    //   expect(
-    //     solidLdoDataset.has(
-    //       createQuad(
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //         namedNode("http://www.w3.org/ns/ldp#contains"),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample2.ttl`),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //       ),
-    //     ),
-    //   ).toBe(true);
-    // });
+    it("creates a data resource that doesn't exist while overwriting", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.createAndOverwrite(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE_DATA_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(true);
+    });
 
-    // it("creates a data resource that does exist while not overwriting", async () => {
-    //   const leafRequester = new LeafRequester(
-    //     `${ROOT_COONTAINER}test_leaf/sample.ttl`,
-    //     solidLdoDataset.context,
-    //   );
-    //   const result = await leafRequester.createDataResource();
-    //   expect(result.type).toBe("data");
-    //   expect(
-    //     solidLdoDataset.has(
-    //       createQuad(
-    //         namedNode("http://example.org/#spiderman"),
-    //         namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
-    //         namedNode("http://example.org/#green-goblin"),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
-    //       ),
-    //     ),
-    //   ).toBe(true);
-    //   expect(
-    //     solidLdoDataset.has(
-    //       createQuad(
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //         namedNode("http://www.w3.org/ns/ldp#contains"),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //       ),
-    //     ),
-    //   ).toBe(true);
-    // });
+    it("creates a container", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.createAndOverwrite(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE_CONTAINER_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container
+          .children()
+          .some((child) => child.uri === SAMPLE_CONTAINER_URI),
+      ).toBe(true);
+    });
 
-    // it("creates a data resource that does exist while overwriting", async () => {
-    //   const leafRequester = new LeafRequester(
-    //     `${ROOT_COONTAINER}test_leaf/sample.ttl`,
-    //     solidLdoDataset.context,
-    //   );
-    //   const result = await leafRequester.createDataResource(true);
-    //   expect(result.type).toBe("data");
-    //   expect(
-    //     solidLdoDataset.has(
-    //       createQuad(
-    //         namedNode("http://example.org/#spiderman"),
-    //         namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
-    //         namedNode("http://example.org/#green-goblin"),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
-    //       ),
-    //     ),
-    //   ).toBe(false);
-    //   expect(
-    //     solidLdoDataset.has(
-    //       createQuad(
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //         namedNode("http://www.w3.org/ns/ldp#contains"),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/sample.ttl`),
-    //         namedNode(`${ROOT_COONTAINER}test_leaf/`),
-    //       ),
-    //     ),
-    //   ).toBe(true);
-    // });
+    it("returns a delete error if delete failed", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 500,
+        }),
+      );
+      const result = await resource.createAndOverwrite();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("returns an error if the create fetch fails", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockImplementationOnce(async (...args) => {
+        return authFetch(...args);
+      });
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 500,
+        }),
+      );
+      const result = await resource.createAndOverwrite();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("returns an unexpected error if some unknown error is triggered", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockImplementationOnce(async (...args) => {
+        return authFetch(...args);
+      });
+      fetchMock.mockImplementationOnce(async () => {
+        throw new Error("Some Unknown");
+      });
+      const result = await resource.createAndOverwrite();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("unexpectedResourceError");
+    });
+  });
+
+  describe("createIfAbsent", () => {
+    it("creates a data resource that doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.createAndOverwrite(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE2_DATA_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE2_DATA_URI),
+      ).toBe(true);
+    });
+
+    it("doesn't overwrite a resources that does exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.createIfAbsent(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+
+      expect(result.type).toBe("dataReadSuccess");
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE_DATA_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(true);
+    });
+  });
+
+  describe("deleteResource", () => {
+    it("returns an unexpected http error if an unexpected value is returned", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 214,
+        }),
+      );
+      const result = await resource.delete();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("unexpectedHttpError");
+    });
+
+    it("returns an unexpected resource error if an unknown error is triggered", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockImplementationOnce(async () => {
+        throw new Error("Some unknwon");
+      });
+      const result = await resource.delete();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("unexpectedResourceError");
+    });
   });
 });

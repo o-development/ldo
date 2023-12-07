@@ -1,5 +1,9 @@
+// The & {} allows for alias preservation
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ContainerUri = `${string}/${NonPathnameEnding}` & {};
 export type LeafUri =
+  // The & {} allows for alias preservation
+  // eslint-disable-next-line @typescript-eslint/ban-types
   `${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
 
 export function isContainerUri(uri: string): uri is ContainerUri {
