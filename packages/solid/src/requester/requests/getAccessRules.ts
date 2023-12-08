@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 export async function getAccessRules(): Promise<undefined> {
   throw new Error("Not Implemented");
   // const [publicAccess, agentAccess] = await Promise.all([
