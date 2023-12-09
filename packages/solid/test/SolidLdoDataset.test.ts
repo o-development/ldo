@@ -5,6 +5,7 @@ import type {
   Leaf,
   LeafUri,
   SolidLdoDataset,
+  UpdateResultError,
 } from "../src";
 import { createSolidLdoDataset } from "../src";
 import {
@@ -12,8 +13,17 @@ import {
   createApp,
   getAuthenticatedFetch,
 } from "./solidServer.helper";
-import { namedNode, quad as createQuad } from "@rdfjs/data-model";
+import { namedNode, quad as createQuad, literal } from "@rdfjs/data-model";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import { createDataset } from "@ldo/dataset";
+import type { Quad } from "@rdfjs/types";
+import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
+import type { UpdateSuccess } from "../src/requester/results/success/UpdateSuccess";
+import type { ResourceSuccess } from "../src/resource/resourceResult/ResourceResult";
+import type { AggregateError } from "../src/requester/results/error/ErrorResult";
+import type { InvalidUriError } from "../src/requester/results/error/InvalidUriError";
+import { Buffer } from "buffer";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -369,7 +379,9 @@ describe("SolidLdoDataset", () => {
   });
 
   /**
-   * Create Data Resource
+   * ===========================================================================
+   * Create
+   * ===========================================================================
    */
   describe("createAndOverwrite", () => {
     it("creates a document that doesn't exist", async () => {
@@ -563,6 +575,9 @@ describe("SolidLdoDataset", () => {
     });
   });
 
+  /**
+   * Delete
+   */
   describe("deleteResource", () => {
     it("returns an unexpected http error if an unexpected value is returned", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
@@ -584,6 +599,267 @@ describe("SolidLdoDataset", () => {
       const result = await resource.delete();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedResourceError");
+    });
+  });
+
+  /**
+   * Update
+   */
+  describe("updateDataResource", () => {
+    const changes: DatasetChanges<Quad> = {
+      added: createDataset([
+        createQuad(
+          namedNode("http://example.org/#green-goblin"),
+          namedNode("http://xmlns.com/foaf/0.1/name"),
+          literal("Norman Osborn"),
+          namedNode(SAMPLE_DATA_URI),
+        ),
+      ]),
+      removed: createDataset([
+        createQuad(
+          namedNode("http://example.org/#green-goblin"),
+          namedNode("http://xmlns.com/foaf/0.1/name"),
+          literal("Green Goblin"),
+          namedNode(SAMPLE_DATA_URI),
+        ),
+      ]),
+    };
+
+    it("applies changes to a Pod", async () => {
+      const result = await solidLdoDataset.commitChangesToPod(changes);
+      expect(result.type).toBe("aggregateSuccess");
+      const aggregateSuccess = result as AggregateSuccess<
+        ResourceSuccess<UpdateSuccess, Leaf>
+      >;
+      expect(aggregateSuccess.results.length).toBe(1);
+      expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Norman Osborn"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      );
+    });
+
+    it("handles an HTTP error", async () => {
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      const result = await solidLdoDataset.commitChangesToPod(changes);
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        UpdateResultError | InvalidUriError
+      >;
+      expect(aggregateError.errors.length).toBe(1);
+      expect(aggregateError.errors[0].type).toBe("serverError");
+    });
+
+    it("handles an unknown request", async () => {
+      fetchMock.mockImplementationOnce(() => {
+        throw new Error("Some Error");
+      });
+      const result = await solidLdoDataset.commitChangesToPod(changes);
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        UpdateResultError | InvalidUriError
+      >;
+      expect(aggregateError.errors.length).toBe(1);
+      expect(aggregateError.errors[0].type).toBe("unexpectedResourceError");
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * Upload
+   * ===========================================================================
+   */
+  describe("uploadAndOverwrite", () => {
+    it("uploads a document that doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () =>
+          resource.uploadAndOverwrite(
+            Buffer.from("some text.") as unknown as Blob,
+            "text/plain",
+          ),
+        resource,
+        {
+          isLoading: true,
+          isUploading: true,
+        },
+      );
+
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE2_BINARY_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE2_BINARY_URI),
+      ).toBe(true);
+    });
+
+    it("creates a binary resource that doesn't exist while overwriting", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () =>
+          resource.uploadAndOverwrite(
+            Buffer.from("some text.") as unknown as Blob,
+            "text/plain",
+          ),
+        resource,
+        {
+          isLoading: true,
+          isUploading: true,
+        },
+      );
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE_BINARY_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE_BINARY_URI),
+      ).toBe(true);
+    });
+
+    it("returns a delete error if delete failed", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 500,
+        }),
+      );
+      const result = await resource.uploadAndOverwrite(
+        Buffer.from("some text.") as unknown as Blob,
+        "text/plain",
+      );
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("returns an error if the create fetch fails", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      fetchMock.mockImplementationOnce(async (...args) => {
+        return authFetch(...args);
+      });
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 500,
+        }),
+      );
+      const result = await resource.uploadAndOverwrite(
+        Buffer.from("some text.") as unknown as Blob,
+        "text/plain",
+      );
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("returns an unexpected error if some unknown error is triggered", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      fetchMock.mockImplementationOnce(async (...args) => {
+        return authFetch(...args);
+      });
+      fetchMock.mockImplementationOnce(async () => {
+        throw new Error("Some Unknown");
+      });
+      const result = await resource.uploadAndOverwrite(
+        Buffer.from("some text.") as unknown as Blob,
+        "text/plain",
+      );
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("unexpectedResourceError");
+    });
+  });
+
+  describe("uploadIfAbsent", () => {
+    it("creates a binary resource that doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () =>
+          resource.uploadIfAbsent(
+            Buffer.from("some text.") as unknown as Blob,
+            "text/plain",
+          ),
+        resource,
+        {
+          isLoading: true,
+          isUploading: true,
+        },
+      );
+
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE2_BINARY_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE2_BINARY_URI),
+      ).toBe(true);
+    });
+
+    it("doesn't overwrite a binary resource that does exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () =>
+          resource.uploadIfAbsent(
+            Buffer.from("some text.") as unknown as Blob,
+            "text/plain",
+          ),
+        resource,
+        {
+          isLoading: true,
+          isUploading: true,
+        },
+      );
+
+      expect(result.type).toBe("binaryReadSuccess");
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE_BINARY_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container.children().some((child) => child.uri === SAMPLE_BINARY_URI),
+      ).toBe(true);
     });
   });
 });
