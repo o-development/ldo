@@ -131,8 +131,7 @@ export class Leaf extends Resource {
     return this.context.resourceStore.get(parentUri);
   }
   getRootContainer(): Promise<Container | CheckRootResultError> {
-    const parentUri = getParentUri(this.uri)!;
-    const parent = this.context.resourceStore.get(parentUri);
+    const parent = this.getParentContainer();
     return parent.getRootContainer();
   }
 

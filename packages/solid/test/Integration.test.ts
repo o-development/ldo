@@ -102,6 +102,7 @@ async function testRequestLoads<ReturnVal>(
     isUploading: boolean;
     isReloading: boolean;
     isDeleting: boolean;
+    isUpdating: boolean;
   }>,
 ): Promise<ReturnVal> {
   const allLoadingValues = {
@@ -111,13 +112,17 @@ async function testRequestLoads<ReturnVal>(
     isUploading: false,
     isReloading: false,
     isDeleting: false,
+    isUpdating: false,
     ...loadingValues,
   };
   const [returnVal] = await Promise.all([
     request(),
     (async () => {
       Object.entries(allLoadingValues).forEach(([key, value]) => {
-        if (loadingResource.type === "container" && key === "isUploading") {
+        if (
+          loadingResource.type === "container" &&
+          (key === "isUploading" || key === "isUpdating")
+        ) {
           return;
         }
         expect(loadingResource[key]()).toBe(value);
@@ -211,6 +216,8 @@ describe("SolidLdoDataset", () => {
           namedNode("http://example.org/#green-goblin"),
         ).size,
       ).toBe(1);
+      expect(resource.isBinary()).toBe(false);
+      expect(resource.isDataResource()).toBe(true);
     });
 
     it("Auto reads a resource", async () => {
@@ -369,6 +376,12 @@ describe("SolidLdoDataset", () => {
         "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
       );
     });
+
+    it("knows nothing about a leaf resource if it is not fetched", () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      expect(resource.isBinary()).toBe(undefined);
+      expect(resource.isDataResource()).toBe(undefined);
+    });
   });
 
   /**
@@ -419,7 +432,7 @@ describe("SolidLdoDataset", () => {
       expect(resource.children().length).toBe(2);
     });
 
-    it("returns a cached existing leaf", async () => {
+    it("returns a cached existing data leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.read();
       fetchMock.mockClear();
@@ -432,6 +445,14 @@ describe("SolidLdoDataset", () => {
           namedNode("http://example.org/#green-goblin"),
         ).size,
       ).toBe(1);
+    });
+
+    it("returns a cached existing binary leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      await resource.read();
+      fetchMock.mockClear();
+      const result = await resource.readIfUnfetched();
+      expect(result.type).toBe("binaryReadSuccess");
     });
 
     it("returns a cached absent container", async () => {
@@ -765,7 +786,19 @@ describe("SolidLdoDataset", () => {
     it("returns an error if creating a container", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
       fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
+        new Response(SAMPLE_CONTAINER_URI, {
+          status: 500,
+        }),
+      );
+      const result = await resource.createIfAbsent();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
+    });
+
+    it("returns an error if creating a leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE2_DATA_URI, {
           status: 500,
         }),
       );
@@ -896,7 +929,14 @@ describe("SolidLdoDataset", () => {
     };
 
     it("applies changes to a Pod", async () => {
-      const result = await solidLdoDataset.commitChangesToPod(changes);
+      const result = await testRequestLoads(
+        () => solidLdoDataset.commitChangesToPod(changes),
+        solidLdoDataset.getResource(SAMPLE_DATA_URI),
+        {
+          isLoading: true,
+          isUpdating: true,
+        },
+      );
       expect(result.type).toBe("aggregateSuccess");
       const aggregateSuccess = result as AggregateSuccess<
         ResourceSuccess<UpdateSuccess, Leaf>
@@ -1033,6 +1073,9 @@ describe("SolidLdoDataset", () => {
       expect(
         container.children().some((child) => child.uri === SAMPLE2_BINARY_URI),
       ).toBe(true);
+      expect(resource.getMimeType()).toBe("text/plain");
+      expect(resource.isBinary()).toBe(true);
+      expect(resource.isDataResource()).toBe(false);
     });
 
     it("creates a binary resource that doesn't exist while overwriting", async () => {
@@ -1183,6 +1226,21 @@ describe("SolidLdoDataset", () => {
       expect(
         container.children().some((child) => child.uri === SAMPLE_BINARY_URI),
       ).toBe(true);
+    });
+
+    it("returns an error if an error is encountered", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE2_BINARY_URI, {
+          status: 500,
+        }),
+      );
+      const result = await resource.uploadIfAbsent(
+        Buffer.from("some text.") as unknown as Blob,
+        "text/plain",
+      );
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("serverError");
     });
   });
 
