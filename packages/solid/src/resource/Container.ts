@@ -114,28 +114,21 @@ export class Container extends Resource {
   }
 
   async getRootContainer(): Promise<Container | CheckRootResultError> {
-    if (this.rootContainer === undefined) {
-      const checkResult = await this.checkIfIsRootContainer();
-      if (checkResult.isError) return checkResult;
-    }
-    if (this.rootContainer === true) {
+    const parentContainerResult = await this.getParentContainer();
+    if (parentContainerResult?.isError) return parentContainerResult;
+    if (!parentContainerResult) {
       return this;
     }
-    const parentUri = getParentUri(this.uri);
-    if (!parentUri) {
-      return new NoncompliantPodError(
-        this.uri,
-        "Resource does not have a root container",
-      );
-    }
-    return this.context.resourceStore.get(parentUri).getRootContainer();
+    return parentContainerResult.getRootContainer();
   }
 
   async getParentContainer(): Promise<
     Container | CheckRootResultError | undefined
   > {
-    const checkResult = await this.checkIfIsRootContainer();
-    if (checkResult.isError) return checkResult;
+    if (this.rootContainer === undefined) {
+      const checkResult = await this.checkIfIsRootContainer();
+      if (checkResult.isError) return checkResult;
+    }
     if (this.rootContainer) return undefined;
     const parentUri = getParentUri(this.uri);
     if (!parentUri) {

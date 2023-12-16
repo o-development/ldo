@@ -4,6 +4,7 @@ import {
   write,
   transactionChanges,
   getDataset,
+  commitTransaction,
 } from "@ldo/ldo";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { Resource } from "./resource/Resource";
@@ -17,8 +18,10 @@ import type { Quad } from "@rdfjs/types";
  */
 export function changeData<Type extends LdoBase>(
   input: Type,
-  ...resources: Resource[]
+  resource: Resource,
+  ...additionalResources: Resource[]
 ): Type {
+  const resources = [resource, ...additionalResources];
   // Clone the input and set a graph
   const [transactionLdo] = write(...resources.map((r) => r.uri)).usingCopy(
     input,
@@ -37,6 +40,7 @@ export function commitData(
   input: LdoBase,
 ): ReturnType<SolidLdoDataset["commitChangesToPod"]> {
   const changes = transactionChanges(input);
+  commitTransaction(input);
   const dataset = getDataset(input) as SolidLdoDataset;
   return dataset.commitChangesToPod(changes as DatasetChanges<Quad>);
 }

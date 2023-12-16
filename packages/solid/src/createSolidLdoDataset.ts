@@ -2,9 +2,9 @@ import type { Dataset, DatasetFactory } from "@rdfjs/types";
 import { SolidLdoDataset } from "./SolidLdoDataset";
 
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
-import crossFetch from "cross-fetch";
 import { createDataset, createDatasetFactory } from "@ldo/dataset";
 import { ResourceStore } from "./ResourceStore";
+import { guaranteeFetch } from "./util/guaranteeFetch";
 
 export interface CreateSolidLdoDatasetOptions {
   fetch?: typeof fetch;
@@ -15,7 +15,7 @@ export interface CreateSolidLdoDatasetOptions {
 export function createSolidLdoDataset(
   options?: CreateSolidLdoDatasetOptions,
 ): SolidLdoDataset {
-  const finalFetch = options?.fetch || crossFetch;
+  const finalFetch = guaranteeFetch(options?.fetch);
   const finalDatasetFactory = options?.datasetFactory || createDatasetFactory();
   const finalDataset = options?.dataset || createDataset();
 

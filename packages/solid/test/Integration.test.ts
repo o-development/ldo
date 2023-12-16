@@ -7,23 +7,41 @@ import type {
   SolidLdoDataset,
   UpdateResultError,
 } from "../src";
-import { createSolidLdoDataset } from "../src";
+import { changeData, commitData, createSolidLdoDataset } from "../src";
 import {
   ROOT_CONTAINER,
   createApp,
   getAuthenticatedFetch,
 } from "./solidServer.helper";
-import { namedNode, quad as createQuad, literal } from "@rdfjs/data-model";
+import {
+  namedNode,
+  quad as createQuad,
+  literal,
+  defaultGraph,
+} from "@rdfjs/data-model";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
 import type { Quad } from "@rdfjs/types";
 import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
-import type { UpdateSuccess } from "../src/requester/results/success/UpdateSuccess";
+import type {
+  UpdateDefaultGraphSuccess,
+  UpdateSuccess,
+} from "../src/requester/results/success/UpdateSuccess";
 import type { ResourceSuccess } from "../src/resource/resourceResult/ResourceResult";
-import type { AggregateError } from "../src/requester/results/error/ErrorResult";
+import type {
+  AggregateError,
+  UnexpectedResourceError,
+} from "../src/requester/results/error/ErrorResult";
 import type { InvalidUriError } from "../src/requester/results/error/InvalidUriError";
 import { Buffer } from "buffer";
+import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import type {
+  ServerHttpError,
+  UnauthenticatedHttpError,
+  UnexpectedHttpError,
+} from "../src/requester/results/error/HttpErrorResult";
+import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -190,6 +208,28 @@ describe("SolidLdoDataset", () => {
       ).toBe(1);
     });
 
+    it("Auto reads a resource", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI, {
+        autoLoad: true,
+      });
+      // Wait until the resource is auto-loaded
+      await new Promise<void>((resolve) => {
+        const interval = setInterval(() => {
+          if (!resource.isReading()) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 250);
+      });
+      expect(
+        solidLdoDataset.match(
+          namedNode("http://example.org/#spiderman"),
+          namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+          namedNode("http://example.org/#green-goblin"),
+        ).size,
+      ).toBe(1);
+    });
+
     it("Reads a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
@@ -327,6 +367,88 @@ describe("SolidLdoDataset", () => {
   });
 
   /**
+   * readIfUnfetched
+   */
+  describe("readIfUnfetched", () => {
+    it("reads an unfetched container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.readIfUnfetched(),
+        resource,
+        {
+          isLoading: true,
+          isReading: true,
+        },
+      );
+      expect(result.type).toBe("containerReadSuccess");
+      expect(resource.children().length).toBe(2);
+    });
+
+    it("reads an unfetched leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await testRequestLoads(
+        () => resource.readIfUnfetched(),
+        resource,
+        {
+          isLoading: true,
+          isReading: true,
+        },
+      );
+      expect(result.type).toBe("dataReadSuccess");
+      expect(
+        solidLdoDataset.match(
+          namedNode("http://example.org/#spiderman"),
+          namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+          namedNode("http://example.org/#green-goblin"),
+        ).size,
+      ).toBe(1);
+    });
+
+    it("returns a cached existing container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+      fetchMock.mockClear();
+      const result = await resource.readIfUnfetched();
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(result.type).toBe("containerReadSuccess");
+      expect(resource.children().length).toBe(2);
+    });
+
+    it("returns a cached existing leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      await resource.read();
+      fetchMock.mockClear();
+      const result = await resource.readIfUnfetched();
+      expect(result.type).toBe("dataReadSuccess");
+      expect(
+        solidLdoDataset.match(
+          namedNode("http://example.org/#spiderman"),
+          namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+          namedNode("http://example.org/#green-goblin"),
+        ).size,
+      ).toBe(1);
+    });
+
+    it("returns a cached absent container", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
+      await resource.read();
+      fetchMock.mockClear();
+      const result = await resource.readIfUnfetched();
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(result.type).toBe("absentReadSuccess");
+    });
+
+    it("returns a cached absent leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      await resource.read();
+      fetchMock.mockClear();
+      const result = await resource.readIfUnfetched();
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect(result.type).toBe("absentReadSuccess");
+    });
+  });
+
+  /**
    * Get Root Container
    */
   describe("rootContainer", () => {
@@ -336,6 +458,7 @@ describe("SolidLdoDataset", () => {
       expect(result.type).toBe("container");
       if (result.type !== "container") return;
       expect(result.uri).toBe(ROOT_CONTAINER);
+      expect(result.isRootContainer()).toBe(true);
     });
 
     it("Returns an error if there is no link header for a container request", async () => {
@@ -375,6 +498,22 @@ describe("SolidLdoDataset", () => {
       if (!result.isError) return;
       expect(result.type).toBe("unexpectedResourceError");
       expect(result.message).toBe("Something happened.");
+    });
+
+    it("returns a NonCompliantPodError when there is no root", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({
+            "content-type": "text/turtle",
+            link: '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+          }),
+        }),
+      );
+      const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
+      const result = await resource.getRootContainer();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("noncompliantPodError");
     });
   });
 
@@ -520,7 +659,7 @@ describe("SolidLdoDataset", () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       const result = await testRequestLoads(
-        () => resource.createAndOverwrite(),
+        () => resource.createIfAbsent(),
         resource,
         {
           isLoading: true,
@@ -573,6 +712,38 @@ describe("SolidLdoDataset", () => {
         container.children().some((child) => child.uri === SAMPLE_DATA_URI),
       ).toBe(true);
     });
+
+    it("creates a container that doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await testRequestLoads(
+        () => resource.createIfAbsent(),
+        resource,
+        {
+          isLoading: true,
+          isCreating: true,
+        },
+      );
+
+      expect(result.type).toBe("createSuccess");
+      const createSuccess = result as CreateSuccess;
+      expect(createSuccess.didOverwrite).toBe(false);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode(TEST_CONTAINER_URI),
+            namedNode("http://www.w3.org/ns/ldp#contains"),
+            namedNode(SAMPLE2_DATA_URI),
+            namedNode(TEST_CONTAINER_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        container
+          .children()
+          .some((child) => child.uri === SAMPLE_CONTAINER_URI),
+      ).toBe(true);
+    });
   });
 
   /**
@@ -599,6 +770,76 @@ describe("SolidLdoDataset", () => {
       const result = await resource.delete();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedResourceError");
+    });
+
+    it("deletes a container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await resource.delete();
+      expect(result.type === "deleteSuccess");
+    });
+
+    it("returns an error on container read when deleting a container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, {
+          status: 500,
+        }),
+      );
+      const result = await resource.delete();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        | ServerHttpError
+        | UnexpectedHttpError
+        | UnauthenticatedHttpError
+        | UnexpectedResourceError
+        | NoncompliantPodError
+      >;
+      expect(aggregateError.errors[0].type).toBe("serverError");
+    });
+
+    it("returns an error on child delete read when deleting a container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockImplementationOnce(authFetch);
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, {
+          status: 500,
+        }),
+      );
+      const result = await resource.delete();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        | ServerHttpError
+        | UnexpectedHttpError
+        | UnauthenticatedHttpError
+        | UnexpectedResourceError
+        | NoncompliantPodError
+      >;
+      expect(aggregateError.errors[0].type).toBe("serverError");
+    });
+
+    it("returns an error on container delete read when deleting a container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockImplementationOnce(authFetch);
+      fetchMock.mockImplementationOnce(authFetch);
+      fetchMock.mockImplementationOnce(authFetch);
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, {
+          status: 500,
+        }),
+      );
+      const result = await resource.delete();
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        | ServerHttpError
+        | UnexpectedHttpError
+        | UnauthenticatedHttpError
+        | UnexpectedResourceError
+        | NoncompliantPodError
+      >;
+      expect(aggregateError.errors[0].type).toBe("serverError");
     });
   });
 
@@ -669,6 +910,59 @@ describe("SolidLdoDataset", () => {
       >;
       expect(aggregateError.errors.length).toBe(1);
       expect(aggregateError.errors[0].type).toBe("unexpectedResourceError");
+    });
+
+    it("errors when trying to update a container", async () => {
+      const changes: DatasetChanges<Quad> = {
+        added: createDataset([
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Norman Osborn"),
+            namedNode(SAMPLE_CONTAINER_URI),
+          ),
+        ]),
+      };
+      const result = await solidLdoDataset.commitChangesToPod(changes);
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        UpdateResultError | InvalidUriError
+      >;
+      expect(aggregateError.errors.length).toBe(1);
+      expect(aggregateError.errors[0].type === "invalidUriError").toBe(true);
+    });
+
+    it("writes to the default graph without fetching", async () => {
+      const changes: DatasetChanges<Quad> = {
+        added: createDataset([
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Norman Osborn"),
+            defaultGraph(),
+          ),
+        ]),
+      };
+      const result = await solidLdoDataset.commitChangesToPod(changes);
+      expect(result.type).toBe("aggregateSuccess");
+      const aggregateSuccess = result as AggregateSuccess<
+        ResourceSuccess<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
+      >;
+      expect(aggregateSuccess.results.length).toBe(1);
+      expect(aggregateSuccess.results[0].type).toBe(
+        "updateDefaultGraphSuccess",
+      );
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Norman Osborn"),
+            defaultGraph(),
+          ),
+        ),
+      );
     });
   });
 
@@ -862,4 +1156,72 @@ describe("SolidLdoDataset", () => {
       ).toBe(true);
     });
   });
+
+  /**
+   * ===========================================================================
+   * Methods
+   * ===========================================================================
+   */
+  describe("methods", () => {
+    it("creates a data object for a specific subject", () => {
+      const resource = solidLdoDataset.getResource(
+        "https://example.com/resource.ttl",
+      );
+      const post = solidLdoDataset.createData(
+        PostShShapeType,
+        "https://example.com/subject",
+        resource,
+      );
+      post.type = { "@id": "CreativeWork" };
+      expect(post.type["@id"]).toBe("CreativeWork");
+      commitData(post);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("https://example.com/subject"),
+            namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            namedNode("http://schema.org/CreativeWork"),
+            namedNode("https://example.com/resource.ttl"),
+          ),
+        ),
+      ).toBe(true);
+    });
+
+    it("uses changeData to start a transaction", () => {
+      const resource = solidLdoDataset.getResource(
+        "https://example.com/resource.ttl",
+      );
+      solidLdoDataset.add(
+        createQuad(
+          namedNode("https://example.com/subject"),
+          namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+          namedNode("http://schema.org/CreativeWork"),
+          namedNode("https://example.com/resource.ttl"),
+        ),
+      );
+      const post = solidLdoDataset
+        .usingType(PostShShapeType)
+        .fromSubject("https://example.com/subject");
+      const cPost = changeData(post, resource);
+      cPost.type = { "@id": "SocialMediaPosting" };
+      expect(cPost.type["@id"]).toBe("SocialMediaPosting");
+      commitData(cPost);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("https://example.com/subject"),
+            namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            namedNode("http://schema.org/SocialMediaPosting"),
+            namedNode("https://example.com/resource.ttl"),
+          ),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * Container-Specific Methods
+   * ===========================================================================
+   */
 });

@@ -84,7 +84,6 @@ export async function uploadResource(
     };
   } catch (err) {
     const thing = UnexpectedResourceError.fromThrown(uri, err);
-    console.log(thing.message);
     return thing;
   }
 }

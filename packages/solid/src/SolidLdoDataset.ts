@@ -9,7 +9,10 @@ import type {
 import { AggregateError } from "./requester/results/error/ErrorResult";
 import { InvalidUriError } from "./requester/results/error/InvalidUriError";
 import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
-import type { UpdateSuccess } from "./requester/results/success/UpdateSuccess";
+import type {
+  UpdateDefaultGraphSuccess,
+  UpdateSuccess,
+} from "./requester/results/success/UpdateSuccess";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
 import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
@@ -42,14 +45,18 @@ export class SolidLdoDataset extends LdoDataset {
   async commitChangesToPod(
     changes: DatasetChanges<Quad>,
   ): Promise<
-    | AggregateSuccess<ResourceResult<UpdateSuccess, Leaf>>
+    | AggregateSuccess<
+        ResourceResult<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
+      >
     | AggregateError<UpdateResultError | InvalidUriError>
   > {
     const changesByGraph = splitChangesByGraph(changes);
+
+    // Iterate through all changes by graph in
     const results: [
       GraphNode,
       DatasetChanges<Quad>,
-      UpdateResult | InvalidUriError | { type: "defaultGraph"; isError: false },
+      UpdateResult | InvalidUriError | UpdateDefaultGraphSuccess,
     ][] = await Promise.all(
       Array.from(changesByGraph.entries()).map(
         async ([graph, datasetChanges]) => {
@@ -59,7 +66,10 @@ export class SolidLdoDataset extends LdoDataset {
             return [
               graph,
               datasetChanges,
-              { type: "defaultGraph", isError: false },
+              {
+                type: "updateDefaultGraphSuccess",
+                isError: false,
+              } as UpdateDefaultGraphSuccess,
             ];
           }
           if (isContainerUri(graph.value)) {
@@ -94,7 +104,8 @@ export class SolidLdoDataset extends LdoDataset {
         .map((result) => result[2])
         .filter(
           (result): result is ResourceResult<UpdateSuccess, Leaf> =>
-            result.type === "updateSuccess",
+            result.type === "updateSuccess" ||
+            result.type === "updateDefaultGraphSuccess",
         ),
     };
   }
@@ -111,8 +122,10 @@ export class SolidLdoDataset extends LdoDataset {
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-    ...resources: Resource[]
+    resource: Resource,
+    ...additionalResources: Resource[]
   ): Type {
+    const resources = [resource, ...additionalResources];
     const linkedDataObject = this.usingType(shapeType)
       .write(...resources.map((r) => r.uri))
       .fromSubject(subject);
