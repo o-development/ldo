@@ -5,6 +5,7 @@ export interface WaitingProcess<Args extends any[], Return> {
   perform: (...args: Args) => Promise<Return>;
   awaitingResolutions: ((returnValue: Return) => void)[];
   awaitingRejections: ((err: any) => void)[];
+  after?: (result: Return) => void;
 }
 
 export const ANY_KEY = "any";
@@ -25,6 +26,7 @@ export interface WaitingProcessOptions<Args extends any[], Return> {
     currentlyProcessing: WaitingProcess<any[], any> | undefined,
     args: Args,
   ) => WaitingProcess<any[], any> | undefined;
+  after?: (result: Return) => void;
 }
 
 /**
@@ -77,6 +79,9 @@ export class RequestBatcher {
           const returnValue = await processToTrigger.perform(
             ...processToTrigger.args,
           );
+          if (processToTrigger.after) {
+            processToTrigger.after(returnValue);
+          }
           processToTrigger.awaitingResolutions.forEach((callback) => {
             callback(returnValue);
           });
@@ -120,6 +125,7 @@ export class RequestBatcher {
         perform: options.perform,
         awaitingResolutions: [resolve],
         awaitingRejections: [reject],
+        after: options.after,
       };
       // HACK: Ugly cast
       this.processQueue.push(

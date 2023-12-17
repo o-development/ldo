@@ -14,6 +14,7 @@ import type {
 import { readResource } from "./requests/readResource";
 import type { DeleteResult } from "./requests/deleteResource";
 import { deleteResource } from "./requests/deleteResource";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
 
 const READ_KEY = "read";
 const CREATE_KEY = "createDataResource";
@@ -52,18 +53,13 @@ export abstract class Requester {
       name: READ_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: readResource,
-      modifyQueue: (queue, currentlyLoading) => {
-        if (queue.length === 0 && currentlyLoading?.name === READ_KEY) {
-          return currentlyLoading;
-        } else if (queue[queue.length - 1]?.name === READ_KEY) {
-          return queue[queue.length - 1];
+      modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(READ_KEY),
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
         }
-        return undefined;
       },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 
@@ -76,18 +72,13 @@ export abstract class Requester {
       name: DELETE_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: deleteResource,
-      modifyQueue: (queue, currentlyLoading) => {
-        if (queue.length === 0 && currentlyLoading?.name === DELETE_KEY) {
-          return currentlyLoading;
-        } else if (queue[queue.length - 1]?.name === DELETE_KEY) {
-          return queue[queue.length - 1];
+      modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(DELETE_KEY),
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
         }
-        return undefined;
       },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 
@@ -145,10 +136,12 @@ export abstract class Requester {
         }
         return undefined;
       },
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
+        }
+      },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 }

@@ -11,9 +11,7 @@ import { mergeDatasetChanges } from "./mergeDatasetChanges";
  */
 export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   extends ExtendedDataset<InAndOutQuad>
-  implements
-    BulkEditableDataset<InAndOutQuad>,
-    TransactionalDataset<InAndOutQuad>
+  implements TransactionalDataset<InAndOutQuad>
 {
   /**
    * The parent dataset that will be updated upon commit

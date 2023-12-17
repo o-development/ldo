@@ -8,6 +8,7 @@ import type {
   ContainerCreateIfAbsentResult,
 } from "./requests/createDataResource";
 import type { ReadContainerResult } from "./requests/readResource";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
 
 export const IS_ROOT_CONTAINER_KEY = "isRootContainer";
 
@@ -45,17 +46,9 @@ export class ContainerRequester extends Requester {
       name: IS_ROOT_CONTAINER_KEY,
       args: [this.uri as ContainerUri, { fetch: this.context.fetch }],
       perform: checkRootContainer,
-      modifyQueue: (queue, currentlyLoading) => {
-        if (
-          queue.length === 0 &&
-          currentlyLoading?.name === IS_ROOT_CONTAINER_KEY
-        ) {
-          return currentlyLoading;
-        } else if (queue[queue.length - 1]?.name === IS_ROOT_CONTAINER_KEY) {
-          return queue[queue.length - 1];
-        }
-        return undefined;
-      },
+      modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(
+        IS_ROOT_CONTAINER_KEY,
+      ),
     });
   }
 }

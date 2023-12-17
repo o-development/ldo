@@ -22,6 +22,7 @@ import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
 import { isContainerUri } from "./util/uriTypes";
 import type { Resource } from "./resource/Resource";
+import { quad as createQuad } from "@rdfjs/data-model";
 
 export class SolidLdoDataset extends LdoDataset {
   public context: SolidLdoDatasetContext;
@@ -42,6 +43,9 @@ export class SolidLdoDataset extends LdoDataset {
     return this.context.resourceStore.get(uri, options);
   }
 
+  /**
+   * commitChangesToPod
+   */
   async commitChangesToPod(
     changes: DatasetChanges<Quad>,
   ): Promise<
@@ -50,6 +54,8 @@ export class SolidLdoDataset extends LdoDataset {
       >
     | AggregateError<UpdateResultError | InvalidUriError>
   > {
+    // Optimistically add changes to the datastore
+    // this.bulk(changes);
     const changesByGraph = splitChangesByGraph(changes);
 
     // Iterate through all changes by graph in
@@ -90,7 +96,23 @@ export class SolidLdoDataset extends LdoDataset {
 
     // If one has errored, return error
     const errors = results.filter((result) => result[2].isError);
+
     if (errors.length > 0) {
+      // // Rollback errors
+      // errors.forEach((error) => {
+      //   // Add the graph back to the quads
+      //   const added = error[1].added?.map((quad) =>
+      //     createQuad(quad.subject, quad.predicate, quad.object, error[0]),
+      //   );
+      //   const removed = error[1].removed?.map((quad) =>
+      //     createQuad(quad.subject, quad.predicate, quad.object, error[0]),
+      //   );
+      //   this.bulk({
+      //     added: removed,
+      //     removed: added,
+      //   });
+      // });
+
       return new AggregateError(
         errors.map(
           (result) => result[2] as UpdateResultError | InvalidUriError,

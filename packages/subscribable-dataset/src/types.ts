@@ -20,7 +20,7 @@ export interface BulkEditableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
  * A dataset that allows you to modify the dataset and
  */
 export interface TransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
-  extends Dataset<InAndOutQuad, InAndOutQuad> {
+  extends BulkEditableDataset<InAndOutQuad> {
   rollback(): void;
   commit(): void;
   getChanges(): DatasetChanges<InAndOutQuad>;

@@ -103,6 +103,7 @@ async function testRequestLoads<ReturnVal>(
     isReloading: boolean;
     isDeleting: boolean;
     isUpdating: boolean;
+    isDoingInitialFetch: boolean;
   }>,
 ): Promise<ReturnVal> {
   const allLoadingValues = {
@@ -113,6 +114,7 @@ async function testRequestLoads<ReturnVal>(
     isReloading: false,
     isDeleting: false,
     isUpdating: false,
+    isDoingInitialFetch: false,
     ...loadingValues,
   };
   const [returnVal] = await Promise.all([
@@ -207,6 +209,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.type).toBe("dataReadSuccess");
       expect(
@@ -218,6 +221,7 @@ describe("SolidLdoDataset", () => {
       ).toBe(1);
       expect(resource.isBinary()).toBe(false);
       expect(resource.isDataResource()).toBe(true);
+      expect(resource.isPresent()).toBe(true);
     });
 
     it("Auto reads a resource", async () => {
@@ -247,6 +251,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.type).toBe("containerReadSuccess");
       expect(resource.children().length).toBe(2);
@@ -257,6 +262,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.type).toBe("binaryReadSuccess");
       expect(resource.isBinary()).toBe(true);
@@ -268,6 +274,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.type).toBe("absentReadSuccess");
       if (result.type !== "absentReadSuccess") return;
@@ -280,6 +287,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("serverError");
@@ -291,6 +299,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unauthenticatedError");
@@ -302,6 +311,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedHttpError");
@@ -315,6 +325,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
@@ -335,6 +346,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
@@ -350,6 +362,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
@@ -368,6 +381,7 @@ describe("SolidLdoDataset", () => {
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
         isReading: true,
+        isDoingInitialFetch: true,
       });
       expect(result.isError).toBe(true);
       if (!result.isError) return;
@@ -381,6 +395,8 @@ describe("SolidLdoDataset", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       expect(resource.isBinary()).toBe(undefined);
       expect(resource.isDataResource()).toBe(undefined);
+      expect(resource.isUnfetched()).toBe(true);
+      expect(resource.isPresent()).toBe(undefined);
     });
   });
 
@@ -396,6 +412,7 @@ describe("SolidLdoDataset", () => {
         {
           isLoading: true,
           isReading: true,
+          isDoingInitialFetch: true,
         },
       );
       expect(result.type).toBe("containerReadSuccess");
@@ -410,6 +427,7 @@ describe("SolidLdoDataset", () => {
         {
           isLoading: true,
           isReading: true,
+          isDoingInitialFetch: true,
         },
       );
       expect(result.type).toBe("dataReadSuccess");
@@ -952,7 +970,54 @@ describe("SolidLdoDataset", () => {
             namedNode(SAMPLE_DATA_URI),
           ),
         ),
+      ).toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Green Goblin"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      ).toBe(false);
+    });
+
+    it("applies only remove changes to the Pod", async () => {
+      const changes: DatasetChanges<Quad> = {
+        removed: createDataset([
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Green Goblin"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ]),
+      };
+      const result = await testRequestLoads(
+        () => solidLdoDataset.commitChangesToPod(changes),
+        solidLdoDataset.getResource(SAMPLE_DATA_URI),
+        {
+          isLoading: true,
+          isUpdating: true,
+        },
       );
+      expect(result.type).toBe("aggregateSuccess");
+      const aggregateSuccess = result as AggregateSuccess<
+        ResourceSuccess<UpdateSuccess, Leaf>
+      >;
+      expect(aggregateSuccess.results.length).toBe(1);
+      expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Green Goblin"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      ).toBe(false);
     });
 
     it("handles an HTTP error", async () => {
@@ -1031,7 +1096,40 @@ describe("SolidLdoDataset", () => {
             defaultGraph(),
           ),
         ),
-      );
+      ).toBe(true);
+    });
+
+    it("batches data update changes", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+
+      const [, updateResult1, updateResult2] = await Promise.all([
+        resource.read(),
+        solidLdoDataset.commitChangesToPod({ removed: changes.removed }),
+        solidLdoDataset.commitChangesToPod({ added: changes.added }),
+      ]);
+      expect(updateResult1.type).toBe("aggregateSuccess");
+      expect(updateResult2.type).toBe("aggregateSuccess");
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Norman Osborn"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("http://example.org/#green-goblin"),
+            namedNode("http://xmlns.com/foaf/0.1/name"),
+            literal("Green Goblin"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      ).toBe(false);
     });
   });
 
@@ -1158,6 +1256,31 @@ describe("SolidLdoDataset", () => {
       );
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedResourceError");
+    });
+
+    it("batches the upload request while waiting on another request", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const [, result1, result2] = await Promise.all([
+        resource.read(),
+        resource.createAndOverwrite(),
+        resource.createAndOverwrite(),
+      ]);
+
+      expect(result1.type).toBe("createSuccess");
+      expect(result2.type).toBe("createSuccess");
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("batches the upload request while waiting on a similar request", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const [result1, result2] = await Promise.all([
+        resource.createAndOverwrite(),
+        resource.createAndOverwrite(),
+      ]);
+
+      expect(result1.type).toBe("createSuccess");
+      expect(result2.type).toBe("createSuccess");
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
   });
 

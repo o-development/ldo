@@ -7,7 +7,7 @@ import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import type { UpdateSuccess } from "../results/success/UpdateSuccess";
-import type { BasicRequestOptions } from "./requestOptions";
+import type { DatasetRequestOptions } from "./requestOptions";
 
 export type UpdateResult = UpdateSuccess | UpdateResultError;
 export type UpdateResultError = HttpErrorResultType | UnexpectedResourceError;
@@ -15,9 +15,11 @@ export type UpdateResultError = HttpErrorResultType | UnexpectedResourceError;
 export async function updateDataResource(
   uri: LeafUri,
   datasetChanges: DatasetChanges<Quad>,
-  options?: BasicRequestOptions & { onRollback?: () => void },
+  options?: DatasetRequestOptions,
 ): Promise<UpdateResult> {
   try {
+    // Optimistically add data
+    options?.dataset?.bulk(datasetChanges);
     const fetch = guaranteeFetch(options?.fetch);
 
     // Make request
@@ -32,8 +34,11 @@ export async function updateDataResource(
     const httpError = HttpErrorResult.checkResponse(uri, response);
     if (httpError) {
       // Handle error rollback
-      if (options?.onRollback) {
-        options.onRollback();
+      if (options?.dataset) {
+        options.dataset.bulk({
+          added: datasetChanges.removed,
+          removed: datasetChanges.added,
+        });
       }
       return httpError;
     }

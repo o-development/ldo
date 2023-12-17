@@ -194,6 +194,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   // async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
   //   return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
   // }
+  /* istanbul ignore next */
   async setAccessRules(
     newAccessRules: AccessRule,
   ): Promise<ResourceResult<SetAccessRulesResult, Leaf | Container>> {

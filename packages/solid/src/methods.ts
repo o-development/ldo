@@ -4,12 +4,13 @@ import {
   write,
   transactionChanges,
   getDataset,
-  commitTransaction,
 } from "@ldo/ldo";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { Resource } from "./resource/Resource";
 import type { SolidLdoDataset } from "./SolidLdoDataset";
 import type { Quad } from "@rdfjs/types";
+import { _proxyContext, getProxyFromObject } from "@ldo/jsonld-dataset-proxy";
+import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 
 /**
  * Begins tracking changes to eventually commit
@@ -40,7 +41,12 @@ export function commitData(
   input: LdoBase,
 ): ReturnType<SolidLdoDataset["commitChangesToPod"]> {
   const changes = transactionChanges(input);
-  commitTransaction(input);
+  // Take the LdoProxy out of commit mode. This uses hidden methods of JSONLD-DATASET-PROXY
+  const proxy = getProxyFromObject(input);
+  proxy[_proxyContext] = proxy[_proxyContext].duplicate({
+    dataset: proxy[_proxyContext].state
+      .parentDataset as SubscribableDataset<Quad>,
+  });
   const dataset = getDataset(input) as SolidLdoDataset;
   return dataset.commitChangesToPod(changes as DatasetChanges<Quad>);
 }

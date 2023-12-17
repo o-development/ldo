@@ -1,9 +1,10 @@
-import type { Dataset, Quad } from "@rdfjs/types";
+import type { BulkEditableDataset } from "@ldo/subscribable-dataset";
+import type { Quad } from "@rdfjs/types";
 
 export interface BasicRequestOptions {
   fetch?: typeof fetch;
 }
 
 export interface DatasetRequestOptions extends BasicRequestOptions {
-  dataset?: Dataset<Quad>;
+  dataset?: BulkEditableDataset<Quad>;
 }
