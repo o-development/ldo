@@ -21,13 +21,6 @@ export abstract class HttpErrorResult extends ResourceError {
     this.response = response;
   }
 
-  async getBodyForDebug(): Promise<string> {
-    if (this.response.bodyUsed) {
-      return `Could not get body for ${this.uri} that yeilded status ${this.status}. The body stream has already been consumed.`;
-    }
-    return await this.response.text();
-  }
-
   static isnt(response: Response) {
     return (
       !(response.status >= 200 && response.status < 300) &&
