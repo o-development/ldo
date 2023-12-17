@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { ResourceError } from "./ErrorResult";
 
 export class AccessRuleFetchError extends ResourceError {

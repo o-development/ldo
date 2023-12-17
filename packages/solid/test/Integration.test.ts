@@ -398,6 +398,35 @@ describe("SolidLdoDataset", () => {
       expect(resource.isUnfetched()).toBe(true);
       expect(resource.isPresent()).toBe(undefined);
     });
+
+    it("batches the read request when a read request is currently happening", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const [result, result1] = await Promise.all([
+        resource.read(),
+        resource.read(),
+      ]);
+
+      expect(result.type).toBe("dataReadSuccess");
+      expect(result1.type).toBe("dataReadSuccess");
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("batches the read request when a read request is in queue", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const [, result, result1] = await Promise.all([
+        resource.update({
+          added: createDataset([
+            createQuad(namedNode("a"), namedNode("b"), namedNode("c")),
+          ]),
+        }),
+        resource.read(),
+        resource.read(),
+      ]);
+
+      expect(result.type).toBe("dataReadSuccess");
+      expect(result1.type).toBe("dataReadSuccess");
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   /**
@@ -707,6 +736,33 @@ describe("SolidLdoDataset", () => {
       const result = await resource.createAndOverwrite();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedResourceError");
+    });
+
+    it("batches the create request while waiting on another request", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const [, result1, result2] = await Promise.all([
+        resource.read(),
+        resource.createAndOverwrite(),
+        resource.createAndOverwrite(),
+      ]);
+
+      expect(result1.type).toBe("createSuccess");
+      expect(result2.type).toBe("createSuccess");
+      // 1 for read, 1 for delete in createAndOverwrite, 1 for create
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+    });
+
+    it("batches the create request while waiting on a similar request", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const [result1, result2] = await Promise.all([
+        resource.createAndOverwrite(),
+        resource.createAndOverwrite(),
+      ]);
+
+      expect(result1.type).toBe("createSuccess");
+      expect(result2.type).toBe("createSuccess");
+      // 1 for delete in createAndOverwrite, 1 for create
+      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -1262,25 +1318,41 @@ describe("SolidLdoDataset", () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const [, result1, result2] = await Promise.all([
         resource.read(),
-        resource.createAndOverwrite(),
-        resource.createAndOverwrite(),
+        resource.uploadAndOverwrite(
+          Buffer.from("some text.") as unknown as Blob,
+          "text/plain",
+        ),
+        resource.uploadAndOverwrite(
+          Buffer.from("some text 2.") as unknown as Blob,
+          "text/plain",
+        ),
       ]);
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(1);
+      // 1 for read, 1 for delete in createAndOverwrite, 1 for create
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
 
     it("batches the upload request while waiting on a similar request", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const [result1, result2] = await Promise.all([
-        resource.createAndOverwrite(),
-        resource.createAndOverwrite(),
+        resource.uploadAndOverwrite(
+          Buffer.from("some text.") as unknown as Blob,
+          "text/plain",
+        ),
+        resource.uploadAndOverwrite(
+          Buffer.from("some text 2.") as unknown as Blob,
+          "text/plain",
+        ),
       ]);
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(1);
+      // 1 for delete in createAndOverwrite, 1 for create
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
   });
 

@@ -5,7 +5,7 @@ export abstract class ErrorResult extends Error implements RequesterResult {
   readonly isError = true as const;
 
   constructor(message?: string) {
-    super(message || "An error unkown error was encountered.");
+    super(message || "An unkown error was encountered.");
   }
 }
 
@@ -13,7 +13,7 @@ export abstract class ResourceError extends ErrorResult {
   readonly uri: string;
 
   constructor(uri: string, message?: string) {
-    super(message || `An error unkown error for ${uri}`);
+    super(message || `An unkown error for ${uri}`);
     this.uri = uri;
   }
 }
