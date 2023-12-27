@@ -48,9 +48,15 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
     createData<Type extends LdoBase>(
       shapeType: ShapeType<Type>,
       subject: string | SubjectNode,
-      ...resources: Resource[]
+      resource: Resource,
+      ...additionalResources: Resource[]
     ): Type {
-      return dataset.createData(shapeType, subject, ...resources);
+      return dataset.createData(
+        shapeType,
+        subject,
+        resource,
+        ...additionalResources,
+      );
     },
     /**
      * Begins tracking changes to eventually commit

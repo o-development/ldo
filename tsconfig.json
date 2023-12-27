@@ -3,6 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@ldo/*": ["packages/*/src"]
-    }
+    },
+    "allowJs": true
   }
 }
