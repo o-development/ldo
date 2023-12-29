@@ -12,7 +12,10 @@ import type {
   TransactionalDataset,
 } from "@ldo/subscribable-dataset";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/**
+ * @category Types
+ * `LdoBase` is an interface defining that a Linked Data Object is a JavaScript Object Literal.
+ */
 export type LdoBase = Record<string, any>;
 
 /**

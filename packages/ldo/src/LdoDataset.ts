@@ -6,12 +6,27 @@ import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./index";
 
 /**
- * Utility for building a linked data object
+ * @category Getting an LdoDataset
+ *
+ * An LdoDataset is a utility for building a linked data object.
+ *
+ * It is not recommended to instantiate an LdoDataset. Instead use the {@link createLdoDataset} function.
+ *
+ * @example
+ * ```typescript
+ * import { LdoDataset, createLdoDatasetFactory } from "@ldo/ldo";
+ * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ *
+ * const ldoDatasetFactory = createLdoDatasetFactory();
+ * const ldoDataset = new LdoDataset();
+ * const ldoBuilder = ldoDataset.usingType(FoafProfileShapeType);
+ * ```
  */
 export class LdoDataset extends WrapperSubscribableDataset<Quad> {
   /**
-   * Gets a builder for a given type
-   * @param shapeType A ShapeType
+   * Creates an LdoBuilder for a given shapeType
+   *
+   * @param shapeType - A ShapeType
    * @returns A builder for the given type
    */
   public usingType<Type extends LdoBase>(

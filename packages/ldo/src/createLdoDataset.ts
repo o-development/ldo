@@ -4,8 +4,17 @@ import { LdoDatasetFactory } from "./LdoDatasetFactory";
 import type { LdoDataset } from "./LdoDataset";
 
 /**
- * Creates an LDO Dataset Factory
+ * @category Getting an LdoDataset
+ *
+ * A helper function that creates an LdoDatasetFactory.
+ * This function exists for parity with RDF/JS. Most developers will not use it. Instead, it's better to use {@link createLdoDataset}.
+ *
  * @returns An LDO Dataset Factory
+ *
+ * @example
+ * ```typescript
+ * createLdoDatasetFactory(): Promise<LdoDatasetFactory>
+ * ```
  */
 export function createLdoDatasetFactory() {
   const datasetFactory: DatasetFactory<Quad> = {
@@ -17,9 +26,20 @@ export function createLdoDatasetFactory() {
 }
 
 /**
- * Create an LDO Dataset
- * @param initialDataset
- * @returns An LDO Dataset
+ * @category Getting an LdoDataset
+ *
+ * A function that initializes an LdoDataset.
+ *
+ * @param initialDataset - An optional dataset or array of quads for the new dataset
+ *
+ * @returns An LDO Dataset initialized with the intitial dataset if any
+ *
+ * @example
+ * ```typescript
+ * import { createLdoDataset } from "@ldo/ldo";
+ *
+ * const ldoDataset = createLdoDataset();
+ * ```
  */
 export function createLdoDataset(
   initialDataset?: Dataset<Quad, Quad> | Quad[],

@@ -115,7 +115,7 @@ Types
  - [`LdoBase`](https://ldo.js.org/api/ldo/LdoBase/)
  - [`ShapeType`](https://ldo.js.org/api/ldo/ShapeType/)
 
- Getting a LdoDataset
+Getting an LdoDataset
 
  - [`parseRdf`](https://ldo.js.org/api/ldo/parseRdf/)
  - [`createLdoDatasetFactory`](https://ldo.js.org/api/ldo/createLdoDatasetFactory/)
