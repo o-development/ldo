@@ -3,16 +3,35 @@ import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
 import { defaultGraph, namedNode, quad as createQuad } from "@rdfjs/data-model";
 
+/**
+ * @internal
+ * Converts an RDFJS Graph Node to a string hash
+ * @param graphNode - the node to convert
+ * @returns a unique string corresponding to the node
+ */
 export function graphNodeToString(graphNode: GraphNode): string {
   return graphNode.termType === "DefaultGraph"
     ? "defaultGraph()"
     : graphNode.value;
 }
 
+/**
+ * @internal
+ * Converts a unique string to a GraphNode
+ * @param input - the unique string
+ * @returns A graph node
+ */
 export function stringToGraphNode(input: string): GraphNode {
   return input === "defaultGraph()" ? defaultGraph() : namedNode(input);
 }
 
+/**
+ * Splits all changes in a DatasetChanges into individual DatasetChanges grouped
+ * by the quad graph.
+ * @param changes - Changes to split
+ * @returns A map between the quad graph and the changes associated with that
+ * graph
+ */
 export function splitChangesByGraph(
   changes: DatasetChanges<Quad>,
 ): Map<GraphNode, DatasetChanges<Quad>> {

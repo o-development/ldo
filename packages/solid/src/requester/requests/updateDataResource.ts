@@ -9,9 +9,57 @@ import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import type { UpdateSuccess } from "../results/success/UpdateSuccess";
 import type { DatasetRequestOptions } from "./requestOptions";
 
+/**
+ * All return values for updateDataResource
+ */
 export type UpdateResult = UpdateSuccess | UpdateResultError;
+
+/**
+ * All errors updateDataResource can return
+ */
 export type UpdateResultError = HttpErrorResultType | UnexpectedResourceError;
 
+/**
+ * Updates a specific data resource with the provided dataset changes
+ *
+ * @param uri - the URI of the data resource
+ * @param datasetChanges - A set of triples added and removed from this dataset
+ * @param options - Options to provide a fetch function and a local dataset to
+ * update.
+ * @returns An UpdateResult
+ *
+ * @example
+ * ```typescript
+ * import {
+ *   updateDataResource,
+ *   transactionChanges,
+ *   changeData,
+ *   createSolidLdoDataset,
+ * } from "@ldo/solid";
+ * import { fetch } from "@inrupt/solid-client-authn-browser";
+ *
+ * // Initialize an LDO dataset
+ * const solidLdoDataset = createSolidLdoDataset();
+ * // Get a Linked Data Object
+ * const profile = solidLdoDataset
+ *   .usingType(ProfileShapeType)
+ *   .fromSubject("https://example.com/profile#me");
+ * // Create a transaction to change data
+ * const cProfile = changeData(
+ *   profile,
+ *   solidLdoDataset.getResource("https://example.com/profile"),
+ * );
+ * cProfile.name = "John Doe";
+ * // Get data in "DatasetChanges" form
+ * const datasetChanges = transactionChanges(someLinkedDataObject);
+ * // Use "updateDataResource" to apply the changes
+ * const result = await updateDataResource(
+ *   "https://example.com/profile",
+ *   datasetChanges,
+ *   { fetch, dataset: solidLdoDataset },
+ * );
+ * ```
+ */
 export async function updateDataResource(
   uri: LeafUri,
   datasetChanges: DatasetChanges<Quad>,

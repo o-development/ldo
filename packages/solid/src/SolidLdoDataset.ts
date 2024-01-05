@@ -22,11 +22,43 @@ import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
 import { isContainerUri } from "./util/uriTypes";
 import type { Resource } from "./resource/Resource";
-import { quad as createQuad } from "@rdfjs/data-model";
 
+/**
+ * A SolidLdoDataset has all the functionality of an LdoDataset with the added
+ * functionality of keeping track of fetched Solid Resources.
+ *
+ * It is recommended to use the { @link createSolidLdoDataset } to initialize
+ * this class
+ *
+ * @example
+ * ```typescript
+ * import { createSolidLdoDataset } from "@ldo/solid";
+ * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ *
+ * // ...
+ *
+ * const solidLdoDataset = createSolidLdoDataset();
+ *
+ * const profileDocument = solidLdoDataset
+ *   .getResource("https://example.com/profile");
+ * await profileDocument.read();
+ *
+ * const profile = solidLdoDataset
+ *   .using(ProfileShapeType)
+ *   .fromSubject("https://example.com/profile#me");
+ * ```
+ */
 export class SolidLdoDataset extends LdoDataset {
+  /**
+   * @internal
+   */
   public context: SolidLdoDatasetContext;
 
+  /**
+   * @param context - SolidLdoDatasetContext
+   * @param datasetFactory - An optional dataset factory
+   * @param initialDataset - A set of triples to initialize this dataset
+   */
   constructor(
     context: SolidLdoDatasetContext,
     datasetFactory: DatasetFactory,
@@ -36,6 +68,23 @@ export class SolidLdoDataset extends LdoDataset {
     this.context = context;
   }
 
+  /**
+   * Retireves a representation (either a LeafResource or a ContainerResource)
+   * of a Solid Resource at the given URI. This resource represents the
+   * current state of the resource: whether it is currently fetched or in the
+   * process of fetching as well as some information about it.
+   *
+   * @param uri - the URI of the resource
+   * @param options - Special options for getting the resource
+   *
+   * @returns a Leaf or Container Resource
+   *
+   * @example
+   * ```typescript
+   * const profileDocument = solidLdoDataset
+   *   .getResource("https://example.com/profile");
+   * ```
+   */
   getResource(uri: ContainerUri, options?: ResourceGetterOptions): Container;
   getResource(uri: LeafUri, options?: ResourceGetterOptions): Leaf;
   getResource(uri: string, options?: ResourceGetterOptions): Leaf | Container;
@@ -44,7 +93,27 @@ export class SolidLdoDataset extends LdoDataset {
   }
 
   /**
-   * commitChangesToPod
+   * Given dataset changes, commit all changes made to the proper place
+   * on Solid Pods.
+   *
+   * @param changes - A set of changes that should be applied to Solid Pods
+   *
+   * @returns an AggregateSuccess if successful and an AggregateError if not
+   *
+   * @example
+   * ```typescript
+   * const result = await solidLdoDataset.commitChangesToPod({
+   *   added: createDataset([
+   *     quad(namedNode("a"), namedNode("b"), namedNode("d"));
+   *   ]),
+   *   removed: createDataset([
+   *     quad(namedNode("a"), namedNode("b"), namedNode("c"));
+   *   ])
+   * });
+   * if (result.isError()) {
+   *   // handle error
+   * }
+   * ```
    */
   async commitChangesToPod(
     changes: DatasetChanges<Quad>,
@@ -98,21 +167,6 @@ export class SolidLdoDataset extends LdoDataset {
     const errors = results.filter((result) => result[2].isError);
 
     if (errors.length > 0) {
-      // // Rollback errors
-      // errors.forEach((error) => {
-      //   // Add the graph back to the quads
-      //   const added = error[1].added?.map((quad) =>
-      //     createQuad(quad.subject, quad.predicate, quad.object, error[0]),
-      //   );
-      //   const removed = error[1].removed?.map((quad) =>
-      //     createQuad(quad.subject, quad.predicate, quad.object, error[0]),
-      //   );
-      //   this.bulk({
-      //     added: removed,
-      //     removed: added,
-      //   });
-      // });
-
       return new AggregateError(
         errors.map(
           (result) => result[2] as UpdateResultError | InvalidUriError,
@@ -137,9 +191,9 @@ export class SolidLdoDataset extends LdoDataset {
    *   .usingType(shapeType)
    *   .write(...resources.map((r) => r.uri))
    *   .fromSubject(subject);
-   * @param shapeType The shapetype to represent the data
-   * @param subject A subject URI
-   * @param resources The resources changes to should written to
+   * @param shapeType - The shapetype to represent the data
+   * @param subject - A subject URI
+   * @param resources - The resources changes to should written to
    */
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,

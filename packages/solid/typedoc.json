@@ -2,5 +2,6 @@
   "entryPoints": ["src/index.ts"],
   "out": "docs",
   "allReflectionsHaveOwnDocument": true,
-  "hideInPageTOC": true
+  "hideInPageTOC": true,
+  "hideBreadcrumbs": true,
 }

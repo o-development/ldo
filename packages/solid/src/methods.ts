@@ -13,9 +13,29 @@ import { _proxyContext, getProxyFromObject } from "@ldo/jsonld-dataset-proxy";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 
 /**
- * Begins tracking changes to eventually commit
- * @param input A linked data object to track changes on
- * @param resources
+ * Begins tracking changes to eventually commit.
+ *
+ * @param input - A linked data object to track changes on
+ * @param resource - A resource that all additions will eventually be committed to
+ * @param additionalResources - Any additional resources that changes will eventually be committed to
+ *
+ * @returns A transactable Linked Data Object
+ *
+ * @example
+ * ```typescript
+ * import { changeData } from "@ldo/solid";
+ *
+ * // ...
+ *
+ * const profile = solidLdoDataset
+ *   .using(ProfileShapeType)
+ *   .fromSubject("https://example.com/proifle#me");
+ * const resource = solidLdoDataset.getResource("https://example.com/profile");
+ *
+ * const cProfile = changeData(profile, resource);
+ * cProfile.name = "My New Name";
+ * await commitData(cProfile);
+ * ```
  */
 export function changeData<Type extends LdoBase>(
   input: Type,
@@ -36,6 +56,24 @@ export function changeData<Type extends LdoBase>(
 /**
  * Commits the transaction to the global dataset, syncing all subscribing
  * components and Solid Pods
+ *
+ * @param input - A transactable linked data object
+ *
+ * @example
+ * ```typescript
+ * import { changeData } from "@ldo/solid";
+ *
+ * // ...
+ *
+ * const profile = solidLdoDataset
+ *   .using(ProfileShapeType)
+ *   .fromSubject("https://example.com/proifle#me");
+ * const resource = solidLdoDataset.getResource("https://example.com/profile");
+ *
+ * const cProfile = changeData(profile, resource);
+ * cProfile.name = "My New Name";
+ * await commitData(cProfile);
+ * ```
  */
 export function commitData(
   input: LdoBase,
