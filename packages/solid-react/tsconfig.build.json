@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "lib": ["dom"],
-    "allowJs": true
+    "lib": ["dom"]
   },
   "include": ["./src"]
 }

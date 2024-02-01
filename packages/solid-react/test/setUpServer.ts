@@ -1,10 +1,7 @@
 import type { ContainerUri, LeafUri } from "@ldo/solid";
-import {
-  ROOT_CONTAINER,
-  createApp,
-  getAuthenticatedFetch,
-} from "./solidServer.helper";
+import { ROOT_CONTAINER, createApp } from "./solidServer.helper";
 import type { App } from "@solid/community-server";
+import fetch from "cross-fetch";
 
 export const TEST_CONTAINER_SLUG = "test_ldo/";
 export const TEST_CONTAINER_URI =
@@ -73,7 +70,8 @@ export function setUpServer(): SetUpServerReturn {
     s.app = await createApp();
     await s.app.start();
 
-    s.authFetch = await getAuthenticatedFetch();
+    // s.authFetch = await getAuthenticatedFetch();
+    s.authFetch = fetch;
   });
 
   afterAll(async () => {

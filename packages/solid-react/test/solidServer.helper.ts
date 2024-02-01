@@ -103,20 +103,20 @@ export async function refreshToken({
   return { accessToken, dpopKey };
 }
 
-export async function getAuthenticatedFetch() {
-  // Generate secret
-  const secret = await getSecret();
+// export async function getAuthenticatedFetch() {
+//   // Generate secret
+//   const secret = await getSecret();
 
-  if (!secret) throw new Error("No Secret");
+//   if (!secret) throw new Error("No Secret");
 
-  // Get token
-  const token = await refreshToken(secret);
+//   // Get token
+//   const token = await refreshToken(secret);
 
-  if (!token) throw new Error("No Token");
+//   if (!token) throw new Error("No Token");
 
-  // Build authenticated fetch
-  const authFetch = await buildAuthenticatedFetch(fetch, token.accessToken, {
-    dpopKey: token.dpopKey,
-  });
-  return authFetch;
-}
+//   // Build authenticated fetch
+//   const authFetch = await buildAuthenticatedFetch(token.accessToken, {
+//     dpopKey: token.dpopKey,
+//   });
+//   return authFetch;
+// }

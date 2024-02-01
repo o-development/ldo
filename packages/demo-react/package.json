@@ -7,7 +7,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
-    "solid-authn-react-native": "^2.0.3",
+    "@inrupt/solid-client-authn-browser": "^2.0.0",
     "uuid": "^9.0.1"
   },
   "scripts": {
