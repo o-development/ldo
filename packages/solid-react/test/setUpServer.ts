@@ -1,8 +1,9 @@
 import type { ContainerUri, LeafUri } from "@ldo/solid";
-import { ROOT_CONTAINER, createApp } from "./solidServer.helper";
-import type { App } from "@solid/community-server";
 import fetch from "cross-fetch";
 
+export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
+export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
+export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
 export const TEST_CONTAINER_SLUG = "test_ldo/";
 export const TEST_CONTAINER_URI =
   `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as ContainerUri;
@@ -51,7 +52,6 @@ export const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 10.`;
 
 export interface SetUpServerReturn {
-  app: App;
   authFetch: typeof fetch;
   fetchMock: jest.Mock<
     Promise<Response>,
@@ -66,28 +66,21 @@ export function setUpServer(): SetUpServerReturn {
   const s: SetUpServerReturn = {};
 
   beforeAll(async () => {
-    // Start up the server
-    s.app = await createApp();
-    await s.app.start();
-
     // s.authFetch = await getAuthenticatedFetch();
     s.authFetch = fetch;
-  });
-
-  afterAll(async () => {
-    s.app.stop();
   });
 
   beforeEach(async () => {
     s.fetchMock = jest.fn(s.authFetch);
     // Create a new document called sample.ttl
-    await s.authFetch(ROOT_CONTAINER, {
+    const result = await s.authFetch(ROOT_CONTAINER, {
       method: "POST",
       headers: {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
     });
+    console.log("Created container", result.status);
     await Promise.all([
       s.authFetch(TEST_CONTAINER_URI, {
         method: "POST",

@@ -6,11 +6,14 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "watch": "tsc --watch",
-    "test": "jest --coverage",
+    "test": "npm run test:integration",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "test:integration": "start-server-and-test start-test-server http://localhost:3001 start-integration-test",
+    "start-test-server": "ts-node ./test/test-server/runServer.ts",
+    "start-integration-test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -28,7 +31,9 @@
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^29.0.3",
     "jest-environment-jsdom": "^29.7.0",
-    "ts-jest": "^29.0.2"
+    "start-server-and-test": "^2.0.3",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
     "@inrupt/solid-client": "^2.0.0",
