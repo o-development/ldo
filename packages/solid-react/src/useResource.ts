@@ -42,15 +42,12 @@ export function useResource(
 
   // Get the resource
   const resource = useMemo(() => {
-    console.log(uri);
     if (uri) {
       const resource = getResource(uri);
       // Run read operations if necissary
       if (!options?.suppressInitialRead) {
         if (options?.reloadOnMount) {
-          console.log("Reading again");
           resource.read();
-          console.log(resource.isLoading());
         } else {
           resource.readIfUnfetched();
         }

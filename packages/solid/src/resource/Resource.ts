@@ -325,9 +325,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * @returns ReadResult
    */
   protected async handleRead(): Promise<ReadContainerResult | ReadLeafResult> {
-    console.log("Handle read");
     const result = await this.requester.read();
-    console.log("End Handle Read");
     this.status = result;
     if (result.isError) return result;
     this.updateWithReadSuccess(result);

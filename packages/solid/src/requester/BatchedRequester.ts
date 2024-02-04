@@ -55,7 +55,6 @@ export abstract class BatchedRequester {
    * @returns true if the resource is making any requests
    */
   isLoading(): boolean {
-    console.log("In isLoading");
     return this.requestBatcher.isLoading(ANY_KEY);
   }
 
