@@ -89,6 +89,9 @@ export class RequestBatcher {
    * @returns true if the batcher is currently working on the provided process
    */
   public isLoading(key: string): boolean {
+    console.log("In Is loadin:", key);
+    console.log("CurrentlyProcessing:", this.currentlyProcessing);
+
     if (key === ANY_KEY) return !!this.currentlyProcessing;
     return this.currentlyProcessing?.name === key;
   }
@@ -113,22 +116,31 @@ export class RequestBatcher {
     const timeSinceLastTrigger = Date.now() - lastRequestTimestamp;
 
     const triggerProcess = async () => {
+      console.log("Triggering process");
+      // Don't run the process if something is currently processing.
+      // "triggerProcess" will be called again because this item is still in the
+      // queue
       if (this.currentlyProcessing) {
         return;
       }
       this.lastRequestTimestampMap[processName] = Date.now();
       this.lastRequestTimestampMap[ANY_KEY] = Date.now();
+      // Remove the process from the queue
       const processToTrigger = this.processQueue.shift();
       if (processToTrigger) {
         this.currentlyProcessing = processToTrigger;
         try {
+          console.log("Before process trigger");
+          console.log("The current:", this.currentlyProcessing);
           const returnValue = await processToTrigger.perform(
             ...processToTrigger.args,
           );
+          console.log("After process trigger");
           if (processToTrigger.after) {
             processToTrigger.after(returnValue);
           }
           processToTrigger.awaitingResolutions.forEach((callback) => {
+            console.log("Resolved");
             callback(returnValue);
           });
         } catch (err) {
@@ -143,8 +155,10 @@ export class RequestBatcher {
     };
 
     if (timeSinceLastTrigger < this.batchMillis) {
+      console.log("Waiting for the future");
       setTimeout(triggerProcess, this.batchMillis - timeSinceLastTrigger);
     } else {
+      console.log("Doing it now");
       triggerProcess();
     }
   }
@@ -158,6 +172,7 @@ export class RequestBatcher {
     options: WaitingProcessOptions<Args, ReturnType>,
   ): Promise<ReturnType> {
     return new Promise((resolve, reject) => {
+      console.log("Queuing process");
       const shouldAwait = options.modifyQueue(
         this.processQueue,
         this.currentlyProcessing,

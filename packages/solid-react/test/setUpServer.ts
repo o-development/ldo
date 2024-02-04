@@ -80,7 +80,6 @@ export function setUpServer(): SetUpServerReturn {
         slug: TEST_CONTAINER_SLUG,
       },
     });
-    console.log("Created container", result.status);
     await Promise.all([
       s.authFetch(TEST_CONTAINER_URI, {
         method: "POST",
