@@ -41,5 +41,5 @@ export interface PostSh {
    */
   publisher: {
     "@id": string;
-  };
+  }[];
 }

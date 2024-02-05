@@ -13,6 +13,7 @@ import { useRootContainerFor } from "../src/useRootContainer";
 import { useLdo } from "../src/SolidLdoProvider";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 import type { PostSh } from "./.ldo/post.typings";
+import { useSubject } from "../src/useSubject";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -215,6 +216,143 @@ describe("Integration Tests", () => {
       );
       const container = await screen.findByRole("subject");
       expect(container.innerHTML).toBe("Cool Article");
+    });
+  });
+
+  describe("useSubject", () => {
+    it("renders the article body from the useSubject value", async () => {
+      const UseSubjectTest: FunctionComponent = () => {
+        useResource(SAMPLE_DATA_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+
+        return <p role="article">{post.articleBody}</p>;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      await screen.findByText("test");
+    });
+
+    it("renders the array value from the useSubject value", async () => {
+      const UseSubjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+        if (resource.isLoading() || !post) return <p>loading</p>;
+
+        return (
+          <div>
+            <p role="single">{post.publisher[0]["@id"]}</p>
+            <ul role="list">
+              {post.publisher.map((publisher) => {
+                return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const single = await screen.findByRole("single");
+      expect(single.innerHTML).toBe("https://example.com/Publisher1");
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
+      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
+    });
+
+    it("returns undefined in the subject URI is undefined", async () => {
+      const UseSubjectTest: FunctionComponent = () => {
+        useResource(SAMPLE_DATA_URI, { suppressInitialRead: true });
+        const post = useSubject(PostShShapeType, undefined);
+
+        return (
+          <p role="article">
+            {post === undefined ? "Undefined" : "Not Undefined"}
+          </p>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const article = await screen.findByRole("article");
+      expect(article.innerHTML).toBe("Undefined");
+    });
+
+    it("returns nothing if a symbol key is provided", async () => {
+      const UseSubjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+        if (resource.isLoading() || !post) return <p>loading</p>;
+
+        return <p role="value">{typeof post[Symbol.hasInstance]}</p>;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const article = await screen.findByRole("value");
+      expect(article.innerHTML).toBe("undefined");
+    });
+
+    it("returns an id if an id key is provided", async () => {
+      const UseSubjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+        if (resource.isLoading() || !post) return <p>loading</p>;
+
+        return <p role="value">{post["@id"]}</p>;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const article = await screen.findByRole("value");
+      expect(article.innerHTML).toBe(`${SAMPLE_DATA_URI}#Post1`);
+    });
+
+    it("does not set a value if a value is attempted to be set", async () => {
+      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const UseSubjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+        if (resource.isLoading() || !post) return <p>loading</p>;
+
+        return (
+          <div>
+            <p role="value">{post.articleBody}</p>
+            <button onClick={() => (post.articleBody = "bad")}>
+              Attempt Change
+            </button>
+          </div>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const article = await screen.findByRole("value");
+      expect(article.innerHTML).toBe(`test`);
+      fireEvent.click(screen.getByText("Attempt Change"));
+      expect(article.innerHTML).not.toBe("bad");
+      expect(warn).toHaveBeenCalledWith(
+        "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",
+      );
+      warn.mockReset();
     });
   });
 });

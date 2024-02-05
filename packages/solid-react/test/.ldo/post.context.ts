@@ -27,5 +27,6 @@ export const postContext: ContextDefinition = {
   publisher: {
     "@id": "http://schema.org/publisher",
     "@type": "@id",
+    "@container": "@set",
   },
 };
