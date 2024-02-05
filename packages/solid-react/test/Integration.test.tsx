@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import type { FunctionComponent } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { SAMPLE_BINARY_URI, SAMPLE_DATA_URI, setUpServer } from "./setUpServer";
+import {
+  SAMPLE_BINARY_URI,
+  SAMPLE_DATA_URI,
+  SERVER_DOMAIN,
+  setUpServer,
+} from "./setUpServer";
 import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
 import { useResource } from "../src/useResource";
+import { useRootContainerFor } from "../src/useRootContainer";
+import { useLdo } from "../src/SolidLdoProvider";
+import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import type { PostSh } from "./.ldo/post.typings";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -116,6 +125,96 @@ describe("Integration Tests", () => {
       await screen.findByText("Loading");
       const resourceStatus2 = await screen.findByRole("status");
       expect(resourceStatus2.innerHTML).toBe("binaryReadSuccess");
+    });
+  });
+
+  describe("useRootContainer", () => {
+    it("gets the root container for a sub-resource", async () => {
+      const RootContainerTest: FunctionComponent = () => {
+        const rootContainer = useRootContainerFor(SAMPLE_DATA_URI, {
+          suppressInitialRead: true,
+        });
+        return rootContainer ? (
+          <p role="root">{rootContainer?.uri}</p>
+        ) : undefined;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <RootContainerTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+      const container = await screen.findByRole("root");
+      expect(container.innerHTML).toBe(SERVER_DOMAIN);
+    });
+
+    it("returns undefined when a URI is not provided", async () => {
+      const RootContainerTest: FunctionComponent = () => {
+        const rootContainer = useRootContainerFor(undefined, {
+          suppressInitialRead: true,
+        });
+        return rootContainer ? (
+          <p role="root">{rootContainer?.uri}</p>
+        ) : (
+          <p role="undefined">Undefined</p>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <RootContainerTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+      const container = await screen.findByRole("undefined");
+      expect(container.innerHTML).toBe("Undefined");
+    });
+  });
+
+  describe("useLdoMethod", () => {
+    it("uses get subject to get a linked data object", async () => {
+      const GetSubjectTest: FunctionComponent = () => {
+        const [subject, setSubject] = useState<PostSh | undefined>();
+        const { getSubject } = useLdo();
+        useEffect(() => {
+          const someSubject = getSubject(
+            PostShShapeType,
+            "https://example.com/subject",
+          );
+          setSubject(someSubject);
+        }, []);
+        return subject ? <p role="subject">{subject["@id"]}</p> : undefined;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <GetSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+      const container = await screen.findByRole("subject");
+      expect(container.innerHTML).toBe("https://example.com/subject");
+    });
+
+    it("uses createData to create a new data object", async () => {
+      const GetSubjectTest: FunctionComponent = () => {
+        const [subject, setSubject] = useState<PostSh | undefined>();
+        const { createData, getResource } = useLdo();
+        useEffect(() => {
+          const someSubject = createData(
+            PostShShapeType,
+            "https://example.com/subject",
+            getResource("https://example.com/"),
+          );
+          someSubject.articleBody = "Cool Article";
+          setSubject(someSubject);
+        }, []);
+        return subject ? (
+          <p role="subject">{subject.articleBody}</p>
+        ) : undefined;
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <GetSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+      const container = await screen.findByRole("subject");
+      expect(container.innerHTML).toBe("Cool Article");
     });
   });
 });

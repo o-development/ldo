@@ -73,7 +73,7 @@ export function setUpServer(): SetUpServerReturn {
   beforeEach(async () => {
     s.fetchMock = jest.fn(s.authFetch);
     // Create a new document called sample.ttl
-    const result = await s.authFetch(ROOT_CONTAINER, {
+    await s.authFetch(ROOT_CONTAINER, {
       method: "POST",
       headers: {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',

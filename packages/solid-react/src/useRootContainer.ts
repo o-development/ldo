@@ -1,8 +1,13 @@
 import type { Container, ContainerUri } from "@ldo/solid";
 import { useEffect, useState } from "react";
+import type { UseResourceOptions } from "./useResource";
 import { useResource } from "./useResource";
 import { useLdo } from "./SolidLdoProvider";
-export function useRootContainerFor(uri?: string): Container | undefined {
+
+export function useRootContainerFor(
+  uri?: string,
+  options?: UseResourceOptions,
+): Container | undefined {
   const { getResource } = useLdo();
 
   const [rootContainerUri, setRootContainerUri] = useState<
@@ -17,8 +22,10 @@ export function useRootContainerFor(uri?: string): Container | undefined {
           setRootContainerUri(result.uri);
         }
       });
+    } else {
+      setRootContainerUri(undefined);
     }
   }, [uri]);
 
-  return useResource(rootContainerUri);
+  return useResource(rootContainerUri, options);
 }
