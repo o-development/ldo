@@ -9,7 +9,8 @@
     "build": "lerna run build",
     "demo-react": "lerna run start --scope @ldo/demo-react",
     "lint": "lerna run lint",
-    "clean": "lerna run clean"
+    "clean": "lerna run clean",
+    "publish": "lerna publish --no-private"
   },
   "devDependencies": {
     "@types/node": "^20.5.7",

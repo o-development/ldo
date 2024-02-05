@@ -10,7 +10,7 @@
     "start": "node dist/index.js build",
     "start:init": "node dist/index.js init",
     "dev": "npm run build && npm run start:init",
-    "build": "npm run clean && npm run build:ts && npm run copy-files && npm run update-permission",
+    "build": "npm run clean && npm run build:ts && npm run copy-files",
     "build:ts": "tsc --project tsconfig.build.json",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
