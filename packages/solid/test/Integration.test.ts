@@ -134,7 +134,7 @@ async function testRequestLoads<ReturnVal>(
   return returnVal;
 }
 
-describe("SolidLdoDataset", () => {
+describe("Integration", () => {
   let app: App;
   let authFetch: typeof fetch;
   let fetchMock: jest.Mock<

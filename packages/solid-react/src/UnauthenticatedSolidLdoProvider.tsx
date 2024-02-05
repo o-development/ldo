@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { useCallback, useMemo } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
 import type { LoginOptions, SessionInfo } from "./SolidAuthContext";

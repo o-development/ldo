@@ -9,13 +9,18 @@ export interface UseLdoMethods {
   getSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-  ): Type | Error;
+  ): Type;
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-    ...resources: Resource[]
+    resource: Resource,
+    ...additionalResources: Resource[]
   ): Type;
-  changeData<Type extends LdoBase>(input: Type, ...resources: Resource[]): Type;
+  changeData<Type extends LdoBase>(
+    input: Type,
+    resource: Resource,
+    ...additionalResources: Resource[]
+  ): Type;
   commitData(input: LdoBase): ReturnType<SolidLdoDataset["commitChangesToPod"]>;
 }
 
@@ -35,7 +40,7 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
     getSubject<Type extends LdoBase>(
       shapeType: ShapeType<Type>,
       subject: string | SubjectNode,
-    ): Type | Error {
+    ): Type {
       return dataset.usingType(shapeType).fromSubject(subject);
     },
     /**

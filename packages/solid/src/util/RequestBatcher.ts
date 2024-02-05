@@ -99,10 +99,11 @@ export class RequestBatcher {
    * the last process was triggered.
    */
   private triggerOrWaitProcess() {
-    if (!this.processQueue[0]) {
+    if (!this.processQueue[0] || this.currentlyProcessing) {
       return;
     }
-    const processName = this.processQueue[0].name;
+    this.currentlyProcessing = this.processQueue.shift();
+    const processName = this.currentlyProcessing!.name;
 
     // Set last request timestamp if not available
     if (!this.lastRequestTimestampMap[processName]) {
@@ -113,12 +114,10 @@ export class RequestBatcher {
     const timeSinceLastTrigger = Date.now() - lastRequestTimestamp;
 
     const triggerProcess = async () => {
-      if (this.currentlyProcessing) {
-        return;
-      }
       this.lastRequestTimestampMap[processName] = Date.now();
       this.lastRequestTimestampMap[ANY_KEY] = Date.now();
-      const processToTrigger = this.processQueue.shift();
+      // Remove the process from the queue
+      const processToTrigger = this.currentlyProcessing;
       if (processToTrigger) {
         this.currentlyProcessing = processToTrigger;
         try {

@@ -17,21 +17,13 @@ export const SAMPLE2_BINARY_URI =
   `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as LeafUri;
 export const SAMPLE_CONTAINER_URI =
   `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
-export const SPIDER_MAN_TTL = `@base <http://example.org/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix rel: <http://www.perceive.net/schemas/relationship/> .
+export const EXAMPLE_POST_TTL = `@prefix schema: <http://schema.org/> .
 
-<#green-goblin>
-    rel:enemyOf <#spiderman> ;
-    a foaf:Person ;    # in the context of the Marvel universe
-    foaf:name "Green Goblin" .
-
-<#spiderman>
-    rel:enemyOf <#green-goblin> ;
-    a foaf:Person ;
-    foaf:name "Spiderman", "Человек-паук"@ru .`;
+<#Post1>
+  a schema:CreativeWork, schema:Thing, schema:SocialMediaPosting ;
+  schema:image <https://example.com/postImage.jpg> ;
+  schema:articleBody "test" ;
+  schema:publisher <https://example.com/Publisher1>, <https://example.com/Publisher2> .`;
 export const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
 @prefix ldp: <http://www.w3.org/ns/ldp#>.
 @prefix posix: <http://www.w3.org/ns/posix/stat#>.
@@ -73,19 +65,18 @@ export function setUpServer(): SetUpServerReturn {
   beforeEach(async () => {
     s.fetchMock = jest.fn(s.authFetch);
     // Create a new document called sample.ttl
-    const result = await s.authFetch(ROOT_CONTAINER, {
+    await s.authFetch(ROOT_CONTAINER, {
       method: "POST",
       headers: {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
     });
-    console.log("Created container", result.status);
     await Promise.all([
       s.authFetch(TEST_CONTAINER_URI, {
         method: "POST",
         headers: { "content-type": "text/turtle", slug: "sample.ttl" },
-        body: SPIDER_MAN_TTL,
+        body: EXAMPLE_POST_TTL,
       }),
       s.authFetch(TEST_CONTAINER_URI, {
         method: "POST",
