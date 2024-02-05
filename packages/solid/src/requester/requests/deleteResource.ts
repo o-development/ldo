@@ -8,9 +8,44 @@ import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import type { DeleteSuccess } from "../results/success/DeleteSuccess";
 import type { DatasetRequestOptions } from "./requestOptions";
 
+/**
+ * All possible return values for deleteResource
+ */
 export type DeleteResult = DeleteSuccess | DeleteResultError;
+
+/**
+ * All possible errors that can be returned by deleteResource
+ */
 export type DeleteResultError = HttpErrorResultType | UnexpectedResourceError;
 
+/**
+ * Deletes a resource on a Pod at a given URL.
+ *
+ * @param uri - The URI for the resource that should be deleted
+ * @param options - Options to provide a fetch function and a local dataset to
+ * update.
+ * @returns a DeleteResult
+ *
+ * @example
+ * `deleteResource` will send a request to a Solid Pod using the provided fetch
+ * function. A local dataset can also be provided. It will be updated with any
+ * new information from the delete.
+ *
+ * ```typescript
+ * import { deleteResource } from "@ldo/solid";
+ * import { createDataset } from "@ldo/dataset"
+ * import { fetch } from "@inrupt/solid-client-autn-js";
+ *
+ * const localDataset = createDataset();
+ * const result = await deleteResource(
+ *   "https://example.com/container/someResource.ttl",
+ *   { fetch, dataset: localDataset },
+ * );
+ * if (!result.isError) {
+ *   // Do something
+ * }
+ * ```
+ */
 export async function deleteResource(
   uri: string,
   options?: DatasetRequestOptions,

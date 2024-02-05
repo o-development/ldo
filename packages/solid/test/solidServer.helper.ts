@@ -7,26 +7,35 @@ import {
   createDpopHeader,
   generateDpopKeyPair,
 } from "@inrupt/solid-client-authn-core";
+import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
 import "jest-rdf";
 import fetch from "cross-fetch";
 
 const config = [
   {
-    podName: process.env.USER_NAME,
-    email: process.env.EMAIL,
-    password: process.env.PASSWORD,
+    podName: process.env.USER_NAME || "example",
+    email: process.env.EMAIL || "hello@example.com",
+    password: process.env.PASSWORD || "abc123",
   },
 ];
 
-export const SERVER_DOMAIN = process.env.SERVER;
-export const ROOT_COONTAINER = `${process.env.SERVER}${process.env.ROOT_CONTAINER}`;
+export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
+export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
+export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
 
-export function createApp() {
-  return new AppRunner().create(
+export async function createApp(): Promise<App> {
+  if (process.env.SERVER) {
+    return {
+      start: () => {},
+      stop: () => {},
+    } as App;
+  }
+  const appRunner = new AppRunner();
+  return appRunner.create(
     {
       mainModulePath: resolveModulePath(""),
       typeChecking: false,
@@ -98,8 +107,12 @@ export async function getAuthenticatedFetch() {
   // Generate secret
   const secret = await getSecret();
 
+  if (!secret) throw new Error("No Secret");
+
   // Get token
   const token = await refreshToken(secret);
+
+  if (!token) throw new Error("No Token");
 
   // Build authenticated fetch
   const authFetch = await buildAuthenticatedFetch(fetch, token.accessToken, {

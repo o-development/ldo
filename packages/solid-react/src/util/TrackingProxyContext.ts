@@ -9,10 +9,20 @@ import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 import { namedNode } from "@rdfjs/data-model";
 import type { Quad } from "@rdfjs/types";
 
+/**
+ * @internal
+ * Options to be passed to the tracking proxy
+ */
 export interface TrackingProxyContextOptions extends ProxyContextOptions {
   dataset: SubscribableDataset<Quad>;
 }
 
+/**
+ * @internal
+ * This proxy exists to ensure react components rerender at the right time. It
+ * keeps track of every key accessed in a Linked Data Object and only when the
+ * dataset is updated with that key does it rerender the react component.
+ */
 export class TrackingProxyContext extends ProxyContext {
   private listener: () => void;
   private subscribableDataset: SubscribableDataset<Quad>;

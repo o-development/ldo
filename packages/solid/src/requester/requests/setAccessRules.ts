@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { AclDataset, WithChangeLog } from "@inrupt/solid-client";
 import {
   getSolidDatasetWithAcl,

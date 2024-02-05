@@ -2,7 +2,7 @@ import type { Quad } from "@rdfjs/types";
 import type { ParserOptions } from "@ldo/rdf-utils";
 import { createDatasetFromSerializedInput } from "@ldo/dataset";
 import { createWrapperSubscribableDatasetFactory } from "./createWrapperSubscribableDataset";
-import type WrapperSubscribableDataset from "./WrapperSubscribableDataset";
+import type { WrapperSubscribableDataset } from "./WrapperSubscribableDataset";
 
 /**
  * Creates a SubscribableDataset with a string input that could be JSON-LD, Turtle, N-Triples, TriG, RDF*, or N3.
@@ -15,7 +15,7 @@ import type WrapperSubscribableDataset from "./WrapperSubscribableDataset";
  * }
  * @returns A dataset
  */
-export default async function createWrapperSubscribableDatasetDataserFromSerializedInput(
+export async function createWrapperSubscribableDatasetFromSerializedInput(
   data: string,
   options?: ParserOptions,
 ): Promise<WrapperSubscribableDataset<Quad>> {

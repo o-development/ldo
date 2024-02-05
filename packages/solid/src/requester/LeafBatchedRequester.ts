@@ -3,7 +3,7 @@ import { mergeDatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import type { SolidLdoDatasetContext } from "../SolidLdoDatasetContext";
 import type { LeafUri } from "../util/uriTypes";
-import { Requester } from "./Requester";
+import { BatchedRequester } from "./BatchedRequester";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
@@ -16,26 +16,55 @@ import { uploadResource } from "./requests/uploadResource";
 export const UPDATE_KEY = "update";
 export const UPLOAD_KEY = "upload";
 
-export class LeafRequester extends Requester {
+/**
+ * @internal
+ *
+ *  A singleton to handle batched requests for leafs
+ */
+export class LeafBatchedRequester extends BatchedRequester {
+  /**
+   * The URI of the leaf
+   */
   readonly uri: LeafUri;
 
+  /**
+   * @param uri - the URI of the leaf
+   * @param context - SolidLdoDatasetContext of the parent dataset
+   */
   constructor(uri: LeafUri, context: SolidLdoDatasetContext) {
     super(context);
     this.uri = uri;
   }
 
+  /**
+   * Checks if the resource is currently executing an update request
+   * @returns true if the resource is currently executing an update request
+   */
   isUpdating(): boolean {
     return this.requestBatcher.isLoading(UPDATE_KEY);
   }
 
+  /**
+   * Checks if the resource is currently executing an upload request
+   * @returns true if the resource is currently executing an upload request
+   */
   isUploading(): boolean {
     return this.requestBatcher.isLoading(UPLOAD_KEY);
   }
 
+  /**
+   * Reads the leaf
+   * @returns A ReadLeafResult
+   */
   async read(): Promise<ReadLeafResult> {
     return super.read() as Promise<ReadLeafResult>;
   }
 
+  /**
+   * Creates the leaf as a data resource
+   * @param overwrite - If true, this will orverwrite the resource if it already
+   * exists
+   */
   createDataResource(overwrite: true): Promise<LeafCreateAndOverwriteResult>;
   createDataResource(overwrite?: false): Promise<LeafCreateIfAbsentResult>;
   createDataResource(
@@ -51,23 +80,17 @@ export class LeafRequester extends Requester {
 
   /**
    * Update the data on this resource
-   * @param changes
+   * @param changes - DatasetChanges that should be applied to the Pod
    */
   async updateDataResource(
     changes: DatasetChanges<Quad>,
   ): Promise<UpdateResult> {
-    const transaction = this.context.solidLdoDataset.startTransaction();
-    transaction.addAll(changes.added || []);
-    changes.removed?.forEach((quad) => transaction.delete(quad));
-    // Commit data optimistically
-    transaction.commit();
-
     const result = await this.requestBatcher.queueProcess({
       name: UPDATE_KEY,
       args: [
         this.uri,
         changes,
-        { fetch: this.context.fetch, onRollback: () => transaction.rollback() },
+        { fetch: this.context.fetch, dataset: this.context.solidLdoDataset },
       ],
       perform: updateDataResource,
       modifyQueue: (queue, currentlyProcessing, [, changes]) => {
@@ -84,9 +107,9 @@ export class LeafRequester extends Requester {
   }
 
   /**
-   * Upload a binary
-   * @param blob
-   * @param mimeType
+   * Upload a binary at this resource's URI
+   * @param blob - A binary blob
+   * @param mimeType - the mime type of the blob
    * @param overwrite: If true, will overwrite an existing file
    */
   upload(
@@ -138,10 +161,12 @@ export class LeafRequester extends Requester {
         }
         return undefined;
       },
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
+        }
+      },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 }

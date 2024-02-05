@@ -20,13 +20,13 @@ import type {
   SubscribableDataset,
   TransactionalDataset,
 } from "./types";
-import ProxyTransactionalDataset from "./ProxyTransactionalDataset";
+import { ProxyTransactionalDataset } from "./ProxyTransactionalDataset";
 
 /**
  * A wrapper for a dataset that allows subscriptions to be made on nodes to
  * be triggered whenever a quad containing that added or removed.
  */
-export default class WrapperSubscribableDataset<
+export class WrapperSubscribableDataset<
   InAndOutQuad extends BaseQuad = BaseQuad,
 > implements SubscribableDataset<InAndOutQuad>
 {
@@ -49,9 +49,8 @@ export default class WrapperSubscribableDataset<
     new Map();
 
   /**
-   *
-   * @param datasetFactory
-   * @param initialDataset
+   * @param datasetFactory A RDF/JS Dataset Factory
+   * @param initialDataset An RDF/JS Dataset with initial Quads
    */
   constructor(
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,

@@ -21,25 +21,117 @@ import type {
 import { readResource } from "./readResource";
 import type { DatasetRequestOptions } from "./requestOptions";
 
+/**
+ * All possible return values when creating and overwriting a container
+ */
 export type ContainerCreateAndOverwriteResult =
   | CreateSuccess
   | CreateAndOverwriteResultErrors;
+
+/**
+ * All possible return values when creating and overwriting a leaf
+ */
 export type LeafCreateAndOverwriteResult =
   | CreateSuccess
   | CreateAndOverwriteResultErrors;
+
+/**
+ * All possible return values when creating a container if absent
+ */
 export type ContainerCreateIfAbsentResult =
   | CreateSuccess
   | Exclude<ReadContainerResult, AbsentReadSuccess>
   | CreateIfAbsentResultErrors;
+
+/**
+ * All possible return values when creating a leaf if absent
+ */
 export type LeafCreateIfAbsentResult =
   | CreateSuccess
   | Exclude<ReadLeafResult, AbsentReadSuccess>
   | CreateIfAbsentResultErrors;
 
+/**
+ * All possible errors returned by creating and overwriting a resource
+ */
 export type CreateAndOverwriteResultErrors = DeleteResultError | CreateErrors;
+
+/**
+ * All possible errors returned by creating a resource if absent
+ */
 export type CreateIfAbsentResultErrors = ReadResultError | CreateErrors;
+
+/**
+ * All possible errors returned by creating a resource
+ */
 export type CreateErrors = HttpErrorResultType | UnexpectedResourceError;
 
+/**
+ * Creates a data resource (RDF resource) at the provided URI. This resource
+ * could also be a container.
+ *
+ * @param uri - The URI of the resource
+ * @param overwrite - If true, the request will overwrite any previous resource
+ * at this URI.
+ * @param options - Options to provide a fetch function and a local dataset to
+ * update.
+ * @returns One of many create results depending on the input
+ *
+ * @example
+ * `createDataResource` can be used to create containers.
+ *
+ * ```typescript
+ * import { createDataResource } from "@ldo/solid";
+ * import { fetch } from "@inrupt/solid-client-autn-js";
+ *
+ * const result = await createDataResource(
+ *   "https://example.com/container/",
+ *   true,
+ *   { fetch },
+ * );
+ * if (!result.isError) {
+ *   // Do something
+ * }
+ * ```
+ *
+ * @example
+ * `createDataResource` can also create a blank data resource at the provided
+ * URI.
+ *
+ * ```typescript
+ * import { createDataResource } from "@ldo/solid";
+ * import { fetch } from "@inrupt/solid-client-autn-js";
+ *
+ * const result = await createDataResource(
+ *   "https://example.com/container/someResource.ttl",
+ *   true,
+ *   { fetch },
+ * );
+ * if (!result.isError) {
+ *   // Do something
+ * }
+ * ```
+ *
+ * @example
+ * Any local RDFJS dataset passed to the `options` field will be updated with
+ * any new RDF data from the create process.
+ *
+ * ```typescript
+ * import { createDataResource } from "@ldo/solid";
+ * import { createDataset } from "@ldo/dataset"
+ * import { fetch } from "@inrupt/solid-client-autn-js";
+ *
+ * const localDataset = createDataset();
+ * const result = await createDataResource(
+ *   "https://example.com/container/someResource.ttl",
+ *   true,
+ *   { fetch, dataset: localDataset },
+ * );
+ * if (!result.isError) {
+ *   // Do something
+ * }
+ * ```
+ */
 export function createDataResource(
   uri: ContainerUri,
   overwrite: true,
@@ -102,10 +194,12 @@ export async function createDataResource(
 > {
   try {
     const fetch = guaranteeFetch(options?.fetch);
+    let didOverwrite = false;
     if (overwrite) {
       const deleteResult = await deleteResource(uri, options);
       // Return if it wasn't deleted
       if (deleteResult.isError) return deleteResult;
+      didOverwrite = deleteResult.resourceExisted;
     } else {
       // Perform a read to check if it exists
       const readResult = await readResource(uri, options);
@@ -139,7 +233,7 @@ export async function createDataResource(
       isError: false,
       type: "createSuccess",
       uri,
-      didOverwrite: !!overwrite,
+      didOverwrite,
     };
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);

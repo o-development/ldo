@@ -1,4 +1,5 @@
 export * from "./BrowserSolidLdoProvider";
+export * from "./UnauthenticatedSolidLdoProvider";
 export * from "./SolidAuthContext";
 
 export { useLdo } from "./SolidLdoProvider";

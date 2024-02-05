@@ -70,6 +70,7 @@ export function useResource(
     },
     [resource],
   );
+
   useEffect(() => {
     // Remove listeners for the previous resource
     if (pastResource.current?.resource) {

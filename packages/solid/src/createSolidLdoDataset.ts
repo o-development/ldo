@@ -2,20 +2,48 @@ import type { Dataset, DatasetFactory } from "@rdfjs/types";
 import { SolidLdoDataset } from "./SolidLdoDataset";
 
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
-import crossFetch from "cross-fetch";
 import { createDataset, createDatasetFactory } from "@ldo/dataset";
 import { ResourceStore } from "./ResourceStore";
+import { guaranteeFetch } from "./util/guaranteeFetch";
 
+/**
+ * Options for createSolidDataset
+ */
 export interface CreateSolidLdoDatasetOptions {
+  /**
+   * A fetch function. Most often, this is the fetch function from @inrupt/solid-clieht-authn-js
+   */
   fetch?: typeof fetch;
+  /**
+   * An initial dataset
+   * @default A blank dataset
+   */
   dataset?: Dataset;
+  /**
+   * An RDFJS DatasetFactory
+   * @default An extended RDFJS DatasetFactory
+   */
   datasetFactory?: DatasetFactory;
 }
 
+/**
+ * Creates a SolidLdoDataset
+ *
+ * @param options - CreateSolidLdoDatasetOptions
+ * @returns A SolidLdoDataset
+ *
+ * @example
+ * ```typescript
+ * import { createSolidLdoDataset } from "@ldo/solid";
+ * import { fetch } from "@inrupt/solid-client-authn-browswer";
+ *
+ * const solidLdoDataset = createSolidLdoDataset({ fetch });
+ * ```
+ */
 export function createSolidLdoDataset(
   options?: CreateSolidLdoDatasetOptions,
 ): SolidLdoDataset {
-  const finalFetch = options?.fetch || crossFetch;
+  const finalFetch = guaranteeFetch(options?.fetch);
   const finalDatasetFactory = options?.datasetFactory || createDatasetFactory();
   const finalDataset = options?.dataset || createDataset();
 

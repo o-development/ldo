@@ -14,37 +14,78 @@ import type {
 import { readResource } from "./requests/readResource";
 import type { DeleteResult } from "./requests/deleteResource";
 import { deleteResource } from "./requests/deleteResource";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
 
 const READ_KEY = "read";
 const CREATE_KEY = "createDataResource";
 const DELETE_KEY = "delete";
 
-export abstract class Requester {
+/**
+ * @internal
+ *
+ * A singleton for handling batched requests
+ */
+export abstract class BatchedRequester {
+  /**
+   * @internal
+   * A request batcher to maintain state for ongoing requests
+   */
   protected readonly requestBatcher = new RequestBatcher();
 
-  // All intance variables
+  /**
+   * The uri of the resource
+   */
   abstract readonly uri: string;
+
+  /**
+   * @internal
+   * SolidLdoDatasetContext for the parent SolidLdoDataset
+   */
   protected context: SolidLdoDatasetContext;
 
+  /**
+   * @param context - SolidLdoDatasetContext for the parent SolidLdoDataset
+   */
   constructor(context: SolidLdoDatasetContext) {
     this.context = context;
   }
 
+  /**
+   * Checks if the resource is currently making any request
+   * @returns true if the resource is making any requests
+   */
   isLoading(): boolean {
     return this.requestBatcher.isLoading(ANY_KEY);
   }
+
+  /**
+   * Checks if the resource is currently executing a create request
+   * @returns true if the resource is currently executing a create request
+   */
   isCreating(): boolean {
     return this.requestBatcher.isLoading(CREATE_KEY);
   }
+
+  /**
+   * Checks if the resource is currently executing a read request
+   * @returns true if the resource is currently executing a read request
+   */
   isReading(): boolean {
     return this.requestBatcher.isLoading(READ_KEY);
   }
+
+  /**
+   * Checks if the resource is currently executing a delete request
+   * @returns true if the resource is currently executing a delete request
+   */
   isDeletinng(): boolean {
     return this.requestBatcher.isLoading(DELETE_KEY);
   }
 
   /**
    * Read this resource.
+   * @returns A ReadLeafResult or a ReadContainerResult depending on the uri of
+   * this resource
    */
   async read(): Promise<ReadLeafResult | ReadContainerResult> {
     const transaction = this.context.solidLdoDataset.startTransaction();
@@ -52,23 +93,19 @@ export abstract class Requester {
       name: READ_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: readResource,
-      modifyQueue: (queue, currentlyLoading) => {
-        if (queue.length === 0 && currentlyLoading?.name === READ_KEY) {
-          return currentlyLoading;
-        } else if (queue[queue.length - 1]?.name === READ_KEY) {
-          return queue[queue.length - 1];
+      modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(READ_KEY),
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
         }
-        return undefined;
       },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 
   /**
    * Delete this resource
+   * @returns A DeleteResult
    */
   async delete(): Promise<DeleteResult> {
     const transaction = this.context.solidLdoDataset.startTransaction();
@@ -76,25 +113,22 @@ export abstract class Requester {
       name: DELETE_KEY,
       args: [this.uri, { dataset: transaction, fetch: this.context.fetch }],
       perform: deleteResource,
-      modifyQueue: (queue, currentlyLoading) => {
-        if (queue.length === 0 && currentlyLoading?.name === DELETE_KEY) {
-          return currentlyLoading;
-        } else if (queue[queue.length - 1]?.name === DELETE_KEY) {
-          return queue[queue.length - 1];
+      modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(DELETE_KEY),
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
         }
-        return undefined;
       },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 
   /**
    * Creates a Resource
-   * @param overwrite: If true, this will orverwrite the resource if it already
+   * @param overwrite - If true, this will orverwrite the resource if it already
    * exists
+   * @returns A ContainerCreateAndOverwriteResult or a
+   * LeafCreateAndOverwriteResult depending on this resource's URI
    */
   createDataResource(
     overwrite: true,
@@ -145,10 +179,12 @@ export abstract class Requester {
         }
         return undefined;
       },
+      after: (result) => {
+        if (!result.isError) {
+          transaction.commit();
+        }
+      },
     });
-    if (!result.isError) {
-      transaction.commit();
-    }
     return result;
   }
 }

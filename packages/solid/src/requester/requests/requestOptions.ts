@@ -1,9 +1,22 @@
-import type { Dataset, Quad } from "@rdfjs/types";
+import type { BulkEditableDataset } from "@ldo/subscribable-dataset";
+import type { Quad } from "@rdfjs/types";
 
+/**
+ * Request Options to be passed to request functions
+ */
 export interface BasicRequestOptions {
+  /**
+   * A fetch function usually imported from @inrupt/solid-client-authn-js
+   */
   fetch?: typeof fetch;
 }
 
+/**
+ * Request options with a dataset component
+ */
 export interface DatasetRequestOptions extends BasicRequestOptions {
-  dataset?: Dataset<Quad>;
+  /**
+   * A dataset to be modified with any new information obtained from a request
+   */
+  dataset?: BulkEditableDataset<Quad>;
 }

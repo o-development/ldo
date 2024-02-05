@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid",
-  "version": "0.0.1-alpha.17",
+  "version": "0.0.1-alpha.18",
   "description": "A library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "build:ldo": "ldo build --input src/.shapes --output src/.ldo",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "docs": "typedoc --plugin typedoc-plugin-markdown"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.1",
-    "@ldo/cli": "^0.0.1-alpha.17",
+    "@ldo/cli": "^0.0.1-alpha.18",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "@solid/community-server": "^6.0.2",
@@ -34,12 +35,14 @@
     "jest-rdf": "^1.8.0",
     "ts-jest": "^29.0.2",
     "ts-node": "^10.9.1",
-    "typed-emitter": "^2.1.0"
+    "typed-emitter": "^2.1.0",
+    "typedoc": "^0.25.4",
+    "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
     "@inrupt/solid-client": "^1.30.0",
     "@ldo/dataset": "^0.0.1-alpha.17",
-    "@ldo/ldo": "^0.0.1-alpha.17",
+    "@ldo/ldo": "^0.0.1-alpha.18",
     "@ldo/rdf-utils": "^0.0.1-alpha.17",
     "@types/parse-link-header": "^2.0.1",
     "cross-fetch": "^3.1.6",
