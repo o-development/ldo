@@ -21,7 +21,7 @@ const config = [
 ];
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
-export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
+export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "";
 export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
 
 // Use an increased timeout, since the CSS server takes too much setup time.

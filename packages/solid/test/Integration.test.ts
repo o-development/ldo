@@ -45,6 +45,7 @@ import type {
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
+import { wait } from "./utils.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -330,8 +331,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/sample2.ttl is not compliant with the Solid Specification: Resource requests must return a content-type header.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: Resource requests must return a content-type header\./,
       );
     });
 
@@ -351,8 +352,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        'Response from https://solidweb.me/jackson3/test_ldo/sample2.ttl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "Error" on line 1.',
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "Error" on line 1\./,
       );
     });
 
@@ -386,8 +387,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
       );
     });
 
@@ -406,26 +407,22 @@ describe("Integration", () => {
         resource.read(),
       ]);
 
+      expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it("batches the read request when a read request is in queue", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const [, result, result1] = await Promise.all([
-        resource.update({
-          added: createDataset([
-            createQuad(namedNode("a"), namedNode("b"), namedNode("c")),
-          ]),
-        }),
+        resource.createAndOverwrite(),
         resource.read(),
         resource.read(),
       ]);
 
+      expect(fetchMock).toHaveBeenCalledTimes(3);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -546,8 +543,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
       );
     });
 
