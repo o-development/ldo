@@ -439,7 +439,8 @@ Let's add the following hook to **Blog.tsx**
 ```tsx
 // ...
 import { useLdo, useResource, useSolidAuth } from "@ldo/solid-react";
-import { ConatinerUri } from "@ldo/solid";
+import { ContainerUri } from "@ldo/solid";
+import { FunctionComponent, useState, useEffect, Fragment } from "react"; // Ensure Fragment is imported
 
 export const Blog: FunctionComponent = () => {
   const { session } = useSolidAuth();
@@ -495,6 +496,10 @@ rootContainer/
 We've already created the `my-solid-app/` container, so let's add a bit of functionality to create the post folders. Let's modify **MakePost.tsx**.
 
 ```tsx
+//...
+import { v4 } from "uuid";
+import { Container } from "@ldo/solid";
+
 export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({
   mainContainer,
 }) => {
@@ -589,6 +594,8 @@ Once this step is done, you should be able to press the "Post" button to create 
 Pods aren't just for storing containers, of course. They can also about storing raw data like images and videos. Let's add the ability to upload an image to our application.
 
 ```tsx
+  //..
+  import { Leaf } from "@ldo/solid // make sure to import Leaf
   const onSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       // ...
@@ -621,7 +628,7 @@ Finally, we check if there's an error, and if there isn't, we assign the result 
 
 After implementing this step, your application should now be able to upload photos to your Pod.
 
-## 10. Addeding structured data.
+## 10. Adding structured data
 
 Unstructured data is good, but the real lifeblood of Solid comes from its structured data. In this step, we'll create a Post document that contains the Post's text body, a link to the image, and it's time of posting.
 
@@ -664,6 +671,7 @@ With the new shape in order, let's add some code to **MakePost.tsx** to create t
 
 ```tsx
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import { useLdo } from "@ldo/solid-react"; // make sure to import useLdo
 
 export const MakePost: FunctionComponent<{ mainContainer: Container }> = ({
   mainContainer,
