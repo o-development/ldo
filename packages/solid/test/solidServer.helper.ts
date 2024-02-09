@@ -23,6 +23,8 @@ const config = [
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
 export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "";
 export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
+export const WEB_ID =
+  process.env.WEB_ID || `${SERVER_DOMAIN}example/profile/card#me`;
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);

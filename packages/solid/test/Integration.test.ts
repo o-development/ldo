@@ -10,6 +10,7 @@ import type {
 import { changeData, commitData, createSolidLdoDataset } from "../src";
 import {
   ROOT_CONTAINER,
+  WEB_ID,
   createApp,
   getAuthenticatedFetch,
 } from "./solidServer.helper";
@@ -45,7 +46,7 @@ import type {
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
-import { wait } from "./utils.helper";
+import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -92,6 +93,12 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
+const TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
+const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://www.w3.org/ns/auth/acl#Authorization>;
+<http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
+<http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
+<http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Append>, <http://www.w3.org/ns/auth/acl#Control>;
+<http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>.`;
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -166,6 +173,13 @@ describe("Integration", () => {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
+    });
+    await authFetch(TEST_CONTAINER_ACL_URI, {
+      method: "PUT",
+      headers: {
+        "content-type": "text/turtle",
+      },
+      body: TEST_CONTAINER_ACL,
     });
     await Promise.all([
       authFetch(TEST_CONTAINER_URI, {
@@ -1608,6 +1622,38 @@ describe("Integration", () => {
       expect(
         resource.children().some((child) => child.uri === SAMPLE2_BINARY_URI),
       ).toBe(true);
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * ACCESS CONTROL
+   * ===========================================================================
+   */
+  describe("getWacRule", () => {
+    it("Fetches a wac rules for a container that has a corresponding acl", async () => {
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const wacResult = await container.getWac();
+      expect(wacResult.isError).toBe(false);
+      const wacSuccess = wacResult as GetWacRuleSuccess;
+      expect(wacSuccess.wacRule.public).toEqual({
+        read: false,
+        write: false,
+        append: false,
+        control: false,
+      });
+      expect(wacSuccess.wacRule.authenticated).toEqual({
+        read: false,
+        write: false,
+        append: false,
+        control: false,
+      });
+      expect(wacSuccess.wacRule.agent[WEB_ID]).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
     });
   });
 });

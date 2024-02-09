@@ -40,14 +40,11 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@inrupt/solid-client": "^1.30.0",
     "@ldo/dataset": "^0.0.1-alpha.17",
     "@ldo/ldo": "^0.0.1-alpha.18",
     "@ldo/rdf-utils": "^0.0.1-alpha.17",
-    "@types/parse-link-header": "^2.0.1",
     "cross-fetch": "^3.1.6",
-    "http-link-header": "^1.1.1",
-    "ts-mixer": "^6.0.3"
+    "http-link-header": "^1.1.1"
   },
   "files": [
     "dist",

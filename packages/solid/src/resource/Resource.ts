@@ -11,9 +11,6 @@ import type {
 } from "../requester/requests/readResource";
 import type { BatchedRequester } from "../requester/BatchedRequester";
 import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
-import type { AccessRule } from "../requester/results/success/AccessRule";
-import type { SetAccessRulesResult } from "../requester/requests/setAccessRules";
-import { setAccessRules } from "../requester/requests/setAccessRules";
 import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
@@ -28,6 +25,10 @@ import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
 import type { ResourceResult } from "./resourceResult/ResourceResult";
 import type { Container } from "./Container";
 import type { Leaf } from "./Leaf";
+import type { WacRule } from "./wac/WacRule";
+import type { GetWacUriError, GetWacUriResult } from "./wac/getWacUri";
+import { getWacUri } from "./wac/getWacUri";
+import { getWacRuleWithAclUri, type GetWacRuleResult } from "./wac/getWacRule";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -78,6 +79,18 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * True if this resource has been fetched but does not exist
    */
   protected absent: boolean | undefined;
+
+  /**
+   * @internal
+   * If a wac uri is fetched, it is cached here
+   */
+  protected wacUri?: string;
+
+  /**
+   * @internal
+   * If a wac rule was fetched, it is cached here
+   */
+  protected wacRule?: WacRule;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
@@ -510,18 +523,61 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
   abstract getRootContainer(): Promise<Container | CheckRootResultError>;
 
-  // Access Rules Methods
-  // async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
-  //   return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
-  // }
-  /* istanbul ignore next */
-  async setAccessRules(
-    newAccessRules: AccessRule,
-  ): Promise<ResourceResult<SetAccessRulesResult, Leaf | Container>> {
-    const result = await setAccessRules(this.uri, newAccessRules, {
+  /**
+   * ===========================================================================
+   * WEB ACCESS CONTROL METHODS
+   * ===========================================================================
+   */
+
+  protected async getWacUri(options?: {
+    ignoreCache: boolean;
+  }): Promise<GetWacUriResult> {
+    // Get the wacUri if not already present
+    if (!options?.ignoreCache && this.wacUri) {
+      return {
+        type: "getWacUriSuccess",
+        wacUri: this.wacUri,
+        isError: false,
+        uri: this.uri,
+      };
+    }
+
+    const wacUriResult = await getWacUri(this.uri, {
       fetch: this.context.fetch,
     });
-    if (result.isError) return result;
-    return { ...result, resource: this as unknown as Leaf | Container };
+    if (wacUriResult.isError) {
+      return wacUriResult;
+    }
+    this.wacUri = wacUriResult.wacUri;
+    return wacUriResult;
   }
+
+  async getWac(options?: {
+    ignoreCache: boolean;
+  }): Promise<GetWacUriError | GetWacRuleResult> {
+    // Return the wac rule if it's already cached
+    if (!options?.ignoreCache && this.wacRule) {
+      return {
+        type: "getWacRuleSuccess",
+        uri: this.uri,
+        isError: false,
+        wacRule: this.wacRule,
+      };
+    }
+
+    // Get the wac uri
+    const wacUriResult = await this.getWacUri(options);
+    if (wacUriResult.isError) {
+      return wacUriResult;
+    }
+
+    // Get the wac rule
+    return getWacRuleWithAclUri(wacUriResult.wacUri, {
+      fetch: this.context.fetch,
+    });
+  }
+
+  // async setWac(wacRule: WacRule): Promise<> {
+  //   throw new Error("Not Implemented");
+  // }
 }
