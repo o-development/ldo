@@ -5,9 +5,6 @@ This is a monorepo that contains all libraries associated with Linked Data Objec
 ## Documentation
 Full documentation can be found at [ldo.js.org](https://ldo.js.org).
 
-## Tutorial
-[A tutorial for how to use LDO](./documentation/solid-react-tutorial.md) is available here. 
-
 ## Libraries
 The LDO monorepo contains the following 
  - [@ldo/cli](./packages/cli/)
