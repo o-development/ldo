@@ -143,7 +143,7 @@ export async function rawTurtleToDataset(
     const error = UnexpectedResourceError.fromThrown(baseUri, err);
     return new NoncompliantPodError(
       baseUri,
-      `Request returned noncompliant turtle: ${error.message}`,
+      `Request returned noncompliant turtle: ${error.message}\n${rawTurtle}`,
     );
   }
 }

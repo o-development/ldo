@@ -9,12 +9,16 @@ import { rawTurtleToDataset } from "../../util/rdfUtils";
 import { AuthorizationShapeType } from "../../.ldo/wac.shapeTypes";
 import type { AccessModeList, WacRule } from "./WacRule";
 import type { Authorization } from "../../.ldo/wac.typings";
+import type { WacRuleAbsent } from "./results/WacRuleAbsent";
 
 export type GetWacRuleError =
   | HttpErrorResultType
   | NoncompliantPodError
   | UnexpectedResourceError;
-export type GetWacRuleResult = GetWacRuleSuccess | GetWacRuleError;
+export type GetWacRuleResult =
+  | GetWacRuleSuccess
+  | GetWacRuleError
+  | WacRuleAbsent;
 
 export async function getWacRuleWithAclUri(
   aclUri: string,
@@ -24,6 +28,14 @@ export async function getWacRuleWithAclUri(
   const response = await fetch(aclUri);
   const errorResult = HttpErrorResult.checkResponse(aclUri, response);
   if (errorResult) return errorResult;
+
+  if (response.status === 404) {
+    return {
+      type: "wacRuleAbsent",
+      uri: aclUri,
+      isError: false,
+    };
+  }
 
   // Parse Turtle
   const rawTurtle = await response.text();

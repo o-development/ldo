@@ -1655,5 +1655,34 @@ describe("Integration", () => {
         control: true,
       });
     });
+
+    it("Gets wac rules for a resource that does not have a corresponding acl", async () => {
+      const container = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const wacResult = await container.getWac();
+      expect(wacResult.isError).toBe(false);
+      const wacSuccess = wacResult as GetWacRuleSuccess;
+      expect(wacSuccess.wacRule.public).toEqual({
+        read: false,
+        write: false,
+        append: false,
+        control: false,
+      });
+      expect(wacSuccess.wacRule.authenticated).toEqual({
+        read: false,
+        write: false,
+        append: false,
+        control: false,
+      });
+      expect(wacSuccess.wacRule.agent[WEB_ID]).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+    });
+
+    it("returns an error when an error is encountered fetching the aclUri", async () => {
+      
+    });
   });
 });

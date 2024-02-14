@@ -29,6 +29,7 @@ import type { WacRule } from "./wac/WacRule";
 import type { GetWacUriError, GetWacUriResult } from "./wac/getWacUri";
 import { getWacUri } from "./wac/getWacUri";
 import { getWacRuleWithAclUri, type GetWacRuleResult } from "./wac/getWacRule";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -567,14 +568,29 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
 
     // Get the wac uri
     const wacUriResult = await this.getWacUri(options);
-    if (wacUriResult.isError) {
-      return wacUriResult;
-    }
+    if (wacUriResult.isError) return wacUriResult;
 
     // Get the wac rule
-    return getWacRuleWithAclUri(wacUriResult.wacUri, {
+    const wacResult = await getWacRuleWithAclUri(wacUriResult.wacUri, {
       fetch: this.context.fetch,
     });
+    if (wacResult.isError) return wacResult;
+    // If the wac rules was successfully found
+    if (wacResult.type === "getWacRuleSuccess") {
+      this.wacRule = wacResult.wacRule;
+      return wacResult;
+    }
+
+    // If the WacRule is absent
+    const parentUri = getParentUri(this.uri);
+    if (!parentUri) {
+      return new NoncompliantPodError(
+        this.uri,
+        `Resource "${this.uri}" has no Effective ACL resource`,
+      );
+    }
+    const parent = this.context.resourceStore.get(parentUri);
+    return parent.getWac();
   }
 
   // async setWac(wacRule: WacRule): Promise<> {
