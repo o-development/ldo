@@ -34,7 +34,7 @@ export class LdoDatasetFactory implements DatasetFactory<Quad, Quad> {
    */
   dataset(quads?: Dataset<Quad, Quad> | Quad[]): LdoDataset {
     return new LdoDataset(
-      this.datasetFactory,
+      this,
       quads
         ? Array.isArray(quads)
           ? this.datasetFactory.dataset(quads)

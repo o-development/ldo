@@ -1,5 +1,5 @@
 import type { DatasetChanges, QuadMatch } from "@ldo/rdf-utils";
-import type { Dataset, BaseQuad } from "@rdfjs/types";
+import type { Dataset, BaseQuad, DatasetFactory } from "@rdfjs/types";
 
 /**
  * An event listeners for nodes
@@ -11,28 +11,29 @@ export type nodeEventListener<InAndOutQuad extends BaseQuad = BaseQuad> = (
 /**
  * Adds the bulk method for add and remove
  */
-export interface BulkEditableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+export interface IBulkEditableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   extends Dataset<InAndOutQuad, InAndOutQuad> {
   bulk(changes: DatasetChanges<InAndOutQuad>): this;
 }
 
 /**
- * A dataset that allows you to modify the dataset and
+ * Factory for creating SubscribableDatasets
  */
-export interface TransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
-  extends BulkEditableDataset<InAndOutQuad> {
-  rollback(): void;
-  commit(): void;
-  getChanges(): DatasetChanges<InAndOutQuad>;
-}
+export type ISubscribableDatasetFactory<
+  InAndOutQuad extends BaseQuad = BaseQuad,
+> = DatasetFactory<
+  InAndOutQuad,
+  InAndOutQuad,
+  ISubscribableDataset<InAndOutQuad>
+>;
 
 /**
  * Dataset that allows developers to subscribe to a sepecific term and be alerted
  * if a quad is added or removed containing that term. It's methods follow the
  * EventEmitter interface except take in namedNodes as keys.
  */
-export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
-  extends BulkEditableDataset<InAndOutQuad> {
+export interface ISubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+  extends IBulkEditableDataset<InAndOutQuad> {
   /**
    * Alias for emitter.on(eventName, listener).
    * @param eventName
@@ -140,5 +141,27 @@ export interface SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Returns a transactional dataset that will update this dataset when its transaction is committed.
    */
-  startTransaction(): TransactionalDataset<InAndOutQuad>;
+  startTransaction(): ITransactionDataset<InAndOutQuad>;
+}
+
+/**
+ * Creates a TransactionDataset
+ */
+export interface ITransactionDatasetFactory<
+  InAndOutQuad extends BaseQuad = BaseQuad,
+> {
+  transactionDataset(
+    parent: ISubscribableDataset<InAndOutQuad>,
+  ): ITransactionDataset<InAndOutQuad>;
+}
+
+/**
+ * A dataset that allows you to modify the dataset and
+ */
+export interface ITransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+  extends ISubscribableDataset<InAndOutQuad> {
+  readonly parentDataset: ISubscribableDataset<InAndOutQuad>;
+  rollback(): void;
+  commit(): void;
+  getChanges(): DatasetChanges<InAndOutQuad>;
 }

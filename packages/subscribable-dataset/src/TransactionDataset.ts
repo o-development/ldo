@@ -1,27 +1,26 @@
 import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { BulkEditableDataset, TransactionalDataset } from "./types";
-import { ExtendedDataset } from "@ldo/dataset";
+import type {
+  ISubscribableDataset,
+  ITransactionDataset,
+  ITransactionDatasetFactory,
+} from "./types";
 import { mergeDatasetChanges } from "./mergeDatasetChanges";
+import { SubscribableDataset } from "./SubscribableDataset";
 
 /**
  * Proxy Transactional Dataset is a transactional dataset that does not duplicate
  * the parent dataset, it will dynamically determine the correct return value for
  * methods in real time when the method is called.
  */
-export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
-  extends ExtendedDataset<InAndOutQuad>
-  implements TransactionalDataset<InAndOutQuad>
+export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+  extends SubscribableDataset<InAndOutQuad>
+  implements ITransactionDataset<InAndOutQuad>
 {
   /**
    * The parent dataset that will be updated upon commit
    */
-  private parentDataset: Dataset<InAndOutQuad, InAndOutQuad>;
-
-  /**
-   * A factory for creating new datasets to be added to the update method
-   */
-  private datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>;
+  public readonly parentDataset: ISubscribableDataset<InAndOutQuad>;
 
   /**
    * The changes made that are ready to commit
@@ -42,12 +41,12 @@ export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @param parentDataset The dataset that will be updated upon commit
    */
   constructor(
-    parentDataset: Dataset<InAndOutQuad, InAndOutQuad>,
+    parentDataset: ISubscribableDataset<InAndOutQuad>,
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,
+    transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>,
   ) {
-    super(datasetFactory.dataset(), datasetFactory);
+    super(datasetFactory, transactionDatasetFactory, datasetFactory.dataset());
     this.parentDataset = parentDataset;
-    this.datasetFactory = datasetFactory;
     this.datasetChanges = {};
   }
 
@@ -179,6 +178,7 @@ export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Returns an iterator
    */
   public [Symbol.iterator](): Iterator<InAndOutQuad> {
+    console.log("Getting Iterator");
     const addedIterator = (this.datasetChanges.added || [])[Symbol.iterator]();
     let addedNext = addedIterator.next();
     const parentIterator = this.parentDataset[Symbol.iterator]();
@@ -253,9 +253,7 @@ export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   private updateParentDataset(datasetChanges: DatasetChanges<InAndOutQuad>) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((this.parentDataset as any).bulk) {
-      (this.parentDataset as BulkEditableDataset<InAndOutQuad>).bulk(
-        datasetChanges,
-      );
+      this.parentDataset.bulk(datasetChanges);
     } else {
       if (datasetChanges.added) {
         this.parentDataset.addAll(datasetChanges.added);
@@ -294,17 +292,6 @@ export class ProxyTransactionalDataset<InAndOutQuad extends BaseQuad = BaseQuad>
       removed: this.committedDatasetChanges.added,
     });
     this.committedDatasetChanges = undefined;
-  }
-
-  /**
-   * Starts a new transaction with this transactional dataset as the parent
-   * @returns
-   */
-  public startTransaction(): TransactionalDataset<InAndOutQuad> {
-    // This is caused by the typings being incorrect for the intersect method
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return new ProxyTransactionalDataset(this, this.datasetFactory);
   }
 
   public getChanges(): DatasetChanges<InAndOutQuad> {

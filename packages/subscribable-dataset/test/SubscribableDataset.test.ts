@@ -1,5 +1,5 @@
-import type { SubscribableDataset } from "../src";
-import { ProxyTransactionalDataset, createSubscribableDataset } from "../src";
+import type { ISubscribableDataset } from "../src";
+import { TransactionDataset, createSubscribableDataset } from "../src";
 import { createDataset } from "@ldo/dataset";
 import {
   namedNode,
@@ -11,14 +11,14 @@ import {
 import type { Quad, BlankNode } from "@rdfjs/types";
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
-describe("WrapperSubscribableDataset", () => {
+describe("SubscribableDataset", () => {
   // Regular dataset tests
   testDataset({
     dataset: createSubscribableDataset,
   });
 
   // Subscribable Dataset tests
-  let subscribableDatastet: SubscribableDataset<Quad>;
+  let subscribableDatastet: ISubscribableDataset<Quad>;
   const tomTypeQuad = quad(
     namedNode("http://example.org/cartoons#Tom"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
@@ -449,8 +449,7 @@ describe("WrapperSubscribableDataset", () => {
 
   it("Returns a transaction", () => {
     expect(
-      subscribableDatastet.startTransaction() instanceof
-        ProxyTransactionalDataset,
+      subscribableDatastet.startTransaction() instanceof TransactionDataset,
     ).toBe(true);
   });
 });

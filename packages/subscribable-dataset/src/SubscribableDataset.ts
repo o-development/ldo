@@ -17,31 +17,34 @@ import type {
 } from "@rdfjs/types";
 import type {
   nodeEventListener,
-  SubscribableDataset,
-  TransactionalDataset,
+  ISubscribableDataset,
+  ITransactionDataset,
+  ITransactionDatasetFactory,
 } from "./types";
-import { ProxyTransactionalDataset } from "./ProxyTransactionalDataset";
 
 /**
  * A wrapper for a dataset that allows subscriptions to be made on nodes to
  * be triggered whenever a quad containing that added or removed.
  */
-export class WrapperSubscribableDataset<
-  InAndOutQuad extends BaseQuad = BaseQuad,
-> implements SubscribableDataset<InAndOutQuad>
+export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+  implements ISubscribableDataset<InAndOutQuad>
 {
   /**
    * The underlying dataset factory
    */
-  private datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>;
+  protected datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>;
   /**
    * The underlying dataset
    */
-  private dataset: Dataset<InAndOutQuad, InAndOutQuad>;
+  protected dataset: Dataset<InAndOutQuad, InAndOutQuad>;
   /**
    * The underlying event emitter
    */
-  private eventEmitter: EventEmitter;
+  protected eventEmitter: EventEmitter;
+  /**
+   * The underlying dataset factory for creating transaction datasets
+   */
+  protected transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>;
   /**
    * Helps find all the events for a given listener
    */
@@ -54,9 +57,11 @@ export class WrapperSubscribableDataset<
    */
   constructor(
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,
+    transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>,
     initialDataset?: Dataset<InAndOutQuad, InAndOutQuad>,
   ) {
     this.datasetFactory = datasetFactory;
+    this.transactionDatasetFactory = transactionDatasetFactory;
     this.dataset = initialDataset || this.datasetFactory.dataset();
     this.eventEmitter = new EventEmitter();
   }
@@ -249,6 +254,7 @@ export class WrapperSubscribableDataset<
    * Note: Since a DatasetCore is an unordered set, the order of the quads within the returned sequence is arbitrary.
    */
   public toArray(): InAndOutQuad[] {
+    console.log("Calling toArray");
     return this.dataset.toArray();
   }
 
@@ -609,7 +615,7 @@ export class WrapperSubscribableDataset<
   /**
    * Returns a transactional dataset that will update this dataset when its transaction is committed.
    */
-  public startTransaction(): TransactionalDataset<InAndOutQuad> {
-    return new ProxyTransactionalDataset(this, this.datasetFactory);
+  public startTransaction(): ITransactionDataset<InAndOutQuad> {
+    return this.transactionDatasetFactory.transactionDataset(this);
   }
 }
