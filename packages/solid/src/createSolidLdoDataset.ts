@@ -5,6 +5,7 @@ import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import { createDataset, createDatasetFactory } from "@ldo/dataset";
 import { ResourceStore } from "./ResourceStore";
 import { guaranteeFetch } from "./util/guaranteeFetch";
+import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
 
 /**
  * Options for createSolidDataset
@@ -56,6 +57,7 @@ export function createSolidLdoDataset(
   const solidLdoDataset = new SolidLdoDataset(
     context,
     finalDatasetFactory,
+    createTransactionDatasetFactory(),
     finalDataset,
   );
   const resourceStore = new ResourceStore(context);

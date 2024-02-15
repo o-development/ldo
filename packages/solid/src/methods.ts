@@ -1,16 +1,9 @@
-import {
-  startTransaction,
-  type LdoBase,
-  write,
-  transactionChanges,
-  getDataset,
-} from "@ldo/ldo";
-import type { DatasetChanges } from "@ldo/rdf-utils";
+import { startTransaction, type LdoBase, write, getDataset } from "@ldo/ldo";
 import type { Resource } from "./resource/Resource";
-import type { SolidLdoDataset } from "./SolidLdoDataset";
 import type { Quad } from "@rdfjs/types";
 import { _proxyContext, getProxyFromObject } from "@ldo/jsonld-dataset-proxy";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
+import type { SolidLdoTransactionDataset } from "./SolidLdoTransactionDataset";
 
 /**
  * Begins tracking changes to eventually commit.
@@ -75,16 +68,17 @@ export function changeData<Type extends LdoBase>(
  * await commitData(cProfile);
  * ```
  */
-export function commitData(
+export async function commitData(
   input: LdoBase,
-): ReturnType<SolidLdoDataset["commitChangesToPod"]> {
-  const changes = transactionChanges(input);
+): ReturnType<SolidLdoTransactionDataset["commitToPod"]> {
+  const transactionDataset = getDataset(input) as SolidLdoTransactionDataset;
+  const result = await transactionDataset.commitToPod();
+  if (result.isError) return result;
   // Take the LdoProxy out of commit mode. This uses hidden methods of JSONLD-DATASET-PROXY
   const proxy = getProxyFromObject(input);
   proxy[_proxyContext] = proxy[_proxyContext].duplicate({
     dataset: proxy[_proxyContext].state
       .parentDataset as SubscribableDataset<Quad>,
   });
-  const dataset = getDataset(input) as SolidLdoDataset;
-  return dataset.commitChangesToPod(changes as DatasetChanges<Quad>);
+  return result;
 }
