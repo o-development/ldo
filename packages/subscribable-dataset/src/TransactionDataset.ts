@@ -178,7 +178,6 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Returns an iterator
    */
   public [Symbol.iterator](): Iterator<InAndOutQuad> {
-    console.log("Getting Iterator");
     const addedIterator = (this.datasetChanges.added || [])[Symbol.iterator]();
     let addedNext = addedIterator.next();
     const parentIterator = this.parentDataset[Symbol.iterator]();
@@ -251,19 +250,7 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Helper method to update the parent dataset or any other provided dataset
    */
   private updateParentDataset(datasetChanges: DatasetChanges<InAndOutQuad>) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((this.parentDataset as any).bulk) {
-      this.parentDataset.bulk(datasetChanges);
-    } else {
-      if (datasetChanges.added) {
-        this.parentDataset.addAll(datasetChanges.added);
-      }
-      if (datasetChanges.removed) {
-        datasetChanges.removed.forEach((curQuad) => {
-          this.parentDataset.delete(curQuad);
-        });
-      }
-    }
+    this.parentDataset.bulk(datasetChanges);
   }
 
   /**
