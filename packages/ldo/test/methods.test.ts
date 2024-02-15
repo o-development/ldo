@@ -9,7 +9,6 @@ import {
 import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
-import type { LdoDataset } from "../src";
 import {
   commitTransaction,
   createLdoDataset,
@@ -25,9 +24,10 @@ import {
   setLanguagePreferences,
   languagesOf,
 } from "../src";
+import type { ILdoDataset } from "../src/types";
 
 describe("methods", () => {
-  let dataset: LdoDataset;
+  let dataset: ILdoDataset;
   let profile: SolidProfileShape;
   beforeEach(() => {
     dataset = createLdoDataset();

@@ -9,8 +9,8 @@ export class SubscribableDatasetFactory<
   InAndOutQuad extends BaseQuad = BaseQuad,
 > implements DatasetFactory<InAndOutQuad, InAndOutQuad>
 {
-  private datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>;
-  private transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>;
+  protected datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>;
+  protected transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>;
   constructor(
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,
     transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>,
