@@ -27,7 +27,7 @@ import type { SolidLdoTransactionDataset } from "./SolidLdoTransactionDataset";
  *
  * const cProfile = changeData(profile, resource);
  * cProfile.name = "My New Name";
- * await commitData(cProfile);
+ * const result = await commitData(cProfile);
  * ```
  */
 export function changeData<Type extends LdoBase>(
@@ -65,7 +65,7 @@ export function changeData<Type extends LdoBase>(
  *
  * const cProfile = changeData(profile, resource);
  * cProfile.name = "My New Name";
- * await commitData(cProfile);
+ * const result = await commitData(cProfile);
  * ```
  */
 export async function commitData(

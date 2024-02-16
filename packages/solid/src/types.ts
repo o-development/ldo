@@ -3,6 +3,9 @@ import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
 
+/**
+ * A SolidLdoDataset provides methods for getting Solid resources.
+ */
 export interface ISolidLdoDataset {
   getResource(uri: ContainerUri, options?: ResourceGetterOptions): Container;
   getResource(uri: LeafUri, options?: ResourceGetterOptions): Leaf;

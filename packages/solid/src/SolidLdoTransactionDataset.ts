@@ -27,6 +27,35 @@ import { InvalidUriError } from "./requester/results/error/InvalidUriError";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
 
+/**
+ * A SolidLdoTransactionDataset has all the functionality of a SolidLdoDataset
+ * and represents a transaction to the parent SolidLdoDataset.
+ *
+ * It is recommended to use the `startTransaction` method on a SolidLdoDataset
+ * to initialize this class
+ *
+ * @example
+ * ```typescript
+ * import { createSolidLdoDataset } from "@ldo/solid";
+ * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ *
+ * // ...
+ *
+ * const solidLdoDataset = createSolidLdoDataset();
+ *
+ * const profileDocument = solidLdoDataset
+ *   .getResource("https://example.com/profile");
+ * await profileDocument.read();
+ *
+ * const transaction = solidLdoDataset.startTransaction();
+ *
+ * const profile = transaction
+ *   .using(ProfileShapeType)
+ *   .fromSubject("https://example.com/profile#me");
+ * profile.name = "Some Name";
+ * await transaction.commitToPod();
+ * ```
+ */
 export class SolidLdoTransactionDataset
   extends LdoTransactionDataset
   implements ISolidLdoDataset
