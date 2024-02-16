@@ -1,12 +1,9 @@
 import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type {
-  ISubscribableDataset,
-  ITransactionDataset,
-  ITransactionDatasetFactory,
-} from "./types";
+import type { ITransactionDataset, ITransactionDatasetFactory } from "./types";
 import { mergeDatasetChanges } from "./mergeDatasetChanges";
 import { SubscribableDataset } from "./SubscribableDataset";
+import { updateDatasetInBulk } from "./util";
 
 /**
  * Proxy Transactional Dataset is a transactional dataset that does not duplicate
@@ -20,7 +17,7 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * The parent dataset that will be updated upon commit
    */
-  public readonly parentDataset: ISubscribableDataset<InAndOutQuad>;
+  public readonly parentDataset: Dataset<InAndOutQuad, InAndOutQuad>;
 
   /**
    * The changes made that are ready to commit
@@ -41,7 +38,7 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * @param parentDataset The dataset that will be updated upon commit
    */
   constructor(
-    parentDataset: ISubscribableDataset<InAndOutQuad>,
+    parentDataset: Dataset<InAndOutQuad, InAndOutQuad>,
     datasetFactory: DatasetFactory<InAndOutQuad, InAndOutQuad>,
     transactionDatasetFactory: ITransactionDatasetFactory<InAndOutQuad>,
   ) {
@@ -250,7 +247,7 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Helper method to update the parent dataset or any other provided dataset
    */
   private updateParentDataset(datasetChanges: DatasetChanges<InAndOutQuad>) {
-    this.parentDataset.bulk(datasetChanges);
+    return updateDatasetInBulk(this.parentDataset, datasetChanges);
   }
 
   /**

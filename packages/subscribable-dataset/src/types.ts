@@ -151,7 +151,7 @@ export interface ITransactionDatasetFactory<
   InAndOutQuad extends BaseQuad = BaseQuad,
 > {
   transactionDataset(
-    parent: ISubscribableDataset<InAndOutQuad>,
+    parent: Dataset<InAndOutQuad, InAndOutQuad>,
   ): ITransactionDataset<InAndOutQuad>;
 }
 
@@ -160,7 +160,7 @@ export interface ITransactionDatasetFactory<
  */
 export interface ITransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   extends ISubscribableDataset<InAndOutQuad> {
-  readonly parentDataset: ISubscribableDataset<InAndOutQuad>;
+  readonly parentDataset: Dataset<InAndOutQuad, InAndOutQuad>;
   rollback(): void;
   commit(): void;
   getChanges(): DatasetChanges<InAndOutQuad>;

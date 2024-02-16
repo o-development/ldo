@@ -10,7 +10,10 @@ import {
 } from "./util/uriTypes";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import type { DatasetFactory, Quad } from "@rdfjs/types";
-import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
+import {
+  updateDatasetInBulk,
+  type ITransactionDatasetFactory,
+} from "@ldo/subscribable-dataset";
 import type { SolidLdoDataset } from "./SolidLdoDataset";
 import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
 import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
@@ -124,7 +127,7 @@ export class SolidLdoTransactionDataset
         async ([graph, datasetChanges]) => {
           if (graph.termType === "DefaultGraph") {
             // Undefined means that this is the default graph
-            this.parentDataset.bulk(datasetChanges);
+            updateDatasetInBulk(this.parentDataset, datasetChanges);
             return [
               graph,
               datasetChanges,

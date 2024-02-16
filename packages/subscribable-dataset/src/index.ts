@@ -6,3 +6,4 @@ export * from "./SubscribableDataset";
 export * from "./SubscribableDatasetFactory";
 export * from "./types";
 export * from "./mergeDatasetChanges";
+export * from "./util";

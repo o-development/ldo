@@ -6,7 +6,7 @@ import type {
   DatasetCore,
 } from "@rdfjs/types";
 import type { ISubscribableDataset } from "../src";
-import { ExtendedDatasetFactory } from "@ldo/dataset";
+import { ExtendedDatasetFactory, createDataset } from "@ldo/dataset";
 import {
   TransactionDataset,
   createSubscribableDataset,
@@ -321,6 +321,24 @@ describe("TransactionDataset", () => {
     transactionalDataset.delete(tomTypeQuad);
     transactionalDataset.commit();
     expect(mockParent.bulk).toHaveBeenCalled();
+  });
+
+  it("Uses bulk update on commit when the parent dataset is not bulk updatable", () => {
+    // Disable for tests
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const mockParent: Dataset<Quad> = createDataset([tomTypeQuad]);
+    transactionalDataset = new TransactionDataset<Quad>(
+      mockParent,
+      extendedDatasetFactory,
+      createTransactionDatasetFactory(),
+    );
+
+    transactionalDataset.add(lickyNameQuad);
+    transactionalDataset.delete(tomTypeQuad);
+    transactionalDataset.commit();
+    expect(mockParent.has(lickyNameQuad)).toBe(true);
+    expect(mockParent.has(tomTypeQuad)).toBe(false);
   });
 
   it("Returns a transactional dataset", () => {
