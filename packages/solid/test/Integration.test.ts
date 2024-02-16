@@ -10,6 +10,7 @@ import type {
 import { changeData, commitData, createSolidLdoDataset } from "../src";
 import {
   ROOT_CONTAINER,
+  WEB_ID,
   createApp,
   getAuthenticatedFetch,
 } from "./solidServer.helper";
@@ -20,7 +21,6 @@ import {
   defaultGraph,
 } from "@rdfjs/data-model";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
-import { createDataset } from "@ldo/dataset";
 import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
 import type {
   UpdateDefaultGraphSuccess,
@@ -89,6 +89,12 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
+const TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
+const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://www.w3.org/ns/auth/acl#Authorization>;
+<http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
+<http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
+<http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Append>, <http://www.w3.org/ns/auth/acl#Control>;
+<http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>.`;
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -163,6 +169,13 @@ describe("Integration", () => {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
+    });
+    await authFetch(TEST_CONTAINER_ACL_URI, {
+      method: "PUT",
+      headers: {
+        "content-type": "text/turtle",
+      },
+      body: TEST_CONTAINER_ACL,
     });
     await Promise.all([
       authFetch(TEST_CONTAINER_URI, {
@@ -328,8 +341,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/sample2.ttl is not compliant with the Solid Specification: Resource requests must return a content-type header.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: Resource requests must return a content-type header\./,
       );
     });
 
@@ -349,8 +362,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        'Response from https://solidweb.me/jackson3/test_ldo/sample2.ttl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "Error" on line 1.',
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "Error" on line 1\./,
       );
     });
 
@@ -384,8 +397,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
       );
     });
 
@@ -404,26 +417,22 @@ describe("Integration", () => {
         resource.read(),
       ]);
 
+      expect(fetchMock).toHaveBeenCalledTimes(1);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it("batches the read request when a read request is in queue", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const [, result, result1] = await Promise.all([
-        resource.update({
-          added: createDataset([
-            createQuad(namedNode("a"), namedNode("b"), namedNode("c")),
-          ]),
-        }),
+        resource.createAndOverwrite(),
         resource.read(),
         resource.read(),
       ]);
 
+      expect(fetchMock).toHaveBeenCalledTimes(3);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -544,8 +553,8 @@ describe("Integration", () => {
       expect(result.isError).toBe(true);
       if (!result.isError) return;
       expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toBe(
-        "Response from https://solidweb.me/jackson3/test_ldo/ is not compliant with the Solid Specification: No link header present in request.",
+      expect(result.message).toMatch(
+        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
       );
     });
 
@@ -1419,16 +1428,55 @@ describe("Integration", () => {
    * ===========================================================================
    */
   describe("methods", () => {
-    it("uses changeData to start a transaction", () => {
-      const resource = solidLdoDataset.getResource(
-        "https://example.com/resource.ttl",
+    it("creates a data object for a specific subject", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const post = solidLdoDataset.createData(
+        PostShShapeType,
+        "https://example.com/subject",
+        resource,
       );
+      post.type = { "@id": "CreativeWork" };
+      expect(post.type["@id"]).toBe("CreativeWork");
+      const result = await commitData(post);
+      expect(result.type).toBe("aggregateSuccess");
+      expect(
+        solidLdoDataset.has(
+          createQuad(
+            namedNode("https://example.com/subject"),
+            namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+            namedNode("http://schema.org/CreativeWork"),
+            namedNode(SAMPLE_DATA_URI),
+          ),
+        ),
+      ).toBe(true);
+    });
+
+    it("handles an error when committing data", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, {
+          status: 500,
+        }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const post = solidLdoDataset.createData(
+        PostShShapeType,
+        "https://example.com/subject",
+        resource,
+      );
+      post.type = { "@id": "CreativeWork" };
+      expect(post.type["@id"]).toBe("CreativeWork");
+      const result = await commitData(post);
+      expect(result.isError).toBe(true);
+    });
+
+    it("uses changeData to start a transaction", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       solidLdoDataset.add(
         createQuad(
           namedNode("https://example.com/subject"),
           namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
           namedNode("http://schema.org/CreativeWork"),
-          namedNode("https://example.com/resource.ttl"),
+          namedNode(SAMPLE_DATA_URI),
         ),
       );
       const post = solidLdoDataset
@@ -1437,14 +1485,15 @@ describe("Integration", () => {
       const cPost = changeData(post, resource);
       cPost.type = { "@id": "SocialMediaPosting" };
       expect(cPost.type["@id"]).toBe("SocialMediaPosting");
-      commitData(cPost);
+      const result = await commitData(cPost);
+      expect(result.isError).toBe(false);
       expect(
         solidLdoDataset.has(
           createQuad(
             namedNode("https://example.com/subject"),
             namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
             namedNode("http://schema.org/SocialMediaPosting"),
-            namedNode("https://example.com/resource.ttl"),
+            namedNode(SAMPLE_DATA_URI),
           ),
         ),
       ).toBe(true);

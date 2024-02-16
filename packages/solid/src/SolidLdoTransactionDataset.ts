@@ -95,7 +95,7 @@ export class SolidLdoTransactionDataset
         async ([graph, datasetChanges]) => {
           if (graph.termType === "DefaultGraph") {
             // Undefined means that this is the default graph
-            this.bulk(datasetChanges);
+            this.parentDataset.bulk(datasetChanges);
             return [
               graph,
               datasetChanges,

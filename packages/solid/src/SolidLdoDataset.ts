@@ -1,4 +1,5 @@
-import { LdoDataset } from "@ldo/ldo";
+import type { LdoBase, ShapeType } from "@ldo/ldo";
+import { LdoDataset, startTransaction } from "@ldo/ldo";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
@@ -7,6 +8,8 @@ import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
 import { SolidLdoTransactionDataset } from "./SolidLdoTransactionDataset";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
+import type { SubjectNode } from "@ldo/rdf-utils";
+import type { Resource } from "./resource/Resource";
 
 /**
  * A SolidLdoDataset has all the functionality of an LdoDataset with the added
@@ -86,5 +89,28 @@ export class SolidLdoDataset extends LdoDataset {
       this.datasetFactory,
       this.transactionDatasetFactory,
     );
+  }
+
+  /**
+   * Shorthand for solidLdoDataset
+   *   .usingType(shapeType)
+   *   .write(...resources.map((r) => r.uri))
+   *   .fromSubject(subject);
+   * @param shapeType - The shapetype to represent the data
+   * @param subject - A subject URI
+   * @param resources - The resources changes to should written to
+   */
+  createData<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+    subject: string | SubjectNode,
+    resource: Resource,
+    ...additionalResources: Resource[]
+  ): Type {
+    const resources = [resource, ...additionalResources];
+    const linkedDataObject = this.usingType(shapeType)
+      .write(...resources.map((r) => r.uri))
+      .fromSubject(subject);
+    startTransaction(linkedDataObject);
+    return linkedDataObject;
   }
 }
