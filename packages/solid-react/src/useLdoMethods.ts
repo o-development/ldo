@@ -1,6 +1,10 @@
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { Resource, SolidLdoDataset } from "@ldo/solid";
+import type {
+  Resource,
+  SolidLdoDataset,
+  SolidLdoTransactionDataset,
+} from "@ldo/solid";
 import { changeData, commitData } from "@ldo/solid";
 
 export interface UseLdoMethods {
@@ -21,7 +25,9 @@ export interface UseLdoMethods {
     resource: Resource,
     ...additionalResources: Resource[]
   ): Type;
-  commitData(input: LdoBase): ReturnType<SolidLdoDataset["commitChangesToPod"]>;
+  commitData(
+    input: LdoBase,
+  ): ReturnType<SolidLdoTransactionDataset["commitToPod"]>;
 }
 
 export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
