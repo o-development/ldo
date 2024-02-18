@@ -162,6 +162,7 @@ export class Container extends Resource {
         uri: this.uri,
         recalledFromMemory: true,
         resource: this,
+        didContainerUpdate: false,
       };
     } else {
       return {
@@ -171,6 +172,7 @@ export class Container extends Resource {
         recalledFromMemory: true,
         isRootContainer: this.isRootContainer()!,
         resource: this,
+        didContainerUpdate: false,
       };
     }
   }

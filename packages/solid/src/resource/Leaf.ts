@@ -253,6 +253,7 @@ export class Leaf extends Resource {
         uri: this.uri,
         recalledFromMemory: true,
         resource: this,
+        didContainerUpdate: false,
       };
     } else if (this.isBinary()) {
       return {
@@ -263,6 +264,7 @@ export class Leaf extends Resource {
         blob: this.binaryData!.blob,
         mimeType: this.binaryData!.mimeType,
         resource: this,
+        didContainerUpdate: false,
       };
     } else {
       return {
@@ -271,6 +273,7 @@ export class Leaf extends Resource {
         uri: this.uri,
         recalledFromMemory: true,
         resource: this,
+        didContainerUpdate: false,
       };
     }
   }

@@ -106,14 +106,16 @@ export async function readResource(
         type: "absentReadSuccess",
         uri,
         recalledFromMemory: false,
+        didContainerUpdate: false,
       };
     }
     const httpErrorResult = HttpErrorResult.checkResponse(uri, response);
     if (httpErrorResult) return httpErrorResult;
 
     // Add this resource to the container
+    let didContainerUpdate: boolean = false;
     if (options?.dataset) {
-      addResourceRdfToContainer(uri, options.dataset);
+      didContainerUpdate = addResourceRdfToContainer(uri, options.dataset);
     }
 
     const contentType = response.headers.get("content-type");
@@ -144,6 +146,7 @@ export async function readResource(
           uri,
           recalledFromMemory: false,
           isRootContainer: result.isRootContainer,
+          didContainerUpdate,
         };
       }
       return {
@@ -151,6 +154,7 @@ export async function readResource(
         type: "dataReadSuccess",
         uri,
         recalledFromMemory: false,
+        didContainerUpdate,
       };
     } else {
       // Load Blob
@@ -162,6 +166,7 @@ export async function readResource(
         recalledFromMemory: false,
         blob,
         mimeType: contentType,
+        didContainerUpdate,
       };
     }
   } catch (err) {

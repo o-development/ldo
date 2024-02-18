@@ -434,6 +434,16 @@ describe("Integration", () => {
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
     });
+
+    it("does not trigger an update on a container if the container is unchanged", async () => {
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await container.read();
+      const mockUpdateFunc = jest.fn();
+      container.on("update", mockUpdateFunc);
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      await resource.read();
+      expect(mockUpdateFunc).toHaveBeenCalledTimes(0);
+    });
   });
 
   /**

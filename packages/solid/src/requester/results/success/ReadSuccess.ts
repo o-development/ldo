@@ -9,6 +9,10 @@ export interface ReadSuccess extends ResourceSuccess {
    * request
    */
   recalledFromMemory: boolean;
+  /**
+   * True if this process also updated the container, false if not.
+   */
+  didContainerUpdate: boolean;
 }
 
 /**

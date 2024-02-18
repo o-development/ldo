@@ -81,25 +81,47 @@ export function deleteResourceRdfFromContainer(
  *
  * @param resourceUri - the resource to add
  * @param dataset - the dataset to modify
+ * @returns true if the parent was updated, false if there was no need to update
+ * the parent.
  */
 export function addResourceRdfToContainer(
   resourceUri: string,
   dataset: Dataset,
-) {
+): boolean {
   const parentUri = getParentUri(resourceUri);
   if (parentUri) {
     const parentNode = namedNode(parentUri);
     const resourceNode = namedNode(resourceUri);
-    dataset.add(createQuad(parentNode, ldpContains, resourceNode, parentNode));
-    dataset.add(createQuad(resourceNode, rdfType, ldpResource, parentNode));
-    if (isContainerUri(resourceUri)) {
-      dataset.add(
-        createQuad(resourceNode, rdfType, ldpBasicContainer, parentNode),
-      );
-      dataset.add(createQuad(resourceNode, rdfType, ldpContainer, parentNode));
+
+    const ldpContainsQuad = createQuad(
+      parentNode,
+      ldpContains,
+      resourceNode,
+      parentNode,
+    );
+    const resourceTypeQuad = createQuad(
+      parentNode,
+      ldpContains,
+      resourceNode,
+      parentNode,
+    );
+    const doesNotNeedUpdate =
+      dataset.has(ldpContainsQuad) && dataset.has(resourceTypeQuad);
+    if (!doesNotNeedUpdate) {
+      dataset.addAll([ldpContainsQuad, resourceTypeQuad]);
+      if (isContainerUri(resourceUri)) {
+        dataset.add(
+          createQuad(resourceNode, rdfType, ldpBasicContainer, parentNode),
+        );
+        dataset.add(
+          createQuad(resourceNode, rdfType, ldpContainer, parentNode),
+        );
+      }
+      addResourceRdfToContainer(parentUri, dataset);
     }
-    addResourceRdfToContainer(parentUri, dataset);
+    return !doesNotNeedUpdate;
   }
+  return false;
 }
 
 /**

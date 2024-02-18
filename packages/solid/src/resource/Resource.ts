@@ -329,7 +329,11 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     this.status = result;
     if (result.isError) return result;
     this.updateWithReadSuccess(result);
-    this.emitThisAndParent();
+    if (result.didContainerUpdate) {
+      this.emitThisAndParent();
+    } else {
+      this.emit("update");
+    }
     return result;
   }
 
