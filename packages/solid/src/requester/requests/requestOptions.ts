@@ -1,4 +1,4 @@
-import type { BulkEditableDataset } from "@ldo/subscribable-dataset";
+import type { IBulkEditableDataset } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 
 /**
@@ -18,5 +18,5 @@ export interface DatasetRequestOptions extends BasicRequestOptions {
   /**
    * A dataset to be modified with any new information obtained from a request
    */
-  dataset?: BulkEditableDataset<Quad>;
+  dataset?: IBulkEditableDataset<Quad>;
 }

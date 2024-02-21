@@ -5,14 +5,18 @@ import type {
   Quad,
   DatasetCore,
 } from "@rdfjs/types";
-import type { BulkEditableDataset } from "../src";
-import { ExtendedDatasetFactory } from "@ldo/dataset";
-import { ProxyTransactionalDataset } from "../src";
+import type { ISubscribableDataset } from "../src";
+import { ExtendedDatasetFactory, createDataset } from "@ldo/dataset";
+import {
+  TransactionDataset,
+  createSubscribableDataset,
+  createTransactionDatasetFactory,
+} from "../src";
 import datasetCoreFactory from "@rdfjs/dataset";
 
-describe("ProxyTransactionalDataset", () => {
-  let parentDataset: Dataset<Quad>;
-  let transactionalDataset: ProxyTransactionalDataset<Quad>;
+describe("TransactionDataset", () => {
+  let parentDataset: ISubscribableDataset<Quad>;
+  let transactionalDataset: TransactionDataset<Quad>;
   const tomTypeQuad = quad(
     namedNode("http://example.org/cartoons#Tom"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
@@ -41,12 +45,13 @@ describe("ProxyTransactionalDataset", () => {
   const extendedDatasetFactory = new ExtendedDatasetFactory(datasetFactory);
 
   const initializeWithExtendedDatasetParent = (quads?: Quad[]) => {
-    parentDataset = extendedDatasetFactory.dataset(
+    parentDataset = createSubscribableDataset(
       quads || [tomTypeQuad, tomNameQuad],
     );
-    transactionalDataset = new ProxyTransactionalDataset(
+    transactionalDataset = new TransactionDataset(
       parentDataset,
       extendedDatasetFactory,
+      createTransactionDatasetFactory(),
     );
   };
 
@@ -301,14 +306,15 @@ describe("ProxyTransactionalDataset", () => {
     // Disable for tests
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const mockParent: BulkEditableDataset<Quad> = {
+    const mockParent: ISubscribableDataset<Quad> = {
       bulk: jest.fn(),
       has: (curQuad) => parentDataset.has(curQuad),
       [Symbol.iterator]: () => parentDataset[Symbol.iterator](),
     };
-    transactionalDataset = new ProxyTransactionalDataset<Quad>(
+    transactionalDataset = new TransactionDataset<Quad>(
       mockParent,
       extendedDatasetFactory,
+      createTransactionDatasetFactory(),
     );
 
     transactionalDataset.add(lickyNameQuad);
@@ -317,10 +323,27 @@ describe("ProxyTransactionalDataset", () => {
     expect(mockParent.bulk).toHaveBeenCalled();
   });
 
+  it("Uses bulk update on commit when the parent dataset is not bulk updatable", () => {
+    // Disable for tests
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const mockParent: Dataset<Quad> = createDataset([tomTypeQuad]);
+    transactionalDataset = new TransactionDataset<Quad>(
+      mockParent,
+      extendedDatasetFactory,
+      createTransactionDatasetFactory(),
+    );
+
+    transactionalDataset.add(lickyNameQuad);
+    transactionalDataset.delete(tomTypeQuad);
+    transactionalDataset.commit();
+    expect(mockParent.has(lickyNameQuad)).toBe(true);
+    expect(mockParent.has(tomTypeQuad)).toBe(false);
+  });
+
   it("Returns a transactional dataset", () => {
     expect(
-      transactionalDataset.startTransaction() instanceof
-        ProxyTransactionalDataset,
+      transactionalDataset.startTransaction() instanceof TransactionDataset,
     ).toBe(true);
   });
 

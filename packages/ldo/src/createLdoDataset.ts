@@ -1,6 +1,7 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import { createDataset } from "@ldo/dataset";
 import { LdoDatasetFactory } from "./LdoDatasetFactory";
+import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import type { LdoDataset } from "./LdoDataset";
 
 /**
@@ -22,7 +23,10 @@ export function createLdoDatasetFactory() {
       return createDataset(quads);
     },
   };
-  return new LdoDatasetFactory(datasetFactory);
+  return new LdoDatasetFactory(
+    datasetFactory,
+    createTransactionDatasetFactory(),
+  );
 }
 
 /**
