@@ -21,9 +21,6 @@ import {
   defaultGraph,
 } from "@rdfjs/data-model";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
-import type { DatasetChanges } from "@ldo/rdf-utils";
-import { createDataset } from "@ldo/dataset";
-import type { Quad } from "@rdfjs/types";
 import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
 import type {
   UpdateDefaultGraphSuccess,
@@ -994,28 +991,28 @@ describe("Integration", () => {
    * Update
    */
   describe("updateDataResource", () => {
-    const changes: DatasetChanges<Quad> = {
-      added: createDataset([
-        createQuad(
-          namedNode("http://example.org/#green-goblin"),
-          namedNode("http://xmlns.com/foaf/0.1/name"),
-          literal("Norman Osborn"),
-          namedNode(SAMPLE_DATA_URI),
-        ),
-      ]),
-      removed: createDataset([
-        createQuad(
-          namedNode("http://example.org/#green-goblin"),
-          namedNode("http://xmlns.com/foaf/0.1/name"),
-          literal("Green Goblin"),
-          namedNode(SAMPLE_DATA_URI),
-        ),
-      ]),
-    };
+    const normanQuad = createQuad(
+      namedNode("http://example.org/#green-goblin"),
+      namedNode("http://xmlns.com/foaf/0.1/name"),
+      literal("Norman Osborn"),
+      namedNode(SAMPLE_DATA_URI),
+    );
+
+    const goblinQuad = createQuad(
+      namedNode("http://example.org/#green-goblin"),
+      namedNode("http://xmlns.com/foaf/0.1/name"),
+      literal("Green Goblin"),
+      namedNode(SAMPLE_DATA_URI),
+    );
 
     it("applies changes to a Pod", async () => {
       const result = await testRequestLoads(
-        () => solidLdoDataset.commitChangesToPod(changes),
+        () => {
+          const transaction = solidLdoDataset.startTransaction();
+          transaction.add(normanQuad);
+          transaction.delete(goblinQuad);
+          return transaction.commitToPod();
+        },
         solidLdoDataset.getResource(SAMPLE_DATA_URI),
         {
           isLoading: true,
@@ -1028,41 +1025,17 @@ describe("Integration", () => {
       >;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
-      expect(
-        solidLdoDataset.has(
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Norman Osborn"),
-            namedNode(SAMPLE_DATA_URI),
-          ),
-        ),
-      ).toBe(true);
-      expect(
-        solidLdoDataset.has(
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Green Goblin"),
-            namedNode(SAMPLE_DATA_URI),
-          ),
-        ),
-      ).toBe(false);
+      expect(solidLdoDataset.has(normanQuad)).toBe(true);
+      expect(solidLdoDataset.has(goblinQuad)).toBe(false);
     });
 
     it("applies only remove changes to the Pod", async () => {
-      const changes: DatasetChanges<Quad> = {
-        removed: createDataset([
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Green Goblin"),
-            namedNode(SAMPLE_DATA_URI),
-          ),
-        ]),
-      };
       const result = await testRequestLoads(
-        () => solidLdoDataset.commitChangesToPod(changes),
+        () => {
+          const transaction = solidLdoDataset.startTransaction();
+          transaction.delete(goblinQuad);
+          return transaction.commitToPod();
+        },
         solidLdoDataset.getResource(SAMPLE_DATA_URI),
         {
           isLoading: true,
@@ -1075,21 +1048,17 @@ describe("Integration", () => {
       >;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
-      expect(
-        solidLdoDataset.has(
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Green Goblin"),
-            namedNode(SAMPLE_DATA_URI),
-          ),
-        ),
-      ).toBe(false);
+      expect(solidLdoDataset.has(goblinQuad)).toBe(false);
     });
 
     it("handles an HTTP error", async () => {
       fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
-      const result = await solidLdoDataset.commitChangesToPod(changes);
+
+      const transaction = solidLdoDataset.startTransaction();
+      transaction.add(normanQuad);
+      transaction.delete(goblinQuad);
+      const result = await transaction.commitToPod();
+
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
       const aggregateError = result as AggregateError<
@@ -1103,7 +1072,10 @@ describe("Integration", () => {
       fetchMock.mockImplementationOnce(() => {
         throw new Error("Some Error");
       });
-      const result = await solidLdoDataset.commitChangesToPod(changes);
+      const transaction = solidLdoDataset.startTransaction();
+      transaction.add(normanQuad);
+      transaction.delete(goblinQuad);
+      const result = await transaction.commitToPod();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
       const aggregateError = result as AggregateError<
@@ -1114,17 +1086,15 @@ describe("Integration", () => {
     });
 
     it("errors when trying to update a container", async () => {
-      const changes: DatasetChanges<Quad> = {
-        added: createDataset([
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Norman Osborn"),
-            namedNode(SAMPLE_CONTAINER_URI),
-          ),
-        ]),
-      };
-      const result = await solidLdoDataset.commitChangesToPod(changes);
+      const badContainerQuad = createQuad(
+        namedNode("http://example.org/#green-goblin"),
+        namedNode("http://xmlns.com/foaf/0.1/name"),
+        literal("Norman Osborn"),
+        namedNode(SAMPLE_CONTAINER_URI),
+      );
+      const transaction = solidLdoDataset.startTransaction();
+      transaction.add(badContainerQuad);
+      const result = await transaction.commitToPod();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
       const aggregateError = result as AggregateError<
@@ -1135,17 +1105,15 @@ describe("Integration", () => {
     });
 
     it("writes to the default graph without fetching", async () => {
-      const changes: DatasetChanges<Quad> = {
-        added: createDataset([
-          createQuad(
-            namedNode("http://example.org/#green-goblin"),
-            namedNode("http://xmlns.com/foaf/0.1/name"),
-            literal("Norman Osborn"),
-            defaultGraph(),
-          ),
-        ]),
-      };
-      const result = await solidLdoDataset.commitChangesToPod(changes);
+      const defaultGraphQuad = createQuad(
+        namedNode("http://example.org/#green-goblin"),
+        namedNode("http://xmlns.com/foaf/0.1/name"),
+        literal("Norman Osborn"),
+        defaultGraph(),
+      );
+      const transaction = solidLdoDataset.startTransaction();
+      transaction.add(defaultGraphQuad);
+      const result = await transaction.commitToPod();
       expect(result.type).toBe("aggregateSuccess");
       const aggregateSuccess = result as AggregateSuccess<
         ResourceSuccess<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
@@ -1169,10 +1137,15 @@ describe("Integration", () => {
     it("batches data update changes", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
 
+      const transaction1 = solidLdoDataset.startTransaction();
+      transaction1.delete(goblinQuad);
+      const transaction2 = solidLdoDataset.startTransaction();
+      transaction2.add(normanQuad);
+
       const [, updateResult1, updateResult2] = await Promise.all([
         resource.read(),
-        solidLdoDataset.commitChangesToPod({ removed: changes.removed }),
-        solidLdoDataset.commitChangesToPod({ added: changes.added }),
+        transaction1.commitToPod(),
+        transaction2.commitToPod(),
       ]);
       expect(updateResult1.type).toBe("aggregateSuccess");
       expect(updateResult2.type).toBe("aggregateSuccess");
@@ -1456,10 +1429,8 @@ describe("Integration", () => {
    * ===========================================================================
    */
   describe("methods", () => {
-    it("creates a data object for a specific subject", () => {
-      const resource = solidLdoDataset.getResource(
-        "https://example.com/resource.ttl",
-      );
+    it("creates a data object for a specific subject", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const post = solidLdoDataset.createData(
         PostShShapeType,
         "https://example.com/subject",
@@ -1467,29 +1438,46 @@ describe("Integration", () => {
       );
       post.type = { "@id": "CreativeWork" };
       expect(post.type["@id"]).toBe("CreativeWork");
-      commitData(post);
+      const result = await commitData(post);
+      expect(result.type).toBe("aggregateSuccess");
       expect(
         solidLdoDataset.has(
           createQuad(
             namedNode("https://example.com/subject"),
             namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
             namedNode("http://schema.org/CreativeWork"),
-            namedNode("https://example.com/resource.ttl"),
+            namedNode(SAMPLE_DATA_URI),
           ),
         ),
       ).toBe(true);
     });
 
-    it("uses changeData to start a transaction", () => {
-      const resource = solidLdoDataset.getResource(
-        "https://example.com/resource.ttl",
+    it("handles an error when committing data", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, {
+          status: 500,
+        }),
       );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const post = solidLdoDataset.createData(
+        PostShShapeType,
+        "https://example.com/subject",
+        resource,
+      );
+      post.type = { "@id": "CreativeWork" };
+      expect(post.type["@id"]).toBe("CreativeWork");
+      const result = await commitData(post);
+      expect(result.isError).toBe(true);
+    });
+
+    it("uses changeData to start a transaction", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       solidLdoDataset.add(
         createQuad(
           namedNode("https://example.com/subject"),
           namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
           namedNode("http://schema.org/CreativeWork"),
-          namedNode("https://example.com/resource.ttl"),
+          namedNode(SAMPLE_DATA_URI),
         ),
       );
       const post = solidLdoDataset
@@ -1498,14 +1486,15 @@ describe("Integration", () => {
       const cPost = changeData(post, resource);
       cPost.type = { "@id": "SocialMediaPosting" };
       expect(cPost.type["@id"]).toBe("SocialMediaPosting");
-      commitData(cPost);
+      const result = await commitData(cPost);
+      expect(result.isError).toBe(false);
       expect(
         solidLdoDataset.has(
           createQuad(
             namedNode("https://example.com/subject"),
             namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
             namedNode("http://schema.org/SocialMediaPosting"),
-            namedNode("https://example.com/resource.ttl"),
+            namedNode(SAMPLE_DATA_URI),
           ),
         ),
       ).toBe(true);

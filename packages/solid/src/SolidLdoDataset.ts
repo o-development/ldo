@@ -1,26 +1,14 @@
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoDataset, startTransaction } from "@ldo/ldo";
-import type { DatasetChanges, GraphNode, SubjectNode } from "@ldo/rdf-utils";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
-import type {
-  UpdateResult,
-  UpdateResultError,
-} from "./requester/requests/updateDataResource";
-import { AggregateError } from "./requester/results/error/ErrorResult";
-import { InvalidUriError } from "./requester/results/error/InvalidUriError";
-import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
-import type {
-  UpdateDefaultGraphSuccess,
-  UpdateSuccess,
-} from "./requester/results/success/UpdateSuccess";
 import type { Container } from "./resource/Container";
 import type { Leaf } from "./resource/Leaf";
-import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
 import type { ResourceGetterOptions } from "./ResourceStore";
 import type { SolidLdoDatasetContext } from "./SolidLdoDatasetContext";
-import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { ContainerUri, LeafUri } from "./util/uriTypes";
-import { isContainerUri } from "./util/uriTypes";
+import { SolidLdoTransactionDataset } from "./SolidLdoTransactionDataset";
+import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
+import type { SubjectNode } from "@ldo/rdf-utils";
 import type { Resource } from "./resource/Resource";
 
 /**
@@ -57,14 +45,16 @@ export class SolidLdoDataset extends LdoDataset {
   /**
    * @param context - SolidLdoDatasetContext
    * @param datasetFactory - An optional dataset factory
+   * @param transactionDatasetFactory - A factory for creating transaction datasets
    * @param initialDataset - A set of triples to initialize this dataset
    */
   constructor(
     context: SolidLdoDatasetContext,
     datasetFactory: DatasetFactory,
+    transactionDatasetFactory: ITransactionDatasetFactory<Quad>,
     initialDataset?: Dataset,
   ) {
-    super(datasetFactory, initialDataset);
+    super(datasetFactory, transactionDatasetFactory, initialDataset);
     this.context = context;
   }
 
@@ -92,98 +82,13 @@ export class SolidLdoDataset extends LdoDataset {
     return this.context.resourceStore.get(uri, options);
   }
 
-  /**
-   * Given dataset changes, commit all changes made to the proper place
-   * on Solid Pods.
-   *
-   * @param changes - A set of changes that should be applied to Solid Pods
-   *
-   * @returns an AggregateSuccess if successful and an AggregateError if not
-   *
-   * @example
-   * ```typescript
-   * const result = await solidLdoDataset.commitChangesToPod({
-   *   added: createDataset([
-   *     quad(namedNode("a"), namedNode("b"), namedNode("d"));
-   *   ]),
-   *   removed: createDataset([
-   *     quad(namedNode("a"), namedNode("b"), namedNode("c"));
-   *   ])
-   * });
-   * if (result.isError()) {
-   *   // handle error
-   * }
-   * ```
-   */
-  async commitChangesToPod(
-    changes: DatasetChanges<Quad>,
-  ): Promise<
-    | AggregateSuccess<
-        ResourceResult<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
-      >
-    | AggregateError<UpdateResultError | InvalidUriError>
-  > {
-    // Optimistically add changes to the datastore
-    // this.bulk(changes);
-    const changesByGraph = splitChangesByGraph(changes);
-
-    // Iterate through all changes by graph in
-    const results: [
-      GraphNode,
-      DatasetChanges<Quad>,
-      UpdateResult | InvalidUriError | UpdateDefaultGraphSuccess,
-    ][] = await Promise.all(
-      Array.from(changesByGraph.entries()).map(
-        async ([graph, datasetChanges]) => {
-          if (graph.termType === "DefaultGraph") {
-            // Undefined means that this is the default graph
-            this.bulk(datasetChanges);
-            return [
-              graph,
-              datasetChanges,
-              {
-                type: "updateDefaultGraphSuccess",
-                isError: false,
-              } as UpdateDefaultGraphSuccess,
-            ];
-          }
-          if (isContainerUri(graph.value)) {
-            return [
-              graph,
-              datasetChanges,
-              new InvalidUriError(
-                graph.value,
-                `Container URIs are not allowed for custom data.`,
-              ),
-            ];
-          }
-          const resource = this.getResource(graph.value as LeafUri);
-          return [graph, datasetChanges, await resource.update(datasetChanges)];
-        },
-      ),
+  public startTransaction(): SolidLdoTransactionDataset {
+    return new SolidLdoTransactionDataset(
+      this,
+      this.context,
+      this.datasetFactory,
+      this.transactionDatasetFactory,
     );
-
-    // If one has errored, return error
-    const errors = results.filter((result) => result[2].isError);
-
-    if (errors.length > 0) {
-      return new AggregateError(
-        errors.map(
-          (result) => result[2] as UpdateResultError | InvalidUriError,
-        ),
-      );
-    }
-    return {
-      isError: false,
-      type: "aggregateSuccess",
-      results: results
-        .map((result) => result[2])
-        .filter(
-          (result): result is ResourceResult<UpdateSuccess, Leaf> =>
-            result.type === "updateSuccess" ||
-            result.type === "updateDefaultGraphSuccess",
-        ),
-    };
   }
 
   /**

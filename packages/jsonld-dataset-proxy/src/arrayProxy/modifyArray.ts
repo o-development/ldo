@@ -1,7 +1,10 @@
 import { defaultGraph } from "@rdfjs/data-model";
 import type { Quad } from "@rdfjs/types";
 import type { ObjectNode } from "@ldo/rdf-utils";
-import { ProxyTransactionalDataset } from "@ldo/subscribable-dataset";
+import {
+  TransactionDataset,
+  createTransactionDatasetFactory,
+} from "@ldo/subscribable-dataset";
 import { createDatasetFactory } from "@ldo/dataset";
 import type { ProxyContext } from "../ProxyContext";
 import { addObjectToDataset } from "../util/addObjectToDataset";
@@ -31,9 +34,10 @@ export function checkArrayModification(
         );
       }
       // Create a test dataset to see if the inputted data is valid
-      const testDataset = new ProxyTransactionalDataset(
+      const testDataset = new TransactionDataset(
         proxyContext.dataset,
         createDatasetFactory(),
+        createTransactionDatasetFactory(),
       );
       addObjectToDataset(
         objectToAdd as RawObject,

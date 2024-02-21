@@ -8,14 +8,15 @@ import {
 } from "@ldo/jsonld-dataset-proxy";
 import type { AnyNode } from "@ldo/rdf-utils";
 import type {
-  SubscribableDataset,
-  TransactionalDataset,
+  ISubscribableDataset,
+  ITransactionDataset,
 } from "@ldo/subscribable-dataset";
 
 /**
  * @category Types
  * `LdoBase` is an interface defining that a Linked Data Object is a JavaScript Object Literal.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LdoBase = Record<string, any>;
 
 /**
@@ -42,21 +43,21 @@ export function normalizeNodeNames<NodeType extends AnyNode>(
 
 export function canDatasetStartTransaction(
   dataset: Dataset,
-): dataset is SubscribableDataset<Quad> {
+): dataset is ISubscribableDataset<Quad> {
   return (
-    typeof (dataset as SubscribableDataset).startTransaction === "function"
+    typeof (dataset as ISubscribableDataset).startTransaction === "function"
   );
 }
 
 export function isTransactionalDataset(
   dataset: Dataset,
-): dataset is TransactionalDataset<Quad> {
-  return typeof (dataset as TransactionalDataset).commit === "function";
+): dataset is ITransactionDataset<Quad> {
+  return typeof (dataset as ITransactionDataset).commit === "function";
 }
 
 export function getTransactionalDatasetFromLdo(
   ldo: LdoBase,
-): [TransactionalDataset<Quad>, SubjectProxy | ArrayProxy] {
+): [ITransactionDataset<Quad>, SubjectProxy | ArrayProxy] {
   const proxy = getProxyFromObject(ldo);
   const dataset = proxy[_getUnderlyingDataset];
   if (

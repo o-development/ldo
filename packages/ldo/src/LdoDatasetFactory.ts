@@ -1,4 +1,6 @@
-import type { DatasetFactory, Dataset, Quad } from "@rdfjs/types";
+import type { Dataset, Quad } from "@rdfjs/types";
+import type { ISubscribableDatasetFactory } from "@ldo/subscribable-dataset";
+import { SubscribableDatasetFactory } from "@ldo/subscribable-dataset";
 import { LdoDataset } from "./LdoDataset";
 
 /**
@@ -9,37 +11,28 @@ import { LdoDataset } from "./LdoDataset";
  *
  * @example
  * ```typescript
- * import { createLdoDatasetFactory } from "ldo";
+ * import { createLdoDatasetFactory } from "@ldo/ldo";
+ * import { createExtendedDatasetFactory } from "@ldo/dataset";
+ * import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
  *
- * const datasetFactory = // some RDF/JS Dataset Factory
- * const ldoDatasetFactory = new LdoDatasetFactory(datasetFactory);
+ * const datasetFactory = createExtendedDatasetFactory();
+ * const transactionDatasetFactory = createTransactionDatasetFactroy();
+ * const ldoDatasetFactory = new LdoDatasetFactory(
+ *   datasetFactory,
+ *   transactionDatasetFactory
+ * );
  * const ldoDataset = ldoDatasetFactory.dataset(initialDataset);
  * ```
  */
-export class LdoDatasetFactory implements DatasetFactory<Quad, Quad> {
-  private datasetFactory: DatasetFactory<Quad, Quad>;
-
-  /**
-   * @constructor
-   * @param datasetFactory - A generic dataset factory this factory will wrap
-   */
-  constructor(datasetFactory: DatasetFactory<Quad, Quad>) {
-    this.datasetFactory = datasetFactory;
-  }
-
-  /**
-   * Creates an LdoDataset
-   * @param quads - A list of quads to initialize the dataset
-   * @returns an LdoDataset
-   */
-  dataset(quads?: Dataset<Quad, Quad> | Quad[]): LdoDataset {
+export class LdoDatasetFactory
+  extends SubscribableDatasetFactory<Quad>
+  implements ISubscribableDatasetFactory<Quad>
+{
+  dataset(quads?: Dataset<Quad, Quad> | Quad[] | undefined): LdoDataset {
     return new LdoDataset(
       this.datasetFactory,
-      quads
-        ? Array.isArray(quads)
-          ? this.datasetFactory.dataset(quads)
-          : quads
-        : undefined,
+      this.transactionDatasetFactory,
+      this.datasetFactory.dataset(quads),
     );
   }
 }
