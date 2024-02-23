@@ -309,14 +309,14 @@ export class Leaf extends Resource {
    * ```typescript
    * const leaf = solidLdoDataset
    *   .getResource("https://example.com/container/resource.ttl");
-   * const leafParent = leaf.getParentContainer();
+   * const leafParent = await leaf.getParentContainer();
    * if (!leafParent.isError) {
    *   // Logs "https://example.com/container/"
    *   console.log(leafParent.uri);
    * }
    * ```
    */
-  getParentContainer(): Container {
+  async getParentContainer(): Promise<Container> {
     const parentUri = getParentUri(this.uri)!;
     return this.context.resourceStore.get(parentUri);
   }
@@ -338,8 +338,8 @@ export class Leaf extends Resource {
    * }
    * ```
    */
-  getRootContainer(): Promise<Container | CheckRootResultError> {
-    const parent = this.getParentContainer();
+  async getRootContainer(): Promise<Container | CheckRootResultError> {
+    const parent = await this.getParentContainer();
     return parent.getRootContainer();
   }
 

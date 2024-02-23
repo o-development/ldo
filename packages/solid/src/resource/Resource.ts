@@ -524,6 +524,10 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
   abstract getRootContainer(): Promise<Container | CheckRootResultError>;
 
+  abstract getParentContainer(): Promise<
+    Container | CheckRootResultError | undefined
+  >;
+
   /**
    * ===========================================================================
    * WEB ACCESS CONTROL METHODS
@@ -582,15 +586,15 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     }
 
     // If the WacRule is absent
-    const parentUri = getParentUri(this.uri);
-    if (!parentUri) {
+    const parentResource = await this.getParentContainer();
+    if (parentResource?.isError) return parentResource;
+    if (!parentResource) {
       return new NoncompliantPodError(
         this.uri,
         `Resource "${this.uri}" has no Effective ACL resource`,
       );
     }
-    const parent = this.context.resourceStore.get(parentUri);
-    return parent.getWac();
+    return parentResource.getWac();
   }
 
   // async setWac(wacRule: WacRule): Promise<> {
