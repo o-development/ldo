@@ -30,6 +30,8 @@ import type { GetWacUriError, GetWacUriResult } from "./wac/getWacUri";
 import { getWacUri } from "./wac/getWacUri";
 import { getWacRuleWithAclUri, type GetWacRuleResult } from "./wac/getWacRule";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import { setWacRuleForAclUri, type SetWacRuleResult } from "./wac/setWacRule";
+import type { LeafUri } from "../util/uriTypes";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -85,7 +87,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * @internal
    * If a wac uri is fetched, it is cached here
    */
-  protected wacUri?: string;
+  protected wacUri?: LeafUri;
 
   /**
    * @internal
@@ -597,7 +599,12 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return parentResource.getWac();
   }
 
-  // async setWac(wacRule: WacRule): Promise<> {
-  //   throw new Error("Not Implemented");
-  // }
+  async setWac(wacRule: WacRule): Promise<GetWacUriError | SetWacRuleResult> {
+    const wacUriResult = await this.getWacUri();
+    if (wacUriResult.isError) return wacUriResult;
+
+    return setWacRuleForAclUri(wacUriResult.wacUri, wacRule, this.uri, {
+      fetch: this.context.fetch,
+    });
+  }
 }

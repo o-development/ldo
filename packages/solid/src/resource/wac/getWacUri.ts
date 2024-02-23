@@ -9,6 +9,7 @@ import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { BasicRequestOptions } from "../../requester/requests/requestOptions";
 import { NoncompliantPodError } from "../../requester/results/error/NoncompliantPodError";
 import { parse as parseLinkHeader } from "http-link-header";
+import type { LeafUri } from "../../util/uriTypes";
 
 export type GetWacUriError =
   | HttpErrorResultType
@@ -55,7 +56,7 @@ export async function getWacUri(
       type: "getWacUriSuccess",
       isError: false,
       uri: resourceUri,
-      wacUri: aclUris[0].uri,
+      wacUri: aclUris[0].uri as LeafUri,
     };
   } catch (err: unknown) {
     return UnexpectedResourceError.fromThrown(resourceUri, err);

@@ -10,10 +10,3 @@ export interface WacRule {
   authenticated: AccessModeList;
   agent: Record<string, AccessModeList>;
 }
-
-// export interface SetWacRule {
-//   ruleFor: Resource;
-//   public?: AccessModeList;
-//   authenticated?: AccessModeList;
-//   agent?: Record<string, AccessModeList>;
-// }
