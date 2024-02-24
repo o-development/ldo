@@ -11,9 +11,6 @@ import type {
 } from "../requester/requests/readResource";
 import type { BatchedRequester } from "../requester/BatchedRequester";
 import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
-import type { AccessRule } from "../requester/results/success/AccessRule";
-import type { SetAccessRulesResult } from "../requester/requests/setAccessRules";
-import { setAccessRules } from "../requester/requests/setAccessRules";
 import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
@@ -28,6 +25,13 @@ import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
 import type { ResourceResult } from "./resourceResult/ResourceResult";
 import type { Container } from "./Container";
 import type { Leaf } from "./Leaf";
+import type { WacRule } from "./wac/WacRule";
+import type { GetWacUriError, GetWacUriResult } from "./wac/getWacUri";
+import { getWacUri } from "./wac/getWacUri";
+import { getWacRuleWithAclUri, type GetWacRuleResult } from "./wac/getWacRule";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import { setWacRuleForAclUri, type SetWacRuleResult } from "./wac/setWacRule";
+import type { LeafUri } from "../util/uriTypes";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -78,6 +82,18 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * True if this resource has been fetched but does not exist
    */
   protected absent: boolean | undefined;
+
+  /**
+   * @internal
+   * If a wac uri is fetched, it is cached here
+   */
+  protected wacUri?: LeafUri;
+
+  /**
+   * @internal
+   * If a wac rule was fetched, it is cached here
+   */
+  protected wacRule?: WacRule;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
@@ -510,18 +526,160 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
   abstract getRootContainer(): Promise<Container | CheckRootResultError>;
 
-  // Access Rules Methods
-  // async getAccessRules(): Promise<AccessRuleResult | AccessRuleFetchError> {
-  //   return getAccessRules({ uri: this.uri, fetch: this.context.fetch });
-  // }
-  /* istanbul ignore next */
-  async setAccessRules(
-    newAccessRules: AccessRule,
-  ): Promise<ResourceResult<SetAccessRulesResult, Leaf | Container>> {
-    const result = await setAccessRules(this.uri, newAccessRules, {
+  abstract getParentContainer(): Promise<
+    Container | CheckRootResultError | undefined
+  >;
+
+  /**
+   * ===========================================================================
+   * WEB ACCESS CONTROL METHODS
+   * ===========================================================================
+   */
+
+  /**
+   * Retrieves the URI for the web access control (WAC) rules for this resource
+   * @param options - set the "ignoreCache" field to true to ignore any cached
+   * information on WAC rules.
+   * @returns WAC Rules results
+   */
+  protected async getWacUri(options?: {
+    ignoreCache: boolean;
+  }): Promise<GetWacUriResult> {
+    // Get the wacUri if not already present
+    if (!options?.ignoreCache && this.wacUri) {
+      return {
+        type: "getWacUriSuccess",
+        wacUri: this.wacUri,
+        isError: false,
+        uri: this.uri,
+      };
+    }
+
+    const wacUriResult = await getWacUri(this.uri, {
       fetch: this.context.fetch,
     });
+    if (wacUriResult.isError) {
+      return wacUriResult;
+    }
+    this.wacUri = wacUriResult.wacUri;
+    return wacUriResult;
+  }
+
+  /**
+   * Retrieves web access control (WAC) rules for this resource
+   * @param options - set the "ignoreCache" field to true to ignore any cached
+   * information on WAC rules.
+   * @returns WAC Rules results
+   *
+   * @example
+   * ```typescript
+   * const resource = ldoSolidDataset
+   *   .getResource("https://example.com/container/resource.ttl");
+   * const wacRulesResult = await resource.getWac();
+   * if (!wacRulesResult.isError) {
+   *   const wacRules = wacRulesResult.wacRule;
+   *   // True if the resource is publicly readable
+   *   console.log(wacRules.public.read);
+   *   // True if authenticated agents can write to the resource
+   *   console.log(wacRules.authenticated.write);
+   *   // True if the given WebId has append access
+   *   console.log(
+   *     wacRules.agent[https://example.com/person1/profile/card#me].append
+   *   );
+   *   // True if the given WebId has control access
+   *   console.log(
+   *     wacRules.agent[https://example.com/person1/profile/card#me].control
+   *   );
+   * }
+   * ```
+   */
+  async getWac(options?: {
+    ignoreCache: boolean;
+  }): Promise<GetWacUriError | GetWacRuleResult> {
+    // Return the wac rule if it's already cached
+    if (!options?.ignoreCache && this.wacRule) {
+      return {
+        type: "getWacRuleSuccess",
+        uri: this.uri,
+        isError: false,
+        wacRule: this.wacRule,
+      };
+    }
+
+    // Get the wac uri
+    const wacUriResult = await this.getWacUri(options);
+    if (wacUriResult.isError) return wacUriResult;
+
+    // Get the wac rule
+    const wacResult = await getWacRuleWithAclUri(wacUriResult.wacUri, {
+      fetch: this.context.fetch,
+    });
+    if (wacResult.isError) return wacResult;
+    // If the wac rules was successfully found
+    if (wacResult.type === "getWacRuleSuccess") {
+      this.wacRule = wacResult.wacRule;
+      return wacResult;
+    }
+
+    // If the WacRule is absent
+    const parentResource = await this.getParentContainer();
+    if (parentResource?.isError) return parentResource;
+    if (!parentResource) {
+      return new NoncompliantPodError(
+        this.uri,
+        `Resource "${this.uri}" has no Effective ACL resource`,
+      );
+    }
+    return parentResource.getWac();
+  }
+
+  /**
+   * Sets access rules for a specific resource
+   * @param wacRule - the access rules to set
+   * @returns SetWacRuleResult
+   *
+   * @example
+   * ```typescript
+   * const resource = ldoSolidDataset
+   *   .getResource("https://example.com/container/resource.ttl");
+   * const wacRulesResult = await resource.setWac({
+   *   public: {
+   *     read: true,
+   *     write: false,
+   *     append: false,
+   *     control: false
+   *   },
+   *   authenticated: {
+   *     read: true,
+   *     write: false,
+   *     append: true,
+   *     control: false
+   *   },
+   *   agent: {
+   *     "https://example.com/person1/profile/card#me": {
+   *       read: true,
+   *       write: true,
+   *       append: true,
+   *       control: true
+   *     }
+   *   }
+   * });
+   * ```
+   */
+  async setWac(wacRule: WacRule): Promise<GetWacUriError | SetWacRuleResult> {
+    const wacUriResult = await this.getWacUri();
+    if (wacUriResult.isError) return wacUriResult;
+
+    const result = await setWacRuleForAclUri(
+      wacUriResult.wacUri,
+      wacRule,
+      this.uri,
+      {
+        fetch: this.context.fetch,
+      },
+    );
     if (result.isError) return result;
-    return { ...result, resource: this as unknown as Leaf | Container };
+    this.wacRule = result.wacRule;
+    return result;
   }
 }

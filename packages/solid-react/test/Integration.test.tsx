@@ -135,9 +135,7 @@ describe("Integration Tests", () => {
         const rootContainer = useRootContainerFor(SAMPLE_DATA_URI, {
           suppressInitialRead: true,
         });
-        return rootContainer ? (
-          <p role="root">{rootContainer?.uri}</p>
-        ) : undefined;
+        return rootContainer ? <p role="root">{rootContainer?.uri}</p> : <></>;
       };
       render(
         <UnauthenticatedSolidLdoProvider>
@@ -181,7 +179,7 @@ describe("Integration Tests", () => {
           );
           setSubject(someSubject);
         }, []);
-        return subject ? <p role="subject">{subject["@id"]}</p> : undefined;
+        return subject ? <p role="subject">{subject["@id"]}</p> : <></>;
       };
       render(
         <UnauthenticatedSolidLdoProvider>
@@ -205,9 +203,7 @@ describe("Integration Tests", () => {
           someSubject.articleBody = "Cool Article";
           setSubject(someSubject);
         }, []);
-        return subject ? (
-          <p role="subject">{subject.articleBody}</p>
-        ) : undefined;
+        return subject ? <p role="subject">{subject.articleBody}</p> : <></>;
       };
       render(
         <UnauthenticatedSolidLdoProvider>

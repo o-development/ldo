@@ -43,6 +43,8 @@ import type {
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
+import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
+import type { WacRule } from "../src/resource/wac/WacRule";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -94,7 +96,8 @@ const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://ww
 <http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
 <http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
 <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Append>, <http://www.w3.org/ns/auth/acl#Control>;
-<http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>.`;
+<http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>;
+<http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>, <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>.`;
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -209,6 +212,9 @@ describe("Integration", () => {
         method: "DELETE",
       }),
     ]);
+    await authFetch(TEST_CONTAINER_URI, {
+      method: "DELETE",
+    });
   });
 
   /**
@@ -302,6 +308,18 @@ describe("Integration", () => {
       });
       expect(result.isError).toBe(true);
       expect(result.type).toBe("serverError");
+    });
+
+    it("Returns an Unauthorized error if a 403 error is returned", async () => {
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 403 }));
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+        isDoingInitialFetch: true,
+      });
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("unauthorizedError");
     });
 
     it("Returns an UnauthenticatedError on an 401 error is returned", async () => {
@@ -1610,6 +1628,289 @@ describe("Integration", () => {
       expect(
         resource.children().some((child) => child.uri === SAMPLE2_BINARY_URI),
       ).toBe(true);
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * ACCESS CONTROL
+   * ===========================================================================
+   */
+  describe("getWacRule", () => {
+    it("Fetches a wac rules for a container that has a corresponding acl", async () => {
+      const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const wacResult = await container.getWac();
+      expect(wacResult.isError).toBe(false);
+      const wacSuccess = wacResult as GetWacRuleSuccess;
+      expect(wacSuccess.wacRule.public).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.authenticated).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.agent[WEB_ID]).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+    });
+
+    it("Gets wac rules of a parent resource for a resource that does not have a corresponding acl", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(false);
+      const wacSuccess = wacResult as GetWacRuleSuccess;
+      expect(wacSuccess.wacRule.public).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.authenticated).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.agent[WEB_ID]).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+    });
+
+    it("uses cached values for a retrieved resource", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      await resource.getWac();
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(false);
+      const wacSuccess = wacResult as GetWacRuleSuccess;
+      expect(wacSuccess.wacRule.public).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.authenticated).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+      expect(wacSuccess.wacRule.agent[WEB_ID]).toEqual({
+        read: true,
+        write: true,
+        append: true,
+        control: true,
+      });
+    });
+
+    it("returns an error when an error is encountered fetching the aclUri", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("serverError");
+    });
+
+    it("returns an error when a document is not found", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("notFoundError");
+    });
+
+    it("returns a non-compliant error if a response is returned without a link header", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("Error", {
+          status: 200,
+        }),
+      );
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("noncompliantPodError");
+      expect((wacResult as NoncompliantPodError).message).toBe(
+        `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: No link header present in request.`,
+      );
+    });
+
+    it("returns a non-compliant error if a response is returned without an ACL link", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("Error", {
+          status: 200,
+          headers: { link: `<card.meta>; rel="describedBy"` },
+        }),
+      );
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("noncompliantPodError");
+      expect((wacResult as NoncompliantPodError).message).toBe(
+        `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: There must be one link with a rel="acl"`,
+      );
+    });
+
+    it("Returns an UnexpectedResourceError if an unknown error is triggered while getting the wac URI", async () => {
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await resource.getWac();
+      expect(result.isError).toBe(true);
+      if (!result.isError) return;
+      expect(result.type).toBe("unexpectedResourceError");
+      expect(result.message).toBe("Something happened.");
+    });
+
+    it("Returns an error if the request to get the ACL fails", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("", {
+          status: 200,
+          headers: { link: `<card.acl>; rel="acl"` },
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("serverError");
+    });
+
+    it("Returns a non-compliant error if the root uri has no ACL", () => {});
+
+    it("Returns an error if the request to the ACL resource returns invalid turtle", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("", {
+          status: 200,
+          headers: { link: `<card.acl>; rel="acl"` },
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(
+        new Response("BAD TURTLE", { status: 200 }),
+      );
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("noncompliantPodError");
+      expect((wacResult as NoncompliantPodError).message).toBe(
+        `Response from card.acl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "BAD" on line 1.\nBAD TURTLE`,
+      );
+    });
+
+    it("Returns an error if there was a problem getting the parent resource", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("", {
+          status: 200,
+          headers: { link: `<card.acl>; rel="acl"` },
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
+      fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("serverError");
+    });
+
+    it("returns a NonCompliantPodError when this is the root resource and it doesn't have an ACL", async () => {
+      const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
+      fetchMock.mockResolvedValueOnce(
+        new Response("", {
+          status: 200,
+          headers: { link: `<card.acl>; rel="acl"` },
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
+      const wacResult = await resource.getWac();
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("noncompliantPodError");
+      expect((wacResult as NoncompliantPodError).message).toBe(
+        `Response from ${ROOT_CONTAINER} is not compliant with the Solid Specification: Resource "${ROOT_CONTAINER}" has no Effective ACL resource`,
+      );
+    });
+  });
+
+  describe("setWacRule", () => {
+    const newRules: WacRule = {
+      public: { read: true, write: false, append: false, control: false },
+      authenticated: {
+        read: true,
+        write: false,
+        append: true,
+        control: false,
+      },
+      agent: {
+        [WEB_ID]: { read: true, write: true, append: true, control: true },
+      },
+    };
+
+    it("sets wac rules for a resource that didn't have one before", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await resource.setWac(newRules);
+      expect(result.isError).toBe(false);
+      expect(result.type).toBe("setWacRuleSuccess");
+      const readResult = await resource.getWac({ ignoreCache: true });
+      expect(readResult.isError).toBe(false);
+      expect(readResult.type).toBe("getWacRuleSuccess");
+      const rules = (readResult as GetWacRuleSuccess).wacRule;
+      expect(rules).toEqual(newRules);
+    });
+
+    it("overwrites an existing access control rule", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const result = await resource.setWac(newRules);
+      expect(result.isError).toBe(false);
+      expect(result.type).toBe("setWacRuleSuccess");
+      const readResult = await resource.getWac({ ignoreCache: true });
+      expect(readResult.isError).toBe(false);
+      expect(readResult.type).toBe("getWacRuleSuccess");
+      const rules = (readResult as GetWacRuleSuccess).wacRule;
+      expect(rules).toEqual(newRules);
+    });
+
+    it("Does not write a rule when access is not granted to an agent", async () => {
+      const moreRules = {
+        ...newRules,
+        public: { read: false, write: false, append: false, control: false },
+      };
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await resource.setWac(moreRules);
+      expect(result.isError).toBe(false);
+      expect(result.type).toBe("setWacRuleSuccess");
+      const readResult = await resource.getWac({ ignoreCache: true });
+      expect(readResult.isError).toBe(false);
+      expect(readResult.type).toBe("getWacRuleSuccess");
+      const rules = (readResult as GetWacRuleSuccess).wacRule;
+      expect(rules).toEqual(moreRules);
+    });
+
+    it("returns an error when an error is encountered fetching the aclUri", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      const wacResult = await resource.setWac(newRules);
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("serverError");
+    });
+
+    it("Returns an error when the request to write the access rules throws an error", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      fetchMock.mockResolvedValueOnce(
+        new Response("", {
+          status: 200,
+          headers: { link: `<card.acl>; rel="acl"` },
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
+      const wacResult = await resource.setWac(newRules);
+      expect(wacResult.isError).toBe(true);
+      expect(wacResult.type).toBe("serverError");
     });
   });
 });

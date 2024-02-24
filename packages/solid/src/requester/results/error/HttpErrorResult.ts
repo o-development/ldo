@@ -6,7 +6,8 @@ import { ResourceError } from "./ErrorResult";
 export type HttpErrorResultType =
   | ServerHttpError
   | UnexpectedHttpError
-  | UnauthenticatedHttpError;
+  | UnauthenticatedHttpError
+  | UnauthorizedHttpError;
 
 /**
  * An error caused by an HTTP request
@@ -70,6 +71,9 @@ export abstract class HttpErrorResult extends ResourceError {
     if (UnauthenticatedHttpError.is(response)) {
       return new UnauthenticatedHttpError(uri, response);
     }
+    if (UnauthorizedHttpError.is(response)) {
+      return new UnauthorizedHttpError(uri, response);
+    }
     if (HttpErrorResult.isnt(response)) {
       return new UnexpectedHttpError(uri, response);
     }
@@ -99,6 +103,42 @@ export class UnauthenticatedHttpError extends HttpErrorResult {
    */
   static is(response: Response) {
     return response.status === 401;
+  }
+}
+
+/**
+ * An UnauthenticatedHttpError triggers when a Solid server returns a 403 status
+ * indicating that the request is not authorized.
+ */
+export class UnauthorizedHttpError extends HttpErrorResult {
+  readonly type = "unauthorizedError" as const;
+
+  /**
+   * Indicates if a specific response constitutes an UnauthenticatedHttpError
+   * @param response - The request response
+   * @returns true if this response constitutes an UnauthenticatedHttpError
+   */
+  static is(response: Response) {
+    return response.status === 403;
+  }
+}
+
+/**
+ * An NotFoundHttpError triggers when a Solid server returns a 404 status. This
+ * error is not returned in most cases as a "absent" resource is not considered
+ * an error, but it is thrown while trying for find a WAC rule for a resource
+ * that does not exist.
+ */
+export class NotFoundHttpError extends HttpErrorResult {
+  readonly type = "notFoundError" as const;
+
+  /**
+   * Indicates if a specific response constitutes an NotFoundHttpError
+   * @param response - The request response
+   * @returns true if this response constitutes an NotFoundHttpError
+   */
+  static is(response: Response) {
+    return response.status === 404;
   }
 }
 

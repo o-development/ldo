@@ -1,6 +1,6 @@
 {
   "name": "@ldo/dataset",
-  "version": "0.0.1-alpha.17",
+  "version": "0.0.1-alpha.23",
   "description": "An RDFJS dataset implementation",
   "main": "dist/index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldo/rdf-utils": "^0.0.1-alpha.17",
+    "@ldo/rdf-utils": "^0.0.1-alpha.23",
     "@rdfjs/dataset": "^1.1.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.2.0"
@@ -46,5 +46,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "4548985c0de9b0ec83cf5ee93f2d7c1ca2c1b8d8"
+  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
 }

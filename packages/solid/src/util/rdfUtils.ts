@@ -1,3 +1,4 @@
+import type { LdoDataset } from "@ldo/ldo";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { Dataset } from "@rdfjs/types";
@@ -115,19 +116,9 @@ export async function addRawTurtleToDataset(
   dataset: Dataset,
   baseUri: string,
 ): Promise<undefined | NoncompliantPodError> {
-  let loadedDataset: Dataset;
-  try {
-    loadedDataset = await parseRdf(rawTurtle, {
-      baseIRI: baseUri,
-    });
-  } catch (err) {
-    const error = UnexpectedResourceError.fromThrown(baseUri, err);
-    return new NoncompliantPodError(
-      baseUri,
-      `Request returned noncompliant turtle: ${error.message}`,
-    );
-  }
-
+  const rawTurtleResult = await rawTurtleToDataset(rawTurtle, baseUri);
+  if (rawTurtleResult.isError) return rawTurtleResult;
+  const loadedDataset = rawTurtleResult.dataset;
   const graphNode = namedNode(baseUri);
   // Destroy all triples that were once a part of this resouce
   dataset.deleteMatches(undefined, undefined, undefined, graphNode);
@@ -137,4 +128,22 @@ export async function addRawTurtleToDataset(
       createQuad(quad.subject, quad.predicate, quad.object, graphNode),
     ),
   );
+}
+
+export async function rawTurtleToDataset(
+  rawTurtle: string,
+  baseUri: string,
+): Promise<{ isError: false; dataset: LdoDataset } | NoncompliantPodError> {
+  try {
+    const loadedDataset = await parseRdf(rawTurtle, {
+      baseIRI: baseUri,
+    });
+    return { isError: false, dataset: loadedDataset };
+  } catch (err) {
+    const error = UnexpectedResourceError.fromThrown(baseUri, err);
+    return new NoncompliantPodError(
+      baseUri,
+      `Request returned noncompliant turtle: ${error.message}\n${rawTurtle}`,
+    );
+  }
 }
