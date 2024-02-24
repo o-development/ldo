@@ -29,10 +29,10 @@
     "@ldo/rdf-utils": "^0.0.1-alpha.17",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
-    "@types/jest": "^29.0.3",
-    "jest-environment-jsdom": "^29.7.0",
+    "@types/jest": "^27.0.3",
+    "jest-environment-jsdom": "^27.0.0",
     "start-server-and-test": "^2.0.3",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^27.1.2",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
