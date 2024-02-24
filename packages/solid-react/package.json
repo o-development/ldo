@@ -36,7 +36,7 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@inrupt/solid-client": "^2.0.0",
+    "@inrupt/solid-client-authn-browser": "^2.0.0",
     "@ldo/dataset": "^0.0.1-alpha.21",
     "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.21",
     "@ldo/ldo": "^0.0.1-alpha.21",
@@ -52,5 +52,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "1c242d645fc488f8d0e9f4da7425d9928abf1e9d"
+  "gitHead": "cc89f9f6a5f6fb2d6c5448e0c4bdd66c7c021a39"
 }
