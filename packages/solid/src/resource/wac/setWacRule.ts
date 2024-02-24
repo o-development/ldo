@@ -16,6 +16,15 @@ import { guaranteeFetch } from "../../util/guaranteeFetch";
 export type SetWacRuleError = HttpErrorResultType | UnexpectedResourceError;
 export type SetWacRuleResult = SetWacRuleSuccess | SetWacRuleError;
 
+/**
+ * Given the URI of an ACL document and some WAC rules, set the WAC rules of
+ * that document
+ * @param aclUri: The URI for the ACL document
+ * @param newRule: A new WAC rule to set. This will overwrite old rules
+ * @param accessTo: The document this rule refers to
+ * @param options: Options object to include an authenticated fetch function
+ * @returns SetWacRuleResult
+ */
 export async function setWacRuleForAclUri(
   aclUri: LeafUri,
   newRule: WacRule,

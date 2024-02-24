@@ -18,6 +18,12 @@ export type GetWacUriError =
   | UnexpectedResourceError;
 export type GetWacUriResult = GetWacUriSuccess | GetWacUriError;
 
+/**
+ * Get the URI for the WAC rules of a specific resource
+ * @param resourceUri: the URI of the resource
+ * @param options: Options object to include an authenticated fetch function
+ * @returns GetWacUriResult
+ */
 export async function getWacUri(
   resourceUri: string,
   options?: BasicRequestOptions,

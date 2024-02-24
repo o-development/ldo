@@ -20,6 +20,12 @@ export type GetWacRuleResult =
   | GetWacRuleError
   | WacRuleAbsent;
 
+/**
+ * Given the URI of an ACL document, return the Web Access Control (WAC) rules
+ * @param aclUri: The URI for the ACL document
+ * @param options: Options object to include an authenticated fetch function
+ * @returns GetWacRuleResult
+ */
 export async function getWacRuleWithAclUri(
   aclUri: string,
   options?: BasicRequestOptions,

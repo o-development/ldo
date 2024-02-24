@@ -536,6 +536,12 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ===========================================================================
    */
 
+  /**
+   * Retrieves the URI for the web access control (WAC) rules for this resource
+   * @param options - set the "ignoreCache" field to true to ignore any cached
+   * information on WAC rules.
+   * @returns WAC Rules results
+   */
   protected async getWacUri(options?: {
     ignoreCache: boolean;
   }): Promise<GetWacUriResult> {
@@ -559,6 +565,34 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return wacUriResult;
   }
 
+  /**
+   * Retrieves web access control (WAC) rules for this resource
+   * @param options - set the "ignoreCache" field to true to ignore any cached
+   * information on WAC rules.
+   * @returns WAC Rules results
+   *
+   * @example
+   * ```typescript
+   * const resource = ldoSolidDataset
+   *   .getResource("https://example.com/container/resource.ttl");
+   * const wacRulesResult = await resource.getWac();
+   * if (!wacRulesResult.isError) {
+   *   const wacRules = wacRulesResult.wacRule;
+   *   // True if the resource is publicly readable
+   *   console.log(wacRules.public.read);
+   *   // True if authenticated agents can write to the resource
+   *   console.log(wacRules.authenticated.write);
+   *   // True if the given WebId has append access
+   *   console.log(
+   *     wacRules.agent[https://example.com/person1/profile/card#me].append
+   *   );
+   *   // True if the given WebId has control access
+   *   console.log(
+   *     wacRules.agent[https://example.com/person1/profile/card#me].control
+   *   );
+   * }
+   * ```
+   */
   async getWac(options?: {
     ignoreCache: boolean;
   }): Promise<GetWacUriError | GetWacRuleResult> {
@@ -599,12 +633,53 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     return parentResource.getWac();
   }
 
+  /**
+   * Sets access rules for a specific resource
+   * @param wacRule - the access rules to set
+   * @returns SetWacRuleResult
+   *
+   * @example
+   * ```typescript
+   * const resource = ldoSolidDataset
+   *   .getResource("https://example.com/container/resource.ttl");
+   * const wacRulesResult = await resource.setWac({
+   *   public: {
+   *     read: true,
+   *     write: false,
+   *     append: false,
+   *     control: false
+   *   },
+   *   authenticated: {
+   *     read: true,
+   *     write: false,
+   *     append: true,
+   *     control: false
+   *   },
+   *   agent: {
+   *     "https://example.com/person1/profile/card#me": {
+   *       read: true,
+   *       write: true,
+   *       append: true,
+   *       control: true
+   *     }
+   *   }
+   * });
+   * ```
+   */
   async setWac(wacRule: WacRule): Promise<GetWacUriError | SetWacRuleResult> {
     const wacUriResult = await this.getWacUri();
     if (wacUriResult.isError) return wacUriResult;
 
-    return setWacRuleForAclUri(wacUriResult.wacUri, wacRule, this.uri, {
-      fetch: this.context.fetch,
-    });
+    const result = await setWacRuleForAclUri(
+      wacUriResult.wacUri,
+      wacRule,
+      this.uri,
+      {
+        fetch: this.context.fetch,
+      },
+    );
+    if (result.isError) return result;
+    this.wacRule = result.wacRule;
+    return result;
   }
 }

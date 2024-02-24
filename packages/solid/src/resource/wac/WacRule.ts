@@ -1,3 +1,6 @@
+/**
+ * A list of modes that a certain agent has access to
+ */
 export interface AccessModeList {
   read: boolean;
   append: boolean;
@@ -5,6 +8,9 @@ export interface AccessModeList {
   control: boolean;
 }
 
+/**
+ * A list of modes for each kind of agent
+ */
 export interface WacRule {
   public: AccessModeList;
   authenticated: AccessModeList;
