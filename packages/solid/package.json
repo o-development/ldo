@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid",
-  "version": "0.0.1-alpha.19",
+  "version": "0.0.1-alpha.20",
   "description": "A library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^1.17.1",
-    "@ldo/cli": "^0.0.1-alpha.19",
+    "@ldo/cli": "^0.0.1-alpha.20",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "@solid/community-server": "^6.0.2",
@@ -40,9 +40,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^0.0.1-alpha.17",
-    "@ldo/ldo": "^0.0.1-alpha.19",
-    "@ldo/rdf-utils": "^0.0.1-alpha.17",
+    "@ldo/dataset": "^0.0.1-alpha.20",
+    "@ldo/ldo": "^0.0.1-alpha.20",
+    "@ldo/rdf-utils": "^0.0.1-alpha.20",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1"
   },

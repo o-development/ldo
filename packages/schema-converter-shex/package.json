@@ -1,6 +1,6 @@
 {
   "name": "@ldo/schema-converter-shex",
-  "version": "0.0.1-alpha.17",
+  "version": "0.0.1-alpha.20",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "dist"
   ],
   "dependencies": {
-    "@ldo/traverser-shexj": "^0.0.1-alpha.17",
+    "@ldo/traverser-shexj": "^0.0.1-alpha.20",
     "dts-dom": "^3.6.0",
     "jsonld2graphobject": "^0.0.5"
   },
