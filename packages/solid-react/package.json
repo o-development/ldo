@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "0.0.1-alpha.22",
+  "version": "0.0.1-alpha.23",
   "description": "A React library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid-react#readme",
   "devDependencies": {
-    "@ldo/rdf-utils": "^0.0.1-alpha.22",
+    "@ldo/rdf-utils": "^0.0.1-alpha.23",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^27.0.3",
@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",
-    "@ldo/dataset": "^0.0.1-alpha.22",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.22",
-    "@ldo/ldo": "^0.0.1-alpha.22",
-    "@ldo/solid": "^0.0.1-alpha.22",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.22",
+    "@ldo/dataset": "^0.0.1-alpha.23",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.23",
+    "@ldo/ldo": "^0.0.1-alpha.23",
+    "@ldo/solid": "^0.0.1-alpha.23",
+    "@ldo/subscribable-dataset": "^0.0.1-alpha.23",
     "@rdfjs/data-model": "^1.2.0",
     "cross-fetch": "^3.1.6"
   },
@@ -52,5 +52,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "cc89f9f6a5f6fb2d6c5448e0c4bdd66c7c021a39"
+  "gitHead": "93ef602e317beca9dc8029058cee14c59debea45"
 }

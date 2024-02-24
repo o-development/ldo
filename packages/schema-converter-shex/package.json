@@ -1,6 +1,6 @@
 {
   "name": "@ldo/schema-converter-shex",
-  "version": "0.0.1-alpha.22",
+  "version": "0.0.1-alpha.23",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -33,12 +33,12 @@
     "dist"
   ],
   "dependencies": {
-    "@ldo/traverser-shexj": "^0.0.1-alpha.22",
+    "@ldo/traverser-shexj": "^0.0.1-alpha.23",
     "dts-dom": "^3.6.0",
     "jsonld2graphobject": "^0.0.5"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "cc89f9f6a5f6fb2d6c5448e0c4bdd66c7c021a39"
+  "gitHead": "93ef602e317beca9dc8029058cee14c59debea45"
 }
