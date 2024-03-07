@@ -1,0 +1,23 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ex: <https://example.com/>
+BASE <http://schema.org/>
+
+ex:PostSh {
+  a [<SocialMediaPosting> <CreativeWork> <Thing>] ;
+  <articleBody> xsd:string?
+      // rdfs:label '''articleBody'''
+      // rdfs:comment '''The actual body of the article. ''' ;
+  <uploadDate> xsd:date
+      // rdfs:label '''uploadDate'''
+      // rdfs:comment '''Date when this media object was uploaded to this site.''' ;
+  <image> IRI ?
+      // rdfs:label '''image'''
+      // rdfs:comment '''A media object that encodes this CreativeWork. This property is a synonym for encoding.''' ;
+  <publisher> IRI
+      // rdfs:label '''publisher'''
+      // rdfs:comment '''The publisher of the creative work.''' ;
+}
+// rdfs:label '''SocialMediaPost'''
+// rdfs:comment '''A post to a social media platform, including blog posts, tweets, Facebook posts, etc.'''
