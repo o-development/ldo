@@ -9,6 +9,6 @@ export interface LdoJsonldContext extends ContextDefinition {
 }
 
 export type LdoJsonldContextExpandedTermDefinition = ExpandedTermDefinition & {
-  "@isCollection": boolean;
-  "@isOptional": boolean;
+  "@context"?: LdoJsonldContext | undefined;
+  "@isCollection"?: boolean | undefined;
 };

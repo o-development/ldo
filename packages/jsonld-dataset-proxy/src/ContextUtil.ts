@@ -1,4 +1,5 @@
 import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
+import type { LdoJsonldContext } from "./LdoJsonldContext";
 
 // Create JSONLD Shorthands
 const shorthandToIriMap: Record<string, string> = {
@@ -10,10 +11,10 @@ const shorthandToIriMap: Record<string, string> = {
  * Handles the JSON-LD context and allows conversion between IRIs and terms
  */
 export class ContextUtil {
-  public readonly context: ContextDefinition;
+  public readonly context: ContextDefinition | LdoJsonldContext;
   private iriToKeyMap: Record<string, string>;
 
-  constructor(context: ContextDefinition) {
+  constructor(context: ContextDefinition | LdoJsonldContext) {
     this.context = context;
     this.iriToKeyMap = {};
     Object.entries(context).forEach(([contextKey, contextValue]) => {

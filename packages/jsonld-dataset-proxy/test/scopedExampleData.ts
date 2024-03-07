@@ -39,11 +39,6 @@ export type Element =
       "@id": "CreativeWork";
     };
 
-// No need to fully define the schema because this library doesn't use it
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const patientSchema: Schema = {};
-
 export const patientContext: LdoJsonldContext = {
   Bender: {
     "@id": "https://example.com/Bender",
@@ -56,46 +51,37 @@ export const patientContext: LdoJsonldContext = {
       },
       friend: {
         "@id": "https://example.com/friend",
-      }
+        "@isCollection": true,
+      },
     },
   },
-
-  Patient: "http://hl7.org/fhir/Patient",
-  subject: { "@id": "http://hl7.org/fhir/subject", "@type": "@id" },
-  name: {
-    "@id": "http://hl7.org/fhir/name",
-    "@type": "http://www.w3.org/2001/XMLSchema#string",
-    "@container": "@set",
+  Avatar: {
+    "@id": "https://example.com/Bender",
+    "@context": {
+      type: {
+        "@id": "@type",
+      },
+      element: {
+        "@id": "https://example.com/element",
+        "@isCollection": true,
+      },
+      friend: {
+        "@id": "https://example.com/friend",
+        "@isCollection": true,
+      },
+    },
   },
-  langName: {
-    "@id": "http://hl7.org/fhir/langName",
-    "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-    "@container": "@set",
-  },
-  birthdate: {
-    "@id": "http://hl7.org/fhir/birthdate",
-    "@type": "http://www.w3.org/2001/XMLSchema#date",
-  },
-  age: {
-    "@id": "http://hl7.org/fhir/age",
-    "@type": "http://www.w3.org/2001/XMLSchema#integer",
-  },
-  isHappy: {
-    "@id": "http://hl7.org/fhir/isHappy",
-    "@type": "http://www.w3.org/2001/XMLSchema#boolean",
-  },
-  roommate: {
-    "@id": "http://hl7.org/fhir/roommate",
-    "@type": "@id",
-    "@container": "@set",
-  },
-  notes: {
-    "@id": "http://hl7.org/fhir/notes",
-    "@type": "http://www.w3.org/2001/XMLSchema#string",
-  },
-  langNotes: {
-    "@id": "http://hl7.org/fhir/langNotes",
-    "@type": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+  NonBender: {
+    "@id": "https://example.com/NonBender",
+    "@context": {
+      type: {
+        "@id": "@type",
+      },
+      friend: {
+        "@id": "https://example.com/friend",
+        "@isCollection": true,
+      },
+    },
   },
 };
 
@@ -105,32 +91,17 @@ export const patientData = `
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-example:Observation1
-  fhir:notes "Cool Notes"^^xsd:string ;
-  fhir:subject example:Patient1 .
+example:Aang a example:Avatar
+  example:element example:Air, example:Water ;
+  example:friend example:Sokka, example:Katara .
 
-example:Patient1
-  rdf:type fhir:Patient ; 
-  fhir:name "Garrett"^^xsd:string,  "Bobby"^^xsd:string, "Ferguson"^^xsd:string ;
-  fhir:birthdate "1986-01-01"^^xsd:date ;
-  fhir:age "35"^^xsd:integer ;
-  fhir:isHappy "true"^^xsd:boolean ;
-  fhir:roommate example:Patient2, example:Patient3 .
+example:Katara a example:Avatar
+  example:element example:Water ;
+  example:friend example:Sokka, example:Aang .
 
-example:Patient2
-  rdf:type fhir:Patient ; 
-  fhir:name "Rob"^^xsd:string ;
-  fhir:birthdate "1987-01-01"^^xsd:date ;
-  fhir:age "34"^^xsd:integer ;
-  fhir:isHappy "false"^^xsd:boolean ;
-  fhir:roommate example:Patient1, example:Patient3 .
-
-example:Patient3
-  rdf:type fhir:Patient ; 
-  fhir:name "Amy"^^xsd:string ;
-  fhir:birthdate "1988-01-01"^^xsd:date ;
-  fhir:age "33"^^xsd:integer ;
-  fhir:isHappy "true"^^xsd:boolean .
+example:Sokka a example:Avatar
+  example:element example:Water ;
+  example:friend example:Sokka, example:Aang .
 `;
 
 export const patientDataWithBlankNodes = `

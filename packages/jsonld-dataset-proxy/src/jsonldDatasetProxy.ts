@@ -4,6 +4,7 @@ import type { ContextDefinition } from "jsonld";
 import { ContextUtil } from "./ContextUtil";
 import { JsonldDatasetProxyBuilder } from "./JsonldDatasetProxyBuilder";
 import { ProxyContext } from "./ProxyContext";
+import type { LdoJsonldContext } from "./LdoJsonldContext";
 
 /**
  * Creates a JSON-LD Dataset Proxy
@@ -14,7 +15,7 @@ import { ProxyContext } from "./ProxyContext";
  */
 export function jsonldDatasetProxy(
   inputDataset: Dataset,
-  context: ContextDefinition,
+  context: ContextDefinition | LdoJsonldContext,
 ): JsonldDatasetProxyBuilder {
   const contextUtil = new ContextUtil(context);
   const proxyContext = new ProxyContext({
