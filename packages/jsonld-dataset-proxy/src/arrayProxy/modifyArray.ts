@@ -114,7 +114,10 @@ export function modifyArray<ReturnType>(
     addObjectToDataset(
       {
         "@id": target[0][0],
-        [contextUtil.iriToKey(target[0][1].value)]: added,
+        [contextUtil.iriToKey(
+          target[0][1].value,
+          proxyContext.getRdfType(target[0][0]),
+        )]: added,
       } as RawObject,
       false,
       proxyContext,
@@ -123,7 +126,12 @@ export function modifyArray<ReturnType>(
   const addedNodes = added
     ? (added
         .map((addedValue) => {
-          return getNodeFromRawValue(key, addedValue, proxyContext);
+          return getNodeFromRawValue(
+            key,
+            addedValue,
+            target[0][0] ? proxyContext.getRdfType(target[0][0]) : [],
+            proxyContext,
+          );
         })
         .filter((val) => val != undefined) as ObjectNode[])
     : [];

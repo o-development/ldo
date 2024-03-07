@@ -19,7 +19,9 @@ export function deleteValueFromDataset(
     return true;
   }
   const subject = target["@id"];
-  const predicate = namedNode(proxyContext.contextUtil.keyToIri(key));
+  const predicate = namedNode(
+    proxyContext.contextUtil.keyToIri(key, proxyContext.getRdfType(subject)),
+  );
   if (key === "@id") {
     nodesToRemove.push(target["@id"]);
   } else {

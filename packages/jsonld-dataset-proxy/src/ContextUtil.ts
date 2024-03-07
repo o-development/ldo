@@ -3,6 +3,7 @@ import type {
   LdoJsonldContext,
   LdoJsonldContextExpandedTermDefinition,
 } from "./LdoJsonldContext";
+import type { NamedNode } from "@rdfjs/types";
 
 // Create JSONLD Shorthands
 const shorthandToIriMap: Record<string, string> = {
@@ -64,15 +65,18 @@ export class ContextUtil {
    */
   private getRelevantContext(
     key: string,
-    typeName?: string,
+    typeNames?: NamedNode[],
   ): ContextDefinition | LdoJsonldContext {
-    if (
-      typeName &&
-      typeof this.context[typeName] === "object" &&
-      this.context[typeName]?.["@context"] &&
-      this.context[typeName]?.["@context"][key]
-    ) {
-      return this.context[typeName]?.["@context"];
+    if (!typeNames) return this.context;
+    for (const typeNameNode of typeNames) {
+      const typeName = this.iriToKey((typeNameNode as NamedNode).value, []);
+      if (
+        typeof this.context[typeName] === "object" &&
+        this.context[typeName]?.["@context"] &&
+        this.context[typeName]?.["@context"][key]
+      ) {
+        return this.context[typeName]?.["@context"];
+      }
     }
     return this.context;
   }
@@ -91,7 +95,7 @@ export class ContextUtil {
   /**
    * Converts a given JsonLd key into an RDF IRI
    */
-  public keyToIri(key: string, typeName: string): string {
+  public keyToIri(key: string, typeName: NamedNode[]): string {
     const relevantContext = this.getRelevantContext(key, typeName);
     if (!relevantContext[key]) {
       return key;
@@ -108,9 +112,12 @@ export class ContextUtil {
   /**
    * Converts a given RDF IRI into the JsonLd key
    */
-  public iriToKey(iri: string, typeName: string): string {
-    const relevantMap =
-      this.typeNameToIriToKeyMap[typeName] || this.iriToKeyMap;
+  public iriToKey(iri: string, typeNames: NamedNode[]): string {
+    let relevantMap = this.iriToKeyMap;
+    for (const typeNameNode of typeNames) {
+      const typeName = this.iriToKey((typeNameNode as NamedNode).value, []);
+      relevantMap = this.typeNameToIriToKeyMap[typeName] || this.iriToKeyMap;
+    }
     if (relevantMap[iri]) {
       return relevantMap[iri];
     }
@@ -120,7 +127,7 @@ export class ContextUtil {
   /**
    * Returns the IRI of a datatype of a specific object
    */
-  public getDataType(key: string, typeName: string): string {
+  public getDataType(key: string, typeName: NamedNode[]): string {
     const relevantContext = this.getRelevantContext(key, typeName);
     if (
       typeof relevantContext[key] === "object" &&
@@ -136,7 +143,7 @@ export class ContextUtil {
   /**
    * Returns true if the object is a collection
    */
-  public isArray(key: string, typeName: string): boolean {
+  public isArray(key: string, typeName: NamedNode[]): boolean {
     const relevantContext = this.getRelevantContext(key, typeName);
     return !!(
       relevantContext[key] &&
@@ -153,7 +160,7 @@ export class ContextUtil {
   /**
    * Returns true if the object is a language string
    */
-  public isLangString(key: string, typeName: string): boolean {
+  public isLangString(key: string, typeName: NamedNode[]): boolean {
     const relevantContext = this.getRelevantContext(key, typeName);
     return !!(
       relevantContext[key] &&
