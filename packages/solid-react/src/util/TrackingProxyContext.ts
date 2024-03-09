@@ -50,12 +50,13 @@ export class TrackingProxyContext extends ProxyContext {
       receiver,
     ) => {
       const subject = target["@id"];
+      const rdfTypes = this.getRdfType(subject);
       if (typeof key === "symbol") {
         // Do Nothing
       } else if (key === "@id") {
         this.addListener([subject, null, null, null]);
-      } else if (!this.contextUtil.isArray(key)) {
-        const predicate = namedNode(this.contextUtil.keyToIri(key));
+      } else if (!this.contextUtil.isArray(key, rdfTypes)) {
+        const predicate = namedNode(this.contextUtil.keyToIri(key, rdfTypes));
         this.addListener([subject, predicate, null, null]);
       }
       return oldGetFunction && oldGetFunction(target, key, receiver);
