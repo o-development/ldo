@@ -1,4 +1,6 @@
+import { namedNode } from "@rdfjs/data-model";
 import { ContextUtil } from "../src/ContextUtil";
+import { scopedContext } from "./scopedExampleData";
 
 describe("ContextUtil", () => {
   describe("keyToIri and iriToKey", () => {
@@ -18,11 +20,25 @@ describe("ContextUtil", () => {
       );
     });
 
-    it("handles a context that existsm, but does not have an id", () => {
+    it("handles a context that exists, but does not have an id", () => {
       const contextUtil = new ContextUtil({
         name: { "@type": "http://www.w3.org/2001/XMLSchema#string" },
       });
       expect(contextUtil.keyToIri("name", [])).toBe("name");
+    });
+
+    it("handles a nested context", () => {
+      const contextUtil = new ContextUtil(scopedContext);
+      expect(
+        contextUtil.keyToIri("element", [
+          namedNode("https://example.com/Bender"),
+        ]),
+      ).toBe("https://example.com/element");
+      expect(
+        contextUtil.iriToKey("https://example.com/element", [
+          namedNode("https://example.com/Bender"),
+        ]),
+      ).toBe("element");
     });
   });
 
@@ -34,6 +50,17 @@ describe("ContextUtil", () => {
       expect(contextUtil.getDataType("name", [])).toBe(
         "http://www.w3.org/2001/XMLSchema#string",
       );
+    });
+  });
+
+  describe("isArray", () => {
+    it("indicates that the special @isCollection field means array", () => {
+      const contextUtil = new ContextUtil(scopedContext);
+      expect(
+        contextUtil.isArray("element", [
+          namedNode("https://example.com/Avatar"),
+        ]),
+      ).toBe(true);
     });
   });
 });

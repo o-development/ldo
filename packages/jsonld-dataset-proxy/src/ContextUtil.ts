@@ -65,9 +65,8 @@ export class ContextUtil {
    */
   private getRelevantContext(
     key: string,
-    typeNames?: NamedNode[],
+    typeNames: NamedNode[],
   ): ContextDefinition | LdoJsonldContext {
-    if (!typeNames) return this.context;
     for (const typeNameNode of typeNames) {
       const typeName = this.iriToKey((typeNameNode as NamedNode).value, []);
       if (
@@ -116,7 +115,9 @@ export class ContextUtil {
     let relevantMap = this.iriToKeyMap;
     for (const typeNameNode of typeNames) {
       const typeName = this.iriToKey((typeNameNode as NamedNode).value, []);
-      relevantMap = this.typeNameToIriToKeyMap[typeName] || this.iriToKeyMap;
+      relevantMap = this.typeNameToIriToKeyMap[typeName]?.[iri]
+        ? this.typeNameToIriToKeyMap[typeName]
+        : this.iriToKeyMap;
     }
     if (relevantMap[iri]) {
       return relevantMap[iri];
@@ -148,7 +149,6 @@ export class ContextUtil {
     return !!(
       relevantContext[key] &&
       typeof relevantContext[key] === "object" &&
-      (relevantContext[key] as ExpandedTermDefinition)["@container"] &&
       ((relevantContext[key] as ExpandedTermDefinition)["@container"] ===
         "@set" ||
         (relevantContext[key] as LdoJsonldContextExpandedTermDefinition)[
