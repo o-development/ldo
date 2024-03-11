@@ -11,7 +11,7 @@ describe("createExtendedDatasetFromSerializedInput", () => {
     const dataset = await serializedToSubscribableDataset(
       JSON.stringify(jsonLdData),
       {
-        format: "application/json-ld",
+        format: "application/ld+json",
       },
     );
     expect(dataset.size).toBe(9);
