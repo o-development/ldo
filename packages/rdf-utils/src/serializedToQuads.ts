@@ -9,7 +9,7 @@ export async function serializedToQuads(
   options?: ParserOptions,
 ): Promise<Quad[]> {
   // JSON-LD Parsing
-  if (options && options.format === "application/json-ld") {
+  if (options && options.format === "application/ld+json") {
     throw new Error("Not Implemented");
     // return new Promise((resolve, reject) => {
     //   JSON.parse(data);
