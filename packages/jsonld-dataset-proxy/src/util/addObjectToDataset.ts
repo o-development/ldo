@@ -22,15 +22,16 @@ export function addRawValueToDatasetRecursive(
   proxyContext: ProxyContext,
 ): void {
   const { dataset, contextUtil } = proxyContext;
-  const predicate = namedNode(contextUtil.keyToIri(key));
+  const rdfType = proxyContext.getRdfType(subject);
+  const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
   // Get the Object Node
-  const object = getNodeFromRawValue(key, value, proxyContext);
+  const object = getNodeFromRawValue(key, value, rdfType, proxyContext);
   if (object == undefined) {
     dataset.deleteMatches(subject, predicate);
   } else if (object.termType === "Literal") {
     let languageAppliedObject = object;
     // Handle language use case
-    if (contextUtil.isLangString(key)) {
+    if (contextUtil.isLangString(key, rdfType)) {
       const languageKey = getLanguageKeyForWriteOperation(
         proxyContext.languageOrdering,
       );
@@ -81,6 +82,7 @@ export function addRawObjectToDatasetRecursive(
   }
   const { dataset } = proxyContext;
   const subject = getNodeFromRawObject(item, proxyContext.contextUtil);
+  const rdfType = proxyContext.getRdfType(subject);
   if (visitedObjects.has(subject)) {
     return proxyContext.createSubjectProxy(subject);
   }
@@ -89,9 +91,11 @@ export function addRawObjectToDatasetRecursive(
     if (key === "@id") {
       return;
     }
-    const predicate = namedNode(proxyContext.contextUtil.keyToIri(key));
+    const predicate = namedNode(
+      proxyContext.contextUtil.keyToIri(key, rdfType),
+    );
     if (shouldDeleteOldTriples) {
-      if (proxyContext.contextUtil.isLangString(key)) {
+      if (proxyContext.contextUtil.isLangString(key, rdfType)) {
         const languageKey = getLanguageKeyForWriteOperation(
           proxyContext.languageOrdering,
         );

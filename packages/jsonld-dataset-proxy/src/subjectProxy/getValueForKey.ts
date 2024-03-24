@@ -19,7 +19,9 @@ export function getValueForKey(
     if (target["@id"].termType === "BlankNode") {
       return undefined;
     }
-    return contextUtil.iriToKey(target["@id"].value);
+    // Purposly don't provide a typeName because we don't want to use the nested
+    // context
+    return contextUtil.iriToKey(target["@id"].value, []);
   }
   if (key === "toString" || key === Symbol.toStringTag) {
     // TODO: this toString method right now returns [object Object],
@@ -31,18 +33,19 @@ export function getValueForKey(
     return;
   }
   const subject = target["@id"];
-  const predicate = namedNode(contextUtil.keyToIri(key));
-  if (contextUtil.isArray(key)) {
+  const rdfType = proxyContext.getRdfType(subject);
+  const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
+  if (contextUtil.isArray(key, rdfType)) {
     const arrayProxy = proxyContext.createArrayProxy(
       [subject, predicate, null, null],
       false,
       undefined,
-      contextUtil.isLangString(key),
+      contextUtil.isLangString(key, rdfType),
     );
     return arrayProxy;
   }
   let objectDataset = dataset.match(subject, predicate);
-  if (contextUtil.isLangString(key)) {
+  if (contextUtil.isLangString(key, rdfType)) {
     objectDataset = filterQuadsByLanguageOrdering(
       objectDataset,
       proxyContext.languageOrdering,

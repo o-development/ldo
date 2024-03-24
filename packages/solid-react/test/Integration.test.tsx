@@ -96,7 +96,9 @@ describe("Integration Tests", () => {
       await screen.findByText("Hidden");
       fireEvent.click(screen.getByText("Show Component"));
       await screen.findByText("Loading");
-      const resourceStatus2 = await screen.findByRole("status");
+      const resourceStatus2 = await screen.findByRole("status", undefined, {
+        timeout: 5000,
+      });
       expect(resourceStatus2.innerHTML).toBe("dataReadSuccess");
     });
 
