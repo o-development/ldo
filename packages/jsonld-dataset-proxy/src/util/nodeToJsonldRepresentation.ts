@@ -34,6 +34,7 @@ export function literalToJsonldRepresentation(literal: Literal) {
     case "http://www.w3.org/2001/XMLSchema#integer":
     case "http://www.w3.org/2001/XMLSchema#byte":
     case "http://www.w3.org/2001/XMLSchema#decimal":
+    case "http://www.w3.org/2001/XMLSchema#double":
     case "http://www.w3.org/2001/XMLSchema#int":
     case "http://www.w3.org/2001/XMLSchema#long":
     case "http://www.w3.org/2001/XMLSchema#negativeInteger":
