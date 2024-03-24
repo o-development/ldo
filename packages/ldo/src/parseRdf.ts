@@ -47,7 +47,7 @@ export async function parseRdf(
       ldoDatasetFactory,
       JSON.stringify(data),
       {
-        format: "application/json-ld",
+        format: "application/ld+json",
       },
     );
   }

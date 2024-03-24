@@ -34,7 +34,7 @@ async function run(): Promise<void> {
   const jsonLdDataset = await serializedToDataset(JSON.stringify(jsonLdData), {
     baseIRI:
       "https://jackson.solidcommunity.net/IndividualChats/jackson.solidcommunity.net/index.ttl#",
-    format: "application/json-ld",
+    format: "application/ld+json",
   });
   // Returns true because the input data describes the same triple.
   console.log(turtleDataset.equals(jsonLdDataset));
