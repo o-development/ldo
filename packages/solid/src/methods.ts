@@ -22,7 +22,7 @@ import type { SolidLdoTransactionDataset } from "./SolidLdoTransactionDataset";
  *
  * const profile = solidLdoDataset
  *   .using(ProfileShapeType)
- *   .fromSubject("https://example.com/proifle#me");
+ *   .fromSubject("https://example.com/profile#me");
  * const resource = solidLdoDataset.getResource("https://example.com/profile");
  *
  * const cProfile = changeData(profile, resource);
@@ -60,7 +60,7 @@ export function changeData<Type extends LdoBase>(
  *
  * const profile = solidLdoDataset
  *   .using(ProfileShapeType)
- *   .fromSubject("https://example.com/proifle#me");
+ *   .fromSubject("https://example.com/profile#me");
  * const resource = solidLdoDataset.getResource("https://example.com/profile");
  *
  * const cProfile = changeData(profile, resource);
