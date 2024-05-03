@@ -19,7 +19,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo"
   },
   "repository": {
     "type": "git",
