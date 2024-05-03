@@ -124,7 +124,7 @@ export async function readResource(
       );
     }
 
-    if (contentType === "text/turtle") {
+    if (contentType.startsWith("text/turtle")) {
       // Parse Turtle
       const rawTurtle = await response.text();
       if (options?.dataset) {

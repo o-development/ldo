@@ -385,6 +385,24 @@ describe("Integration", () => {
       );
     });
 
+    it("Parses Turtle even when the content type contains parameters", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(SPIDER_MAN_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle;charset=utf-8" }),
+        }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+        isDoingInitialFetch: true,
+      });
+      expect(result.isError).toBe(false);
+      if (result.isError) return;
+      expect(result.type).toBe("dataReadSuccess");
+    });
+
     it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
       fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
