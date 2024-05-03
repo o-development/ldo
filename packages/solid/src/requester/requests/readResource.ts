@@ -99,7 +99,9 @@ export async function readResource(
   try {
     const fetch = guaranteeFetch(options?.fetch);
     // Fetch options to determine the document type
-    const response = await fetch(uri);
+    const response = await fetch(uri, {
+      headers: { accept: "text/turtle, */*" },
+    });
     if (response.status === 404) {
       return {
         isError: false,
