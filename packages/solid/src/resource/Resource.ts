@@ -32,6 +32,7 @@ import { getWacRuleWithAclUri, type GetWacRuleResult } from "./wac/getWacRule";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import { setWacRuleForAclUri, type SetWacRuleResult } from "./wac/setWacRule";
 import type { LeafUri } from "../util/uriTypes";
+import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -524,7 +525,9 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * }
    * ```
    */
-  abstract getRootContainer(): Promise<Container | CheckRootResultError>;
+  abstract getRootContainer(): Promise<
+    Container | CheckRootResultError | NoRootContainerError
+  >;
 
   abstract getParentContainer(): Promise<
     Container | CheckRootResultError | undefined

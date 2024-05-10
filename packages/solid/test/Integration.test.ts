@@ -417,7 +417,7 @@ describe("Integration", () => {
       expect(result.message).toBe("Something happened.");
     });
 
-    it("Returns an error if there is no link header for a container request", async () => {
+    it("Does not return an error if there is no link header for a container request", async () => {
       fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
@@ -430,12 +430,9 @@ describe("Integration", () => {
         isReading: true,
         isDoingInitialFetch: true,
       });
-      expect(result.isError).toBe(true);
-      if (!result.isError) return;
-      expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toMatch(
-        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
-      );
+      expect(result.isError).toBe(false);
+      if (result.isError) return;
+      expect(result.resource.isRootContainer()).toBe(false);
     });
 
     it("knows nothing about a leaf resource if it is not fetched", () => {
@@ -577,7 +574,19 @@ describe("Integration", () => {
       expect(result.isRootContainer()).toBe(true);
     });
 
-    it("Returns an error if there is no link header for a container request", async () => {
+    it("Returns an error if there is no root container", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle" }),
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle" }),
+        }),
+      );
       fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
@@ -588,10 +597,8 @@ describe("Integration", () => {
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
       if (!result.isError) return;
-      expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toMatch(
-        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
-      );
+      expect(result.type).toBe("noRootContainerError");
+      expect(result.message).toMatch(/\.* has not root container\./);
     });
 
     it("An error to be returned if a common http error is encountered", async () => {
@@ -629,7 +636,7 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
-      expect(result.type).toBe("noncompliantPodError");
+      expect(result.type).toBe("noRootContainerError");
     });
   });
 

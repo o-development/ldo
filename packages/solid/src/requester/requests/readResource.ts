@@ -139,7 +139,6 @@ export async function readResource(
       }
       if (isContainerUri(uri)) {
         const result = checkHeadersForRootContainer(uri, response.headers);
-        if (result.isError) return result;
         return {
           isError: false,
           type: "containerReadSuccess",

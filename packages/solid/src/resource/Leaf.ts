@@ -23,6 +23,7 @@ import type { Container } from "./Container";
 import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
 import type { ResourceResult } from "./resourceResult/ResourceResult";
+import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 
 /**
  * Represents the current status of a specific Leaf on a Pod as known by LDO.
@@ -338,7 +339,9 @@ export class Leaf extends Resource {
    * }
    * ```
    */
-  async getRootContainer(): Promise<Container | CheckRootResultError> {
+  async getRootContainer(): Promise<
+    Container | CheckRootResultError | NoRootContainerError
+  > {
     const parent = await this.getParentContainer();
     return parent.getRootContainer();
   }
