@@ -218,6 +218,18 @@ describe("Integration", () => {
   });
 
   /**
+   * General
+   */
+  describe("General", () => {
+    it("Does not include the hash when creating a resource", () => {
+      const resource = solidLdoDataset.getResource(
+        "https://example.com/thing#hash",
+      );
+      expect(resource.uri).toBe("https://example.com/thing");
+    });
+  });
+
+  /**
    * Read
    */
   describe("read", () => {

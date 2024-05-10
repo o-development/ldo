@@ -78,7 +78,9 @@ export class Leaf extends Resource {
    */
   constructor(uri: LeafUri, context: SolidLdoDatasetContext) {
     super(context);
-    this.uri = uri;
+    const uriObject = new URL(uri);
+    uriObject.hash = "";
+    this.uri = uriObject.toString() as LeafUri;
     this.requester = new LeafBatchedRequester(uri, context);
     this.status = { isError: false, type: "unfetched", uri };
   }
@@ -342,6 +344,9 @@ export class Leaf extends Resource {
   async getRootContainer(): Promise<
     Container | CheckRootResultError | NoRootContainerError
   > {
+    // Check to see if this document has a pim:storage if so, use that
+
+    // If not, traverse the tree
     const parent = await this.getParentContainer();
     return parent.getRootContainer();
   }
