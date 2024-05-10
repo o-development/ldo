@@ -19,7 +19,6 @@ import type {
   ReadResultError,
 } from "../requester/requests/readResource";
 import { AggregateError } from "../requester/results/error/ErrorResult";
-import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
 import type { AbsentReadSuccess } from "../requester/results/success/ReadSuccess";
 import type { ContainerReadSuccess } from "../requester/results/success/ReadSuccess";
@@ -31,6 +30,7 @@ import type { Leaf } from "./Leaf";
 import type { SharedStatuses } from "./Resource";
 import { Resource } from "./Resource";
 import type { ResourceResult } from "./resourceResult/ResourceResult";
+import { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 
 /**
  * Represents the current status of a specific container on a Pod as known by
@@ -222,7 +222,8 @@ export class Container extends Resource {
   /**
    * Gets the root container of this container. If this container is the root
    * container, this function returns itself.
-   * @returns The root container for this container
+   * @returns The root container for this container or undefined if there is no
+   * root container.
    *
    * @example
    * Suppose the root container is at `https://example.com/`
@@ -237,11 +238,13 @@ export class Container extends Resource {
    * }
    * ```
    */
-  async getRootContainer(): Promise<Container | CheckRootResultError> {
+  async getRootContainer(): Promise<
+    Container | CheckRootResultError | NoRootContainerError
+  > {
     const parentContainerResult = await this.getParentContainer();
     if (parentContainerResult?.isError) return parentContainerResult;
     if (!parentContainerResult) {
-      return this;
+      return this.isRootContainer() ? this : new NoRootContainerError(this.uri);
     }
     return parentContainerResult.getRootContainer();
   }
@@ -277,10 +280,7 @@ export class Container extends Resource {
     if (this.rootContainer) return undefined;
     const parentUri = getParentUri(this.uri);
     if (!parentUri) {
-      return new NoncompliantPodError(
-        this.uri,
-        `${this.uri} is not root does not have a parent container`,
-      );
+      return undefined;
     }
     return this.context.resourceStore.get(parentUri);
   }

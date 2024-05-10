@@ -1,6 +1,5 @@
 import type { BasicRequestOptions } from "./requestOptions";
 import { parse as parseLinkHeader } from "http-link-header";
-import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import type { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
 import type {
   HttpErrorResultType,
@@ -21,7 +20,6 @@ export type CheckRootResult = CheckRootContainerSuccess | CheckRootResultError;
  */
 export type CheckRootResultError =
   | HttpErrorResultType
-  | NoncompliantPodError
   | UnexpectedHttpError
   | UnexpectedResourceError;
 
@@ -37,10 +35,15 @@ export type CheckRootResultError =
 export function checkHeadersForRootContainer(
   uri: ContainerUri,
   headers: Headers,
-): CheckRootContainerSuccess | NoncompliantPodError {
+): CheckRootContainerSuccess {
   const linkHeader = headers.get("link");
   if (!linkHeader) {
-    return new NoncompliantPodError(uri, "No link header present in request.");
+    return {
+      uri,
+      isRootContainer: false,
+      type: "checkRootContainerSuccess",
+      isError: false,
+    };
   }
   const parsedLinkHeader = parseLinkHeader(linkHeader);
   const types = parsedLinkHeader.get("rel", "type");
