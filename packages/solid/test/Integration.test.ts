@@ -45,6 +45,7 @@ import type {
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
 import type { WacRule } from "../src/resource/wac/WacRule";
+import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -58,6 +59,7 @@ const SAMPLE2_BINARY_URI =
   `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as LeafUri;
 const SAMPLE_CONTAINER_URI =
   `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
+const SAMPLE_PROFILE_URI = `${TEST_CONTAINER_URI}profile.ttl` as LeafUri;
 const SPIDER_MAN_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -98,6 +100,11 @@ const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://ww
 <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Append>, <http://www.w3.org/ns/auth/acl#Control>;
 <http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>;
 <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>, <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>.`;
+const SAMPLE_PROFILE_TTL = `
+@prefix pim: <http://www.w3.org/ns/pim/space#> .
+
+<${SAMPLE_PROFILE_URI}> pim:storage <https://example.com/A/>, <https://example.com/B/> .
+`;
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -191,6 +198,11 @@ describe("Integration", () => {
         headers: { "content-type": "text/plain", slug: "sample.txt" },
         body: "some text.",
       }),
+      authFetch(TEST_CONTAINER_URI, {
+        method: "POST",
+        headers: { "content-type": "text/turtle", slug: "profile.ttl" },
+        body: SAMPLE_PROFILE_TTL,
+      }),
     ]);
   });
 
@@ -206,6 +218,9 @@ describe("Integration", () => {
         method: "DELETE",
       }),
       authFetch(SAMPLE2_BINARY_URI, {
+        method: "DELETE",
+      }),
+      authFetch(SAMPLE_PROFILE_URI, {
         method: "DELETE",
       }),
       authFetch(SAMPLE_CONTAINER_URI, {
@@ -283,7 +298,7 @@ describe("Integration", () => {
         isDoingInitialFetch: true,
       });
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("Reads a binary leaf", async () => {
@@ -497,7 +512,7 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("reads an unfetched leaf", async () => {
@@ -528,7 +543,7 @@ describe("Integration", () => {
       const result = await resource.readIfUnfetched();
       expect(fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("returns a cached existing data leaf", async () => {
@@ -649,6 +664,46 @@ describe("Integration", () => {
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("noRootContainerError");
+    });
+  });
+
+  /**
+   * Get Storage From WebId
+   */
+  describe("getStorageFromWebId", () => {
+    it("Gets storage when a pim:storage field isn't present", async () => {
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
+      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      expect(realResult.storageContainers.length).toBe(1);
+      expect(realResult.storageContainers[0].uri).toBe(ROOT_CONTAINER);
+    });
+
+    it("Gets storage when a pim:storage field is present", async () => {
+      const result =
+        await solidLdoDataset.getStorageFromWebId(SAMPLE_PROFILE_URI);
+      expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
+      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      expect(realResult.storageContainers.length).toBe(2);
+      expect(realResult.storageContainers[0].uri).toBe(
+        "https://example.com/A/",
+      );
+      expect(realResult.storageContainers[0].uri).toBe(
+        "https://example.com/B/",
+      );
+    });
+
+    it("Passes any errors returned from the read method", async () => {
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.isError).toBe(true);
+    });
+
+    it("Passes any errors returned from the getRootContainer method", async () => {
+      fetchMock.mockResolvedValueOnce(new Response(""));
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.isError).toBe(true);
     });
   });
 

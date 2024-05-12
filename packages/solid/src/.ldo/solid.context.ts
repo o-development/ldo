@@ -1,4 +1,4 @@
-import type { ContextDefinition } from "jsonld";
+import { ContextDefinition } from "jsonld";
 
 /**
  * =============================================================================
@@ -15,7 +15,6 @@ export const solidContext: ContextDefinition = {
   modified: {
     "@id": "http://purl.org/dc/terms/modified",
     "@type": "http://www.w3.org/2001/XMLSchema#string",
-    "@container": "@set",
   },
   contains: {
     "@id": "http://www.w3.org/ns/ldp#contains",
@@ -26,11 +25,14 @@ export const solidContext: ContextDefinition = {
   mtime: {
     "@id": "http://www.w3.org/ns/posix/stat#mtime",
     "@type": "http://www.w3.org/2001/XMLSchema#decimal",
-    "@container": "@set",
   },
   size: {
     "@id": "http://www.w3.org/ns/posix/stat#size",
     "@type": "http://www.w3.org/2001/XMLSchema#integer",
+  },
+  storage: {
+    "@id": "http://www.w3.org/ns/pim/space#storage",
+    "@type": "@id",
     "@container": "@set",
   },
 };

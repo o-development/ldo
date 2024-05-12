@@ -1,7 +1,7 @@
-import type { ShapeType } from "@ldo/ldo";
+import { ShapeType } from "@ldo/ldo";
 import { solidSchema } from "./solid.schema";
 import { solidContext } from "./solid.context";
-import type { Container, Resource } from "./solid.typings";
+import { Container, Resource, ProfileWithStorage } from "./solid.typings";
 
 /**
  * =============================================================================
@@ -24,5 +24,14 @@ export const ContainerShapeType: ShapeType<Container> = {
 export const ResourceShapeType: ShapeType<Resource> = {
   schema: solidSchema,
   shape: "http://www.w3.org/ns/lddps#Resource",
+  context: solidContext,
+};
+
+/**
+ * ProfileWithStorage ShapeType
+ */
+export const ProfileWithStorageShapeType: ShapeType<ProfileWithStorage> = {
+  schema: solidSchema,
+  shape: "http://www.w3.org/ns/lddps#ProfileWithStorage",
   context: solidContext,
 };
