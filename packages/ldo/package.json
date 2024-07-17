@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "0.0.1-alpha.25",
+  "version": "0.0.1-alpha.24",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -39,8 +39,8 @@
   },
   "dependencies": {
     "@ldo/dataset": "^0.0.1-alpha.24",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.25",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.25",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.24",
+    "@ldo/subscribable-dataset": "^0.0.1-alpha.24",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"

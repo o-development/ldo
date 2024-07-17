@@ -40,8 +40,6 @@ export function mergeDatasetChanges<InAndOutQuad extends BaseQuad>(
     if (changesIntersection && changesIntersection.size > 0) {
       originalChange.added =
         originalChange.added?.difference(changesIntersection);
-      originalChange.removed =
-        originalChange.removed.difference(changesIntersection);
     }
   }
 

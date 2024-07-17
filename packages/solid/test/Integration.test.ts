@@ -688,7 +688,7 @@ describe("Integration", () => {
       expect(realResult.storageContainers[0].uri).toBe(
         "https://example.com/A/",
       );
-      expect(realResult.storageContainers[1].uri).toBe(
+      expect(realResult.storageContainers[0].uri).toBe(
         "https://example.com/B/",
       );
     });
