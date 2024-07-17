@@ -358,4 +358,26 @@ describe("TransactionDataset", () => {
     expect(datasetChanges.added?.size).toBe(1);
     expect(datasetChanges.removed).toBe(undefined);
   });
+
+  it("removes added triples from changes instead of simply adding them", () => {
+    transactionalDataset.delete(tomNameQuad);
+    const nameQuad2 = quad(
+      namedNode("http://example.org/cartoons#Tom"),
+      namedNode("http://example.org/cartoons#name"),
+      literal("Toma"),
+    );
+    transactionalDataset.add(nameQuad2);
+    transactionalDataset.delete(nameQuad2);
+    const nameQuad3 = quad(
+      namedNode("http://example.org/cartoons#Tom"),
+      namedNode("http://example.org/cartoons#name"),
+      literal("Tomas"),
+    );
+    transactionalDataset.add(nameQuad3);
+    const datasetChanges = transactionalDataset.getChanges();
+    expect(datasetChanges.added?.size).toBe(1);
+    expect(datasetChanges.added?.toArray()[0].object.value).toBe("Tomas");
+    expect(datasetChanges.removed?.size).toBe(1);
+    expect(datasetChanges.removed?.toArray()[0].object.value).toBe("Tom");
+  });
 });
