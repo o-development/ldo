@@ -1,9 +1,9 @@
 {
   "name": "@ldo/demo-react",
-  "version": "0.0.1-alpha.26",
+  "version": "0.0.1-alpha.27",
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",
-    "@ldo/solid-react": "^0.0.1-alpha.26",
+    "@ldo/solid-react": "^0.0.1-alpha.27",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
