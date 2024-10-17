@@ -117,7 +117,7 @@ export async function getAuthenticatedFetch() {
   if (!token) throw new Error("No Token");
 
   // Build authenticated fetch
-  const authFetch = await buildAuthenticatedFetch(fetch, token.accessToken, {
+  const authFetch = await buildAuthenticatedFetch(token.accessToken, {
     dpopKey: token.dpopKey,
   });
   return authFetch;
