@@ -1,8 +1,9 @@
 [
   {
-    "podName": "example",
     "email": "hello@example.com",
     "password": "abc123",
-    "template": "./template"
+    "pods": [
+      { "name": "example" }
+    ]
   }
 ]

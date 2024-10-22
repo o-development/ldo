@@ -12,28 +12,25 @@ export async function createApp(): Promise<App> {
     } as App;
   }
   const appRunner = new AppRunner();
-  return appRunner.create(
-    {
+
+  return appRunner.create({
+    loaderProperties: {
       mainModulePath: resolveModulePath(""),
       typeChecking: false,
     },
-    path.join(
+    config: path.join(
       __dirname,
       "configs",
       "components-config",
       "unauthenticatedServer.json",
     ),
-    {},
-    {
+    variableBindings: {},
+    shorthand: {
       port: 3_001,
       loggingLevel: "off",
-      seededPodConfigJson: path.join(
-        __dirname,
-        "configs",
-        "solid-css-seed.json",
-      ),
+      seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
     },
-  );
+  });
 }
 
 export interface ISecretData {

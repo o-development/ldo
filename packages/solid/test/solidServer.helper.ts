@@ -32,8 +32,7 @@ export async function createApp(): Promise<App> {
     variableBindings: {},
     shorthand: {
       port: 3_001,
-      loggingLevel: "info",
-      rootFilePath: path.join(__dirname, "../data"),
+      loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
     },
   });

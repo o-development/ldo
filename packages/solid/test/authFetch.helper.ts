@@ -17,8 +17,6 @@ async function getAuthorization(): Promise<string> {
   const indexResponse = await fetch("http://localhost:3001/.account/");
   const { controls } = await indexResponse.json();
 
-  console.log("First controls", controls);
-
   // And then we log in to the account API
   const response = await fetch(controls.password.login, {
     method: "POST",
@@ -30,7 +28,6 @@ async function getAuthorization(): Promise<string> {
   });
   // This authorization value will be used to authenticate in the next step
   const result = await response.json();
-  console.log(result);
   return result.authorization;
 }
 
@@ -43,9 +40,6 @@ async function getSecret(
     headers: { authorization: `CSS-Account-Token ${authorization}` },
   });
   const { controls } = await indexResponse.json();
-
-  console.log("controls", controls);
-  console.log("authorization", authorization);
 
   // Here we request the server to generate a token on our account
   const response = await fetch(controls.account.clientCredentials, {
@@ -67,7 +61,6 @@ async function getSecret(
   // Store the secret somewhere safe as there is no way to request it again from the server!
   // The `resource` value can be used to delete the token at a later point in time.
   const response2 = await response.json();
-  console.log("response2", response2);
   return response2;
 }
 
@@ -78,7 +71,6 @@ async function getAccessToken(
   try {
     // A key pair is needed for encryption.
     // This function from `solid-client-authn` generates such a pair for you.
-    console.log("a");
     const dpopKey = await generateDpopKeyPair();
 
     // These are the ID and secret generated in the previous step.
@@ -90,7 +82,6 @@ async function getAccessToken(
     // http://localhost:3001/.well-known/openid-configuration
     // if your server is hosted at http://localhost:3000/.
     const tokenUrl = "http://localhost:3001/.oidc/token";
-    console.log("b");
     const response = await fetch(tokenUrl, {
       method: "POST",
       headers: {
@@ -101,21 +92,12 @@ async function getAccessToken(
       },
       body: "grant_type=client_credentials&scope=webid",
     });
-    console.log("c");
-
-    // console.log(process.env.JEST_WORKER_ID ?? process.env.NODE_ENV);
-    // console.log(process.env.JEST_WORKER_ID);
-    // console.log(process.env.NODE_ENV);
-
-    console.log("d");
 
     // This is the Access token that will be used to do an authenticated request to the server.
     // The JSON also contains an "expires_in" field in seconds,
     // which you can use to know when you need request a new Access token.
-    const response2 = await response.text();
-    console.log("response2 getAccessToken", response2);
-    throw new Error();
-    // return { accessToken: response2.accessToken, dpopKey };
+    const response2 = await response.json();
+    return { accessToken: response2.access_token, dpopKey };
   } catch (err) {
     console.error(err);
     throw err;
@@ -123,12 +105,8 @@ async function getAccessToken(
 }
 
 export async function generateAuthFetch() {
-  console.log(1);
   const authorization = await getAuthorization();
-  console.log(2);
   const { id, secret } = await getSecret(authorization);
-  console.log(3);
   const { accessToken, dpopKey } = await getAccessToken(id, secret);
-  console.log(4);
   return await buildAuthenticatedFetch(accessToken, { dpopKey });
 }

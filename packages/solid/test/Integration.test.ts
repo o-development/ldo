@@ -153,7 +153,14 @@ describe("Integration", () => {
   >;
   let solidLdoDataset: SolidLdoDataset;
 
+  let previousJestId: string | undefined;
+  let previousNodeEnv: string | undefined;
   beforeAll(async () => {
+    // Remove Jest ID so that community solid server doesn't use the Jest Import
+    previousJestId = process.env.JEST_WORKER_ID;
+    previousNodeEnv = process.env.NODE_ENV;
+    delete process.env.JEST_WORKER_ID;
+    process.env.NODE_ENV = "other_test";
     // Start up the server
     app = await createApp();
     await app.start();
@@ -163,6 +170,8 @@ describe("Integration", () => {
 
   afterAll(async () => {
     app.stop();
+    process.env.JEST_WORKER_ID = previousJestId;
+    process.env.NODE_ENV = previousNodeEnv;
   });
 
   beforeEach(async () => {
