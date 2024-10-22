@@ -8,12 +8,7 @@ import type {
   UpdateResultError,
 } from "../src";
 import { changeData, commitData, createSolidLdoDataset } from "../src";
-import {
-  ROOT_CONTAINER,
-  WEB_ID,
-  createApp,
-  getAuthenticatedFetch,
-} from "./solidServer.helper";
+import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
   quad as createQuad,
@@ -46,6 +41,7 @@ import type { NoncompliantPodError } from "../src/requester/results/error/Noncom
 import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
 import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
+import { generateAuthFetch } from "./authFetch.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -162,7 +158,7 @@ describe("Integration", () => {
     app = await createApp();
     await app.start();
 
-    authFetch = await getAuthenticatedFetch();
+    authFetch = await generateAuthFetch();
   });
 
   afterAll(async () => {
