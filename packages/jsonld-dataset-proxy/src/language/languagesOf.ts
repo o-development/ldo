@@ -51,11 +51,14 @@ export function languagesOf<
   const proxy = getSubjectProxyFromObject(subjectObject);
   const proxyContext = proxy[_proxyContext];
   const subject = proxy[_getUnderlyingNode];
-  const predicate = namedNode(proxyContext.contextUtil.keyToIri(key as string));
+  const rdfTypes = proxyContext.getRdfType(subject);
+  const predicate = namedNode(
+    proxyContext.contextUtil.keyToIri(key as string, rdfTypes),
+  );
   return createLanguageMapProxy<LanguageMap>(
     subject,
     predicate,
     proxyContext,
-    proxyContext.contextUtil.isArray(key as string),
+    proxyContext.contextUtil.isArray(key as string, rdfTypes),
   ) as LanguageOfConditionalReturn<SubjectObject, Key>;
 }

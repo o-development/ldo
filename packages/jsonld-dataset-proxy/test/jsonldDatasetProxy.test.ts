@@ -18,18 +18,26 @@ import {
 import type { ObservationShape, PatientShape } from "./patientExampleData";
 import {
   patientData,
-  patientContext,
   tinyPatientData,
   tinyArrayPatientData,
   patientDataWithBlankNodes,
   tinyPatientDataWithBlankNodes,
   tinyPatientDataWithLanguageTags,
+  patientUnnestedContext,
+  patientNestedContext,
 } from "./patientExampleData";
 import { namedNode, quad, literal, defaultGraph } from "@rdfjs/data-model";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
+import type { LdoJsonldContext } from "../src/LdoJsonldContext";
+import {
+  scopedContext,
+  scopedData,
+  type Avatar,
+  type Bender,
+} from "./scopedExampleData";
 
-describe("jsonldDatasetProxy", () => {
+const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
   async function getLoadedDataset(): Promise<
     [Dataset, ObservationShape, JsonldDatasetProxyBuilder]
   > {
@@ -159,6 +167,19 @@ describe("jsonldDatasetProxy", () => {
     return [
       dataset,
       builder.fromSubject(namedNode("http://example.com/Patient1")),
+      builder,
+    ];
+  }
+
+  async function getScopedDataset(): Promise<
+    [Dataset, Bender, Avatar, JsonldDatasetProxyBuilder]
+  > {
+    const dataset = await serializedToDataset(scopedData);
+    const builder = await jsonldDatasetProxy(dataset, scopedContext);
+    return [
+      dataset,
+      builder.fromSubject(namedNode("http://example.com/Katara")),
+      builder.fromSubject(namedNode("http://example.com/Aang")),
       builder,
     ];
   }
@@ -407,23 +428,32 @@ describe("jsonldDatasetProxy", () => {
       const [, observation] = await getLoadedDataset();
       expect(observation["@context"]).toEqual(patientContext);
     });
+
+    it("reads an array for collections, but a var for non collections", async () => {
+      const [, bender, avatar] = await getScopedDataset();
+      expect(avatar.element[0]["@id"]).toBe("http://example.com/Air");
+      expect(avatar.element[1]["@id"]).toBe("http://example.com/Water");
+      expect(bender.element["@id"]).toBe("http://example.com/Water");
+    });
   });
 
   describe("write", () => {
     it("sets a primitive value that doesn't exist yet", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
+      observation.type = { "@id": "Observation" };
       observation.notes = "Cool Notes";
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/notes> "Cool Notes" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/notes> "Cool Notes" .\n',
       );
     });
 
     it("sets primitive number and boolean values", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       patient.age = 35;
       patient.isHappy = true;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/age> "35"^^<http://www.w3.org/2001/XMLSchema#integer> .\n<http://example.com/Patient1> <http://hl7.org/fhir/isHappy> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/age> "35"^^<http://www.w3.org/2001/XMLSchema#integer> .\n<http://example.com/Patient1> <http://hl7.org/fhir/isHappy> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n',
       );
     });
 
@@ -437,16 +467,21 @@ describe("jsonldDatasetProxy", () => {
 
     it("replaces a primitive value that currently exists", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
-      dataset.add(
+      dataset.addAll([
+        quad(
+          namedNode("http://example.com/Observation1"),
+          namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+          namedNode("http://hl7.org/fhir/Observation"),
+        ),
         quad(
           namedNode("http://example.com/Observation1"),
           namedNode("http://hl7.org/fhir/notes"),
           literal("Cool Notes"),
         ),
-      );
+      ]);
       observation.notes = "Lame Notes";
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/notes> "Lame Notes" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/notes> "Lame Notes" .\n',
       );
     });
 
@@ -454,11 +489,13 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       const patient: PatientShape = {
         "@id": "http://example.com/Patient1",
+        type: { "@id": "Patient" },
         birthdate: "2001-01-01",
       };
+      observation.type = { "@id": "Observation" };
       observation.subject = patient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2001-01-01"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2001-01-01"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
       );
     });
 
@@ -477,13 +514,14 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       observation.subject = undefined;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
     it("Creates a blank node if the id is blank during set", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
-      observation.subject = { name: ["Joe"] };
+      observation.type = { "@id": "Observation" };
+      observation.subject = { type: { "@id": "Patient" }, name: ["Joe"] };
       expect(observation.subject?.["@id"]).toBeUndefined();
       expect(observation.subject.name).toEqual(["Joe"]);
       expect(
@@ -500,12 +538,14 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       const patient: PatientShape = {
         "@id": "http://example.com/Patient1",
+        type: { "@id": "Patient" },
         birthdate: "2001-01-01",
         name: ["Jon", "Bon", "Jovi"],
       };
+      observation.type = { "@id": "Observation" };
       observation.subject = patient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2001-01-01"^^<http://www.w3.org/2001/XMLSchema#date> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Jon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Jovi" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2001-01-01"^^<http://www.w3.org/2001/XMLSchema#date> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Jon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Jovi" .\n',
       );
     });
 
@@ -513,41 +553,47 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       const patient1: PatientShape = {
         "@id": "http://example.com/Patient1",
+        type: { "@id": "Patient" },
         name: ["jon"],
       };
       const patient2: PatientShape = {
         "@id": "http://example.com/patient2",
+        type: { "@id": "Patient" },
         name: ["jane"],
         roommate: [patient1],
       };
       patient1.roommate = [patient2];
+      observation.type = { "@id": "Observation" };
       observation.subject = patient1;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/patient2> .\n<http://example.com/patient2> <http://hl7.org/fhir/name> "jane" .\n<http://example.com/patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/patient2> .\n<http://example.com/patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/patient2> <http://hl7.org/fhir/name> "jane" .\n<http://example.com/patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
     it("adds a proxy object to the array", async () => {
       const [, , builder] = await getTinyLoadedDataset();
-      const patient3 = builder.fromSubject(
+      const patient3: PatientShape = builder.fromSubject(
         namedNode("http://example.com/Patient3"),
       );
-      const patient1 = builder.fromSubject(
+      patient3.type = { "@id": "Patient" };
+      const patient1: PatientShape = builder.fromSubject(
         namedNode("http://example.com/Patient1"),
       );
-      patient3.roommate.push(patient1);
+      patient3.roommate?.push(patient1);
     });
 
     it("sets a primitive on an array", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       (patient.name as string[])[0] = "jon";
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n',
       );
     });
 
     it("sets a primitive on an array and overwrites one that already is there", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       dataset.add(
         quad(
           namedNode("http://example.com/Patient1"),
@@ -557,15 +603,16 @@ describe("jsonldDatasetProxy", () => {
       );
       (patient.name as string[])[0] = "not jon";
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "not jon" .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "not jon" .\n',
       );
     });
 
     it("sets an array", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       patient.name = ["Joe", "Mama"];
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Joe" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mama" .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Joe" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mama" .\n',
       );
     });
 
@@ -573,19 +620,23 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/ReplacementPatient",
+        type: { "@id": "Patient" },
         name: ["Jackson"],
       };
       observation.subject = replacementPatient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
       );
     });
 
     it("Does not overwrite the full object when a partial object is provided", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      observation.subject = { "@id": "http://example.com/Patient2" };
+      observation.subject = {
+        "@id": "http://example.com/Patient2",
+        type: { "@id": "Patient" },
+      };
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient2> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient2> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
@@ -593,12 +644,13 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/ReplacementPatient",
+        type: { "@id": "Patient" },
         name: ["Jackson"],
       };
       const roommateArr = observation?.subject?.roommate as PatientShape[];
       roommateArr[0] = replacementPatient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
       );
     });
 
@@ -607,6 +659,7 @@ describe("jsonldDatasetProxy", () => {
       const roommateArr = observation.subject?.roommate as PatientShape[];
       roommateArr[0] = {
         "@id": "http://example.com/ReplacementPatient",
+        type: { "@id": "Patient" },
         name: ["Jackson"],
       };
       expect(roommateArr.length).toBe(2);
@@ -619,7 +672,7 @@ describe("jsonldDatasetProxy", () => {
       patient["@id"] = "http://example.com/RenamedPatient";
       expect(patient["@id"]).toBe("http://example.com/RenamedPatient");
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/RenamedPatient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/RenamedPatient> .\n<http://example.com/RenamedPatient> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/RenamedPatient> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/RenamedPatient> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/RenamedPatient> .\n<http://example.com/RenamedPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/RenamedPatient> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/RenamedPatient> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n',
       );
     });
 
@@ -627,7 +680,7 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n',
       );
     });
 
@@ -635,7 +688,7 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject?.name;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
@@ -643,23 +696,23 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject?.roommate?.[0];
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n',
       );
     });
 
     it("Removes all adjoining triples when garbage collection is indicated via the delete operator on an array with blank nodes", async () => {
       const [dataset, observation] = await getTinyLoadedDatasetWithBlankNodes();
+      const deletedBlankNode =
+        observation.subject?.roommate?.[0][_getUnderlyingNode];
       delete observation.subject?.roommate?.[0];
-      expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> _:b26_Patient1 .\n_:b26_Patient1 <http://hl7.org/fhir/name> "Garrett" .\n',
-      );
+      expect(dataset.match(deletedBlankNode).size).toBe(0);
     });
 
     it("Removes a literal in an array when using the delete operator", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject?.name?.[0];
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
@@ -670,7 +723,7 @@ describe("jsonldDatasetProxy", () => {
       delete observation["@id"];
       expect(observation).toEqual({ "@id": "http://example.com/Observation1" });
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
@@ -711,27 +764,29 @@ describe("jsonldDatasetProxy", () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/Patient1",
+        type: { "@id": "Patient" },
         name: ["Mister Sneaky"],
       };
       observation.subject = replacementPatient;
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mister Sneaky" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mister Sneaky" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
     it("handles Object.assign", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      Object.assign(observation, {
+      Object.assign(observation.subject!, {
         age: 35,
         isHappy: true,
       });
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Observation1> <http://hl7.org/fhir/age> "35"^^<http://www.w3.org/2001/XMLSchema#integer> .\n<http://example.com/Observation1> <http://hl7.org/fhir/isHappy> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient1> <http://hl7.org/fhir/age> "35"^^<http://www.w3.org/2001/XMLSchema#integer> .\n<http://example.com/Patient1> <http://hl7.org/fhir/isHappy> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
     it("Adds elements to the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       patient.name = ["Joe", "Blow"];
       dataset.add(
         quad(
@@ -745,6 +800,7 @@ describe("jsonldDatasetProxy", () => {
 
     it("Removes elements from the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       patient.name = ["Joe", "Blow"];
       dataset.delete(
         quad(
@@ -758,6 +814,7 @@ describe("jsonldDatasetProxy", () => {
 
     it("Removes and adds from the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
       patient.name = ["Joe", "Blow"];
       dataset.delete(
         quad(
@@ -793,7 +850,10 @@ describe("jsonldDatasetProxy", () => {
     it("Prevents duplicates for Objects", async () => {
       const [, observation] = await getLoadedDataset();
       const roommates = observation.subject?.roommate as PatientShape[];
-      roommates[0] = { "@id": "http://example.com/Patient3" };
+      roommates[0] = {
+        "@id": "http://example.com/Patient3",
+        type: { "@id": "Patient" },
+      };
       expect(roommates.length).toBe(1);
       expect(roommates[0].name?.[0]).toBe("Amy");
     });
@@ -824,12 +884,13 @@ describe("jsonldDatasetProxy", () => {
       delete arr[5];
       expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
       expect(dataset.toString()).toEqual(
-        '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
       );
     });
 
     it("Can set a triple object named node with just a string", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
+      observation.type = { "@id": "Observation" };
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       observation.subject = "http://example.com/Patient1";
@@ -837,7 +898,7 @@ describe("jsonldDatasetProxy", () => {
         "@id": "http://example.com/Patient1",
       });
       expect(dataset.toString()).toBe(
-        "<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n",
+        "<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n",
       );
     });
 
@@ -848,7 +909,7 @@ describe("jsonldDatasetProxy", () => {
         arr.copyWithin(0, 2, 3);
         expect(arr).toEqual(["Ferguson", "Bobby"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -858,7 +919,7 @@ describe("jsonldDatasetProxy", () => {
         arr.copyWithin(0, 2);
         expect(arr).toEqual(["Ferguson", "Bobby"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -870,7 +931,7 @@ describe("jsonldDatasetProxy", () => {
         expect(() => arr.copyWithin(0, undefined, 2)).not.toThrowError();
         expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -880,7 +941,7 @@ describe("jsonldDatasetProxy", () => {
         arr.fill("Beepy", 2, 5);
         expect(arr).toEqual(["Garrett", "Bobby", "Beepy"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
         );
       });
 
@@ -890,7 +951,7 @@ describe("jsonldDatasetProxy", () => {
         expect(arr.pop()).toBe("Ferguson");
         expect(arr).toEqual(["Garrett", "Bobby"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n',
         );
       });
 
@@ -906,7 +967,7 @@ describe("jsonldDatasetProxy", () => {
         arr.push("Beepy");
         expect(arr).toEqual(["Garrett", "Bobby", "Ferguson", "Beepy"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
         );
       });
 
@@ -915,7 +976,7 @@ describe("jsonldDatasetProxy", () => {
         patient.name?.reverse();
         expect(patient.name).toEqual(["Ferguson", "Bobby", "Garrett"]);
         expect(dataset.toString()).toBe(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -925,7 +986,7 @@ describe("jsonldDatasetProxy", () => {
         expect(arr.shift()).toEqual("Garrett");
         expect(arr).toEqual(["Bobby", "Ferguson"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -942,7 +1003,7 @@ describe("jsonldDatasetProxy", () => {
         });
         expect(patient.name).toEqual(["Bobby", "Garrett", "Ferguson"]);
         expect(dataset.toString()).toBe(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -974,7 +1035,7 @@ describe("jsonldDatasetProxy", () => {
         arr.splice(1, 0, "Beepy");
         expect(arr).toEqual(["Garrett", "Beepy", "Bobby", "Ferguson"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
         );
       });
 
@@ -1008,7 +1069,7 @@ describe("jsonldDatasetProxy", () => {
         arr.splice(1, 1);
         expect(arr).toEqual(["Garrett", "Ferguson"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
         );
       });
 
@@ -1018,7 +1079,7 @@ describe("jsonldDatasetProxy", () => {
         arr.unshift("Beepy");
         expect(arr).toEqual(["Beepy", "Garrett", "Bobby", "Ferguson"]);
         expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
         );
       });
     });
@@ -1132,6 +1193,8 @@ describe("jsonldDatasetProxy", () => {
 
     it("errors if an object is added without the correct parameters", async () => {
       expect(() =>
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         patients.push({
           "@id": "http://example.com/Patient4",
           name: ["Dippy"],
@@ -1241,7 +1304,11 @@ describe("jsonldDatasetProxy", () => {
 
     it("cannot write to a collection that matches the null, predicate, null pattern", () => {
       expect(
-        () => (patients[1] = { "@id": "http://example.com/Patient4" }),
+        () =>
+          (patients[1] = {
+            "@id": "http://example.com/Patient4",
+            type: { "@id": "Patient" },
+          }),
       ).toThrow(
         "A collection that does not specify a match for both a subject or predicate cannot be modified directly.",
       );
@@ -1267,11 +1334,13 @@ describe("jsonldDatasetProxy", () => {
     it("initializes a patient using the fromJSON method", async () => {
       const [, , builder] = await getEmptyPatientDataset();
       const patient = builder.fromJson<PatientShape>({
+        type: { "@id": "Patient" },
         name: ["Jack", "Horner"],
         birthdate: "1725/11/03",
         age: 298,
         roommate: [
           {
+            type: { "@id": "Patient" },
             name: ["Ethical", "Bug"],
           },
         ],
@@ -1288,11 +1357,13 @@ describe("jsonldDatasetProxy", () => {
       const [, , builder] = await getEmptyPatientDataset();
       const patient = builder.fromJson<PatientShape>({
         "@id": "http://example.com/Patient13",
+        type: { "@id": "Patient" },
         name: ["Jack", "Horner"],
         birthdate: "1725/11/03",
         age: 298,
         roommate: [
           {
+            type: { "@id": "Patient" },
             name: ["Ethical", "Bug"],
           },
         ],
@@ -1314,9 +1385,10 @@ describe("jsonldDatasetProxy", () => {
         const patient4 = builder
           .write(namedNode("http://example.com/Patient4Doc"))
           .fromSubject<PatientShape>(namedNode("https://example.com/Patient4"));
+        patient4.type = { "@id": "Patient" };
         patient4.name = ["Jackson"];
         expect(dataset.toString()).toBe(
-          '<https://example.com/Patient4> <http://hl7.org/fhir/name> "Jackson" <http://example.com/Patient4Doc> .\n',
+          '<https://example.com/Patient4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> <http://example.com/Patient4Doc> .\n<https://example.com/Patient4> <http://hl7.org/fhir/name> "Jackson" <http://example.com/Patient4Doc> .\n',
         );
       });
     });
@@ -1399,6 +1471,7 @@ describe("jsonldDatasetProxy", () => {
         const doc3 = namedNode("http://example.com/Doc3");
 
         const [, patient] = await getEmptyPatientDataset();
+        patient.type = { "@id": "Patient" };
         patient.name?.push("default");
         const end1 = write(doc1).using(patient);
         patient.name?.push("1");
@@ -1426,6 +1499,7 @@ describe("jsonldDatasetProxy", () => {
         const doc1 = namedNode("http://example.com/Doc1");
 
         const [, patient] = await getEmptyPatientDataset();
+        patient.type = { "@id": "Patient" };
         patient.name?.push("Default");
         const [patientOnDoc1] = write(doc1).usingCopy(patient);
         patientOnDoc1.name?.push("Doc1");
@@ -1676,4 +1750,14 @@ describe("jsonldDatasetProxy", () => {
       expect(enSet.size).toBe(0);
     });
   });
-});
+};
+
+describe(
+  "jsonldDatasetProxy - unnested context",
+  testJsonldDatasetProxy(patientUnnestedContext),
+);
+
+describe(
+  "jsonldDatasetProxy - nested context",
+  testJsonldDatasetProxy(patientNestedContext),
+);
