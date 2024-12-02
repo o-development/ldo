@@ -8,12 +8,7 @@ import type {
   UpdateResultError,
 } from "../src";
 import { changeData, commitData, createSolidLdoDataset } from "../src";
-import {
-  ROOT_CONTAINER,
-  WEB_ID,
-  createApp,
-  getAuthenticatedFetch,
-} from "./solidServer.helper";
+import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
   quad as createQuad,
@@ -46,6 +41,7 @@ import type { NoncompliantPodError } from "../src/requester/results/error/Noncom
 import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
 import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
+import { generateAuthFetch } from "./authFetch.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -157,16 +153,25 @@ describe("Integration", () => {
   >;
   let solidLdoDataset: SolidLdoDataset;
 
+  let previousJestId: string | undefined;
+  let previousNodeEnv: string | undefined;
   beforeAll(async () => {
+    // Remove Jest ID so that community solid server doesn't use the Jest Import
+    previousJestId = process.env.JEST_WORKER_ID;
+    previousNodeEnv = process.env.NODE_ENV;
+    delete process.env.JEST_WORKER_ID;
+    process.env.NODE_ENV = "other_test";
     // Start up the server
     app = await createApp();
     await app.start();
 
-    authFetch = await getAuthenticatedFetch();
+    authFetch = await generateAuthFetch();
   });
 
   afterAll(async () => {
     app.stop();
+    process.env.JEST_WORKER_ID = previousJestId;
+    process.env.NODE_ENV = previousNodeEnv;
   });
 
   beforeEach(async () => {

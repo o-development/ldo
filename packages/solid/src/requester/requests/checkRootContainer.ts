@@ -85,7 +85,10 @@ export async function checkRootContainer(
   try {
     const fetch = guaranteeFetch(options?.fetch);
     // Fetch options to determine the document type
-    const response = await fetch(uri, { method: "HEAD" });
+    // Note cache: "no-store": we don't want to depend on cached results because
+    // web browsers do not cache link headers
+    // https://github.com/CommunitySolidServer/CommunitySolidServer/issues/1959
+    const response = await fetch(uri, { method: "HEAD", cache: "no-store" });
     const httpErrorResult = HttpErrorResult.checkResponse(uri, response);
     if (httpErrorResult) return httpErrorResult;
 
