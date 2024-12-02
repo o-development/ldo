@@ -31,12 +31,12 @@ describe("ContextUtil", () => {
       const contextUtil = new ContextUtil(scopedContext);
       expect(
         contextUtil.keyToIri("element", [
-          namedNode("https://example.com/Bender"),
+          namedNode("http://example.com/Bender"),
         ]),
-      ).toBe("https://example.com/element");
+      ).toBe("http://example.com/element");
       expect(
-        contextUtil.iriToKey("https://example.com/element", [
-          namedNode("https://example.com/Bender"),
+        contextUtil.iriToKey("http://example.com/element", [
+          namedNode("http://example.com/Bender"),
         ]),
       ).toBe("element");
     });
@@ -58,7 +58,7 @@ describe("ContextUtil", () => {
       const contextUtil = new ContextUtil(scopedContext);
       expect(
         contextUtil.isArray("element", [
-          namedNode("https://example.com/Avatar"),
+          namedNode("http://example.com/Avatar"),
         ]),
       ).toBe(true);
     });

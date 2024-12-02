@@ -30,6 +30,12 @@ import { namedNode, quad, literal, defaultGraph } from "@rdfjs/data-model";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 import type { LdoJsonldContext } from "../src/LdoJsonldContext";
+import {
+  scopedContext,
+  scopedData,
+  type Avatar,
+  type Bender,
+} from "./scopedExampleData";
 
 const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
   async function getLoadedDataset(): Promise<
@@ -161,6 +167,19 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     return [
       dataset,
       builder.fromSubject(namedNode("http://example.com/Patient1")),
+      builder,
+    ];
+  }
+
+  async function getScopedDataset(): Promise<
+    [Dataset, Bender, Avatar, JsonldDatasetProxyBuilder]
+  > {
+    const dataset = await serializedToDataset(scopedData);
+    const builder = await jsonldDatasetProxy(dataset, scopedContext);
+    return [
+      dataset,
+      builder.fromSubject(namedNode("http://example.com/Katara")),
+      builder.fromSubject(namedNode("http://example.com/Aang")),
       builder,
     ];
   }
@@ -408,6 +427,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("returns context when the @context key is called", async () => {
       const [, observation] = await getLoadedDataset();
       expect(observation["@context"]).toEqual(patientContext);
+    });
+
+    it("reads an array for collections, but a var for non collections", async () => {
+      const [, bender, avatar] = await getScopedDataset();
+      expect(avatar.element[0]["@id"]).toBe("http://example.com/Air");
+      expect(avatar.element[1]["@id"]).toBe("http://example.com/Water");
+      expect(bender.element["@id"]).toBe("http://example.com/Water");
     });
   });
 

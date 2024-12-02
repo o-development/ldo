@@ -43,53 +43,53 @@ export type Element =
 
 export const scopedContext: LdoJsonldContext = {
   Bender: {
-    "@id": "https://example.com/Bender",
+    "@id": "http://example.com/Bender",
     "@context": {
       type: {
         "@id": "@type",
       },
       name: {
-        "@id": "https://example.com/name",
+        "@id": "http://example.com/name",
       },
       element: {
-        "@id": "https://example.com/element",
+        "@id": "http://example.com/element",
       },
       friend: {
-        "@id": "https://example.com/friend",
+        "@id": "http://example.com/friend",
         "@isCollection": true,
       },
     },
   },
   Avatar: {
-    "@id": "https://example.com/Avatar",
+    "@id": "http://example.com/Avatar",
     "@context": {
       type: {
         "@id": "@type",
       },
       name: {
-        "@id": "https://example.com/name",
+        "@id": "http://example.com/name",
       },
       element: {
-        "@id": "https://example.com/element",
+        "@id": "http://example.com/element",
         "@isCollection": true,
       },
       friend: {
-        "@id": "https://example.com/friend",
+        "@id": "http://example.com/friend",
         "@isCollection": true,
       },
     },
   },
   NonBender: {
-    "@id": "https://example.com/NonBender",
+    "@id": "http://example.com/NonBender",
     "@context": {
       type: {
         "@id": "@type",
       },
       name: {
-        "@id": "https://example.com/name",
+        "@id": "http://example.com/name",
       },
       friend: {
-        "@id": "https://example.com/friend",
+        "@id": "http://example.com/friend",
         "@isCollection": true,
       },
     },
@@ -97,7 +97,7 @@ export const scopedContext: LdoJsonldContext = {
 };
 
 export const scopedData = `
-@prefix example: <https://example.com/> .
+@prefix example: <http://example.com/> .
 @prefix fhir: <http://hl7.org/fhir/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
