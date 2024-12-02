@@ -1,4 +1,4 @@
-import type { Schema } from "shexj";
+import { Schema } from "shexj";
 
 /**
  * =============================================================================
@@ -206,6 +206,25 @@ export const solidSchema: Schema = {
               ],
             },
           ],
+        },
+        extra: ["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"],
+      },
+    },
+    {
+      id: "http://www.w3.org/ns/lddps#ProfileWithStorage",
+      type: "ShapeDecl",
+      shapeExpr: {
+        type: "Shape",
+        expression: {
+          id: "http://www.w3.org/ns/lddps#ProfileWithStorageShape",
+          type: "TripleConstraint",
+          predicate: "http://www.w3.org/ns/pim/space#storage",
+          valueExpr: {
+            type: "NodeConstraint",
+            nodeKind: "iri",
+          },
+          min: 0,
+          max: -1,
         },
         extra: ["http://www.w3.org/1999/02/22-rdf-syntax-ns#type"],
       },

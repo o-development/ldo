@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "0.0.1-alpha.23",
+  "version": "0.0.1-alpha.28",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/ldo#readme",
   "devDependencies": {
-    "@ldo/rdf-utils": "^0.0.1-alpha.23",
+    "@ldo/rdf-utils": "^0.0.1-alpha.24",
     "@rdfjs/types": "^1.0.1",
     "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
@@ -38,9 +38,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^0.0.1-alpha.23",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.23",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.23",
+    "@ldo/dataset": "^0.0.1-alpha.24",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.24",
+    "@ldo/subscribable-dataset": "^0.0.1-alpha.24",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
@@ -55,5 +55,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
+  "gitHead": "c63f055aab22155b60a5fdee4172979b9c287dfa"
 }

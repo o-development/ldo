@@ -1,7 +1,9 @@
 {
-  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+  ],
   "import": [
-    "css:config/app/init/initialize-intro.json",
+    "css:config/app/init/static-root.json",
     "css:config/app/main/default.json",
     "css:config/app/variables/default.json",
     "css:config/http/handler/default.json",
@@ -23,7 +25,7 @@
     "css:config/ldp/modes/default.json",
     "css:config/storage/backend/memory.json",
     "css:config/storage/key-value/resource-store.json",
-    "css:config/storage/location/root.json",
+    "css:config/storage/location/pod.json",
     "css:config/storage/middleware/default.json",
     "css:config/util/auxiliary/acl.json",
     "css:config/util/identifiers/suffix.json",
@@ -35,18 +37,7 @@
   ],
   "@graph": [
     {
-      "comment": "A Solid server that stores its resources in memory and uses WAC for authorization."
-    },
-    {
-      "comment": "The location of the new pod templates folder.",
-      "@type": "Override",
-      "overrideInstance": {
-        "@id": "urn:solid-server:default:PodResourcesGenerator"
-      },
-      "overrideParameters": {
-        "@type": "StaticFolderGenerator",
-        "templateFolder": "./test/test-server/configs/template"
-      }
+      "comment": "A Solid server that stores its resources on disk and uses WAC for authorization."
     }
   ]
 }

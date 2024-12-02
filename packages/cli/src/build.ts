@@ -38,9 +38,19 @@ export async function build(options: BuildOptions) {
         "utf8",
       );
       // Convert to ShexJ
-      const schema: Schema = parser
-        .construct("https://ldo.js.org/")
-        .parse(shexC);
+      let schema: Schema;
+      try {
+        schema = parser.construct("https://ldo.js.org/").parse(shexC);
+      } catch (err) {
+        const errMessage =
+          err instanceof Error
+            ? err.message
+            : typeof err === "string"
+            ? err
+            : "Unknown Error";
+        console.error(`Error processing ${file.name}: ${errMessage}`);
+        return;
+      }
       // Convert the content to types
       const [typings, context] = await schemaConverterShex(schema);
       await Promise.all(

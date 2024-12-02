@@ -8,12 +8,7 @@ import type {
   UpdateResultError,
 } from "../src";
 import { changeData, commitData, createSolidLdoDataset } from "../src";
-import {
-  ROOT_CONTAINER,
-  WEB_ID,
-  createApp,
-  getAuthenticatedFetch,
-} from "./solidServer.helper";
+import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
   quad as createQuad,
@@ -45,6 +40,8 @@ import type {
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
 import type { WacRule } from "../src/resource/wac/WacRule";
+import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
+import { generateAuthFetch } from "./authFetch.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -58,6 +55,7 @@ const SAMPLE2_BINARY_URI =
   `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as LeafUri;
 const SAMPLE_CONTAINER_URI =
   `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
+const SAMPLE_PROFILE_URI = `${TEST_CONTAINER_URI}profile.ttl` as LeafUri;
 const SPIDER_MAN_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -98,6 +96,11 @@ const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://ww
 <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Append>, <http://www.w3.org/ns/auth/acl#Control>;
 <http://www.w3.org/ns/auth/acl#agent> <${WEB_ID}>;
 <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>, <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>.`;
+const SAMPLE_PROFILE_TTL = `
+@prefix pim: <http://www.w3.org/ns/pim/space#> .
+
+<${SAMPLE_PROFILE_URI}> pim:storage <https://example.com/A/>, <https://example.com/B/> .
+`;
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -150,16 +153,25 @@ describe("Integration", () => {
   >;
   let solidLdoDataset: SolidLdoDataset;
 
+  let previousJestId: string | undefined;
+  let previousNodeEnv: string | undefined;
   beforeAll(async () => {
+    // Remove Jest ID so that community solid server doesn't use the Jest Import
+    previousJestId = process.env.JEST_WORKER_ID;
+    previousNodeEnv = process.env.NODE_ENV;
+    delete process.env.JEST_WORKER_ID;
+    process.env.NODE_ENV = "other_test";
     // Start up the server
     app = await createApp();
     await app.start();
 
-    authFetch = await getAuthenticatedFetch();
+    authFetch = await generateAuthFetch();
   });
 
   afterAll(async () => {
     app.stop();
+    process.env.JEST_WORKER_ID = previousJestId;
+    process.env.NODE_ENV = previousNodeEnv;
   });
 
   beforeEach(async () => {
@@ -191,6 +203,11 @@ describe("Integration", () => {
         headers: { "content-type": "text/plain", slug: "sample.txt" },
         body: "some text.",
       }),
+      authFetch(TEST_CONTAINER_URI, {
+        method: "POST",
+        headers: { "content-type": "text/turtle", slug: "profile.ttl" },
+        body: SAMPLE_PROFILE_TTL,
+      }),
     ]);
   });
 
@@ -208,12 +225,27 @@ describe("Integration", () => {
       authFetch(SAMPLE2_BINARY_URI, {
         method: "DELETE",
       }),
+      authFetch(SAMPLE_PROFILE_URI, {
+        method: "DELETE",
+      }),
       authFetch(SAMPLE_CONTAINER_URI, {
         method: "DELETE",
       }),
     ]);
     await authFetch(TEST_CONTAINER_URI, {
       method: "DELETE",
+    });
+  });
+
+  /**
+   * General
+   */
+  describe("General", () => {
+    it("Does not include the hash when creating a resource", () => {
+      const resource = solidLdoDataset.getResource(
+        "https://example.com/thing#hash",
+      );
+      expect(resource.uri).toBe("https://example.com/thing");
     });
   });
 
@@ -271,7 +303,7 @@ describe("Integration", () => {
         isDoingInitialFetch: true,
       });
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("Reads a binary leaf", async () => {
@@ -385,6 +417,24 @@ describe("Integration", () => {
       );
     });
 
+    it("Parses Turtle even when the content type contains parameters", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(SPIDER_MAN_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle;charset=utf-8" }),
+        }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await testRequestLoads(() => resource.read(), resource, {
+        isLoading: true,
+        isReading: true,
+        isDoingInitialFetch: true,
+      });
+      expect(result.isError).toBe(false);
+      if (result.isError) return;
+      expect(result.type).toBe("dataReadSuccess");
+    });
+
     it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
       fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
@@ -399,7 +449,7 @@ describe("Integration", () => {
       expect(result.message).toBe("Something happened.");
     });
 
-    it("Returns an error if there is no link header for a container request", async () => {
+    it("Does not return an error if there is no link header for a container request", async () => {
       fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
@@ -412,12 +462,9 @@ describe("Integration", () => {
         isReading: true,
         isDoingInitialFetch: true,
       });
-      expect(result.isError).toBe(true);
-      if (!result.isError) return;
-      expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toMatch(
-        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
-      );
+      expect(result.isError).toBe(false);
+      if (result.isError) return;
+      expect(result.resource.isRootContainer()).toBe(false);
     });
 
     it("knows nothing about a leaf resource if it is not fetched", () => {
@@ -470,7 +517,7 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("reads an unfetched leaf", async () => {
@@ -501,7 +548,7 @@ describe("Integration", () => {
       const result = await resource.readIfUnfetched();
       expect(fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(2);
+      expect(resource.children().length).toBe(3);
     });
 
     it("returns a cached existing data leaf", async () => {
@@ -559,7 +606,19 @@ describe("Integration", () => {
       expect(result.isRootContainer()).toBe(true);
     });
 
-    it("Returns an error if there is no link header for a container request", async () => {
+    it("Returns an error if there is no root container", async () => {
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle" }),
+        }),
+      );
+      fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: new Headers({ "content-type": "text/turtle" }),
+        }),
+      );
       fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
@@ -570,10 +629,8 @@ describe("Integration", () => {
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
       if (!result.isError) return;
-      expect(result.type).toBe("noncompliantPodError");
-      expect(result.message).toMatch(
-        /\Response from .* is not compliant with the Solid Specification: No link header present in request\./,
-      );
+      expect(result.type).toBe("noRootContainerError");
+      expect(result.message).toMatch(/\.* has not root container\./);
     });
 
     it("An error to be returned if a common http error is encountered", async () => {
@@ -611,7 +668,47 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
-      expect(result.type).toBe("noncompliantPodError");
+      expect(result.type).toBe("noRootContainerError");
+    });
+  });
+
+  /**
+   * Get Storage From WebId
+   */
+  describe("getStorageFromWebId", () => {
+    it("Gets storage when a pim:storage field isn't present", async () => {
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
+      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      expect(realResult.storageContainers.length).toBe(1);
+      expect(realResult.storageContainers[0].uri).toBe(ROOT_CONTAINER);
+    });
+
+    it("Gets storage when a pim:storage field is present", async () => {
+      const result =
+        await solidLdoDataset.getStorageFromWebId(SAMPLE_PROFILE_URI);
+      expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
+      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      expect(realResult.storageContainers.length).toBe(2);
+      expect(realResult.storageContainers[0].uri).toBe(
+        "https://example.com/A/",
+      );
+      expect(realResult.storageContainers[1].uri).toBe(
+        "https://example.com/B/",
+      );
+    });
+
+    it("Passes any errors returned from the read method", async () => {
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.isError).toBe(true);
+    });
+
+    it("Passes any errors returned from the getRootContainer method", async () => {
+      fetchMock.mockResolvedValueOnce(new Response(""));
+      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      const result = await solidLdoDataset.getStorageFromWebId(SAMPLE_DATA_URI);
+      expect(result.isError).toBe(true);
     });
   });
 

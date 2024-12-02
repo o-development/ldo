@@ -1,6 +1,6 @@
 {
   "name": "@ldo/cli",
-  "version": "0.0.1-alpha.23",
+  "version": "0.0.1-alpha.28",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "bin": {
@@ -19,7 +19,8 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,7 @@
     "ts-jest": "^27.0.7"
   },
   "dependencies": {
-    "@ldo/schema-converter-shex": "^0.0.1-alpha.23",
+    "@ldo/schema-converter-shex": "^0.0.1-alpha.24",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
@@ -59,5 +60,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
+  "gitHead": "c63f055aab22155b60a5fdee4172979b9c287dfa"
 }

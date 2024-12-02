@@ -1,4 +1,4 @@
-import type { ContextDefinition } from "jsonld";
+import { ContextDefinition } from "jsonld";
 
 /**
  * =============================================================================
@@ -57,9 +57,6 @@ export interface Resource {
     | {
         "@id": "Resource2";
       }
-    | {
-        "@id": "Container";
-      }
   )[];
   /**
    * Date modified
@@ -73,4 +70,15 @@ export interface Resource {
    * size of this container
    */
   size?: number;
+}
+
+/**
+ * ProfileWithStorage Type
+ */
+export interface ProfileWithStorage {
+  "@id"?: string;
+  "@context"?: ContextDefinition;
+  storage?: {
+    "@id": string;
+  }[];
 }

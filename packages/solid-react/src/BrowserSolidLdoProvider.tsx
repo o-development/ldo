@@ -27,25 +27,31 @@ export const BrowserSolidLdoProvider: FunctionComponent<PropsWithChildren> = ({
     await handleIncomingRedirect({
       restorePreviousSession: true,
     });
-    setSession({ ...getDefaultSession().info });
-    window.history.replaceState(
-      {},
-      "",
-      window.localStorage.getItem(PRE_REDIRECT_URI),
-    );
-    window.localStorage.removeItem(PRE_REDIRECT_URI);
+    // Set timout to ensure this happens after the redirect
+    setTimeout(() => {
+      setSession({ ...getDefaultSession().info });
+      window.history.replaceState(
+        {},
+        "",
+        window.localStorage.getItem(PRE_REDIRECT_URI),
+      );
+      window.localStorage.removeItem(PRE_REDIRECT_URI);
 
-    setRanInitialAuthCheck(true);
+      setRanInitialAuthCheck(true);
+    }, 0);
   }, []);
 
   const login = useCallback(async (issuer: string, options?: LoginOptions) => {
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.hash = "";
+    cleanUrl.search = "";
     const fullOptions = {
-      redirectUrl: window.location.href,
+      redirectUrl: cleanUrl.toString(),
       clientName: "Solid App",
       oidcIssuer: issuer,
       ...options,
     };
-    window.localStorage.setItem(PRE_REDIRECT_URI, fullOptions.redirectUrl);
+    window.localStorage.setItem(PRE_REDIRECT_URI, window.location.href);
     await libraryLogin(fullOptions);
     setSession({ ...getDefaultSession().info });
   }, []);

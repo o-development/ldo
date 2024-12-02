@@ -24,7 +24,7 @@ import type { LdoDataset } from "./LdoDataset";
  * import { parseRdf } from "ldo";
  *
  * const rawTurtle = "...";
- * const ldoDataset = parseRdf(rawTurtle, { baseIRI: "https://example.com/" });
+ * const ldoDataset = await parseRdf(rawTurtle, { baseIRI: "https://example.com/" });
  * ```
  */
 export async function parseRdf(
@@ -47,7 +47,7 @@ export async function parseRdf(
       ldoDatasetFactory,
       JSON.stringify(data),
       {
-        format: "application/json-ld",
+        format: "application/ld+json",
       },
     );
   }

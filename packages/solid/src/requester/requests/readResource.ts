@@ -99,7 +99,9 @@ export async function readResource(
   try {
     const fetch = guaranteeFetch(options?.fetch);
     // Fetch options to determine the document type
-    const response = await fetch(uri);
+    const response = await fetch(uri, {
+      headers: { accept: "text/turtle, */*" },
+    });
     if (response.status === 404) {
       return {
         isError: false,
@@ -124,7 +126,7 @@ export async function readResource(
       );
     }
 
-    if (contentType === "text/turtle") {
+    if (contentType.startsWith("text/turtle")) {
       // Parse Turtle
       const rawTurtle = await response.text();
       if (options?.dataset) {
@@ -137,7 +139,6 @@ export async function readResource(
       }
       if (isContainerUri(uri)) {
         const result = checkHeadersForRootContainer(uri, response.headers);
-        if (result.isError) return result;
         return {
           isError: false,
           type: "containerReadSuccess",
