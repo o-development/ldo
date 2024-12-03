@@ -11,6 +11,8 @@ export const ShexJNameVisitor =
     },
     TripleConstraint: {
       visitor: async (tripleConstraint, context) => {
+        // TODO: check that there's a triple constraint that is a type at the
+        // same level if there is, use that as an rdfType
         if (tripleConstraint.valueExpr) {
           const isContainer =
             tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
@@ -24,6 +26,7 @@ export const ShexJNameVisitor =
                   "@type": tripleConstraint.valueExpr.datatype,
                 },
                 isContainer,
+                undefined,
                 tripleConstraint.annotations,
               );
             } else if (
@@ -34,6 +37,7 @@ export const ShexJNameVisitor =
                 tripleConstraint.predicate,
                 { "@type": "@id" },
                 isContainer,
+                undefined,
                 tripleConstraint.annotations,
               );
             } else {
@@ -41,6 +45,7 @@ export const ShexJNameVisitor =
                 tripleConstraint.predicate,
                 {},
                 isContainer,
+                undefined,
                 tripleConstraint.annotations,
               );
             }
@@ -51,12 +56,14 @@ export const ShexJNameVisitor =
                 "@type": "@id",
               },
               isContainer,
+              undefined,
               tripleConstraint.annotations,
             );
           }
         } else {
           context.addSubject(
             tripleConstraint.predicate,
+            undefined,
             tripleConstraint.annotations,
           );
         }

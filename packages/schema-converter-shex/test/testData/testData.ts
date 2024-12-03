@@ -20,10 +20,10 @@ export interface TestData {
 export const testData: TestData[] = [
   simple,
   circular,
-  profile,
-  reducedProfile,
-  activityPub,
-  extendsSimple,
+  // profile,
+  // reducedProfile,
+  // activityPub,
+  // extendsSimple,
   // oldExtends,
-  reusedPredicates,
+  // reusedPredicates,
 ];

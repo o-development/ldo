@@ -47,20 +47,41 @@ export function toCamelCase(text: string) {
     });
 }
 
+export function isJsonLdContextBuilder(
+  item: ExpandedTermDefinition | JsonLdContextBuilder,
+): item is JsonLdContextBuilder {
+  return !!(typeof item === "object" && item instanceof JsonLdContextBuilder);
+}
+
 /**
  * JsonLd Context Builder
  */
 export class JsonLdContextBuilder {
-  private iriAnnotations: Record<string, Annotation[]> = {};
-  private iriTypes: Record<string, ExpandedTermDefinition> = {};
-  private generatedNames: Record<string, string> | undefined;
+  protected iriAnnotations: Record<string, Annotation[]> = {};
+  protected iriTypes: Record<
+    string,
+    ExpandedTermDefinition | JsonLdContextBuilder
+  > = {};
+  protected generatedNames: Record<string, string> | undefined;
 
-  addSubject(iri: string, annotations?: Annotation[]) {
-    if (!this.iriAnnotations[iri]) {
-      this.iriAnnotations[iri] = [];
+  private getRelevantBuilder(rdfType?: string): JsonLdContextBuilder {
+    if (!rdfType) return this;
+    if (
+      !this.iriTypes[rdfType] ||
+      !isJsonLdContextBuilder(this.iriTypes[rdfType])
+    ) {
+      this.iriTypes[rdfType] = new JsonLdContextBuilder();
+    }
+    return this.iriTypes[rdfType] as JsonLdContextBuilder;
+  }
+
+  addSubject(iri: string, rdfType?: string, annotations?: Annotation[]) {
+    const relevantBuilder = this.getRelevantBuilder(rdfType);
+    if (!relevantBuilder.iriAnnotations[iri]) {
+      relevantBuilder.iriAnnotations[iri] = [];
     }
     if (annotations && annotations.length > 0) {
-      this.iriAnnotations[iri].push(...annotations);
+      relevantBuilder.iriAnnotations[iri].push(...annotations);
     }
   }
 
@@ -68,22 +89,24 @@ export class JsonLdContextBuilder {
     iri: string,
     expandedTermDefinition: ExpandedTermDefinition,
     isContainer: boolean,
+    rdfType?: string,
     annotations?: Annotation[],
   ) {
-    this.addSubject(iri, annotations);
-    if (!this.iriTypes[iri]) {
-      this.iriTypes[iri] = expandedTermDefinition;
+    const relevantBuilder = this.getRelevantBuilder(rdfType);
+    relevantBuilder.addSubject(iri, undefined, annotations);
+    if (!relevantBuilder.iriTypes[iri]) {
+      relevantBuilder.iriTypes[iri] = expandedTermDefinition;
       if (isContainer) {
-        this.iriTypes[iri]["@container"] = "@set";
+        relevantBuilder.iriTypes[iri]["@isContainer"] = true;
       }
     } else {
-      const curDef = this.iriTypes[iri];
+      const curDef = relevantBuilder.iriTypes[iri];
       const newDef = expandedTermDefinition;
       // TODO: if you reuse the same predicate with a different cardinality,
       // it will overwrite the past cardinality. Perhapse we might want to
       // split contexts in the various shapes.
       if (isContainer) {
-        curDef["@container"] = "@set";
+        curDef["@isContainer"] = true;
       }
       // If the old and new versions both have types
       if (curDef["@type"] && newDef["@type"]) {
@@ -165,13 +188,25 @@ export class JsonLdContextBuilder {
     const namesMap = this.generateNames();
     Object.entries(namesMap).forEach(([iri, name]) => {
       if (this.iriTypes[iri]) {
-        contextDefnition[name] = {
+        let subContext: ExpandedTermDefinition = {
           "@id":
             iri === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
               ? "@type"
               : iri,
-          ...this.iriTypes[iri],
         };
+
+        if (isJsonLdContextBuilder(this.iriTypes[iri])) {
+          subContext["@context"] = (
+            this.iriTypes[iri] as JsonLdContextBuilder
+          ).generateJsonldContext();
+        } else {
+          subContext = {
+            ...subContext,
+            ...this.iriTypes[iri],
+          };
+        }
+
+        contextDefnition[name] = subContext;
       } else {
         contextDefnition[name] = iri;
       }
