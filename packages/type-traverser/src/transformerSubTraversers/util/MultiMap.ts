@@ -1,3 +1,7 @@
+/**
+ * A Multi-Map is a map between the tuple of two items and a value
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class MultiMap<Key1, Key2, Value> {
   private map: Map<Key1, Map<Key2, Value>> = new Map();

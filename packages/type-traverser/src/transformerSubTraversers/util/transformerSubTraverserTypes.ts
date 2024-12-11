@@ -4,7 +4,7 @@ import type {
   BaseTraverserTypes,
   KeyTypes,
   TransformerReturnTypes,
-  TraverserDefinition,
+  TraverserDefinitions,
   TraverserTypes,
 } from "../..";
 import type { Transformers } from "../../Transformers";
@@ -30,7 +30,7 @@ export interface TransformerSubTraverserGlobals<
   ReturnTypes extends TransformerReturnTypes<Types>,
   Context,
 > {
-  traverserDefinition: TraverserDefinition<Types>;
+  traverserDefinition: TraverserDefinitions<Types>;
   transformers: Transformers<Types, ReturnTypes, Context>;
   executingPromises: TransformerSubTraverserExecutingPromises<keyof Types>;
   circularDependencyAwaiter: CircularDepenedencyAwaiter;

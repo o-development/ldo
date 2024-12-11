@@ -8,7 +8,7 @@ import type {
   PrimitiveType,
   PrimitiveVisitorDefinition,
   PrimitiveVisitorInputDefinition,
-  TraverserDefinition,
+  TraverserDefinitions,
   TraverserTypes,
   UnionType,
   UnionVisitorDefinition,
@@ -27,11 +27,11 @@ export class Visitor<
   Types extends TraverserTypes<any>,
   Context = undefined,
 > {
-  private traverserDefinition: TraverserDefinition<Types>;
+  private traverserDefinition: TraverserDefinitions<Types>;
   private visitors: Visitors<Types, Context>;
 
   constructor(
-    traverserDefinition: TraverserDefinition<Types>,
+    traverserDefinition: TraverserDefinitions<Types>,
     visitors: VisitorsInput<Types, Context>,
   ) {
     this.traverserDefinition = traverserDefinition;

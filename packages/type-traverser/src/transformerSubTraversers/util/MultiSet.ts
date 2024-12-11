@@ -1,3 +1,7 @@
+/**
+ * A Multi-Set is a set where two items occupy a unique spot
+ */
+
 export class MultiSet<Key1, Key2> {
   private map: Map<Key1, Set<Key2>> = new Map();
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types

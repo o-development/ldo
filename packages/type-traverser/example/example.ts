@@ -1,5 +1,13 @@
-import type { TraverserDefinition, ValidateTraverserTypes } from "../src";
+import type {
+  TraverserDefinition,
+  ValidateTraverserTypes,
+  AssertExtends,
+  InterfaceType,
+  PrimitiveType,
+  UnionType,
+} from "../src";
 import { Traverser } from "../src";
+import type { ReverseRelationshipIndentifiers } from "../src/reverseRelationshipTypes";
 
 async function run() {
   /**
@@ -67,6 +75,62 @@ async function run() {
       typeNames: "Bender" | "NonBender";
     };
   }>;
+
+  type AvatarReverseRelationshipIdentifiers =
+    ReverseRelationshipIndentifiers<AvatarTraverserTypes>;
+
+  const sample: AvatarReverseRelationshipIdentifiers = {
+    Element: ["Bender", "element"],
+    Bender: ["Person"],
+  }
+
+  type KeysMatchingCondition<T, Condition> = {
+    [K in keyof T]: T[K] extends Condition ? K : never;
+  }[keyof T];
+  
+  // Condition: objects with `{ kind: "interface" }`
+  type InterfaceKeys = KeysMatchingCondition<
+    AvatarTraverserTypes,
+    { kind: "interface" }
+  >;
+
+  
+
+  type something = AvatarTraverserTypes[keyof AvatarTraverserTypes];
+  type something2 = something extends PrimitiveType ? "cool" : never;
+
+  type SomeInterface = {
+    a: { type: "1" };
+    b: { type: "2" };
+    c: { type: "3" };
+  };
+
+  // type TestUnionType = AvatarTraverserTypes[keyof AvatarTraverserTypes];
+
+  // type MapUnion<T> = T extends InterfaceType<keyof AvatarTraverserTypes>
+  //   ? "interface"
+  //   : T extends UnionType<keyof AvatarTraverserTypes>
+  //   ? "union"
+  //   : T extends PrimitiveType
+  //   ? "primitive"
+  //   : never;
+
+  // // Example usage:
+  // type MappedUnion = MapUnion<TestUnionType>; // "a_mapped" | "b_mapped" | "c_mapped"
+
+  interface;
+  type UnionType = "a" | "b" | "c";
+
+  type MapUnion<T> = T extends "a"
+    ? "a_mapped"
+    : T extends "b"
+    ? "b_mapped"
+    : T extends "c"
+    ? "c_mapped"
+    : never;
+
+  // Example usage:
+  type MappedUnion = MapUnion<UnionType>; // "a_mapped" | "b_mapped" | "c_mapped"
 
   /**
    * Create the traverser definition

@@ -8,7 +8,7 @@ import type {
   PrimitiveReturnType,
   PrimitiveType,
   TransformerInputReturnTypes,
-  TraverserDefinition,
+  TraverserDefinitions,
   TraverserTypes,
   UnionReturnType,
   UnionType,
@@ -38,7 +38,7 @@ export class Transformer<
   InputReturnTypes extends TransformerInputReturnTypes<Types>,
   Context = undefined,
 > {
-  private traverserDefinition: TraverserDefinition<Types>;
+  private traverserDefinition: TraverserDefinitions<Types>;
   private transformers: Transformers<
     Types,
     ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
@@ -46,7 +46,7 @@ export class Transformer<
   >;
 
   constructor(
-    traverserDefinition: TraverserDefinition<Types>,
+    traverserDefinition: TraverserDefinitions<Types>,
     transformers: TransformersInput<Types, InputReturnTypes, Context>,
   ) {
     this.traverserDefinition = traverserDefinition;

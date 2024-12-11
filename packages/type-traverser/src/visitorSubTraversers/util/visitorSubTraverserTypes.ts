@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   BaseTraverserTypes,
-  TraverserDefinition,
+  TraverserDefinitions,
   TraverserTypes,
   Visitors,
 } from "../..";
@@ -22,7 +22,7 @@ export interface VisitorSubTraverserGlobals<
   Types extends TraverserTypes<any>,
   Context,
 > {
-  traverserDefinition: TraverserDefinition<Types>;
+  traverserDefinition: TraverserDefinitions<Types>;
   visitors: Visitors<Types, Context>;
   visitedObjects: MultiSet<object, keyof Types>;
   context: Context;

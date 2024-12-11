@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   TransformerInputReturnTypes,
-  TraverserDefinition,
+  TraverserDefinitions,
   TraverserTypes,
   VisitorsInput,
 } from ".";
@@ -12,9 +12,9 @@ export class Traverser<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Types extends TraverserTypes<any>,
 > {
-  private traverserDefinition: TraverserDefinition<Types>;
+  private traverserDefinition: TraverserDefinitions<Types>;
 
-  constructor(traverserDefinition: TraverserDefinition<Types>) {
+  constructor(traverserDefinition: TraverserDefinitions<Types>) {
     this.traverserDefinition = traverserDefinition;
   }
 
