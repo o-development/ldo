@@ -15,7 +15,7 @@ export abstract class InstanceNode<
   readonly typeName: TypeName;
   protected readonly parents: Record<
     string,
-    Set<InstanceNodeFor<Types, Types[ParentIdentifiers<Types, TypeName>[0]]>>
+    Set<InstanceNodeFor<Types, ParentIdentifiers<Types, TypeName>[0]>>
   >;
 
   constructor(
@@ -37,7 +37,7 @@ export abstract class InstanceNode<
 
   public _setParent<Identifiers extends ParentIdentifiers<Types, TypeName>>(
     identifiers: Identifiers,
-    parentNode: InstanceNodeFor<Types, Types[Identifiers[0]]>,
+    parentNode: InstanceNodeFor<Types, Identifiers[0]>,
   ) {
     const parentKey = this.getParentKey(identifiers);
     if (!this.parents[parentKey]) this.parents[parentKey] = new Set();
@@ -66,11 +66,7 @@ export abstract class InstanceNode<
   /**
    * Returns all nodes that are children of this node reguardless of their edge
    */
-  public abstract allChildren(): InstanceNode<
-    Types,
-    keyof Types,
-    Types[keyof Types]
-  >[];
+  public abstract allChildren(): InstanceNodeFor<Types, any>[];
 
   protected abstract _recursivelyBuildChildren(): void;
 

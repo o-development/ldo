@@ -39,7 +39,7 @@ export class InterfaceInstanceNode<
 
   public allChildren(): InstanceNodeFor<
     Types,
-    Types[Type["properties"][keyof Type["properties"]]]
+    Type["properties"][keyof Type["properties"]]
   >[] {
     return Object.values(this.children).flat();
   }
@@ -49,17 +49,19 @@ export class InterfaceInstanceNode<
       ([propertyName, value]: [keyof Type["properties"], unknown]) => {
         const initChildNode = (val: unknown) => {
           const node = this.graph.getNodeFor(val, this.typeName);
-          // I know it's bad, I just can't figure out what's wrong with this type
+          // Fancy typescript doesn't work until you actually give it a type
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           node._setParent([this.typeName, propertyName], this);
           return node;
         };
-        const childNode = (
-          Array.isArray(value)
-            ? value.map((val) => initChildNode(val))
-            : initChildNode(value)
-        ) as InterfacePropertyNode<Types, Type, keyof Type["properties"]>;
+        const childNode = (Array.isArray(value)
+          ? value.map((val) => initChildNode(val))
+          : initChildNode(value)) as unknown as InterfacePropertyNode<
+          Types,
+          Type,
+          keyof Type["properties"]
+        >;
         this._setChild(propertyName, childNode);
       },
     );

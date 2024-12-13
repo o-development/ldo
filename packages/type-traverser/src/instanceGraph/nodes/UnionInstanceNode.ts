@@ -18,7 +18,7 @@ export class UnionInstanceNode<
     return this.childNode;
   }
 
-  public allChildren(): InstanceNode<Types, keyof Types, Types[keyof Types]>[] {
+  public allChildren(): InstanceNodeFor<Types, Type["typeNames"]>[] {
     return this.childNode ? [this.childNode] : [];
   }
   protected _recursivelyBuildChildren() {

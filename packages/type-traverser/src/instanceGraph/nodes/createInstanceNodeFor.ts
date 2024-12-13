@@ -13,13 +13,15 @@ import { UnionInstanceNode } from "./UnionInstanceNode";
 export type InstanceNodeFor<
   Types extends TraverserTypes<any>,
   TypeName extends keyof Types,
-> = Types[TypeName] extends InterfaceType<keyof Types>
-  ? InterfaceInstanceNode<Types, TypeName, Types[TypeName]>
-  : Types[TypeName] extends UnionType<keyof Types>
-  ? UnionInstanceNode<Types, TypeName, Types[TypeName]>
-  : Types[TypeName] extends PrimitiveType
-  ? PrimitiveInstanceNode<Types, TypeName, Types[TypeName]>
-  : never;
+> = {
+  [TN in TypeName]: Types[TN] extends InterfaceType<keyof Types>
+    ? InterfaceInstanceNode<Types, TN, Types[TN]>
+    : Types[TN] extends UnionType<keyof Types>
+    ? UnionInstanceNode<Types, TN, Types[TN]>
+    : Types[TN] extends PrimitiveType
+    ? PrimitiveInstanceNode<Types, TypeName, Types[TN]>
+    : never;
+}[TypeName];
 
 export function createInstanceNodeFor<
   Types extends TraverserTypes<any>,
