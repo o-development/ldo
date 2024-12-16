@@ -24,15 +24,22 @@ export type PrimitiveTraverserDefinition = {
 
 export type TraverserDefinition<
   Types extends TraverserTypes<any>,
-  TypeField extends keyof Types,
-> = Types[TypeField] extends InterfaceType<keyof Types>
-  ? InterfaceTraverserDefinition<Types[TypeField]>
-  : Types[TypeField] extends UnionType<keyof Types>
-  ? UnionTraverserDefinition<Types[TypeField]>
-  : Types[TypeField] extends PrimitiveType
-  ? PrimitiveTraverserDefinition
-  : never;
+  TypeName extends keyof Types,
+  Type extends Types[TypeName],
+> = {
+  [TN in TypeName]: Type extends InterfaceType<keyof Types>
+    ? InterfaceTraverserDefinition<Type>
+    : Type extends UnionType<keyof Types>
+    ? UnionTraverserDefinition<Type>
+    : Type extends PrimitiveType
+    ? PrimitiveTraverserDefinition
+    : never;
+}[TypeName];
 
 export type TraverserDefinitions<Types extends TraverserTypes<any>> = {
-  [TypeField in keyof Types]: TraverserDefinition<Types, TypeField>;
+  [TypeName in keyof Types]: TraverserDefinition<
+    Types,
+    TypeName,
+    Types[TypeName]
+  >;
 };

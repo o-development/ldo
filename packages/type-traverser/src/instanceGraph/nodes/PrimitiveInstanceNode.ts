@@ -16,7 +16,7 @@ export class PrimitiveInstanceNode<
   public allChildren(): [] {
     return [];
   }
-  protected _recursivelyBuildChildren() {
+  public _recursivelyBuildChildren(): void {
     return;
   }
 }

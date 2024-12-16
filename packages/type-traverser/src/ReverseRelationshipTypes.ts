@@ -74,4 +74,9 @@ export type BaseReverseRelationshipIndentifiers<
 export type ParentIdentifiers<
   Types extends TraverserTypes<any>,
   ChildName extends keyof Types,
-> = BaseReverseRelationshipIndentifiers<Types, ChildName>[keyof Types];
+> = {
+  [CN in ChildName]: BaseReverseRelationshipIndentifiers<
+    Types,
+    CN
+  >[keyof Types];
+}[ChildName];

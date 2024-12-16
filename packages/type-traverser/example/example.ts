@@ -1,13 +1,10 @@
 import type {
-  TraverserDefinition,
   ValidateTraverserTypes,
-  AssertExtends,
-  InterfaceType,
-  PrimitiveType,
-  UnionType,
+  ItemNamed,
+  TraverserDefinitions,
 } from "../src";
-import { Traverser } from "../src";
-import type { ReverseRelationshipIndentifiers } from "../src/reverseRelationshipTypes";
+import { InstanceGraph } from "../src/instanceGraph/instanceGraph";
+import type { ParentIdentifiers } from "../src/ReverseRelationshipTypes";
 
 async function run() {
   /**
@@ -64,7 +61,7 @@ async function run() {
     };
     NonBender: {
       kind: "interface";
-      type: Bender;
+      type: NonBender;
       properties: {
         friends: "Person";
       };
@@ -76,236 +73,205 @@ async function run() {
     };
   }>;
 
-  type AvatarReverseRelationshipIdentifiers =
-    ReverseRelationshipIndentifiers<AvatarTraverserTypes>;
-
-  const sample: AvatarReverseRelationshipIdentifiers = {
-    Element: ["Bender", "element"],
-    Bender: ["Person"],
-  }
-
-  type KeysMatchingCondition<T, Condition> = {
-    [K in keyof T]: T[K] extends Condition ? K : never;
-  }[keyof T];
-  
-  // Condition: objects with `{ kind: "interface" }`
-  type InterfaceKeys = KeysMatchingCondition<
+  type PersonParentIdentifiers = ParentIdentifiers<
     AvatarTraverserTypes,
-    { kind: "interface" }
+    "Person"
   >;
 
-  
-
-  type something = AvatarTraverserTypes[keyof AvatarTraverserTypes];
-  type something2 = something extends PrimitiveType ? "cool" : never;
-
-  type SomeInterface = {
-    a: { type: "1" };
-    b: { type: "2" };
-    c: { type: "3" };
-  };
-
-  // type TestUnionType = AvatarTraverserTypes[keyof AvatarTraverserTypes];
-
-  // type MapUnion<T> = T extends InterfaceType<keyof AvatarTraverserTypes>
-  //   ? "interface"
-  //   : T extends UnionType<keyof AvatarTraverserTypes>
-  //   ? "union"
-  //   : T extends PrimitiveType
-  //   ? "primitive"
-  //   : never;
-
-  // // Example usage:
-  // type MappedUnion = MapUnion<TestUnionType>; // "a_mapped" | "b_mapped" | "c_mapped"
-
-  interface;
-  type UnionType = "a" | "b" | "c";
-
-  type MapUnion<T> = T extends "a"
-    ? "a_mapped"
-    : T extends "b"
-    ? "b_mapped"
-    : T extends "c"
-    ? "c_mapped"
-    : never;
-
-  // Example usage:
-  type MappedUnion = MapUnion<UnionType>; // "a_mapped" | "b_mapped" | "c_mapped"
+  const sample: PersonParentIdentifiers = ["Bender", "friends"];
+  console.log(sample);
 
   /**
    * Create the traverser definition
    */
-  const avatarTraverserDefinition: TraverserDefinition<AvatarTraverserTypes> = {
-    Element: {
-      kind: "primitive",
-    },
-    Bender: {
-      kind: "interface",
-      properties: {
-        element: "Element",
-        friends: "Person",
-      },
-    },
-    NonBender: {
-      kind: "interface",
-      properties: {
-        friends: "Person",
-      },
-    },
-    Person: {
-      kind: "union",
-      selector: (item) => {
-        return (item as Bender).element ? "Bender" : "NonBender";
-      },
-    },
-  };
-
-  /**
-   * Instantiate the Traverser
-   */
-  const avatarTraverser = new Traverser<AvatarTraverserTypes>(
-    avatarTraverserDefinition,
-  );
-
-  /**
-   * Create a visitor
-   */
-  const avatarVisitor = avatarTraverser.createVisitor<undefined>({
-    Element: async (item) => {
-      console.log(`Element: ${item}`);
-    },
-    Bender: {
-      visitor: async (item) => {
-        console.log(`Bender: ${item.name}`);
-      },
-      properties: {
-        element: async (item) => {
-          console.log(`Bender.element: ${item}`);
-        },
-      },
-    },
-    NonBender: {
-      visitor: async (item) => {
-        console.log(`NonBender: ${item.name}`);
-      },
-    },
-    Person: async (item) => {
-      console.log(`Person: ${item.name}`);
-    },
-  });
-
-  /**
-   * Run the visitor on data
-   */
-  console.log(
-    "############################## Visitor Logs ##############################",
-  );
-  await avatarVisitor.visit(aang, "Bender", undefined);
-
-  /**
-   * Create a visitor that uses context
-   */
-  interface AvatarCountingVisitorContext {
-    numberOfBenders: number;
-  }
-  const avatarCountingVisitor =
-    avatarTraverser.createVisitor<AvatarCountingVisitorContext>({
-      Bender: {
-        visitor: async (item, context) => {
-          context.numberOfBenders++;
-        },
-      },
-    });
-
-  /**
-   * Run the counting visitor
-   */
-  console.log(
-    "############################## Found Number of Benders Using Visitor ##############################",
-  );
-  const countContext: AvatarCountingVisitorContext = { numberOfBenders: 0 };
-  await avatarCountingVisitor.visit(aang, "Bender", countContext);
-  console.log(countContext.numberOfBenders);
-
-  /**
-   * Set up a transformer
-   */
-  interface ActionablePerson {
-    doAction(): void;
-    friends: ActionablePerson[];
-  }
-  const avatarTransformer = avatarTraverser.createTransformer<
+  const avatarTraverserDefinition: TraverserDefinitions<AvatarTraverserTypes> =
     {
       Element: {
-        return: string;
-      };
-      Bender: {
-        return: ActionablePerson;
-        properties: {
-          element: string;
-        };
-      };
-      NonBender: {
-        return: ActionablePerson;
-      };
-    },
-    undefined
-  >({
-    Element: async (item) => {
-      return item.toUpperCase();
-    },
-    Bender: {
-      transformer: async (item, getTransformedChildren) => {
-        const transformedChildren = await getTransformedChildren();
-        return {
-          doAction: () => {
-            console.log(`I can bend ${transformedChildren.element}`);
-          },
-          friends: transformedChildren.friends,
-        };
+        kind: "primitive",
       },
-      properties: {
-        element: async (item, getTransformedChildren) => {
-          const transformedChildren = await getTransformedChildren();
-          return `the element of ${transformedChildren}`;
+      Bender: {
+        kind: "interface",
+        properties: {
+          element: "Element",
+          friends: "Person",
         },
       },
-    },
-    NonBender: {
-      transformer: async (item, getTransformedChildren) => {
-        const transformedChildren = await getTransformedChildren();
-        return {
-          doAction: () => {
-            console.log(`I can't bend.`);
-          },
-          friends: transformedChildren.friends,
-        };
+      NonBender: {
+        kind: "interface",
+        properties: {
+          friends: "Person",
+        },
       },
-    },
-    Person: async (
-      item,
-      getTransformedChildren,
-      setReturnPointer,
-      _context,
-    ) => {
-      const personToReturn: ActionablePerson = {} as ActionablePerson;
-      setReturnPointer(personToReturn);
-      const transformedChildren = await getTransformedChildren();
-      personToReturn.doAction = transformedChildren.doAction;
-      personToReturn.friends = transformedChildren.friends;
-      return personToReturn;
-    },
+      Person: {
+        kind: "union",
+        selector: (item) => {
+          return (item as Bender).element ? "Bender" : "NonBender";
+        },
+      },
+    };
+
+  console.log(avatarTraverserDefinition);
+
+  const graph = new InstanceGraph(avatarTraverserDefinition);
+  const aangNode = graph.getNodeFor(aang, "Bender");
+  const aangeChild = aangNode.child("friends");
+
+  const parent = aangNode.parent("Person");
+
+  const aangChildren = aangNode.allChildren();
+  aangChildren.forEach((child) => {
+    child.typeName === "Element";
   });
 
-  /**
-   * Run the Transformer
-   */
-  console.log(
-    "############################## AvatarTraverser DoAction ##############################",
-  );
-  const result = await avatarTransformer.transform(aang, "Bender", undefined);
-  result.doAction();
-  result.friends[0].doAction();
-  result.friends[1].doAction();
+  const aangParents = aangNode.allParents();
+  
+
+  // /**
+  //  * Instantiate the Traverser
+  //  */
+  // const avatarTraverser = new Traverser<AvatarTraverserTypes>(
+  //   avatarTraverserDefinition,
+  // );
+
+  // /**
+  //  * Create a visitor
+  //  */
+  // const avatarVisitor = avatarTraverser.createVisitor<undefined>({
+  //   Element: async (item) => {
+  //     console.log(`Element: ${item}`);
+  //   },
+  //   Bender: {
+  //     visitor: async (item) => {
+  //       console.log(`Bender: ${item.name}`);
+  //     },
+  //     properties: {
+  //       element: async (item) => {
+  //         console.log(`Bender.element: ${item}`);
+  //       },
+  //     },
+  //   },
+  //   NonBender: {
+  //     visitor: async (item) => {
+  //       console.log(`NonBender: ${item.name}`);
+  //     },
+  //   },
+  //   Person: async (item) => {
+  //     console.log(`Person: ${item.name}`);
+  //   },
+  // });
+
+  // /**
+  //  * Run the visitor on data
+  //  */
+  // console.log(
+  //   "############################## Visitor Logs ##############################",
+  // );
+  // await avatarVisitor.visit(aang, "Bender", undefined);
+
+  // /**
+  //  * Create a visitor that uses context
+  //  */
+  // interface AvatarCountingVisitorContext {
+  //   numberOfBenders: number;
+  // }
+  // const avatarCountingVisitor =
+  //   avatarTraverser.createVisitor<AvatarCountingVisitorContext>({
+  //     Bender: {
+  //       visitor: async (item, context) => {
+  //         context.numberOfBenders++;
+  //       },
+  //     },
+  //   });
+
+  // /**
+  //  * Run the counting visitor
+  //  */
+  // console.log(
+  //   "############################## Found Number of Benders Using Visitor ##############################",
+  // );
+  // const countContext: AvatarCountingVisitorContext = { numberOfBenders: 0 };
+  // await avatarCountingVisitor.visit(aang, "Bender", countContext);
+  // console.log(countContext.numberOfBenders);
+
+  // /**
+  //  * Set up a transformer
+  //  */
+  // interface ActionablePerson {
+  //   doAction(): void;
+  //   friends: ActionablePerson[];
+  // }
+  // const avatarTransformer = avatarTraverser.createTransformer<
+  //   {
+  //     Element: {
+  //       return: string;
+  //     };
+  //     Bender: {
+  //       return: ActionablePerson;
+  //       properties: {
+  //         element: string;
+  //       };
+  //     };
+  //     NonBender: {
+  //       return: ActionablePerson;
+  //     };
+  //   },
+  //   undefined
+  // >({
+  //   Element: async (item) => {
+  //     return item.toUpperCase();
+  //   },
+  //   Bender: {
+  //     transformer: async (item, getTransformedChildren) => {
+  //       const transformedChildren = await getTransformedChildren();
+  //       return {
+  //         doAction: () => {
+  //           console.log(`I can bend ${transformedChildren.element}`);
+  //         },
+  //         friends: transformedChildren.friends,
+  //       };
+  //     },
+  //     properties: {
+  //       element: async (item, getTransformedChildren) => {
+  //         const transformedChildren = await getTransformedChildren();
+  //         return `the element of ${transformedChildren}`;
+  //       },
+  //     },
+  //   },
+  //   NonBender: {
+  //     transformer: async (item, getTransformedChildren) => {
+  //       const transformedChildren = await getTransformedChildren();
+  //       return {
+  //         doAction: () => {
+  //           console.log(`I can't bend.`);
+  //         },
+  //         friends: transformedChildren.friends,
+  //       };
+  //     },
+  //   },
+  //   Person: async (
+  //     item,
+  //     getTransformedChildren,
+  //     setReturnPointer,
+  //     _context,
+  //   ) => {
+  //     const personToReturn: ActionablePerson = {} as ActionablePerson;
+  //     setReturnPointer(personToReturn);
+  //     const transformedChildren = await getTransformedChildren();
+  //     personToReturn.doAction = transformedChildren.doAction;
+  //     personToReturn.friends = transformedChildren.friends;
+  //     return personToReturn;
+  //   },
+  // });
+
+  // /**
+  //  * Run the Transformer
+  //  */
+  // console.log(
+  //   "############################## AvatarTraverser DoAction ##############################",
+  // );
+  // const result = await avatarTransformer.transform(aang, "Bender", undefined);
+  // result.doAction();
+  // result.friends[0].doAction();
+  // result.friends[1].doAction();
 }
 run();

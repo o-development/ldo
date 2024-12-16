@@ -8,7 +8,7 @@ import type { InstanceNodeFor } from "./createInstanceNodeFor";
 export abstract class InstanceNode<
   Types extends TraverserTypes<any>,
   TypeName extends keyof Types,
-  _Type extends Types[TypeName],
+  Type extends Types[TypeName],
 > {
   readonly graph: InstanceGraph<Types>;
   readonly instance: Types[TypeName]["type"];
@@ -16,17 +16,16 @@ export abstract class InstanceNode<
   protected readonly parents: Record<
     string,
     Set<InstanceNodeFor<Types, ParentIdentifiers<Types, TypeName>[0]>>
-  >;
+  > = {};
 
   constructor(
     graph: InstanceGraph<Types>,
-    instance: Types[TypeName]["type"],
+    instance: Type["type"],
     typeName: TypeName,
   ) {
     this.graph = graph;
     this.instance = instance;
     this.typeName = typeName;
-    this._recursivelyBuildChildren();
   }
 
   private getParentKey(
@@ -68,9 +67,11 @@ export abstract class InstanceNode<
    */
   public abstract allChildren(): InstanceNodeFor<Types, any>[];
 
-  protected abstract _recursivelyBuildChildren(): void;
-
-  public get traverserDefinition(): TraverserDefinition<Types, TypeName> {
-    return this.graph.traverserDefinitions[this.typeName];
+  public get traverserDefinition(): TraverserDefinition<Types, TypeName, Type> {
+    return this.graph.traverserDefinitions[
+      this.typeName
+    ] as unknown as TraverserDefinition<Types, TypeName, Type>;
   }
+
+  public abstract _recursivelyBuildChildren(): void;
 }

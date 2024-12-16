@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { InterfaceType, TraverserTypes } from "../../TraverserTypes";
+import type { InstanceGraph } from "../instanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 import { InstanceNode } from "./InstanceNode";
 
+/**
+ * Helper Function
+ */
 type InterfacePropertyNode<
   Types extends TraverserTypes<any>,
   Type extends InterfaceType<keyof Types>,
@@ -11,6 +15,9 @@ type InterfacePropertyNode<
   ? InstanceNodeFor<Types, Type["properties"][PropertyName]>[]
   : InstanceNodeFor<Types, Type["properties"][PropertyName]>;
 
+/**
+ * Class
+ */
 export class InterfaceInstanceNode<
   Types extends TraverserTypes<any>,
   TypeName extends keyof Types,
@@ -23,6 +30,18 @@ export class InterfaceInstanceNode<
       PropertyName
     >;
   };
+
+  constructor(
+    graph: InstanceGraph<Types>,
+    instance: Type["type"],
+    typeName: TypeName,
+  ) {
+    super(graph, instance, typeName);
+    // This will eventually be filled out by the recursivelyBuildChildren method
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.children = {};
+  }
 
   public _setChild<PropertyName extends keyof Type["properties"]>(
     propertyName: PropertyName,
@@ -47,8 +66,15 @@ export class InterfaceInstanceNode<
   public _recursivelyBuildChildren() {
     Object.entries(this.instance).forEach(
       ([propertyName, value]: [keyof Type["properties"], unknown]) => {
+        const propertyTypeName =
+          // Fancy typescript doesn't work until you actually give it a type
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          this.traverserDefinition.properties[propertyName];
+        if (!propertyTypeName) return;
+
         const initChildNode = (val: unknown) => {
-          const node = this.graph.getNodeFor(val, this.typeName);
+          const node = this.graph.getNodeFor(val, propertyTypeName);
           // Fancy typescript doesn't work until you actually give it a type
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

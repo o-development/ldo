@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MultiMap } from "../transformerSubTraversers/util/MultiMap";
 import type { TraverserTypes } from "../TraverserTypes";
-import type { InstanceNode } from "./nodes/InstanceNode";
 import {
   createInstanceNodeFor,
   type InstanceNodeFor,
@@ -12,7 +11,7 @@ export class InstanceGraph<Types extends TraverserTypes<any>> {
   protected objectMap: MultiMap<
     object,
     keyof Types,
-    InstanceNode<Types, keyof Types, Types[keyof Types]>
+    InstanceNodeFor<Types, keyof Types>
   > = new MultiMap();
   public readonly traverserDefinitions: TraverserDefinitions<Types>;
 
@@ -26,14 +25,23 @@ export class InstanceGraph<Types extends TraverserTypes<any>> {
   ): InstanceNodeFor<Types, TypeName> {
     let potentialNode;
     // Skip the cache for Primitive Nodes
-    if (
+    const isCachable =
       this.traverserDefinitions[typeName].kind !== "primitive" &&
       typeof instance === "object" &&
-      instance != null
-    ) {
+      instance != null;
+
+    if (isCachable) {
       potentialNode = this.objectMap.get(instance, typeName);
     }
     if (potentialNode) return potentialNode as InstanceNodeFor<Types, TypeName>;
-    return createInstanceNodeFor(instance, typeName, this);
+    const newNode = createInstanceNodeFor(instance, typeName, this);
+    if (isCachable) {
+      // TODO: Figure out why this is a ts error
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.objectMap.set(instance, typeName, newNode);
+    }
+    newNode._recursivelyBuildChildren();
+    return newNode;
   }
 }
