@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { InterfaceVisitorDefinition, TraverserTypes } from "..";
-import type { InterfaceTraverserDefinition } from "../TraverserDefinition";
-import type { InterfaceType } from "../TraverserTypes";
+import type { InterfaceTraverserDefinition } from "../traverser/TraverserDefinition";
+import type { InterfaceType } from "../traverser/TraverserTypes";
 import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes";
 import { visitorParentSubTraverser } from "./VisitorParentSubTraverser";
 

@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { InterfaceType, TraverserTypes } from "../../TraverserTypes";
+import type {
+  InterfaceType,
+  TraverserTypes,
+} from "../../traverser/TraverserTypes";
 import type { InstanceGraph } from "../instanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 import { InstanceNode } from "./InstanceNode";

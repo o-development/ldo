@@ -10,7 +10,8 @@ import type {
   TraverserTypes,
   UnionReturnType,
   UnionType,
-} from ".";
+} from "..";
+import type { InterfaceInstanceNode } from "../instanceGraph/nodes/InterfaceInstanceNode";
 
 export type GetTransformedChildrenFunction<TransformedChildrenType> =
   () => Promise<TransformedChildrenType>;
@@ -30,6 +31,7 @@ export type InterfaceTransformerFunction<
     [PropertyName in keyof ReturnType["properties"]]: ReturnType["properties"][PropertyName];
   }>,
   setReturnPointer: SetReturnPointerFunction<ReturnType["return"]>,
+  node: InterfaceInstanceNode<Types, Type>,
   context: Context,
 ) => Promise<ReturnType["return"]>;
 

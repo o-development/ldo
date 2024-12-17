@@ -4,7 +4,7 @@ import type {
   PrimitiveType,
   TraverserTypes,
   UnionType,
-} from "./TraverserTypes";
+} from "./traverser/TraverserTypes";
 
 export type InterfaceReverseRelationshipIndentifier<
   Types extends TraverserTypes<any>,

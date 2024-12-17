@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TraverserTypes, UnionVisitorDefinition } from "..";
-import type { UnionTraverserDefinition } from "../TraverserDefinition";
-import type { UnionType } from "../TraverserTypes";
+import type { UnionTraverserDefinition } from "../traverser/TraverserDefinition";
+import type { UnionType } from "../traverser/TraverserTypes";
 import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes";
 import { visitorParentSubTraverser } from "./VisitorParentSubTraverser";
 

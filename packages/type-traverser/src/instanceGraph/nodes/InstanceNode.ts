@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TraverserDefinition } from "../..";
 import type { ParentIdentifiers } from "../../reverseRelationshipTypes";
-import type { TraverserTypes } from "../../TraverserTypes";
+import type { TraverserTypes } from "../../traverser/TraverserTypes";
 import type { InstanceGraph } from "../instanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 
@@ -11,7 +11,7 @@ export abstract class InstanceNode<
   Type extends Types[TypeName],
 > {
   readonly graph: InstanceGraph<Types>;
-  readonly instance: Types[TypeName]["type"];
+  readonly instance: Type["type"];
   readonly typeName: TypeName;
   protected readonly parents: Record<
     string,

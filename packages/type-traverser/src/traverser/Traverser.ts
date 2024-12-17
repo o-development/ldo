@@ -4,9 +4,9 @@ import type {
   TraverserDefinitions,
   TraverserTypes,
   VisitorsInput,
-} from ".";
-import { Transformer, Visitor } from ".";
-import type { TransformersInput } from "./Transformers";
+} from "..";
+import { Transformer, Visitor } from "..";
+import type { TransformersInput } from "../transformer/Transformers";
 
 export class Traverser<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

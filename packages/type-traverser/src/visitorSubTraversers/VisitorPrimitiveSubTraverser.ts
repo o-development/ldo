@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PrimitiveVisitorDefinition, TraverserTypes } from "..";
-import type { PrimitiveType } from "../TraverserTypes";
+import type { PrimitiveType } from "../traverser/TraverserTypes";
 import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes";
 
 export async function visitorPrimitiveSubTraverser<

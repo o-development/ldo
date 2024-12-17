@@ -5,8 +5,8 @@ import type {
   TransformerReturnTypes,
 } from "../TransformerReturnTypes";
 import type { InterfaceTransformerDefinition } from "../Transformers";
-import type { InterfaceTraverserDefinition } from "../TraverserDefinition";
-import type { InterfaceType } from "../TraverserTypes";
+import type { InterfaceTraverserDefinition } from "../traverser/TraverserDefinition";
+import type { InterfaceType } from "../traverser/TraverserTypes";
 import { transformerParentSubTraverser } from "./TransformerParentSubTraverser";
 import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
 

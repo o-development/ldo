@@ -12,11 +12,11 @@ import type {
   TraverserTypes,
   UnionReturnType,
   UnionType,
-} from ".";
-import { transformerParentSubTraverser } from "./transformerSubTraversers/TransformerParentSubTraverser";
-import { CircularDepenedencyAwaiter } from "./transformerSubTraversers/util/CircularDependencyAwaiter";
-import { MultiMap } from "./transformerSubTraversers/util/MultiMap";
-import { SuperPromise } from "./transformerSubTraversers/util/SuperPromise";
+} from "..";
+import { transformerParentSubTraverser } from "../transformerSubTraversers/TransformerParentSubTraverser";
+import { CircularDepenedencyAwaiter } from "../transformerSubTraversers/util/CircularDependencyAwaiter";
+import { MultiMap } from "../transformerSubTraversers/util/MultiMap";
+import { SuperPromise } from "../transformerSubTraversers/util/SuperPromise";
 import type {
   GetTransformedChildrenFunction,
   InterfaceTransformerDefinition,

@@ -110,28 +110,12 @@ async function run() {
       },
     };
 
-  console.log(avatarTraverserDefinition);
-
-  const graph = new InstanceGraph(avatarTraverserDefinition);
-  const aangNode = graph.getNodeFor(aang, "Bender");
-  const aangeChild = aangNode.child("friends");
-
-  const parent = aangNode.parent("Person");
-
-  const aangChildren = aangNode.allChildren();
-  aangChildren.forEach((child) => {
-    child.typeName === "Element";
-  });
-
-  const aangParents = aangNode.allParents();
-  
-
-  // /**
-  //  * Instantiate the Traverser
-  //  */
-  // const avatarTraverser = new Traverser<AvatarTraverserTypes>(
-  //   avatarTraverserDefinition,
-  // );
+  /**
+   * Instantiate the Traverser
+   */
+  const avatarTraverser = new Traverser<AvatarTraverserTypes>(
+    avatarTraverserDefinition,
+  );
 
   // /**
   //  * Create a visitor
@@ -193,85 +177,85 @@ async function run() {
   // await avatarCountingVisitor.visit(aang, "Bender", countContext);
   // console.log(countContext.numberOfBenders);
 
-  // /**
-  //  * Set up a transformer
-  //  */
-  // interface ActionablePerson {
-  //   doAction(): void;
-  //   friends: ActionablePerson[];
-  // }
-  // const avatarTransformer = avatarTraverser.createTransformer<
-  //   {
-  //     Element: {
-  //       return: string;
-  //     };
-  //     Bender: {
-  //       return: ActionablePerson;
-  //       properties: {
-  //         element: string;
-  //       };
-  //     };
-  //     NonBender: {
-  //       return: ActionablePerson;
-  //     };
-  //   },
-  //   undefined
-  // >({
-  //   Element: async (item) => {
-  //     return item.toUpperCase();
-  //   },
-  //   Bender: {
-  //     transformer: async (item, getTransformedChildren) => {
-  //       const transformedChildren = await getTransformedChildren();
-  //       return {
-  //         doAction: () => {
-  //           console.log(`I can bend ${transformedChildren.element}`);
-  //         },
-  //         friends: transformedChildren.friends,
-  //       };
-  //     },
-  //     properties: {
-  //       element: async (item, getTransformedChildren) => {
-  //         const transformedChildren = await getTransformedChildren();
-  //         return `the element of ${transformedChildren}`;
-  //       },
-  //     },
-  //   },
-  //   NonBender: {
-  //     transformer: async (item, getTransformedChildren) => {
-  //       const transformedChildren = await getTransformedChildren();
-  //       return {
-  //         doAction: () => {
-  //           console.log(`I can't bend.`);
-  //         },
-  //         friends: transformedChildren.friends,
-  //       };
-  //     },
-  //   },
-  //   Person: async (
-  //     item,
-  //     getTransformedChildren,
-  //     setReturnPointer,
-  //     _context,
-  //   ) => {
-  //     const personToReturn: ActionablePerson = {} as ActionablePerson;
-  //     setReturnPointer(personToReturn);
-  //     const transformedChildren = await getTransformedChildren();
-  //     personToReturn.doAction = transformedChildren.doAction;
-  //     personToReturn.friends = transformedChildren.friends;
-  //     return personToReturn;
-  //   },
-  // });
+  /**
+   * Set up a transformer
+   */
+  interface ActionablePerson {
+    doAction(): void;
+    friends: ActionablePerson[];
+  }
+  const avatarTransformer = avatarTraverser.createTransformer<
+    {
+      Element: {
+        return: string;
+      };
+      Bender: {
+        return: ActionablePerson;
+        properties: {
+          element: string;
+        };
+      };
+      NonBender: {
+        return: ActionablePerson;
+      };
+    },
+    undefined
+  >({
+    Element: async (item) => {
+      return item.toUpperCase();
+    },
+    Bender: {
+      transformer: async (item, getTransformedChildren) => {
+        const transformedChildren = await getTransformedChildren();
+        return {
+          doAction: () => {
+            console.log(`I can bend ${transformedChildren.element}`);
+          },
+          friends: transformedChildren.friends,
+        };
+      },
+      properties: {
+        element: async (item, getTransformedChildren) => {
+          const transformedChildren = await getTransformedChildren();
+          return `the element of ${transformedChildren}`;
+        },
+      },
+    },
+    NonBender: {
+      transformer: async (item, getTransformedChildren) => {
+        const transformedChildren = await getTransformedChildren();
+        return {
+          doAction: () => {
+            console.log(`I can't bend.`);
+          },
+          friends: transformedChildren.friends,
+        };
+      },
+    },
+    Person: async (
+      item,
+      getTransformedChildren,
+      setReturnPointer,
+      _context,
+    ) => {
+      const personToReturn: ActionablePerson = {} as ActionablePerson;
+      setReturnPointer(personToReturn);
+      const transformedChildren = await getTransformedChildren();
+      personToReturn.doAction = transformedChildren.doAction;
+      personToReturn.friends = transformedChildren.friends;
+      return personToReturn;
+    },
+  });
 
-  // /**
-  //  * Run the Transformer
-  //  */
-  // console.log(
-  //   "############################## AvatarTraverser DoAction ##############################",
-  // );
-  // const result = await avatarTransformer.transform(aang, "Bender", undefined);
-  // result.doAction();
-  // result.friends[0].doAction();
-  // result.friends[1].doAction();
+  /**
+   * Run the Transformer
+   */
+  console.log(
+    "############################## AvatarTraverser DoAction ##############################",
+  );
+  const result = await avatarTransformer.transform(aang, "Bender", undefined);
+  result.doAction();
+  result.friends[0].doAction();
+  result.friends[1].doAction();
 }
 run();

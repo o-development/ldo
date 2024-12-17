@@ -5,7 +5,7 @@ import type {
   TransformerReturnTypes,
 } from "../TransformerReturnTypes";
 import type { PrimitiveTransformerDefinition } from "../Transformers";
-import type { PrimitiveType } from "../TraverserTypes";
+import type { PrimitiveType } from "../traverser/TraverserTypes";
 import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
 
 export async function transformerPrimitiveSubTraverser<

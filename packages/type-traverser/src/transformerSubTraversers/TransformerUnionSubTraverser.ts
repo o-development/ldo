@@ -5,8 +5,8 @@ import type {
   UnionReturnType,
 } from "../TransformerReturnTypes";
 import type { UnionTransformerDefinition } from "../Transformers";
-import type { UnionTraverserDefinition } from "../TraverserDefinition";
-import type { UnionType } from "../TraverserTypes";
+import type { UnionTraverserDefinition } from "../traverser/TraverserDefinition";
+import type { UnionType } from "../traverser/TraverserTypes";
 import { transformerParentSubTraverser } from "./TransformerParentSubTraverser";
 import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
 

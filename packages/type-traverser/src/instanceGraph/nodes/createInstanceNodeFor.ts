@@ -4,7 +4,7 @@ import type {
   PrimitiveType,
   TraverserTypes,
   UnionType,
-} from "../../TraverserTypes";
+} from "../../traverser/TraverserTypes";
 import type { InstanceGraph } from "../instanceGraph";
 import { InterfaceInstanceNode } from "./InterfaceInstanceNode";
 import { PrimitiveInstanceNode } from "./PrimitiveInstanceNode";

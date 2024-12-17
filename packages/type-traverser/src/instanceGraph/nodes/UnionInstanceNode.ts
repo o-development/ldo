@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes, UnionType } from "../../TraverserTypes";
+import type { TraverserTypes, UnionType } from "../../traverser/TraverserTypes";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 import { InstanceNode } from "./InstanceNode";
 
