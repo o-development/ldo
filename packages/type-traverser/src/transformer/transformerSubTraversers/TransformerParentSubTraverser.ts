@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { BaseReturnType, BaseTraverserTypes, TraverserTypes } from "..";
+import type {
+  BaseReturnType,
+  BaseTraverserTypes,
+  TraverserTypes,
+} from "../../";
 import type { TransformerReturnTypes } from "../TransformerReturnTypes";
 import { transformerInterfaceSubTraverser } from "./TransformerInterfaceSubTraverser";
 import { transformerPrimitiveSubTraverser } from "./TransformerPrimitiveSubTraverser";

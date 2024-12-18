@@ -1,4 +1,4 @@
-import type { KeyTypes } from "../..";
+import type { KeyTypes } from "../../../";
 import { MultiMap } from "./MultiMap";
 import { MultiSet } from "./MultiSet";
 import type { TransformerSubTraverserExecutingPromises } from "./transformerSubTraverserTypes";

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MultiMap } from "../transformerSubTraversers/util/MultiMap";
+import { MultiMap } from "../transformer/transformerSubTraversers/util/MultiMap";
 import type { TraverserTypes } from "../traverser/TraverserTypes";
 import {
   createInstanceNodeFor,

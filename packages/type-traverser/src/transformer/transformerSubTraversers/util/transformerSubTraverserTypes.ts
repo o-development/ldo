@@ -6,7 +6,8 @@ import type {
   TransformerReturnTypes,
   TraverserDefinitions,
   TraverserTypes,
-} from "../..";
+} from "../../../";
+import type { InstanceGraph } from "../../../instanceGraph/instanceGraph";
 import type { Transformers } from "../../Transformers";
 import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter";
 import type { MultiMap } from "./MultiMap";
@@ -35,6 +36,7 @@ export interface TransformerSubTraverserGlobals<
   executingPromises: TransformerSubTraverserExecutingPromises<keyof Types>;
   circularDependencyAwaiter: CircularDepenedencyAwaiter;
   superPromise: SuperPromise;
+  instanceGraph: InstanceGraph<Types>;
   context: Context;
 }
 

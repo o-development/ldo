@@ -13,10 +13,10 @@ import type {
   UnionReturnType,
   UnionType,
 } from "..";
-import { transformerParentSubTraverser } from "../transformerSubTraversers/TransformerParentSubTraverser";
-import { CircularDepenedencyAwaiter } from "../transformerSubTraversers/util/CircularDependencyAwaiter";
-import { MultiMap } from "../transformerSubTraversers/util/MultiMap";
-import { SuperPromise } from "../transformerSubTraversers/util/SuperPromise";
+import { transformerParentSubTraverser } from "./transformerSubTraversers/TransformerParentSubTraverser";
+import { CircularDepenedencyAwaiter } from "./transformerSubTraversers/util/CircularDependencyAwaiter";
+import { MultiMap } from "./transformerSubTraversers/util/MultiMap";
+import { SuperPromise } from "./transformerSubTraversers/util/SuperPromise";
 import type {
   GetTransformedChildrenFunction,
   InterfaceTransformerDefinition,
@@ -28,6 +28,7 @@ import type {
   UnionTransformerDefinition,
   UnionTransformerInputDefinition,
 } from "./Transformers";
+import { InstanceGraph } from "../instanceGraph/instanceGraph";
 
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
 // but if I ever feel so inclined, I should fix this in the future.
@@ -54,12 +55,14 @@ export class Transformer<
   }
 
   private applyDefaultInterfaceTransformerProperties<
-    Type extends InterfaceType<keyof Types>,
+    TypeName extends keyof Types,
+    Type extends InterfaceType<keyof Types> & Types[TypeName],
     ReturnType extends InterfaceReturnType<Type>,
   >(
     typeName: keyof Types,
     typePropertiesInput: InterfaceTransformerInputDefinition<
       Types,
+      TypeName,
       Type,
       ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
       ReturnType,
@@ -67,6 +70,7 @@ export class Transformer<
     >["properties"],
   ): InterfaceTransformerDefinition<
     Types,
+    TypeName,
     Type,
     ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
     ReturnType,
@@ -89,6 +93,7 @@ export class Transformer<
       return agg;
     }, {}) as InterfaceTransformerDefinition<
       Types,
+      TypeName,
       Type,
       ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
       ReturnType,
@@ -97,12 +102,14 @@ export class Transformer<
   }
 
   private applyDefaultInterfaceTransformer<
-    Type extends InterfaceType<keyof Types>,
+    TypeName extends keyof Types,
+    Type extends InterfaceType<keyof Types> & Types[TypeName],
     ReturnType extends InterfaceReturnType<Type>,
   >(
     typeName: keyof Types,
     typeInput?: InterfaceTransformerInputDefinition<
       Types,
+      TypeName,
       Type,
       ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
       ReturnType,
@@ -110,6 +117,7 @@ export class Transformer<
     >,
   ): InterfaceTransformerDefinition<
     Types,
+    TypeName,
     Type,
     ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
     ReturnType,
@@ -139,11 +147,13 @@ export class Transformer<
   }
 
   private applyDefaultUnionTransformer<
-    Type extends UnionType<keyof Types>,
+    TypeName extends keyof Types,
+    Type extends UnionType<keyof Types> & Types[TypeName],
     ReturnType extends UnionReturnType,
   >(
     typeInput?: UnionTransformerInputDefinition<
       Types,
+      TypeName,
       Type,
       ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
       ReturnType,
@@ -151,6 +161,7 @@ export class Transformer<
     >,
   ): UnionTransformerDefinition<
     Types,
+    TypeName,
     Type,
     ApplyTransformerReturnTypesDefaults<Types, InputReturnTypes>,
     ReturnType,
@@ -168,11 +179,24 @@ export class Transformer<
   }
 
   private applyDefaultPrimitiveTransformer<
-    Type extends PrimitiveType,
+    TypeName extends keyof Types,
+    Type extends PrimitiveType & Types[TypeName],
     ReturnType extends PrimitiveReturnType,
   >(
-    typeInput?: PrimitiveTransformerInputDefinition<Type, ReturnType, Context>,
-  ): PrimitiveTransformerDefinition<Type, ReturnType, Context> {
+    typeInput?: PrimitiveTransformerInputDefinition<
+      Types,
+      TypeName,
+      Type,
+      ReturnType,
+      Context
+    >,
+  ): PrimitiveTransformerDefinition<
+    Types,
+    TypeName,
+    Type,
+    ReturnType,
+    Context
+  > {
     if (!typeInput) {
       return async (originalData) => {
         return originalData;
@@ -229,12 +253,15 @@ export class Transformer<
     >[TypeName]["return"]
   > {
     const superPromise = new SuperPromise();
+    const instanceGraph = new InstanceGraph(this.traverserDefinition);
+    instanceGraph.getNodeFor(item, itemTypeName);
     const toReturn = await transformerParentSubTraverser(item, itemTypeName, {
       traverserDefinition: this.traverserDefinition,
       transformers: this.transformers,
       executingPromises: new MultiMap(),
       circularDependencyAwaiter: new CircularDepenedencyAwaiter(),
       superPromise,
+      instanceGraph,
       context,
     });
     await superPromise.wait();

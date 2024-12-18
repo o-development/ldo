@@ -15,8 +15,9 @@ import type {
   UnionVisitorInputDefinition,
   Visitors,
   VisitorsInput,
-} from ".";
-import { MultiSet } from "./transformerSubTraversers/util/MultiSet";
+} from "../";
+import { InstanceGraph } from "../instanceGraph/instanceGraph";
+import { MultiSet } from "../transformer/transformerSubTraversers/util/MultiSet";
 import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentSubTraverser";
 
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
@@ -39,15 +40,17 @@ export class Visitor<
   }
 
   private applyDefaultInterfaceVisitorProperties<
-    Type extends InterfaceType<keyof Types>,
+    TypeName extends keyof Types,
+    Type extends InterfaceType<keyof Types> & Types[TypeName],
   >(
     typeName: keyof Types,
     typePropertiesInput: InterfaceVisitorInputDefinition<
       Types,
+      TypeName,
       Type,
       Context
     >["properties"],
-  ): InterfaceVisitorDefinition<Types, Type, Context>["properties"] {
+  ): InterfaceVisitorDefinition<Types, TypeName, Type, Context>["properties"] {
     return Object.keys(
       (this.traverserDefinition[typeName] as InterfaceTraverserDefinition<Type>)
         .properties,
@@ -60,13 +63,21 @@ export class Visitor<
         };
       }
       return agg;
-    }, {}) as InterfaceVisitorDefinition<Types, Type, Context>["properties"];
+    }, {}) as InterfaceVisitorDefinition<
+      Types,
+      TypeName,
+      Type,
+      Context
+    >["properties"];
   }
 
-  private applyDefaultInterfaceVisitor<Type extends InterfaceType<keyof Types>>(
+  private applyDefaultInterfaceVisitor<
+    TypeName extends keyof Types,
+    Type extends InterfaceType<keyof Types> & Types[TypeName],
+  >(
     typeName: keyof Types,
-    typeInput?: InterfaceVisitorInputDefinition<Types, Type, Context>,
-  ): InterfaceVisitorDefinition<Types, Type, Context> {
+    typeInput?: InterfaceVisitorInputDefinition<Types, TypeName, Type, Context>,
+  ): InterfaceVisitorDefinition<Types, TypeName, Type, Context> {
     if (!typeInput) {
       return {
         visitor: async () => {
@@ -84,9 +95,12 @@ export class Visitor<
     };
   }
 
-  private applyDefaultUnionVisitor<Type extends UnionType<keyof Types>>(
-    typeInput?: UnionVisitorInputDefinition<Types, Type, Context>,
-  ): UnionVisitorDefinition<Types, Type, Context> {
+  private applyDefaultUnionVisitor<
+    TypeName extends keyof Types,
+    Type extends UnionType<keyof Types> & Types[TypeName],
+  >(
+    typeInput?: UnionVisitorInputDefinition<Types, TypeName, Type, Context>,
+  ): UnionVisitorDefinition<Types, TypeName, Type, Context> {
     if (!typeInput) {
       return async () => {
         return;
@@ -95,9 +109,12 @@ export class Visitor<
     return typeInput;
   }
 
-  private applyDefaultPrimitiveVisitor<Type extends PrimitiveType>(
-    typeInput?: PrimitiveVisitorInputDefinition<Type, Context>,
-  ): PrimitiveVisitorDefinition<Type, Context> {
+  private applyDefaultPrimitiveVisitor<
+    TypeName extends keyof Types,
+    Type extends PrimitiveType & Types[TypeName],
+  >(
+    typeInput?: PrimitiveVisitorInputDefinition<Types, TypeName, Type, Context>,
+  ): PrimitiveVisitorDefinition<Types, TypeName, Type, Context> {
     if (!typeInput) {
       return async () => {
         return;
@@ -134,10 +151,13 @@ export class Visitor<
     itemTypeName: TypeName,
     context: Context,
   ): Promise<void> {
+    const instanceGraph = new InstanceGraph(this.traverserDefinition);
+    instanceGraph.getNodeFor(item, itemTypeName);
     const toReturn = await visitorParentSubTraverser(item, itemTypeName, {
       traverserDefinition: this.traverserDefinition,
       visitors: this.visitors,
       visitedObjects: new MultiSet(),
+      instanceGraph,
       context,
     });
     return toReturn;

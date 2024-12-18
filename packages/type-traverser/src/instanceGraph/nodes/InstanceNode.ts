@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { TraverserDefinition } from "../..";
-import type { ParentIdentifiers } from "../../reverseRelationshipTypes";
+import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes";
 import type { TraverserTypes } from "../../traverser/TraverserTypes";
 import type { InstanceGraph } from "../instanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";

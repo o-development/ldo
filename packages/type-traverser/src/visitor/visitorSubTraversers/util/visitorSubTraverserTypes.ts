@@ -4,8 +4,9 @@ import type {
   TraverserDefinitions,
   TraverserTypes,
   Visitors,
-} from "../..";
-import type { MultiSet } from "../../transformerSubTraversers/util/MultiSet";
+} from "../../../";
+import type { InstanceGraph } from "../../../instanceGraph/instanceGraph";
+import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet";
 
 export type VisitorSubTraverser<
   Types extends TraverserTypes<any>,
@@ -25,5 +26,6 @@ export interface VisitorSubTraverserGlobals<
   traverserDefinition: TraverserDefinitions<Types>;
   visitors: Visitors<Types, Context>;
   visitedObjects: MultiSet<object, keyof Types>;
+  instanceGraph: InstanceGraph<Types>;
   context: Context;
 }

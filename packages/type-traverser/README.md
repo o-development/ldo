@@ -159,14 +159,14 @@ There are two fields for the primitive sub-traverser:
  - `type`: The typescript type corresponding to this primitive.
 
 ### Creating a traverser definition
-Typescript typings aren't available at runtime, so the next step is to translate the `TraverserTypes` that we made into a standard JSON object called a "TraverserDefinition". But, don't worry! This will be easy. If you define a variable as a `TraverserDefinition<TraverserType>`, your IDE's IntelliSense will be able to direct you through exactly what to fill out, as seen below. 
+Typescript typings aren't available at runtime, so the next step is to translate the `TraverserTypes` that we made into a standard JSON object called a "TraverserDefinitions". But, don't worry! This will be easy. If you define a variable as a `TraverserDefinitions<TraverserType>`, your IDE's IntelliSense will be able to direct you through exactly what to fill out, as seen below. 
 
 ![Traverse Definition IntelliSense](/tutorialImages/TraveserDefinitionIntellisense.png)
 
-In our example, the TraverserDefinition looks like:
+In our example, the TraverserDefinitions looks like:
 
 ```typescript
-const avatarTraverserDefinition: TraverserDefinition<AvatarTraverserTypes> = {
+const avatarTraverserDefinitions: TraverserDefinitions<AvatarTraverserTypes> = {
   Element: {
     kind: "primitive",
   },
@@ -193,7 +193,7 @@ const avatarTraverserDefinition: TraverserDefinition<AvatarTraverserTypes> = {
 ```
 
 #### Defining a Union Selector
-The only part of the TraverserDefinition that isn't just blindly following IntelliSense is the `selector` on a Union sub-traverser. A `selector` is given the item and should return the TypeName corresponding to the item.
+The only part of the TraverserDefinitions that isn't just blindly following IntelliSense is the `selector` on a Union sub-traverser. A `selector` is given the item and should return the TypeName corresponding to the item.
 
 In the above example, `"Bender"` is returned if the given item has a `"element"` property because a `"NonBender"` does not include an `"element"` property.
 
@@ -204,7 +204,7 @@ In our example, this is how we instantiate the traverser
 
 ```typescript
 const avatarTraverser = new Traverser<AvatarTraverserTypes>(
-  avatarTraverserDefinition
+  avatarTraverserDefinitions
 );
 ```
 

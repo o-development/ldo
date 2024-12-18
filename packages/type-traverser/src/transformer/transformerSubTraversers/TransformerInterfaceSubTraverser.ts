@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes } from "..";
+import type { TraverserTypes } from "../../";
 import type {
   InterfaceReturnType,
   TransformerReturnTypes,
 } from "../TransformerReturnTypes";
 import type { InterfaceTransformerDefinition } from "../Transformers";
-import type { InterfaceTraverserDefinition } from "../traverser/TraverserDefinition";
-import type { InterfaceType } from "../traverser/TraverserTypes";
+import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition";
+import type { InterfaceType } from "../../traverser/TraverserTypes";
 import { transformerParentSubTraverser } from "./TransformerParentSubTraverser";
 import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
+import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode";
 
 export async function transformerInterfaceSubTraverser<
   Types extends TraverserTypes<any>,
   TypeName extends keyof Types,
   ReturnTypes extends TransformerReturnTypes<Types>,
-  Type extends InterfaceType<keyof Types>,
+  Type extends InterfaceType<keyof Types> & Types[TypeName],
   ReturnType extends InterfaceReturnType<Type>,
   Context,
 >(
@@ -40,6 +41,7 @@ export async function transformerInterfaceSubTraverser<
         itemTypeName
       ] as unknown as InterfaceTransformerDefinition<
         Types,
+        TypeName,
         Type,
         ReturnTypes,
         ReturnType,
@@ -99,6 +101,14 @@ export async function transformerInterfaceSubTraverser<
                         return toReturn;
                       }
                     },
+                    globals.instanceGraph.getNodeFor(
+                      item,
+                      itemTypeName,
+                    ) as unknown as InterfaceInstanceNode<
+                      Types,
+                      TypeName,
+                      Type
+                    >,
                     globals.context,
                   );
                   return [propertyName, transformedProperty];
@@ -111,6 +121,10 @@ export async function transformerInterfaceSubTraverser<
         (input) => {
           resolve(input);
         },
+        globals.instanceGraph.getNodeFor(
+          item,
+          itemTypeName,
+        ) as unknown as InterfaceInstanceNode<Types, TypeName, Type>,
         globals.context,
       );
       resolve(transformedObject);

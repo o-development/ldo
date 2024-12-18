@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { BaseTraverserTypes, TraverserTypes } from "..";
+import type { BaseTraverserTypes, TraverserTypes } from "../../";
 import type {
   VisitorSubTraverser,
   VisitorSubTraverserGlobals,
