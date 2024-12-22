@@ -45,6 +45,18 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
     NodeConstraint: {
       return: dom.Type;
     };
+    ShapeOr: {
+      return: dom.UnionType;
+    };
+    ShapeAnd: {
+      return: dom.IntersectionType;
+    };
+    ShapeNot: {
+      return: never;
+    };
+    ShapeExternal: {
+      return: never;
+    };
   },
   ShexJTypeTransformerContext
 >({
@@ -82,7 +94,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       } else {
         // TODO: Handle other items
         throw new Error(
-          "Cannot handle ShapeOr, ShapeAnd, ShapeNot, ShapeExternal, or NodeConstraint",
+          "Cannot handle ShapeOr, ShapeAnd, ShapeNot, ShapeExternal, or NodeConstraint direcly on ShapeDecl.",
         );
       }
     },
@@ -328,6 +340,36 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         return valuesUnion;
       }
       return dom.type.undefined;
+    },
+  },
+  ShapeOr: {
+    transformer: async (shapeOr, getTransformedChildren) => {
+      const transformedChildren = await getTransformedChildren();
+      const validTypes: dom.Type[] = [];
+      transformedChildren.shapeExprs.forEach((type) => {
+        if (typeof type === "object") validTypes.push(type);
+      });
+      return dom.create.union(validTypes);
+    },
+  },
+  ShapeAnd: {
+    transformer: async (shapeAnd, getTransformedChildren) => {
+      const transformedChildren = await getTransformedChildren();
+      const validTypes: dom.Type[] = [];
+      transformedChildren.shapeExprs.forEach((type) => {
+        if (typeof type === "object") validTypes.push(type);
+      });
+      return dom.create.intersection(validTypes);
+    },
+  },
+  ShapeNot: {
+    transformer: async () => {
+      throw new Error("ShapeNot is not supported");
+    },
+  },
+  ShapeExternal: {
+    transformer: async () => {
+      throw new Error("ShapeExternal is not supported");
     },
   },
 });

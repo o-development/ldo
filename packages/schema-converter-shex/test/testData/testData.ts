@@ -7,6 +7,8 @@ import { simple } from "./simple";
 import { extendsSimple } from "./extendsSimple";
 import { reusedPredicates } from "./reusedPredicates";
 import { oldExtends } from "./oldExtends";
+import { orSimple } from "./orSimple";
+import { andSimple } from "./andSimple";
 
 export interface TestData {
   name: string;
@@ -26,4 +28,6 @@ export const testData: TestData[] = [
   extendsSimple,
   oldExtends,
   reusedPredicates,
+  orSimple,
+  andSimple,
 ];
