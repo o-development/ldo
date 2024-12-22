@@ -1,4 +1,4 @@
-import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
+import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
 import type { ArrayProxyTarget } from "./arrayProxy/createArrayHandler";
 import { createArrayHandler } from "./arrayProxy/createArrayHandler";
@@ -8,6 +8,7 @@ import type { ArrayProxy } from "./arrayProxy/ArrayProxy";
 import { _getUnderlyingArrayTarget } from "./types";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";
+import { namedNode } from "@rdfjs/data-model";
 
 export interface ProxyContextOptions {
   dataset: Dataset;
@@ -17,6 +18,8 @@ export interface ProxyContextOptions {
   prefilledArrayTargets?: ArrayProxyTarget[];
   state?: Record<string, unknown>;
 }
+
+const rdfType = namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 /**
  * This file keeps track of the target objects used in the proxies.
@@ -106,5 +109,13 @@ export class ProxyContext {
       ...alternativeOptions,
     };
     return new ProxyContext(fullOptions);
+  }
+
+  public getRdfType(subjectNode: SubjectNode): NamedNode[] {
+    return this.dataset
+      .match(subjectNode, rdfType)
+      .toArray()
+      .map((quad) => quad.object)
+      .filter((object): object is NamedNode => object.termType === "NamedNode");
   }
 }

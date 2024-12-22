@@ -42,7 +42,7 @@ export async function shexjToTyping(
         .emit(declaration, {
           rootFlags: dom.ContextFlags.InAmbientNamespace,
         })
-        .replace("\r\n", "\n"),
+        .replace(/\r\n/g, "\n"),
       dts: declaration,
     };
   });

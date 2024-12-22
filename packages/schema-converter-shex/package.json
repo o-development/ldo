@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/schema-converter-shex#readme",
   "devDependencies": {
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.24",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
@@ -34,7 +35,7 @@
   ],
   "dependencies": {
     "@ldo/traverser-shexj": "^0.0.1-alpha.24",
-    "dts-dom": "^3.6.0",
+    "dts-dom": "~3.6.0",
     "jsonld2graphobject": "^0.0.5"
   },
   "publishConfig": {

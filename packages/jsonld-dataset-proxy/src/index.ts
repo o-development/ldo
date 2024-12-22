@@ -9,6 +9,7 @@ export * from "./jsonldDatasetProxy";
 export * from "./write";
 export * from "./graphOf";
 export * from "./setLanguagePreferences";
+export * from "./LdoJsonldContext";
 
 export * from "./language/languagesOf";
 export * from "./language/languageMapProxy";

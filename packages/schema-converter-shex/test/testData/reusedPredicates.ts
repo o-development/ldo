@@ -18,43 +18,73 @@ export const reusedPredicates: TestData = {
 
   app:LawShape {
     rdf:type [ app:Law ] ;
-    app:name xsd:string ;
+    app:name xsd:string *;
     app:path IRI ;
   }
 
   app:VocabularyShape {
     rdf:type [ app:Vocabulary ] ;
     app:name xsd:string ;
-    app:path IRI ;
+    app:path IRI *;
   }
   `,
   sampleTurtle: ``,
   baseNode: "http://example.com/SampleParent",
   successfulContext: {
-    type: { "@id": "@type" },
-    Document: "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Document",
-    vocabulary: {
+    Document: {
+      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Document",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        vocabulary: {
+          "@id":
+            "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#vocabulary",
+          "@type": "@id",
+          "@isCollection": true,
+        },
+        law: {
+          "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#law",
+          "@type": "@id",
+        },
+      },
+    },
+    Vocabulary: {
       "@id":
-        "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#vocabulary",
-      "@type": "@id",
-      "@container": "@set",
+        "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Vocabulary",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        name: {
+          "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
+        },
+        path: {
+          "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
+          "@type": "@id",
+          "@isCollection": true,
+        },
+      },
     },
-    Vocabulary:
-      "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Vocabulary",
-    name: {
-      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
-      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    Law: {
+      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Law",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        name: {
+          "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
+          "@isCollection": true,
+        },
+        path: {
+          "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
+          "@type": "@id",
+        },
+      },
     },
-    path: {
-      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
-      "@type": "@id",
-    },
-    law: {
-      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#law",
-      "@type": "@id",
-    },
-    Law: "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Law",
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface DocumentShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    type: {\r\n        "@id": "Document";\r\n    };\r\n    vocabulary?: (VocabularyShape)[];\r\n    law: LawShape;\r\n}\r\n\r\nexport interface LawShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    type: {\r\n        "@id": "Law";\r\n    };\r\n    name: string;\r\n    path: {\r\n        "@id": string;\r\n    };\r\n}\r\n\r\nexport interface VocabularyShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    type: {\r\n        "@id": "Vocabulary";\r\n    };\r\n    name: string;\r\n    path: {\r\n        "@id": string;\r\n    };\r\n}\r\n\r\n',
+    'import {ContextDefinition} from "jsonld"\n\nexport interface DocumentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Document";\n    };\n    vocabulary?: (VocabularyShape)[];\n    law: LawShape;\n}\n\nexport interface LawShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Law";\n    };\n    name?: string[];\n    path: {\n        "@id": string;\n    };\n}\n\nexport interface VocabularyShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Vocabulary";\n    };\n    name: string;\n    path?: {\n        "@id": string;\n    }[];\n}\n\n',
 };

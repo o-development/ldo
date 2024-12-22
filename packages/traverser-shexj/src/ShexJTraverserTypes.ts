@@ -41,7 +41,7 @@ import type {
   tripleExprRef,
   valueSetValue,
   Wildcard,
-} from "shexj";
+} from "./ShexJTypes";
 import type { ValidateTraverserTypes } from "@ldo/type-traverser";
 
 export type ShexJTraverserTypes = ValidateTraverserTypes<{
@@ -110,7 +110,7 @@ export type ShexJTraverserTypes = ValidateTraverserTypes<{
   shapeDeclRef: {
     kind: "union";
     type: shapeDeclRef;
-    typeNames: "shapeDeclLabel";
+    typeNames: "shapeDeclLabel" | "ShapeDecl";
   };
   shapeDeclLabel: {
     kind: "union";

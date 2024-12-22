@@ -31,7 +31,10 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
   const proxyContext = subjectProxy[_proxyContext];
   const subjectNode = subjectProxy[_getUnderlyingNode];
   const predicateNode = namedNode(
-    proxyContext.contextUtil.keyToIri(predicate as string),
+    proxyContext.contextUtil.keyToIri(
+      predicate as string,
+      proxyContext.getRdfType(subjectNode),
+    ),
   );
   let objectNode: ObjectNode | null;
   if (object == null) {

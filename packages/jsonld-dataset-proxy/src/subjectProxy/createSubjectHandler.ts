@@ -48,7 +48,12 @@ export function createSubjectHandler(
       const tripleDataset = proxyContext.dataset.match(subject);
       const keys: Set<string> = new Set(["@id"]);
       tripleDataset.toArray().forEach((quad) => {
-        keys.add(proxyContext.contextUtil.iriToKey(quad.predicate.value));
+        keys.add(
+          proxyContext.contextUtil.iriToKey(
+            quad.predicate.value,
+            proxyContext.getRdfType(subject),
+          ),
+        );
       });
       return Array.from(keys);
     },

@@ -32,7 +32,7 @@ export const simple: TestData = {
     givenName: {
       "@id": "http://xmlns.com/foaf/0.1/givenName",
       "@type": "http://www.w3.org/2001/XMLSchema#string",
-      "@container": "@set",
+      "@isCollection": true,
     },
     familyName: {
       "@id": "http://xmlns.com/foaf/0.1/familyName",
@@ -41,10 +41,10 @@ export const simple: TestData = {
     phone: {
       "@id": "http://xmlns.com/foaf/0.1/phone",
       "@type": "@id",
-      "@container": "@set",
+      "@isCollection": true,
     },
     mbox: { "@id": "http://xmlns.com/foaf/0.1/mbox", "@type": "@id" },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface EmployeeShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    givenName: string[];\r\n    familyName: string;\r\n    phone?: {\r\n        "@id": string;\r\n    }[];\r\n    mbox: {\r\n        "@id": string;\r\n    };\r\n}\r\n\r\n',
+    'import {ContextDefinition} from "jsonld"\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    givenName: string[];\n    familyName: string;\n    phone?: {\n        "@id": string;\n    }[];\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
 };

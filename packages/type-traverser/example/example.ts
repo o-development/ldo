@@ -1,5 +1,10 @@
-import type { TraverserDefinition, ValidateTraverserTypes } from "../src";
-import { Traverser } from "../src";
+import type {
+  ValidateTraverserTypes,
+  ItemNamed,
+  TraverserDefinitions,
+} from "../src";
+import { InstanceGraph } from "../src/instanceGraph/instanceGraph";
+import type { ParentIdentifiers } from "../src/ReverseRelationshipTypes";
 
 async function run() {
   /**
@@ -56,7 +61,7 @@ async function run() {
     };
     NonBender: {
       kind: "interface";
-      type: Bender;
+      type: NonBender;
       properties: {
         friends: "Person";
       };
@@ -68,33 +73,42 @@ async function run() {
     };
   }>;
 
+  type PersonParentIdentifiers = ParentIdentifiers<
+    AvatarTraverserTypes,
+    "Person"
+  >;
+
+  const sample: PersonParentIdentifiers = ["Bender", "friends"];
+  console.log(sample);
+
   /**
    * Create the traverser definition
    */
-  const avatarTraverserDefinition: TraverserDefinition<AvatarTraverserTypes> = {
-    Element: {
-      kind: "primitive",
-    },
-    Bender: {
-      kind: "interface",
-      properties: {
-        element: "Element",
-        friends: "Person",
+  const avatarTraverserDefinition: TraverserDefinitions<AvatarTraverserTypes> =
+    {
+      Element: {
+        kind: "primitive",
       },
-    },
-    NonBender: {
-      kind: "interface",
-      properties: {
-        friends: "Person",
+      Bender: {
+        kind: "interface",
+        properties: {
+          element: "Element",
+          friends: "Person",
+        },
       },
-    },
-    Person: {
-      kind: "union",
-      selector: (item) => {
-        return (item as Bender).element ? "Bender" : "NonBender";
+      NonBender: {
+        kind: "interface",
+        properties: {
+          friends: "Person",
+        },
       },
-    },
-  };
+      Person: {
+        kind: "union",
+        selector: (item) => {
+          return (item as Bender).element ? "Bender" : "NonBender";
+        },
+      },
+    };
 
   /**
    * Instantiate the Traverser
@@ -103,65 +117,65 @@ async function run() {
     avatarTraverserDefinition,
   );
 
-  /**
-   * Create a visitor
-   */
-  const avatarVisitor = avatarTraverser.createVisitor<undefined>({
-    Element: async (item) => {
-      console.log(`Element: ${item}`);
-    },
-    Bender: {
-      visitor: async (item) => {
-        console.log(`Bender: ${item.name}`);
-      },
-      properties: {
-        element: async (item) => {
-          console.log(`Bender.element: ${item}`);
-        },
-      },
-    },
-    NonBender: {
-      visitor: async (item) => {
-        console.log(`NonBender: ${item.name}`);
-      },
-    },
-    Person: async (item) => {
-      console.log(`Person: ${item.name}`);
-    },
-  });
+  // /**
+  //  * Create a visitor
+  //  */
+  // const avatarVisitor = avatarTraverser.createVisitor<undefined>({
+  //   Element: async (item) => {
+  //     console.log(`Element: ${item}`);
+  //   },
+  //   Bender: {
+  //     visitor: async (item) => {
+  //       console.log(`Bender: ${item.name}`);
+  //     },
+  //     properties: {
+  //       element: async (item) => {
+  //         console.log(`Bender.element: ${item}`);
+  //       },
+  //     },
+  //   },
+  //   NonBender: {
+  //     visitor: async (item) => {
+  //       console.log(`NonBender: ${item.name}`);
+  //     },
+  //   },
+  //   Person: async (item) => {
+  //     console.log(`Person: ${item.name}`);
+  //   },
+  // });
 
-  /**
-   * Run the visitor on data
-   */
-  console.log(
-    "############################## Visitor Logs ##############################",
-  );
-  await avatarVisitor.visit(aang, "Bender", undefined);
+  // /**
+  //  * Run the visitor on data
+  //  */
+  // console.log(
+  //   "############################## Visitor Logs ##############################",
+  // );
+  // await avatarVisitor.visit(aang, "Bender", undefined);
 
-  /**
-   * Create a visitor that uses context
-   */
-  interface AvatarCountingVisitorContext {
-    numberOfBenders: number;
-  }
-  const avatarCountingVisitor =
-    avatarTraverser.createVisitor<AvatarCountingVisitorContext>({
-      Bender: {
-        visitor: async (item, context) => {
-          context.numberOfBenders++;
-        },
-      },
-    });
+  // /**
+  //  * Create a visitor that uses context
+  //  */
+  // interface AvatarCountingVisitorContext {
+  //   numberOfBenders: number;
+  // }
+  // const avatarCountingVisitor =
+  //   avatarTraverser.createVisitor<AvatarCountingVisitorContext>({
+  //     Bender: {
+  //       visitor: async (item, context) => {
+  //         context.numberOfBenders++;
+  //       },
+  //     },
+  //   });
 
-  /**
-   * Run the counting visitor
-   */
-  console.log(
-    "############################## Found Number of Benders Using Visitor ##############################",
-  );
-  const countContext: AvatarCountingVisitorContext = { numberOfBenders: 0 };
-  await avatarCountingVisitor.visit(aang, "Bender", countContext);
-  console.log(countContext.numberOfBenders);
+  // /**
+  //  * Run the counting visitor
+  //  */
+  // console.log(
+  //   "############################## Found Number of Benders Using Visitor ##############################",
+  // );
+  // const countContext: AvatarCountingVisitorContext = { numberOfBenders: 0 };
+  // await avatarCountingVisitor.visit(aang, "Bender", countContext);
+  // console.log(countContext.numberOfBenders);
 
   /**
    * Set up a transformer

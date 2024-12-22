@@ -14,7 +14,9 @@ export function getNodeFromRawObject(
   } else if (!item["@id"]) {
     return blankNode();
   } else if (typeof item["@id"] === "string") {
-    return namedNode(contextUtil.keyToIri(item["@id"]));
+    // Purposly do not include typeName because we don't want to reference
+    // nested context
+    return namedNode(contextUtil.keyToIri(item["@id"], []));
   } else {
     return item["@id"];
   }
@@ -23,6 +25,7 @@ export function getNodeFromRawObject(
 export function getNodeFromRawValue(
   key: string,
   value: RawValue,
+  rdfTypes: NamedNode[],
   proxyContext: ProxyContext,
 ): BlankNode | NamedNode | Literal | undefined {
   // Get the Object Node
@@ -33,7 +36,8 @@ export function getNodeFromRawValue(
     typeof value === "boolean" ||
     typeof value === "number"
   ) {
-    const datatype = proxyContext.contextUtil.getType(key);
+    // PICKUP: figure out how to handle looking for the RDF Types of a raw value
+    const datatype = proxyContext.contextUtil.getDataType(key, rdfTypes);
     if (datatype === "@id") {
       return namedNode(value.toString());
     } else {

@@ -51,31 +51,173 @@ srs:EmailShape EXTRA a {
   sampleTurtle: ``,
   baseNode: "",
   successfulContext: {
-    type: { "@id": "@type" },
-    Person: "http://schema.org/Person",
-    Person2: "http://xmlns.com/foaf/0.1/Person",
-    hasEmail: {
-      "@id": "http://www.w3.org/2006/vcard/ns#hasEmail",
-      "@type": "@id",
-      "@container": "@set",
+    Person: {
+      "@id": "http://schema.org/Person",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        hasEmail: {
+          "@id": "http://www.w3.org/2006/vcard/ns#hasEmail",
+          "@type": "@id",
+          "@isCollection": true,
+        },
+        name: {
+          "@id": "http://xmlns.com/foaf/0.1/name",
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
+        },
+      },
     },
-    Dom: "http://www.w3.org/2006/vcard/ns#Dom",
-    Home: "http://www.w3.org/2006/vcard/ns#Home",
-    ISDN: "http://www.w3.org/2006/vcard/ns#ISDN",
-    Internet: "http://www.w3.org/2006/vcard/ns#Internet",
-    Intl: "http://www.w3.org/2006/vcard/ns#Intl",
-    Label: "http://www.w3.org/2006/vcard/ns#Label",
-    Parcel: "http://www.w3.org/2006/vcard/ns#Parcel",
-    Postal: "http://www.w3.org/2006/vcard/ns#Postal",
-    Pref: "http://www.w3.org/2006/vcard/ns#Pref",
-    Work: "http://www.w3.org/2006/vcard/ns#Work",
-    X400: "http://www.w3.org/2006/vcard/ns#X400",
-    value: { "@id": "http://www.w3.org/2006/vcard/ns#value", "@type": "@id" },
-    name: {
-      "@id": "http://xmlns.com/foaf/0.1/name",
-      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    Person2: {
+      "@id": "http://xmlns.com/foaf/0.1/Person",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        hasEmail: {
+          "@id": "http://www.w3.org/2006/vcard/ns#hasEmail",
+          "@type": "@id",
+          "@isCollection": true,
+        },
+        name: {
+          "@id": "http://xmlns.com/foaf/0.1/name",
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
+        },
+      },
+    },
+    Dom: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Dom",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Home: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Home",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    ISDN: {
+      "@id": "http://www.w3.org/2006/vcard/ns#ISDN",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Internet: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Internet",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Intl: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Intl",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Label: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Label",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Parcel: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Parcel",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Postal: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Postal",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Pref: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Pref",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    Work: {
+      "@id": "http://www.w3.org/2006/vcard/ns#Work",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
+    },
+    X400: {
+      "@id": "http://www.w3.org/2006/vcard/ns#X400",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        value: {
+          "@id": "http://www.w3.org/2006/vcard/ns#value",
+          "@type": "@id",
+        },
+      },
     },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    /**\r\n     * Defines the node as a Person | Defines the node as a Person\r\n     */\r\n    type: ({\r\n        "@id": "Person";\r\n    } | {\r\n        "@id": "Person2";\r\n    })[];\r\n    /**\r\n     * The person\'s email.\r\n     */\r\n    hasEmail?: (EmailShape)[];\r\n    /**\r\n     * An alternate way to define a person\'s name\r\n     */\r\n    name?: string;\r\n}\r\n\r\nexport interface EmailShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    /**\r\n     * The type of email.\r\n     */\r\n    type?: {\r\n        "@id": "Dom";\r\n    } | {\r\n        "@id": "Home";\r\n    } | {\r\n        "@id": "ISDN";\r\n    } | {\r\n        "@id": "Internet";\r\n    } | {\r\n        "@id": "Intl";\r\n    } | {\r\n        "@id": "Label";\r\n    } | {\r\n        "@id": "Parcel";\r\n    } | {\r\n        "@id": "Postal";\r\n    } | {\r\n        "@id": "Pref";\r\n    } | {\r\n        "@id": "Work";\r\n    } | {\r\n        "@id": "X400";\r\n    };\r\n    /**\r\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\r\n     */\r\n    value: {\r\n        "@id": string;\r\n    };\r\n}\r\n\r\n',
+    'import {ContextDefinition} from "jsonld"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Defines the node as a Person | Defines the node as a Person\n     */\n    type: ({\n        "@id": "Person";\n    } | {\n        "@id": "Person2";\n    })[];\n    /**\n     * The person\'s email.\n     */\n    hasEmail?: (EmailShape)[];\n    /**\n     * An alternate way to define a person\'s name\n     */\n    name?: string;\n}\n\nexport interface EmailShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * The type of email.\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\n',
 };
