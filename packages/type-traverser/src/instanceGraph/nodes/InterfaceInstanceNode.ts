@@ -1,22 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ApplyArrayAndUndefined } from "../../transformer/TransformerReturnTypesDefaults";
 import type {
   InterfaceType,
   TraverserTypes,
 } from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../instanceGraph";
+import type { InstanceGraph } from "../InstanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 import { InstanceNode } from "./InstanceNode";
 
 /**
  * Helper Function
  */
-type InterfacePropertyNode<
+export type InterfacePropertyNode<
   Types extends TraverserTypes<any>,
   Type extends InterfaceType<keyof Types>,
   PropertyName extends keyof Type["properties"],
-> = Type["type"][PropertyName] extends Array<any>
-  ? InstanceNodeFor<Types, Type["properties"][PropertyName]>[]
-  : InstanceNodeFor<Types, Type["properties"][PropertyName]>;
+> = ApplyArrayAndUndefined<
+  Type["type"][PropertyName],
+  InstanceNodeFor<Types, Type["properties"][PropertyName]>
+>;
 
 /**
  * Class

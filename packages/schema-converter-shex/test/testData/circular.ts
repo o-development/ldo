@@ -31,14 +31,14 @@ export const circular: TestData = {
   `,
   baseNode: "http://example.com/SampleParent",
   successfulContext: {
-    SampleParent: {
+    Parent: {
       "@id": "http://example.com/Parent",
       "@context": {
         type: { "@id": "@type" },
         hasChild: { "@id": "http://example.com/hasChild", "@type": "@id" },
       },
     },
-    SampleChild: {
+    Child: {
       "@id": "http://example.com/Child",
       "@context": {
         type: { "@id": "@type" },
@@ -47,5 +47,5 @@ export const circular: TestData = {
     },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface ParentShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    type?: {\r\n        "@id": "Parent";\r\n    };\r\n    hasChild: ChildShape;\r\n}\r\n\r\nexport interface ChildShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    type?: {\r\n        "@id": "Child";\r\n    };\r\n    hasParent: ParentShape;\r\n}\r\n\r\n',
+    'import {ContextDefinition} from "jsonld"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
 };

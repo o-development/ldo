@@ -1,8 +1,8 @@
 import type { ShexJTraverserTypes } from ".";
-import type { TraverserDefinition } from "@ldo/type-traverser";
-import type { shapeExpr, valueSetValue } from "shexj";
+import type { TraverserDefinitions } from "@ldo/type-traverser";
+import type { shapeExpr, valueSetValue } from "./ShexJTypes";
 
-export const ShexJTraverserDefinition: TraverserDefinition<ShexJTraverserTypes> =
+export const ShexJTraverserDefinition: TraverserDefinitions<ShexJTraverserTypes> =
   {
     Schema: {
       kind: "interface",
@@ -29,7 +29,9 @@ export const ShexJTraverserDefinition: TraverserDefinition<ShexJTraverserTypes> 
     shapeExprOrRef: {
       kind: "union",
       selector: (item) =>
-        typeof item === "string" ? "shapeDeclRef" : "shapeExpr",
+        typeof item === "string" || item.type === "ShapeDecl"
+          ? "shapeDeclRef"
+          : "shapeExpr",
     },
     ShapeOr: {
       kind: "interface",
@@ -55,7 +57,8 @@ export const ShexJTraverserDefinition: TraverserDefinition<ShexJTraverserTypes> 
     },
     shapeDeclRef: {
       kind: "union",
-      selector: () => "shapeDeclLabel",
+      selector: (value) =>
+        typeof value === "string" ? "shapeDeclLabel" : "ShapeDecl",
     },
     shapeDeclLabel: {
       kind: "union",

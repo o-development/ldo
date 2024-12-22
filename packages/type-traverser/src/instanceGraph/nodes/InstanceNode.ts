@@ -2,7 +2,7 @@
 import type { TraverserDefinition } from "../..";
 import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes";
 import type { TraverserTypes } from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../instanceGraph";
+import type { InstanceGraph } from "../InstanceGraph";
 import type { InstanceNodeFor } from "./createInstanceNodeFor";
 
 export abstract class InstanceNode<

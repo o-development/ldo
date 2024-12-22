@@ -9,7 +9,6 @@ describe("context", () => {
       const schema: Schema = parser
         .construct("https://ldo.js.org/")
         .parse(shexc);
-      console.log(JSON.stringify(schema, null, 2));
       const context = await shexjToContext(schema);
       expect(context).toEqual(successfulContext);
     });

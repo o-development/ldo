@@ -14,6 +14,7 @@ export async function shexjToContext(
       "@context": "http://www.w3.org/ns/shex.jsonld",
     },
     "SCHEMA",
+    { excludeContext: true },
   )) as unknown as Schema;
   const jsonLdContextBuilder = new JsonLdContextBuilder();
   await ShexJNameVisitor.visit(processedShexj, "Schema", jsonLdContextBuilder);

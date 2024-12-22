@@ -3,9 +3,11 @@ import * as dom from "dts-dom";
 import type { Annotation } from "shexj";
 import { nameFromObject } from "../context/JsonLdContextBuilder";
 import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
+import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
+import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers";
 
 export interface ShexJTypeTransformerContext {
-  getNameFromIri: (iri: string) => string;
+  getNameFromIri: (iri: string, rdfType?: string) => string;
 }
 
 export function commentFromAnnotations(
@@ -125,12 +127,19 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       }
       // Use EXTENDS
       if (transformedChildren.extends) {
-        newInterface.baseTypes = [];
         transformedChildren.extends.forEach((extendsItem) => {
-          if ((extendsItem as dom.InterfaceDeclaration).kind === "interface") {
-            newInterface.baseTypes?.push(
-              extendsItem as dom.InterfaceDeclaration,
-            );
+          const extendsInterface = extendsItem as dom.InterfaceDeclaration;
+          if (extendsInterface.kind === "interface") {
+            // NOTE: This is how you would use the actual typescript "extends"
+            // feature, but as ShEx extend doesn't work the same way as ts
+            // extends, we just dedupe and push members.
+            // newInterface.baseTypes?.push(
+            //   extendsItem as dom.InterfaceDeclaration,
+            // );
+            newInterface.members = dedupeObjectTypeMembers([
+              ...extendsInterface.members,
+              ...newInterface.members,
+            ]);
           }
         });
       }
@@ -144,7 +153,6 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       const objectType = name
         ? dom.create.interface(name)
         : dom.create.objectType([]);
-      const eachOfComment = commentFromAnnotations(eachOf.annotations);
       setReturnPointer(objectType);
       // Get Input property expressions
       const inputPropertyExpressions: dom.PropertyDeclaration[] = [];
@@ -178,49 +186,9 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
             }
           },
         );
-
-      // Merge property expressions
-      const properties: Record<string, dom.PropertyDeclaration> = {};
-      inputPropertyExpressions.forEach((expression) => {
-        const propertyDeclaration = expression as dom.PropertyDeclaration;
-        // Combine properties if they're duplicates
-        if (properties[propertyDeclaration.name]) {
-          const oldPropertyDeclaration = properties[propertyDeclaration.name];
-          const oldPropertyTypeAsArray =
-            oldPropertyDeclaration.type as dom.ArrayTypeReference;
-          const oldProeprtyType =
-            oldPropertyTypeAsArray.kind === "array"
-              ? oldPropertyTypeAsArray.type
-              : oldPropertyDeclaration.type;
-          const propertyTypeAsArray =
-            propertyDeclaration.type as dom.ArrayTypeReference;
-          const propertyType =
-            propertyTypeAsArray.kind === "array"
-              ? propertyTypeAsArray.type
-              : propertyDeclaration.type;
-          const isOptional =
-            propertyDeclaration.flags === dom.DeclarationFlags.Optional ||
-            oldPropertyDeclaration.flags === dom.DeclarationFlags.Optional;
-          properties[propertyDeclaration.name] = dom.create.property(
-            propertyDeclaration.name,
-            dom.type.array(dom.create.union([oldProeprtyType, propertyType])),
-            isOptional
-              ? dom.DeclarationFlags.Optional
-              : dom.DeclarationFlags.None,
-          );
-          // Set JS Comment
-          properties[propertyDeclaration.name].jsDocComment =
-            oldPropertyDeclaration.jsDocComment &&
-            propertyDeclaration.jsDocComment
-              ? `${oldPropertyDeclaration.jsDocComment} | ${propertyDeclaration.jsDocComment}`
-              : oldPropertyDeclaration.jsDocComment ||
-                propertyDeclaration.jsDocComment ||
-                eachOfComment;
-        } else {
-          properties[propertyDeclaration.name] = propertyDeclaration;
-        }
-      });
-      objectType.members.push(...Object.values(properties));
+      objectType.members.push(
+        ...dedupeObjectTypeMembers(inputPropertyExpressions),
+      );
       return objectType;
     },
   },
@@ -229,10 +197,19 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       tripleConstraint,
       getTransformedChildren,
       setReturnPointer,
+      node,
       context,
     ) => {
       const transformedChildren = await getTransformedChildren();
-      const propertyName = context.getNameFromIri(tripleConstraint.predicate);
+
+      const rdfTypes = getRdfTypesForTripleConstraint(node);
+
+      // HACK: Selecting only one RDFType might cause edge cases children in the
+      // heirarchy that have different predicate names.
+      const propertyName = context.getNameFromIri(
+        tripleConstraint.predicate,
+        rdfTypes[0],
+      );
       const isArray =
         tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
       const isOptional = tripleConstraint.min === 0;
@@ -258,6 +235,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       nodeConstraint,
       _getTransformedChildren,
       setReturnPointer,
+      node,
       context,
     ) => {
       if (nodeConstraint.datatype) {

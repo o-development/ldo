@@ -1,7 +1,7 @@
 import type { TestData } from "./testData";
 
 /**
- * Circular
+ * Old Extends
  */
 export const oldExtends: TestData = {
   name: "old extends",
@@ -9,21 +9,24 @@ export const oldExtends: TestData = {
   PREFIX ex: <https://example.com/>
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-  ex:EntityShape {
+  ex:EntityShape EXTRA a {
     $ex:EntityRef (
+      a [ ex:Entity ] ;
       ex:entityId .
     )
   }
 
-  ex:PersonShape {
+  ex:PersonShape EXTRA a {
     $ex:PersonRef (
       &ex:EntityRef ;
+      a [ ex:Person ] ;
       foaf:name .
     )
   }
 
-  ex:EmployeeShape EXTENDS @ex:PersonShape {
+  ex:EmployeeShape EXTRA a {
     &ex:PersonRef ;
+    a [ ex:Employee ] ;
     ex:employeeNumber .
   }
   `,
@@ -39,10 +42,37 @@ export const oldExtends: TestData = {
   `,
   baseNode: "http://example.com/SampleParent",
   successfulContext: {
-    entityId: "https://example.com/entityId",
-    name: "http://xmlns.com/foaf/0.1/name",
-    employeeNumber: "https://example.com/employeeNumber",
+    Entity: {
+      "@id": "https://example.com/Entity",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        entityId: "https://example.com/entityId",
+      },
+    },
+    Person: {
+      "@id": "https://example.com/Person",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        entityId: "https://example.com/entityId",
+        name: "http://xmlns.com/foaf/0.1/name",
+      },
+    },
+    Employee: {
+      "@id": "https://example.com/Employee",
+      "@context": {
+        type: {
+          "@id": "@type",
+        },
+        entityId: "https://example.com/entityId",
+        name: "http://xmlns.com/foaf/0.1/name",
+        employeeNumber: "https://example.com/employeeNumber",
+      },
+    },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface EntityShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    entityId: any;\r\n}\r\n\r\nexport interface PersonShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    entityId: any;\r\n    name: any;\r\n}\r\n\r\nexport interface EmployeeShape {\n    "@id"?: string;\r\n    "@context"?: ContextDefinition;\r\n    entityId: any;\r\n    name: any;\r\n    employeeNumber: any;\r\n}\r\n\r\n',
+    'import {ContextDefinition} from "jsonld"\n\nexport interface EntityShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Entity";\n    };\n    entityId: any;\n}\n\nexport interface PersonShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: ({\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    })[];\n    entityId: any;\n    name: any;\n}\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: ({\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    } | {\n        "@id": "Employee";\n    })[];\n    entityId: any;\n    name: any;\n    employeeNumber: any;\n}\n\n',
 };

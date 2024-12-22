@@ -97,7 +97,7 @@ export class JsonLdContextBuilder {
     if (!relevantBuilder.iriTypes[iri]) {
       relevantBuilder.iriTypes[iri] = expandedTermDefinition;
       if (isContainer) {
-        relevantBuilder.iriTypes[iri]["@isContainer"] = true;
+        relevantBuilder.iriTypes[iri]["@isCollection"] = true;
       }
     } else {
       const curDef = relevantBuilder.iriTypes[iri];
@@ -106,7 +106,7 @@ export class JsonLdContextBuilder {
       // it will overwrite the past cardinality. Perhapse we might want to
       // split contexts in the various shapes.
       if (isContainer) {
-        curDef["@isContainer"] = true;
+        curDef["@isCollection"] = true;
       }
       // If the old and new versions both have types
       if (curDef["@type"] && newDef["@type"]) {
@@ -172,12 +172,13 @@ export class JsonLdContextBuilder {
     return generatedNames;
   }
 
-  getNameFromIri(iri: string) {
-    if (!this.generatedNames) {
-      this.generatedNames = this.generateNames();
+  getNameFromIri(iri: string, rdfType?: string) {
+    const relevantBuilder = this.getRelevantBuilder(rdfType);
+    if (!relevantBuilder.generatedNames) {
+      relevantBuilder.generatedNames = relevantBuilder.generateNames();
     }
-    if (this.generatedNames[iri]) {
-      return this.generatedNames[iri];
+    if (relevantBuilder.generatedNames[iri]) {
+      return relevantBuilder.generatedNames[iri];
     } else {
       return iri;
     }
