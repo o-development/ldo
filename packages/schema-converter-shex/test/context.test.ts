@@ -9,7 +9,9 @@ describe("context", () => {
       const schema: Schema = parser
         .construct("https://ldo.js.org/")
         .parse(shexc);
+      // console.log("SCHEMA:", JSON.stringify(schema, null, 2));
       const context = await shexjToContext(schema);
+      // console.log("CONTEXT:", JSON.stringify(context, null, 2));
       expect(context).toEqual(successfulContext);
     });
   });
