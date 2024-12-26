@@ -2,6 +2,7 @@ import { exec } from "child-process-promise";
 import fs from "fs-extra";
 import path from "path";
 import { renderFile } from "ejs";
+import { modifyPackageJson } from "./util/modifyPackageJson";
 
 const DEFAULT_SHAPES_FOLDER = "./.shapes";
 const DEFAULT_LDO_FOLDER = "./.ldo";
@@ -57,21 +58,16 @@ export async function init(initOptions: InitOptions) {
   );
 
   // Add build script
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const packageJson: any = JSON.parse(
-    (await fs.promises.readFile("./package.json")).toString(),
-  );
-  if (!packageJson.scripts) {
-    packageJson.scripts = {};
-  }
-  const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
-  packageJson.scripts[
-    "build:ldo"
-  ] = `ldo build --input ${shapesFolderPath} --output ${ldoFolder}`;
-  await fs.promises.writeFile(
-    "./package.json",
-    JSON.stringify(packageJson, null, 2),
-  );
+  await modifyPackageJson("./", async (packageJson) => {
+    if (!packageJson.scripts) {
+      packageJson.scripts = {};
+    }
+    const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
+    packageJson.scripts[
+      "build:ldo"
+    ] = `ldo build --input ${shapesFolderPath} --output ${ldoFolder}`;
+    return packageJson;
+  });
 
   // Build LDO
   await exec("npm run build:ldo");

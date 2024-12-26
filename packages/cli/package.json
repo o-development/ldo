@@ -14,13 +14,14 @@
     "build:ts": "tsc --project tsconfig.build.json",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
-    "update-permission": "chmod +x ../../node_modules/.bin/ldo",
+    "update-permission": "chmod +x ./dist/index.js",
     "watch": "tsc --watch",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo"
+    "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo",
+    "generate-readme": "./dist/index.js generate-readme --project ./test --shapes ./test/.shapes/ --ldo ./test/.ldo/" 
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,8 @@
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "loading-cli": "^1.1.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "type-fest": "^4.31.0"
   },
   "files": [
     "dist",
