@@ -16,6 +16,7 @@ export async function savePackageJson(
   projectFolder: string,
   packageJson: PackageJson,
 ): Promise<void> {
+  await fs.promises.mkdir(projectFolder, { recursive: true });
   await fs.promises.writeFile(
     path.join(projectFolder, "./package.json"),
     JSON.stringify(packageJson, null, 2),

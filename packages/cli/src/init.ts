@@ -13,12 +13,15 @@ export interface InitOptions {
 }
 
 export async function init(initOptions: InitOptions) {
+  console.log("In init");
   // Install dependencies
-  await exec("npm install @ldo/ldo --save");
-  await exec("npm install @ldo/cli @types/shexj @types/jsonld --save-dev");
+  await exec(`cd ${initOptions.directory} && npm install @ldo/ldo --save`);
+  await exec(
+    `cd ${initOptions.directory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
+  );
 
   // Find folder to save to
-  let parentDirectory = initOptions.directory;
+  let parentDirectory = initOptions.directory!;
   if (!parentDirectory) {
     parentDirectory = "./";
     const allDirectories = (
@@ -57,6 +60,7 @@ export async function init(initOptions: InitOptions) {
     }),
   );
 
+  console.log("here");
   // Add build script
   await modifyPackageJson(parentDirectory, async (packageJson) => {
     if (!packageJson.scripts) {

@@ -25,7 +25,7 @@ program
 
 program
   .command("create")
-  .argument("<directory>", "The package's directory", "./")
+  .argument("<directory>", "The package's directory")
   .description("Creates a standalone package for shapes to publish to NPM.")
   .action(create);
 
