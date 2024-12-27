@@ -7,20 +7,16 @@
     "ldo": "./dist/index.js"
   },
   "scripts": {
-    "start": "node dist/index.js build",
-    "start:init": "node dist/index.js init",
-    "dev": "npm run build && npm run start:init",
-    "build": "npm run clean && npm run build:ts && npm run copy-files",
+    "build": "npm run clean && npm run build:ts && npm run copy-files && npm run update-permission",
     "build:ts": "tsc --project tsconfig.build.json",
     "clean": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
-    "update-permission": "chmod +x ../../node_modules/.bin/ldo",
-    "watch": "tsc --watch",
+    "update-permission": "chmod +x ./dist/index.js",
     "test": "jest --coverage",
-    "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo"
+    "test:init": "rm -rf ./example-init && cp -R ./example-init-placeholder ./example-init && cd ./example-init && ../dist/index.js init",
+    "test:create": "rm -rf ./example-create && ./dist/index.js create ./example-create"
   },
   "repository": {
     "type": "git",
@@ -33,17 +29,21 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/cli#readme",
   "devDependencies": {
+    "@ldo/cli": "^0.0.1-alpha.28",
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
-    "@types/shexj": "2.1.4",
+    "@types/jsonld": "^1.5.15",
+    "@types/prompts": "^2.4.9",
+    "@types/shexj": "^2.1.4",
     "copyfiles": "^2.4.1",
     "jest": "^27.4.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.7"
   },
   "dependencies": {
+    "@ldo/ldo": "^0.0.1-alpha.28",
     "@ldo/schema-converter-shex": "^0.0.1-alpha.24",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",
@@ -51,7 +51,10 @@
     "ejs": "^3.1.8",
     "fs-extra": "^10.1.0",
     "loading-cli": "^1.1.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "prompts": "^2.4.2",
+    "ts-morph": "^24.0.0",
+    "type-fest": "^2.19.0"
   },
   "files": [
     "dist",

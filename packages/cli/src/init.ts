@@ -2,22 +2,15 @@ import { exec } from "child-process-promise";
 import fs from "fs-extra";
 import path from "path";
 import { renderFile } from "ejs";
+import { modifyPackageJson } from "./util/modifyPackageJson";
 
 const DEFAULT_SHAPES_FOLDER = "./.shapes";
 const DEFAULT_LDO_FOLDER = "./.ldo";
 const POTENTIAL_PARENT_DIRECTORIES = ["src", "lib", "bin"];
 
-export interface InitOptions {
-  directory?: string;
-}
-
-export async function init(initOptions: InitOptions) {
-  // Install dependencies
-  await exec("npm install @ldo/ldo --save");
-  await exec("npm install @ldo/cli @types/shexj @types/jsonld --save-dev");
-
+export async function init(directory?: string) {
   // Find folder to save to
-  let parentDirectory = initOptions.directory;
+  let parentDirectory = directory!;
   if (!parentDirectory) {
     parentDirectory = "./";
     const allDirectories = (
@@ -36,6 +29,12 @@ export async function init(initOptions: InitOptions) {
       }
     }
   }
+
+  // Install dependencies
+  await exec(`cd ${parentDirectory} && npm install @ldo/ldo --save`);
+  await exec(
+    `cd ${parentDirectory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
+  );
 
   // Create "shapes" folder
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
@@ -57,22 +56,18 @@ export async function init(initOptions: InitOptions) {
   );
 
   // Add build script
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const packageJson: any = JSON.parse(
-    (await fs.promises.readFile("./package.json")).toString(),
-  );
-  if (!packageJson.scripts) {
-    packageJson.scripts = {};
-  }
-  const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
-  packageJson.scripts[
-    "build:ldo"
-  ] = `ldo build --input ${shapesFolderPath} --output ${ldoFolder}`;
-  await fs.promises.writeFile(
-    "./package.json",
-    JSON.stringify(packageJson, null, 2),
-  );
+  await modifyPackageJson(parentDirectory, async (packageJson) => {
+    if (!packageJson.scripts) {
+      packageJson.scripts = {};
+    }
+    const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
+    packageJson.scripts["build:ldo"] = `ldo build --input ${path.relative(
+      parentDirectory,
+      shapesFolderPath,
+    )} --output ${path.relative(parentDirectory, ldoFolder)}`;
+    return packageJson;
+  });
 
   // Build LDO
-  await exec("npm run build:ldo");
+  await exec(`cd ${parentDirectory} && npm run build:ldo`);
 }

@@ -53,9 +53,20 @@ This will generate five files:
  - `./ldo/foafProfile.schema.ts`
  - `./ldo/foafProfile.context.ts`
 
+## Creating a new project to distribure shapes
+
+Sometimes, you might want to distribute shapes to others. The easiest way to do that is to deploy them to NPM. The LDO CLI has an easy-to-use command for generating a standalone project just for your shapes.
+
+```bash
+npx @ldo/cli create ./my-project
+```
+
+This script will generate a project with a place to put your shapes. Running `npm publish` will build the shapes and push to project to NPM for you.
+
 ## API Details
  - [`init` command](https://ldo.js.org/api/cli/init/)
  - [`build` command](https://ldo.js.org/api/cli/build/)
+ - [`create` command](https://ldo.js.org/api/cli/create/)
 ```
 
 ## Sponsorship
