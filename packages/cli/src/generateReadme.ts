@@ -49,6 +49,8 @@ export async function generateReadme(options: GenerateReadmeOptions) {
         shapeTypeName: `${interfaceName}ShapeType`,
       });
     });
+
+    shapes.push(shape);
   });
 
   const readmeEjsOptions: ReadmeEjsOptions = {

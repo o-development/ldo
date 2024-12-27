@@ -5,6 +5,8 @@ import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";
 import loading from "loading-cli";
+import { promises as fs } from "fs";
+import { renderFile } from "ejs";
 
 export async function create(directory: string) {
   // Init the NPM Package
@@ -59,6 +61,7 @@ export async function create(directory: string) {
     keywords: responses.keywords,
     author: responses.author,
     license: responses.license,
+    main: "./index.js",
   };
 
   if (responses.repository) {
@@ -88,12 +91,23 @@ export async function create(directory: string) {
       "npm run build:ldo & npm run generate-readme";
     packageJson.scripts[
       "genenerate-readme"
-    ] = `ldo generate-readme --readme ./README.md --shapes ./.shapes --ldo ./ldo`;
+    ] = `ldo generate-readme --project ./ --shapes ./.shapes --ldo ./.ldo`;
     return packageJson;
   });
 
-  load.text = "Generating README";
+  // Create index.js
+  load.text = "Generating index.js";
+  const ldoDir = await fs.readdir(path.join(directory, "./.ldo"), {
+    withFileTypes: true,
+  });
+  const indexText = await renderFile(
+    path.join(__dirname, "./templates/readme/projectIndex.ejs"),
+    { fileNames: ldoDir.map((file) => file.name) },
+  );
+  await fs.writeFile(path.join(directory, "index.js"), indexText);
+
   // Generate ReadMe
+  load.text = "Generating README";
   await generateReadme({
     project: directory,
     shapes: path.join(directory, ".shapes"),
