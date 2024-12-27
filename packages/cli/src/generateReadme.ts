@@ -32,7 +32,7 @@ export async function generateReadme(options: GenerateReadmeOptions) {
   const shapes: ReadmeEjsOptions["shapes"] = [];
 
   await forAllShapes(options.shapes, async (fileName, shexC) => {
-    const typeFilePath = path.join(options.shapes, `${fileName}.typings.ts`);
+    const typeFilePath = path.join(options.ldo, `${fileName}.typings.ts`);
 
     const typesRaw = await fs.readFile(typeFilePath, "utf8");
 

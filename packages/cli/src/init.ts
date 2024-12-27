@@ -73,5 +73,5 @@ export async function init(initOptions: InitOptions) {
   });
 
   // Build LDO
-  await exec("npm run build:ldo");
+  await exec(`cd ${parentDirectory} && npm run build:ldo`);
 }
