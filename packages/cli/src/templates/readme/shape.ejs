@@ -4,8 +4,8 @@
 
 ```typescript
 import { createLdoDataset } from "@ldo/ldo";
-import { <%= shape.types.map((type) => type.shapeTypeName).join(", ") %> } from "<%= projectName =>";
-import type { <%= shape.types.map((type) => type.typeName).join(", ") %> } from "<%= projectName =>";
+import { <%= shape.types.map((type) => type.shapeTypeName).join(", ") %> } from "<%= projectName %>";
+import type { <%= shape.types.map((type) => type.typeName).join(", ") %> } from "<%= projectName %>";
 const ldoDataset = createLdoDataset();
 <% shape.types.forEach(function(type, index) { %>
 const example<%= index %>: <%= type.typeName %> = ldoDataset

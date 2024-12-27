@@ -21,7 +21,7 @@
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "build:ldo": "./dist/index.js build --input test/.shapes --output test/.ldo",
-    "generate-readme": "./dist/index.js generate-readme --project ./test --shapes ./test/.shapes/ --ldo ./test/.ldo/" 
+    "generate-readme": "./dist/index.js generate-readme --project ./test --shapes ./test/.shapes/ --ldo ./test/.ldo/"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,7 @@
     "@types/ejs": "^3.1.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
+    "@types/prompts": "^2.4.9",
     "@types/shexj": "2.1.4",
     "copyfiles": "^2.4.1",
     "jest": "^27.4.2",
@@ -53,7 +54,9 @@
     "fs-extra": "^10.1.0",
     "loading-cli": "^1.1.0",
     "prettier": "^3.0.3",
-    "type-fest": "^4.31.0"
+    "prompts": "^2.4.2",
+    "ts-morph": "^24.0.0",
+    "type-fest": "^2.19.0"
   },
   "files": [
     "dist",

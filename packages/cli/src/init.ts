@@ -58,7 +58,7 @@ export async function init(initOptions: InitOptions) {
   );
 
   // Add build script
-  await modifyPackageJson("./", async (packageJson) => {
+  await modifyPackageJson(parentDirectory, async (packageJson) => {
     if (!packageJson.scripts) {
       packageJson.scripts = {};
     }

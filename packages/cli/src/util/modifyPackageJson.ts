@@ -12,14 +12,21 @@ export async function getPackageJson(
   );
 }
 
+export async function savePackageJson(
+  projectFolder: string,
+  packageJson: PackageJson,
+): Promise<void> {
+  await fs.promises.writeFile(
+    path.join(projectFolder, "./package.json"),
+    JSON.stringify(packageJson, null, 2),
+  );
+}
+
 export async function modifyPackageJson(
   projectFolder: string,
   modifyCallback: (packageJson: PackageJson) => Promise<PackageJson>,
 ): Promise<void> {
   const packageJson: PackageJson = await getPackageJson(projectFolder);
   const newPackageJson = await modifyCallback(packageJson);
-  await fs.promises.writeFile(
-    path.join(projectFolder, "./package.json"),
-    JSON.stringify(newPackageJson, null, 2),
-  );
+  await savePackageJson(projectFolder, newPackageJson);
 }

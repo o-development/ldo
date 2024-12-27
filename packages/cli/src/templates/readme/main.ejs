@@ -1,15 +1,15 @@
-# <%= projectname %>
+# <%= projectName %>
 
-<%= projectDescrition %>
+<%- projectDescription %>
 
 This project includes shapes and generated files for [LDO](https://ldo.js.org).
 
 ## Installation
 
 ```bash
-npm i <%= projectname %>
+npm i <%= projectName %>
 ```
 
 <% shapes.forEach(function(shape) { %>
-  <%- include('shape', { shape: shape, projectname: projectname }) %>
+<%- include('shape', { shape: shape, projectName: projectName }) %>
 <% }); %>
