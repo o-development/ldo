@@ -4,6 +4,7 @@ import { generateReadme } from "./generateReadme";
 import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";
+import loading from "loading-cli";
 
 export async function create(directory: string) {
   // Init the NPM Package
@@ -12,7 +13,7 @@ export async function create(directory: string) {
       type: "text",
       name: "name",
       message: "Package name:",
-      initial: path.basename(process.cwd()),
+      initial: path.basename(directory),
     },
     {
       type: "text",
@@ -49,6 +50,8 @@ export async function create(directory: string) {
     },
   ]);
 
+  const load = loading("Generating package.json");
+
   const packageJson: PackageJson = {
     name: responses.name,
     version: responses.version,
@@ -75,6 +78,7 @@ export async function create(directory: string) {
   await savePackageJson(directory, packageJson);
 
   // Init LDO
+  load.text = "Initializing LDO";
   await init({ directory });
 
   // Add prepublish script
@@ -88,10 +92,13 @@ export async function create(directory: string) {
     return packageJson;
   });
 
+  load.text = "Generating README";
   // Generate ReadMe
   await generateReadme({
     project: directory,
     shapes: path.join(directory, ".shapes"),
     ldo: path.join(directory, ".ldo"),
   });
+
+  load.stop();
 }

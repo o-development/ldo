@@ -13,7 +13,6 @@ export interface InitOptions {
 }
 
 export async function init(initOptions: InitOptions) {
-  console.log("In init");
   // Install dependencies
   await exec(`cd ${initOptions.directory} && npm install @ldo/ldo --save`);
   await exec(
@@ -60,16 +59,16 @@ export async function init(initOptions: InitOptions) {
     }),
   );
 
-  console.log("here");
   // Add build script
   await modifyPackageJson(parentDirectory, async (packageJson) => {
     if (!packageJson.scripts) {
       packageJson.scripts = {};
     }
     const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
-    packageJson.scripts[
-      "build:ldo"
-    ] = `ldo build --input ${shapesFolderPath} --output ${ldoFolder}`;
+    packageJson.scripts["build:ldo"] = `ldo build --input ${path.relative(
+      parentDirectory,
+      shapesFolderPath,
+    )} --output ${path.relative(parentDirectory, ldoFolder)}`;
     return packageJson;
   });
 

@@ -1,0 +1,21 @@
+{
+  "name": "example-create",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    ""
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ldo/ldo": "^0.0.1-alpha.28"
+  },
+  "devDependencies": {
+    "@ldo/cli": "^0.0.1-alpha.28",
+    "@types/jsonld": "^1.5.15",
+    "@types/shexj": "^2.1.7"
+  },
+  "scripts": {
+    "build:ldo": "ldo build --input example-create/.shapes --output example-create/.ldo"
+  }
+}
