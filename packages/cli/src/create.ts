@@ -82,7 +82,7 @@ export async function create(directory: string) {
 
   // Init LDO
   load.text = "Initializing LDO";
-  await init({ directory });
+  await init(directory);
 
   // Add prepublish script
   await modifyPackageJson(directory, async (packageJson) => {

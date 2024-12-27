@@ -15,7 +15,7 @@
     "test": "jest --coverage",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "test:init": "rm -rf ./example-init && mkdir ./example-init && cd ./example-init && ../dist/index.js init",
+    "test:init": "rm -rf ./example-init && cp -R ./example-init-placeholder ./example-init && cd ./example-init && ../dist/index.js init",
     "test:create": "rm -rf ./example-create && ./dist/index.js create ./example-create"
   },
   "repository": {
@@ -29,18 +29,21 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/cli#readme",
   "devDependencies": {
+    "@ldo/cli": "^0.0.1-alpha.28",
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
+    "@types/jsonld": "^1.5.15",
     "@types/prompts": "^2.4.9",
-    "@types/shexj": "2.1.4",
+    "@types/shexj": "^2.1.4",
     "copyfiles": "^2.4.1",
     "jest": "^27.4.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.7"
   },
   "dependencies": {
+    "@ldo/ldo": "^0.0.1-alpha.28",
     "@ldo/schema-converter-shex": "^0.0.1-alpha.24",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",

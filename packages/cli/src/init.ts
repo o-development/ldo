@@ -8,19 +8,9 @@ const DEFAULT_SHAPES_FOLDER = "./.shapes";
 const DEFAULT_LDO_FOLDER = "./.ldo";
 const POTENTIAL_PARENT_DIRECTORIES = ["src", "lib", "bin"];
 
-export interface InitOptions {
-  directory?: string;
-}
-
-export async function init(initOptions: InitOptions) {
-  // Install dependencies
-  await exec(`cd ${initOptions.directory} && npm install @ldo/ldo --save`);
-  await exec(
-    `cd ${initOptions.directory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
-  );
-
+export async function init(directory?: string) {
   // Find folder to save to
-  let parentDirectory = initOptions.directory!;
+  let parentDirectory = directory!;
   if (!parentDirectory) {
     parentDirectory = "./";
     const allDirectories = (
@@ -39,6 +29,12 @@ export async function init(initOptions: InitOptions) {
       }
     }
   }
+
+  // Install dependencies
+  await exec(`cd ${parentDirectory} && npm install @ldo/ldo --save`);
+  await exec(
+    `cd ${parentDirectory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
+  );
 
   // Create "shapes" folder
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
