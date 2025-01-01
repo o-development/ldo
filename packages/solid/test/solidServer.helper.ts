@@ -28,12 +28,13 @@ export async function createApp(): Promise<App> {
       mainModulePath: resolveModulePath(""),
       typeChecking: false,
     },
-    config: resolveModulePath("config/default.json"),
+    config: resolveModulePath("config/file-root.json"),
     variableBindings: {},
     shorthand: {
       port: 3_001,
       loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
+      rootFilePath: "./data",
     },
   });
 }

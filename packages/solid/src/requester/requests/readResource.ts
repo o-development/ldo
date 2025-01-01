@@ -99,13 +99,9 @@ export async function readResource(
   try {
     const fetch = guaranteeFetch(options?.fetch);
     // Fetch options to determine the document type
-    console.log("Will make fetch");
-    console.log(uri);
     const response = await fetch(uri, {
       headers: { accept: "text/turtle, */*" },
     });
-    console.log("Lets just confirm its this fetch");
-    console.log(response);
     if (response.status === 404) {
       return {
         isError: false,
@@ -132,9 +128,7 @@ export async function readResource(
 
     if (contentType.startsWith("text/turtle")) {
       // Parse Turtle
-      console.log("Before text");
       const rawTurtle = await response.text();
-      console.log("After Text");
       if (options?.dataset) {
         const result = await addRawTurtleToDataset(
           rawTurtle,
@@ -172,7 +166,6 @@ export async function readResource(
       };
     }
   } catch (err) {
-    console.log("We're in this error", err);
     return UnexpectedResourceError.fromThrown(uri, err);
   }
 }

@@ -43,6 +43,8 @@ import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { generateAuthFetch } from "./authFetch.helper";
 import { wait } from "./utils.helper";
+import fs from "fs/promises";
+import path from "path";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -173,21 +175,21 @@ describe("Integration", () => {
     app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
+    const testDataPath = path.join(__dirname, "../data");
+    await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
   beforeEach(async () => {
     fetchMock = jest.fn(authFetch);
     solidLdoDataset = createSolidLdoDataset({ fetch: fetchMock });
-    console.log(ROOT_CONTAINER, TEST_CONTAINER_SLUG);
     // Create a new document called sample.ttl
-    const result = await authFetch(ROOT_CONTAINER, {
+    await authFetch(ROOT_CONTAINER, {
       method: "POST",
       headers: {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
     });
-    console.log("Create Result", result);
     await authFetch(TEST_CONTAINER_ACL_URI, {
       method: "PUT",
       headers: {
@@ -2021,7 +2023,6 @@ describe("Integration", () => {
    */
   describe("Notification Subscriptions", () => {
     it("Notification is propogated when a resource is updated", async () => {
-      expect(true).toBe(true);
       const spidermanNode = namedNode("http://example.org/#spiderman");
       const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
 
@@ -2031,8 +2032,8 @@ describe("Integration", () => {
       const spidermanCallback = jest.fn();
       solidLdoDataset.addListener([spidermanNode, null, null, null], jest.fn());
 
-      // const subscriptionResult = await resource.subscribeToNotifications();
-      // expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
 
       await authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
@@ -2042,11 +2043,7 @@ describe("Integration", () => {
         },
       });
       await wait(1000);
-      process.env.AFTER = "TRUE";
 
-      await resource.read();
-
-      expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(
         solidLdoDataset.match(
           spidermanNode,
@@ -2054,6 +2051,7 @@ describe("Integration", () => {
           literal("Peter Parker"),
         ).size,
       ).toBe(1);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
 
       // // Notification is not propogated after unsubscribe
       // spidermanCallback.mockClear();

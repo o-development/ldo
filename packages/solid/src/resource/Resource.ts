@@ -745,8 +745,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   protected async onNotification(message: NotificationMessage): Promise<void> {
     switch (message.type) {
       case "Update":
-        const readResult = await this.read();
-        console.log(readResult);
+        await this.read();
     }
   }
 
