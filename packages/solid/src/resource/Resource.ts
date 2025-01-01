@@ -33,6 +33,13 @@ import { NoncompliantPodError } from "../requester/results/error/NoncompliantPod
 import { setWacRuleForAclUri, type SetWacRuleResult } from "./wac/setWacRule";
 import type { LeafUri } from "../util/uriTypes";
 import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
+import type {
+  CloseSubscriptionResult,
+  NotificationSubscription,
+  OpenSubscriptionResult,
+} from "./notifications/NotificationSubscription";
+import { Websocket2023NotificationSubscription } from "./notifications/Websocket2023NotificationSubscription";
+import type { NotificationMessage } from "./notifications/NotificationMessage";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -44,6 +51,7 @@ export type SharedStatuses = Unfetched | DeleteResult | CreateSuccess;
  */
 export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   update: () => void;
+  notification: () => void;
 }>) {
   /**
    * @internal
@@ -95,6 +103,12 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * If a wac rule was fetched, it is cached here
    */
   protected wacRule?: WacRule;
+
+  /**
+   * @internal
+   * Handles notification subscriptions
+   */
+  protected notificationSubscription?: NotificationSubscription;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
@@ -271,7 +285,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ```typescript
    * // Logs "undefined"
    * console.log(resource.isAbsent());
-   * const result = resource.read();
+   * const result = await resource.read();
    * if (!result.isError) {
    *   // False if the resource exists, true if it does not
    *   console.log(resource.isAbsent());
@@ -290,7 +304,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ```typescript
    * // Logs "undefined"
    * console.log(resource.isPresent());
-   * const result = resource.read();
+   * const result = await resource.read();
    * if (!result.isError) {
    *   // True if the resource exists, false if it does not
    *   console.log(resource.isPresent());
@@ -299,6 +313,26 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
   isPresent(): boolean | undefined {
     return this.absent === undefined ? undefined : !this.absent;
+  }
+
+  /**
+   * Is this resource currently listening to notifications from this document
+   * @returns true if the resource is subscribed to notifications, false if not
+   *
+   * @example
+   * ```typescript
+   * // Logs "undefined"
+   * console.log(resource.isPresent());
+   * const result = resource.read();
+   * if (!result.isError) {
+   *   // True if the resource exists, false if it does not
+   *   console.log(resource.isPresent());
+   * }
+   * ```
+   */
+  isSubscribedToNotifications(): boolean {
+    // TODO
+    throw new Error("Not Implemented");
   }
 
   /**
@@ -684,5 +718,50 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     if (result.isError) return result;
     this.wacRule = result.wacRule;
     return result;
+  }
+
+  /**
+   * ===========================================================================
+   * SUBSCRIPTION METHODS
+   * ===========================================================================
+   */
+
+  /**
+   * TODO
+   */
+  async subscribeToNotifications(): Promise<OpenSubscriptionResult> {
+    this.notificationSubscription = new Websocket2023NotificationSubscription(
+      this,
+      this.onNotification.bind(this),
+      this.context,
+    );
+    return await this.notificationSubscription.open();
+  }
+
+  /**
+   * @internal
+   * TODO
+   */
+  protected async onNotification(message: NotificationMessage): Promise<void> {
+    switch (message.type) {
+      case "Update":
+        const readResult = await this.read();
+        console.log(readResult);
+    }
+  }
+
+  /**
+   * TODO
+   */
+  async unsubscribeFromNotifications(): Promise<CloseSubscriptionResult> {
+    const result = await this.notificationSubscription?.close();
+    this.notificationSubscription = undefined;
+    return (
+      result ?? {
+        type: "unsubscribeFromNotificationSuccess",
+        isError: false,
+        uri: this.uri,
+      }
+    );
   }
 }

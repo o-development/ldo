@@ -42,6 +42,7 @@ import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSu
 import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { generateAuthFetch } from "./authFetch.helper";
+import { wait } from "./utils.helper";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -177,14 +178,16 @@ describe("Integration", () => {
   beforeEach(async () => {
     fetchMock = jest.fn(authFetch);
     solidLdoDataset = createSolidLdoDataset({ fetch: fetchMock });
+    console.log(ROOT_CONTAINER, TEST_CONTAINER_SLUG);
     // Create a new document called sample.ttl
-    await authFetch(ROOT_CONTAINER, {
+    const result = await authFetch(ROOT_CONTAINER, {
       method: "POST",
       headers: {
         link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
         slug: TEST_CONTAINER_SLUG,
       },
     });
+    console.log("Create Result", result);
     await authFetch(TEST_CONTAINER_ACL_URI, {
       method: "PUT",
       headers: {
@@ -2008,6 +2011,73 @@ describe("Integration", () => {
       const wacResult = await resource.setWac(newRules);
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * NOTIFICATION SUBSCRIPTIONS
+   * ===========================================================================
+   */
+  describe("Notification Subscriptions", () => {
+    it("Notification is propogated when a resource is updated", async () => {
+      expect(true).toBe(true);
+      const spidermanNode = namedNode("http://example.org/#spiderman");
+      const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
+
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener([spidermanNode, null, null, null], jest.fn());
+
+      // const subscriptionResult = await resource.subscribeToNotifications();
+      // expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "PATCH",
+        body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Peter Parker" . }',
+        headers: {
+          "Content-Type": "application/sparql-update",
+        },
+      });
+      await wait(1000);
+      process.env.AFTER = "TRUE";
+
+      await resource.read();
+
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(
+        solidLdoDataset.match(
+          spidermanNode,
+          foafNameNode,
+          literal("Peter Parker"),
+        ).size,
+      ).toBe(1);
+
+      // // Notification is not propogated after unsubscribe
+      // spidermanCallback.mockClear();
+      // const unsubscribeResponse = await resource.unsubscribeFromNotifications();
+      // expect(unsubscribeResponse.type).toBe(
+      //   "unsubscribeFromNotificationSuccess",
+      // );
+      // await authFetch(SAMPLE_DATA_URI, {
+      //   method: "PATCH",
+      //   body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
+      //   headers: {
+      //     "Content-Type": "application/sparql-update",
+      //   },
+      // });
+      // await wait(50);
+
+      // expect(spidermanCallback).not.toHaveBeenCalled();
+      // expect(
+      //   solidLdoDataset.match(
+      //     spidermanNode,
+      //     foafNameNode,
+      //     literal("Miles Morales"),
+      //   ).size,
+      // ).toBe(0);
     });
   });
 });
