@@ -14,7 +14,7 @@ export const WEB_ID =
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
 
-export async function createApp(): Promise<App> {
+export async function createApp(customConfigPath?: string): Promise<App> {
   if (process.env.SERVER) {
     return {
       start: () => {},
@@ -28,7 +28,7 @@ export async function createApp(): Promise<App> {
       mainModulePath: resolveModulePath(""),
       typeChecking: false,
     },
-    config: resolveModulePath("config/file-root.json"),
+    config: customConfigPath ?? resolveModulePath("config/file-root.json"),
     variableBindings: {},
     shorthand: {
       port: 3_001,

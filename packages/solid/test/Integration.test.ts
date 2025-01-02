@@ -2038,6 +2038,8 @@ describe("Integration", () => {
       const subscriptionResult = await resource.subscribeToNotifications();
       expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
 
+      expect(resource.isSubscribedToNotifications()).toBe(true);
+
       await authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
         body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Peter Parker" . }',
@@ -2062,6 +2064,7 @@ describe("Integration", () => {
       expect(unsubscribeResponse.type).toBe(
         "unsubscribeFromNotificationSuccess",
       );
+      expect(resource.isSubscribedToNotifications()).toBe(false);
       await authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
         body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
@@ -2079,8 +2082,6 @@ describe("Integration", () => {
           literal("Miles Morales"),
         ).size,
       ).toBe(0);
-
-      await resource.unsubscribeFromNotifications();
     });
 
     it("handles notification when subscribed to a child that is deleted", async () => {
@@ -2190,6 +2191,39 @@ describe("Integration", () => {
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
       await testContainer.unsubscribeFromNotifications();
+    });
+
+    it("returns an error when it cannot subscribe to a notification", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+
+      await app.stop();
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("unexpectedResourceError");
+
+      await app.start();
+    });
+
+    it("returns an error when the server doesnt support websockets", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+
+      await app.stop();
+      const disabledWebsocketsApp = await createApp(
+        path.join(__dirname, "./configs/server-config-without-websocket.json"),
+      );
+      await disabledWebsocketsApp.start();
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("unsupportedNotificationError");
+
+      await disabledWebsocketsApp.stop();
+      await app.start();
+    });
+
+    it("causes no problems when unsubscribing when not subscribed", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await resource.unsubscribeFromNotifications();
+      expect(result.type).toBe("unsubscribeFromNotificationSuccess");
     });
   });
 });

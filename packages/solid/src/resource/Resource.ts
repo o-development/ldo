@@ -334,8 +334,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ```
    */
   isSubscribedToNotifications(): boolean {
-    // TODO
-    throw new Error("Not Implemented");
+    return !!this.notificationSubscription;
   }
 
   /**
@@ -732,10 +731,13 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   /**
    * TODO
    */
-  async subscribeToNotifications(): Promise<OpenSubscriptionResult> {
+  async subscribeToNotifications(
+    onNotificationError?: (err: Error) => void,
+  ): Promise<OpenSubscriptionResult> {
     this.notificationSubscription = new Websocket2023NotificationSubscription(
       this,
       this.onNotification.bind(this),
+      onNotificationError,
       this.context,
     );
     return await this.notificationSubscription.open();

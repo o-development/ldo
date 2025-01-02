@@ -18,15 +18,18 @@ export type CloseSubscriptionResult =
 export abstract class NotificationSubscription {
   protected resource: Resource;
   protected onNotification: (message: NotificationMessage) => void;
+  protected onError?: (err: Error) => void;
   protected context: SolidLdoDatasetContext;
 
   constructor(
     resource: Resource,
     onNotification: (message: NotificationMessage) => void,
+    onError: ((err: Error) => void) | undefined,
     context: SolidLdoDatasetContext,
   ) {
     this.resource = resource;
     this.onNotification = onNotification;
+    this.onError = onError;
     this.context = context;
   }
 
