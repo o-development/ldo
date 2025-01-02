@@ -2022,15 +2022,18 @@ describe("Integration", () => {
    * ===========================================================================
    */
   describe("Notification Subscriptions", () => {
-    it("Notification is propogated when a resource is updated", async () => {
-      const spidermanNode = namedNode("http://example.org/#spiderman");
-      const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
+    const spidermanNode = namedNode("http://example.org/#spiderman");
+    const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
 
+    it("handles notification when a resource is updated", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.read();
 
       const spidermanCallback = jest.fn();
-      solidLdoDataset.addListener([spidermanNode, null, null, null], jest.fn());
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
 
       const subscriptionResult = await resource.subscribeToNotifications();
       expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
@@ -2053,29 +2056,140 @@ describe("Integration", () => {
       ).toBe(1);
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
 
-      // // Notification is not propogated after unsubscribe
-      // spidermanCallback.mockClear();
-      // const unsubscribeResponse = await resource.unsubscribeFromNotifications();
-      // expect(unsubscribeResponse.type).toBe(
-      //   "unsubscribeFromNotificationSuccess",
-      // );
-      // await authFetch(SAMPLE_DATA_URI, {
-      //   method: "PATCH",
-      //   body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
-      //   headers: {
-      //     "Content-Type": "application/sparql-update",
-      //   },
-      // });
-      // await wait(50);
+      // Notification is not propogated after unsubscribe
+      spidermanCallback.mockClear();
+      const unsubscribeResponse = await resource.unsubscribeFromNotifications();
+      expect(unsubscribeResponse.type).toBe(
+        "unsubscribeFromNotificationSuccess",
+      );
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "PATCH",
+        body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
+        headers: {
+          "Content-Type": "application/sparql-update",
+        },
+      });
+      await wait(50);
 
-      // expect(spidermanCallback).not.toHaveBeenCalled();
-      // expect(
-      //   solidLdoDataset.match(
-      //     spidermanNode,
-      //     foafNameNode,
-      //     literal("Miles Morales"),
-      //   ).size,
-      // ).toBe(0);
+      expect(spidermanCallback).not.toHaveBeenCalled();
+      expect(
+        solidLdoDataset.match(
+          spidermanNode,
+          foafNameNode,
+          literal("Miles Morales"),
+        ).size,
+      ).toBe(0);
+
+      await resource.unsubscribeFromNotifications();
+    });
+
+    it("handles notification when subscribed to a child that is deleted", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "DELETE",
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(0);
+      expect(
+        testContainer.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(false);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await resource.unsubscribeFromNotifications();
+    });
+
+    it("handles notification when subscribed to a parent with a deleted child", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await testContainer.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "DELETE",
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(0);
+      expect(
+        testContainer.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(false);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await testContainer.unsubscribeFromNotifications();
+    });
+
+    it("handles notification when subscribed to a parent with an added child", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await testContainer.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(TEST_CONTAINER_URI, {
+        method: "POST",
+        headers: { "content-type": "text/turtle", slug: "sample2.ttl" },
+        body: SPIDER_MAN_TTL,
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(4);
+      expect(
+        testContainer
+          .children()
+          .some((child) => child.uri === SAMPLE2_DATA_URI),
+      ).toBe(true);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await testContainer.unsubscribeFromNotifications();
     });
   });
 });

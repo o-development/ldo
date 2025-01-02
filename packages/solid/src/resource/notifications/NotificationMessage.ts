@@ -1,7 +1,7 @@
 export interface NotificationMessage {
   "@context": string | string[];
   id: string;
-  type: "Update";
+  type: "Update" | "Delete" | "Remove" | "Add";
   object: string;
   published: string;
 }

@@ -15,7 +15,10 @@ import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
 import type { RequesterResult } from "../requester/results/RequesterResult";
-import type { DeleteResult } from "../requester/requests/deleteResource";
+import {
+  updateDatasetOnSuccessfulDelete,
+  type DeleteResult,
+} from "../requester/requests/deleteResource";
 import type { ReadSuccess } from "../requester/results/success/ReadSuccess";
 import { isReadSuccess } from "../requester/results/success/ReadSuccess";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
@@ -427,7 +430,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * A helper method updates this resource's internal state upon delete success
    * @param result - the result of the delete success
    */
-  protected updateWithDeleteSuccess(_result: DeleteSuccess) {
+  public updateWithDeleteSuccess(_result: DeleteSuccess) {
     this.absent = true;
     this.didInitialFetch = true;
   }
@@ -743,9 +746,27 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * TODO
    */
   protected async onNotification(message: NotificationMessage): Promise<void> {
+    const objectResource = this.context.solidLdoDataset.getResource(
+      message.object,
+    );
     switch (message.type) {
       case "Update":
-        await this.read();
+      case "Add":
+        await objectResource.read();
+        return;
+      case "Delete":
+      case "Remove":
+        // Delete the resource without have to make an additional read request
+        updateDatasetOnSuccessfulDelete(message.object, true, {
+          dataset: this.context.solidLdoDataset,
+        });
+        objectResource.updateWithDeleteSuccess({
+          type: "deleteSuccess",
+          isError: false,
+          uri: message.object,
+          resourceExisted: true,
+        });
+        return;
     }
   }
 

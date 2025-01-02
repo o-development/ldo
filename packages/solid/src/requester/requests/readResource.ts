@@ -20,6 +20,7 @@ import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { UnexpectedResourceError } from "../results/error/ErrorResult";
 import { checkHeadersForRootContainer } from "./checkRootContainer";
+import { namedNode } from "@rdfjs/data-model";
 
 /**
  * All possible return values for reading a leaf
@@ -103,6 +104,16 @@ export async function readResource(
       headers: { accept: "text/turtle, */*" },
     });
     if (response.status === 404) {
+      // Clear existing data if present
+      if (options?.dataset) {
+        options.dataset.deleteMatches(
+          undefined,
+          undefined,
+          undefined,
+          namedNode(uri),
+        );
+      }
+
       return {
         isError: false,
         type: "absentReadSuccess",

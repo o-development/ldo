@@ -62,15 +62,7 @@ export async function deleteResource(
     // if it hasn't been deleted when you're unauthenticated. 404 happens when
     // the document never existed
     if (response.status === 205 || response.status === 404) {
-      if (options?.dataset) {
-        options.dataset.deleteMatches(
-          undefined,
-          undefined,
-          undefined,
-          namedNode(uri),
-        );
-        deleteResourceRdfFromContainer(uri, options.dataset);
-      }
+      updateDatasetOnSuccessfulDelete(uri, response.status === 205, options);
       return {
         isError: false,
         type: "deleteSuccess",
@@ -81,5 +73,24 @@ export async function deleteResource(
     return new UnexpectedHttpError(uri, response);
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);
+  }
+}
+
+/**
+ * TODO
+ */
+export function updateDatasetOnSuccessfulDelete(
+  uri: string,
+  resourceExisted: boolean,
+  options?: DatasetRequestOptions,
+): void {
+  if (options?.dataset) {
+    options.dataset.deleteMatches(
+      undefined,
+      undefined,
+      undefined,
+      namedNode(uri),
+    );
+    deleteResourceRdfFromContainer(uri, options.dataset);
   }
 }
