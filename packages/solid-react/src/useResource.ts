@@ -11,6 +11,7 @@ import { useLdo } from "./SolidLdoProvider";
 export interface UseResourceOptions {
   suppressInitialRead?: boolean;
   reloadOnMount?: boolean;
+  subscribe?: boolean;
 }
 
 export function useResource(
@@ -61,6 +62,17 @@ export function useResource(
   const pastResource = useRef<
     { resource?: Resource; callback: () => void } | undefined
   >();
+
+  useEffect(() => {
+    if (options?.subscribe) {
+      resource?.subscribeToNotifications();
+    } else {
+      resource?.unsubscribeFromNotifications();
+    }
+    return () => {
+      resource?.unsubscribeFromNotifications();
+    };
+  }, [resource, options?.subscribe]);
 
   // Callback function to force the react dom to reload.
   const forceReload = useCallback(

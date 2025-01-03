@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { FunctionComponent } from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
   SAMPLE_BINARY_URI,
   SAMPLE_DATA_URI,
@@ -131,6 +131,11 @@ describe("Integration Tests", () => {
     });
   });
 
+  /**
+   * ===========================================================================
+   * useRootContainer
+   * ===========================================================================
+   */
   describe("useRootContainer", () => {
     it("gets the root container for a sub-resource", async () => {
       const RootContainerTest: FunctionComponent = () => {
@@ -169,7 +174,12 @@ describe("Integration Tests", () => {
     });
   });
 
-  describe("useLdoMethod", () => {
+  /**
+   * ===========================================================================
+   * useLdoMethods
+   * ===========================================================================
+   */
+  describe("useLdoMethods", () => {
     it("uses get subject to get a linked data object", async () => {
       const GetSubjectTest: FunctionComponent = () => {
         const [subject, setSubject] = useState<PostSh | undefined>();
@@ -217,6 +227,11 @@ describe("Integration Tests", () => {
     });
   });
 
+  /**
+   * ===========================================================================
+   * useSubject
+   * ===========================================================================
+   */
   describe("useSubject", () => {
     it("renders the article body from the useSubject value", async () => {
       const UseSubjectTest: FunctionComponent = () => {
@@ -351,6 +366,66 @@ describe("Integration Tests", () => {
         "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",
       );
       warn.mockReset();
+    });
+
+    it("rerenders when asked to subscribe to a resource", async () => {
+      const NotificationTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI, { subscribe: true });
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+
+        const addPublisher = useCallback(async () => {
+          await fetch(SAMPLE_DATA_URI, {
+            method: "PATCH",
+            body: `INSERT DATA { <${SAMPLE_DATA_URI}#Post1> <http://schema.org/publisher> <https://example.com/Publisher3> . }`,
+            headers: {
+              "Content-Type": "application/sparql-update",
+            },
+          });
+        }, []);
+
+        if (resource.isLoading() || !post) return <p>loading</p>;
+
+        return (
+          <div>
+            <ul role="list">
+              {post.publisher.map((publisher) => {
+                return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
+              })}
+            </ul>
+            <button onClick={addPublisher}>Add Publisher</button>
+          </div>
+        );
+      };
+      const { unmount } = render(
+        <UnauthenticatedSolidLdoProvider>
+          <NotificationTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
+      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
+
+      // Wait for subscription to connect
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+
+      // Click button to add a publisher
+      await fireEvent.click(screen.getByText("Add Publisher"));
+      await screen.findByText("https://example.com/Publisher3");
+
+      // Verify the new publisher is in the list
+      const updatedList = await screen.findByRole("list");
+      expect(updatedList.children[2].innerHTML).toBe(
+        "https://example.com/Publisher3",
+      );
+
+      unmount();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
     });
   });
 });

@@ -34,7 +34,7 @@ export async function createApp(customConfigPath?: string): Promise<App> {
       port: 3_001,
       loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
-      rootFilePath: "./data",
+      rootFilePath: path.join(__dirname, "./data"),
     },
   });
 }
