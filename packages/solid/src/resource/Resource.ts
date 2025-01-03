@@ -15,7 +15,10 @@ import type TypedEmitter from "typed-emitter";
 import EventEmitter from "events";
 import { getParentUri } from "../util/rdfUtils";
 import type { RequesterResult } from "../requester/results/RequesterResult";
-import type { DeleteResult } from "../requester/requests/deleteResource";
+import {
+  updateDatasetOnSuccessfulDelete,
+  type DeleteResult,
+} from "../requester/requests/deleteResource";
 import type { ReadSuccess } from "../requester/results/success/ReadSuccess";
 import { isReadSuccess } from "../requester/results/success/ReadSuccess";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
@@ -33,6 +36,13 @@ import { NoncompliantPodError } from "../requester/results/error/NoncompliantPod
 import { setWacRuleForAclUri, type SetWacRuleResult } from "./wac/setWacRule";
 import type { LeafUri } from "../util/uriTypes";
 import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
+import type {
+  CloseSubscriptionResult,
+  NotificationSubscription,
+  OpenSubscriptionResult,
+} from "./notifications/NotificationSubscription";
+import { Websocket2023NotificationSubscription } from "./notifications/Websocket2023NotificationSubscription";
+import type { NotificationMessage } from "./notifications/NotificationMessage";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -44,6 +54,7 @@ export type SharedStatuses = Unfetched | DeleteResult | CreateSuccess;
  */
 export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   update: () => void;
+  notification: () => void;
 }>) {
   /**
    * @internal
@@ -95,6 +106,12 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * If a wac rule was fetched, it is cached here
    */
   protected wacRule?: WacRule;
+
+  /**
+   * @internal
+   * Handles notification subscriptions
+   */
+  protected notificationSubscription?: NotificationSubscription;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
@@ -271,7 +288,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ```typescript
    * // Logs "undefined"
    * console.log(resource.isAbsent());
-   * const result = resource.read();
+   * const result = await resource.read();
    * if (!result.isError) {
    *   // False if the resource exists, true if it does not
    *   console.log(resource.isAbsent());
@@ -290,7 +307,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * ```typescript
    * // Logs "undefined"
    * console.log(resource.isPresent());
-   * const result = resource.read();
+   * const result = await resource.read();
    * if (!result.isError) {
    *   // True if the resource exists, false if it does not
    *   console.log(resource.isPresent());
@@ -299,6 +316,25 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
   isPresent(): boolean | undefined {
     return this.absent === undefined ? undefined : !this.absent;
+  }
+
+  /**
+   * Is this resource currently listening to notifications from this document
+   * @returns true if the resource is subscribed to notifications, false if not
+   *
+   * @example
+   * ```typescript
+   * // Logs "undefined"
+   * console.log(resource.isPresent());
+   * const result = resource.read();
+   * if (!result.isError) {
+   *   // True if the resource exists, false if it does not
+   *   console.log(resource.isPresent());
+   * }
+   * ```
+   */
+  isSubscribedToNotifications(): boolean {
+    return !!this.notificationSubscription;
   }
 
   /**
@@ -393,7 +429,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * A helper method updates this resource's internal state upon delete success
    * @param result - the result of the delete success
    */
-  protected updateWithDeleteSuccess(_result: DeleteSuccess) {
+  public updateWithDeleteSuccess(_result: DeleteSuccess) {
     this.absent = true;
     this.didInitialFetch = true;
   }
@@ -684,5 +720,104 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
     if (result.isError) return result;
     this.wacRule = result.wacRule;
     return result;
+  }
+
+  /**
+   * ===========================================================================
+   * SUBSCRIPTION METHODS
+   * ===========================================================================
+   */
+
+  /**
+   * Activates Websocket subscriptions on this resource. Updates, deletions,
+   * and creations on this resource will be tracked and all changes will be
+   * relected in LDO's resources and graph.
+   *
+   * @param onNotificationError - A callback function if there is an error
+   * with notifications.
+   * @returns OpenSubscriptionResult
+   *
+   * @example
+   * ```typescript
+   * const resource = solidLdoDataset
+   *   .getResource("https://example.com/spiderman");
+   * // A listener for if anything about spiderman in the global dataset is
+   * // changed. Note that this will also listen for any local changes as well
+   * // as changes to remote resources to which you have notification
+   * // subscriptions enabled.
+   * solidLdoDataset.addListener(
+   *   [namedNode("https://example.com/spiderman#spiderman"), null, null, null],
+   *   () => {
+   *     // Triggers when the file changes on the Pod or locally
+   *     console.log("Something changed about SpiderMan");
+   *   },
+   * );
+   *
+   * // Subscribe
+   * const subscriptionResult = await testContainer.subscribeToNotifications();
+   * // ... From there you can ait for a file to be changed on the Pod.
+   */
+  async subscribeToNotifications(
+    onNotificationError?: (err: Error) => void,
+  ): Promise<OpenSubscriptionResult> {
+    this.notificationSubscription = new Websocket2023NotificationSubscription(
+      this,
+      this.onNotification.bind(this),
+      onNotificationError,
+      this.context,
+    );
+    return await this.notificationSubscription.open();
+  }
+
+  /**
+   * @internal
+   * Function that triggers whenever a notification is recieved.
+   */
+  protected async onNotification(message: NotificationMessage): Promise<void> {
+    const objectResource = this.context.solidLdoDataset.getResource(
+      message.object,
+    );
+    switch (message.type) {
+      case "Update":
+      case "Add":
+        await objectResource.read();
+        return;
+      case "Delete":
+      case "Remove":
+        // Delete the resource without have to make an additional read request
+        updateDatasetOnSuccessfulDelete(
+          message.object,
+          this.context.solidLdoDataset,
+        );
+        objectResource.updateWithDeleteSuccess({
+          type: "deleteSuccess",
+          isError: false,
+          uri: message.object,
+          resourceExisted: true,
+        });
+        return;
+    }
+  }
+
+  /**
+   * Unsubscribes from changes made to this resource on the Pod
+   *
+   * @returns CloseSubscriptionResult
+   *
+   * @example
+   * ```typescript
+   * resource.unsubscribeFromNotifications()
+   * ```
+   */
+  async unsubscribeFromNotifications(): Promise<CloseSubscriptionResult> {
+    const result = await this.notificationSubscription?.close();
+    this.notificationSubscription = undefined;
+    return (
+      result ?? {
+        type: "unsubscribeFromNotificationSuccess",
+        isError: false,
+        uri: this.uri,
+      }
+    );
   }
 }

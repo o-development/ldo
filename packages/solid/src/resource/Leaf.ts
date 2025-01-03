@@ -362,7 +362,8 @@ export class Leaf extends Resource {
    * A helper method updates this leaf's internal state upon delete success
    * @param result - the result of the delete success
    */
-  protected updateWithDeleteSuccess(_result: DeleteSuccess) {
+  public updateWithDeleteSuccess(result: DeleteSuccess) {
+    super.updateWithDeleteSuccess(result);
     this.binaryData = undefined;
   }
 

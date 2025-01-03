@@ -7,6 +7,8 @@ import { UnexpectedHttpError } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import type { DeleteSuccess } from "../results/success/DeleteSuccess";
 import type { DatasetRequestOptions } from "./requestOptions";
+import type { IBulkEditableDataset } from "@ldo/subscribable-dataset";
+import type { Quad } from "@rdfjs/types";
 
 /**
  * All possible return values for deleteResource
@@ -62,15 +64,8 @@ export async function deleteResource(
     // if it hasn't been deleted when you're unauthenticated. 404 happens when
     // the document never existed
     if (response.status === 205 || response.status === 404) {
-      if (options?.dataset) {
-        options.dataset.deleteMatches(
-          undefined,
-          undefined,
-          undefined,
-          namedNode(uri),
-        );
-        deleteResourceRdfFromContainer(uri, options.dataset);
-      }
+      if (options?.dataset)
+        updateDatasetOnSuccessfulDelete(uri, options.dataset);
       return {
         isError: false,
         type: "deleteSuccess",
@@ -82,4 +77,19 @@ export async function deleteResource(
   } catch (err) {
     return UnexpectedResourceError.fromThrown(uri, err);
   }
+}
+
+/**
+ * Assuming a successful delete has just been performed, this function updates
+ * datastores to reflect that.
+ *
+ * @param uri - The uri of the resouce that was removed
+ * @param dataset - The dataset that should be updated
+ */
+export function updateDatasetOnSuccessfulDelete(
+  uri: string,
+  dataset: IBulkEditableDataset<Quad>,
+): void {
+  dataset.deleteMatches(undefined, undefined, undefined, namedNode(uri));
+  deleteResourceRdfFromContainer(uri, dataset);
 }

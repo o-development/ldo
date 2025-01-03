@@ -29,6 +29,7 @@
     "@ldo/cli": "^0.0.1-alpha.28",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
+    "@solid-notifications/types": "^0.1.2",
     "@solid/community-server": "^7.1.3",
     "@types/jest": "^27.0.3",
     "cross-env": "^7.0.3",
@@ -44,8 +45,10 @@
     "@ldo/dataset": "^0.0.1-alpha.24",
     "@ldo/ldo": "^0.0.1-alpha.28",
     "@ldo/rdf-utils": "^0.0.1-alpha.24",
+    "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
-    "http-link-header": "^1.1.1"
+    "http-link-header": "^1.1.1",
+    "ws": "^8.18.0"
   },
   "files": [
     "dist",

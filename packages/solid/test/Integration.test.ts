@@ -42,6 +42,9 @@ import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSu
 import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { generateAuthFetch } from "./authFetch.helper";
+import { wait } from "./utils.helper";
+import fs from "fs/promises";
+import path from "path";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
@@ -172,6 +175,8 @@ describe("Integration", () => {
     app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
+    const testDataPath = path.join(__dirname, "../data");
+    await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
   beforeEach(async () => {
@@ -2008,6 +2013,217 @@ describe("Integration", () => {
       const wacResult = await resource.setWac(newRules);
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * NOTIFICATION SUBSCRIPTIONS
+   * ===========================================================================
+   */
+  describe("Notification Subscriptions", () => {
+    const spidermanNode = namedNode("http://example.org/#spiderman");
+    const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
+
+    it("handles notification when a resource is updated", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      expect(resource.isSubscribedToNotifications()).toBe(true);
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "PATCH",
+        body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Peter Parker" . }',
+        headers: {
+          "Content-Type": "application/sparql-update",
+        },
+      });
+      await wait(1000);
+
+      expect(
+        solidLdoDataset.match(
+          spidermanNode,
+          foafNameNode,
+          literal("Peter Parker"),
+        ).size,
+      ).toBe(1);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+
+      // Notification is not propogated after unsubscribe
+      spidermanCallback.mockClear();
+      const unsubscribeResponse = await resource.unsubscribeFromNotifications();
+      expect(unsubscribeResponse.type).toBe(
+        "unsubscribeFromNotificationSuccess",
+      );
+      expect(resource.isSubscribedToNotifications()).toBe(false);
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "PATCH",
+        body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
+        headers: {
+          "Content-Type": "application/sparql-update",
+        },
+      });
+      await wait(50);
+
+      expect(spidermanCallback).not.toHaveBeenCalled();
+      expect(
+        solidLdoDataset.match(
+          spidermanNode,
+          foafNameNode,
+          literal("Miles Morales"),
+        ).size,
+      ).toBe(0);
+    });
+
+    it("handles notification when subscribed to a child that is deleted", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "DELETE",
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(0);
+      expect(
+        testContainer.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(false);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await resource.unsubscribeFromNotifications();
+    });
+
+    it("handles notification when subscribed to a parent with a deleted child", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await testContainer.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(SAMPLE_DATA_URI, {
+        method: "DELETE",
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(0);
+      expect(
+        testContainer.children().some((child) => child.uri === SAMPLE_DATA_URI),
+      ).toBe(false);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await testContainer.unsubscribeFromNotifications();
+    });
+
+    it("handles notification when subscribed to a parent with an added child", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      await resource.read();
+
+      const spidermanCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [spidermanNode, null, null, null],
+        spidermanCallback,
+      );
+
+      const containerCallback = jest.fn();
+      solidLdoDataset.addListener(
+        [namedNode(TEST_CONTAINER_URI), null, null, null],
+        containerCallback,
+      );
+
+      const subscriptionResult = await testContainer.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+
+      await authFetch(TEST_CONTAINER_URI, {
+        method: "POST",
+        headers: { "content-type": "text/turtle", slug: "sample2.ttl" },
+        body: SPIDER_MAN_TTL,
+      });
+      await wait(1000);
+
+      expect(solidLdoDataset.match(spidermanNode, null, null).size).toBe(4);
+      expect(
+        testContainer
+          .children()
+          .some((child) => child.uri === SAMPLE2_DATA_URI),
+      ).toBe(true);
+      expect(spidermanCallback).toHaveBeenCalledTimes(1);
+      expect(containerCallback).toHaveBeenCalledTimes(1);
+
+      await testContainer.unsubscribeFromNotifications();
+    });
+
+    it("returns an error when it cannot subscribe to a notification", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+
+      await app.stop();
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("unexpectedResourceError");
+
+      await app.start();
+    });
+
+    it("returns an error when the server doesnt support websockets", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+
+      await app.stop();
+      const disabledWebsocketsApp = await createApp(
+        path.join(__dirname, "./configs/server-config-without-websocket.json"),
+      );
+      await disabledWebsocketsApp.start();
+
+      const subscriptionResult = await resource.subscribeToNotifications();
+      expect(subscriptionResult.type).toBe("unsupportedNotificationError");
+
+      await disabledWebsocketsApp.stop();
+      await app.start();
+    });
+
+    it("causes no problems when unsubscribing when not subscribed", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const result = await resource.unsubscribeFromNotifications();
+      expect(result.type).toBe("unsubscribeFromNotificationSuccess");
     });
   });
 });
