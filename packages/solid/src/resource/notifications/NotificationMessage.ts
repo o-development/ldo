@@ -1,3 +1,6 @@
+/**
+ * A message sent from the Pod as a notification
+ */
 export interface NotificationMessage {
   "@context": string | string[];
   id: string;

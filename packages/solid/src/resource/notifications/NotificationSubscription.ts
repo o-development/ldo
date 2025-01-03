@@ -15,6 +15,10 @@ export type CloseSubscriptionResult =
   | UnsubscribeToNotificationSuccess
   | UnexpectedResourceError;
 
+/**
+ * @internal
+ * Abstract class for notification subscription methods.
+ */
 export abstract class NotificationSubscription {
   protected resource: Resource;
   protected onNotification: (message: NotificationMessage) => void;
@@ -33,6 +37,15 @@ export abstract class NotificationSubscription {
     this.context = context;
   }
 
+  /**
+   * @internal
+   * Opens the subscription
+   */
   abstract open(): Promise<OpenSubscriptionResult>;
+
+  /**
+   * @internal
+   * Closes the subscription
+   */
   abstract close(): Promise<CloseSubscriptionResult>;
 }

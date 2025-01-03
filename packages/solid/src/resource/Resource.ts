@@ -729,7 +729,33 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    */
 
   /**
-   * TODO
+   * Activates Websocket subscriptions on this resource. Updates, deletions,
+   * and creations on this resource will be tracked and all changes will be
+   * relected in LDO's resources and graph.
+   *
+   * @param onNotificationError - A callback function if there is an error
+   * with notifications.
+   * @returns OpenSubscriptionResult
+   *
+   * @example
+   * ```typescript
+   * const resource = solidLdoDataset
+   *   .getResource("https://example.com/spiderman");
+   * // A listener for if anything about spiderman in the global dataset is
+   * // changed. Note that this will also listen for any local changes as well
+   * // as changes to remote resources to which you have notification
+   * // subscriptions enabled.
+   * solidLdoDataset.addListener(
+   *   [namedNode("https://example.com/spiderman#spiderman"), null, null, null],
+   *   () => {
+   *     // Triggers when the file changes on the Pod or locally
+   *     console.log("Something changed about SpiderMan");
+   *   },
+   * );
+   *
+   * // Subscribe
+   * const subscriptionResult = await testContainer.subscribeToNotifications();
+   * // ... From there you can ait for a file to be changed on the Pod.
    */
   async subscribeToNotifications(
     onNotificationError?: (err: Error) => void,
@@ -745,7 +771,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
 
   /**
    * @internal
-   * TODO
+   * Function that triggers whenever a notification is recieved.
    */
   protected async onNotification(message: NotificationMessage): Promise<void> {
     const objectResource = this.context.solidLdoDataset.getResource(
@@ -759,9 +785,10 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
       case "Delete":
       case "Remove":
         // Delete the resource without have to make an additional read request
-        updateDatasetOnSuccessfulDelete(message.object, true, {
-          dataset: this.context.solidLdoDataset,
-        });
+        updateDatasetOnSuccessfulDelete(
+          message.object,
+          this.context.solidLdoDataset,
+        );
         objectResource.updateWithDeleteSuccess({
           type: "deleteSuccess",
           isError: false,
@@ -773,7 +800,14 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
   }
 
   /**
-   * TODO
+   * Unsubscribes from changes made to this resource on the Pod
+   *
+   * @returns CloseSubscriptionResult
+   *
+   * @example
+   * ```typescript
+   * resource.unsubscribeFromNotifications()
+   * ```
    */
   async unsubscribeFromNotifications(): Promise<CloseSubscriptionResult> {
     const result = await this.notificationSubscription?.close();
