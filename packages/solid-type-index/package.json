@@ -1,0 +1,50 @@
+{
+  "name": "@ldo/solid-type-index",
+  "version": "0.0.1-alpha.28",
+  "description": "Solid Type Index support for LDO",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "watch": "tsc --watch",
+    "test": "npm run test:integration",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run test && npm run build",
+    "build:ldo": "ldo build --input src/.shapes --output src/.ldo",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "test:integration": "start-server-and-test start-test-server http://localhost:3003 start-integration-test",
+    "start-test-server": "ts-node ./test/test-server/runServer.ts",
+    "start-integration-test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/ldobjects.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/ldobjects/issues"
+  },
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid-react#readme",
+  "devDependencies": {
+    "@ldo/rdf-utils": "^0.0.1-alpha.24",
+    "@rdfjs/types": "^1.0.1",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^27.0.3",
+    "jest-environment-jsdom": "^27.0.0",
+    "start-server-and-test": "^2.0.3",
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@ldo/solid": "^0.0.1-alpha.28",
+    "@ldo/solid-react": "^0.0.1-alpha.28"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "c63f055aab22155b60a5fdee4172979b9c287dfa"
+}
