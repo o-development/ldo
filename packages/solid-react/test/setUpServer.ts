@@ -23,7 +23,9 @@ export const EXAMPLE_POST_TTL = `@prefix schema: <http://schema.org/> .
   a schema:CreativeWork, schema:Thing, schema:SocialMediaPosting ;
   schema:image <https://example.com/postImage.jpg> ;
   schema:articleBody "test" ;
-  schema:publisher <https://example.com/Publisher1>, <https://example.com/Publisher2> .`;
+  schema:publisher <https://example.com/Publisher1>, <https://example.com/Publisher2> .
+<#Post2>
+  a schema:CreativeWork, schema:Thing, schema:SocialMediaPosting .`;
 export const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
 @prefix ldp: <http://www.w3.org/ns/ldp#>.
 @prefix posix: <http://www.w3.org/ns/posix/stat#>.

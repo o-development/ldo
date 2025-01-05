@@ -14,6 +14,8 @@ import { useLdo } from "../src/SolidLdoProvider";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 import type { PostSh } from "./.ldo/post.typings";
 import { useSubject } from "../src/useSubject";
+import { useMatchSubject } from "../src/useMatchSubject";
+import { useMatchObject } from "../src/useMatchObject";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -426,6 +428,86 @@ describe("Integration Tests", () => {
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       });
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * useMatchSubject
+   * ===========================================================================
+   */
+  describe("useMatchSubject", () => {
+    it("returns an array of matched subjects", async () => {
+      const UseMatchSubjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const posts = useMatchSubject(
+          PostShShapeType,
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://schema.org/CreativeWork",
+        );
+        if (resource.isLoading()) return <p>loading</p>;
+
+        return (
+          <div>
+            <ul role="list">
+              {posts.map((post) => {
+                return <li key={post["@id"]}>{post["@id"]}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseMatchSubjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe(
+        "http://localhost:3001/example/test_ldo/sample.ttl#Post1",
+      );
+      expect(list.children[1].innerHTML).toBe(
+        "http://localhost:3001/example/test_ldo/sample.ttl#Post2",
+      );
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * useMatchObject
+   * ===========================================================================
+   */
+  describe("useMatchObject", () => {
+    it("returns an array of matched objects", async () => {
+      const UseMatchObjectTest: FunctionComponent = () => {
+        const resource = useResource(SAMPLE_DATA_URI);
+        const publishers = useMatchObject(
+          PostShShapeType,
+          "http://localhost:3001/example/test_ldo/sample.ttl#Post1",
+          "http://schema.org/publisher",
+        );
+        if (resource.isLoading()) return <p>loading</p>;
+
+        return (
+          <div>
+            <ul role="list">
+              {publishers.map((publisher) => {
+                return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      };
+      render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseMatchObjectTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
+      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
     });
   });
 });
