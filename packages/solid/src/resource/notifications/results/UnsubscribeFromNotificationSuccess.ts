@@ -5,4 +5,5 @@ import type { ResourceSuccess } from "../../../requester/results/success/Success
  */
 export interface UnsubscribeToNotificationSuccess extends ResourceSuccess {
   type: "unsubscribeFromNotificationSuccess";
+  subscriptionId: string;
 }

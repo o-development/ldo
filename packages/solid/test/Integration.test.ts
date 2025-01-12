@@ -175,7 +175,7 @@ describe("Integration", () => {
     app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, "../data");
+    const testDataPath = path.join(__dirname, "./data");
     await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
@@ -2037,6 +2037,7 @@ describe("Integration", () => {
 
       const subscriptionResult = await resource.subscribeToNotifications();
       expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      if (subscriptionResult.type !== "subscribeToNotificationSuccess") return;
 
       expect(resource.isSubscribedToNotifications()).toBe(true);
 
@@ -2060,7 +2061,9 @@ describe("Integration", () => {
 
       // Notification is not propogated after unsubscribe
       spidermanCallback.mockClear();
-      const unsubscribeResponse = await resource.unsubscribeFromNotifications();
+      const unsubscribeResponse = await resource.unsubscribeFromNotifications(
+        subscriptionResult.subscriptionId,
+      );
       expect(unsubscribeResponse.type).toBe(
         "unsubscribeFromNotificationSuccess",
       );
@@ -2116,7 +2119,7 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await resource.unsubscribeFromNotifications();
+      await resource.unsubscribeFromAllNotifications();
     });
 
     it("handles notification when subscribed to a parent with a deleted child", async () => {
@@ -2151,7 +2154,7 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await testContainer.unsubscribeFromNotifications();
+      await testContainer.unsubscribeFromAllNotifications();
     });
 
     it("handles notification when subscribed to a parent with an added child", async () => {
@@ -2190,7 +2193,7 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await testContainer.unsubscribeFromNotifications();
+      await testContainer.unsubscribeFromAllNotifications();
     });
 
     it("returns an error when it cannot subscribe to a notification", async () => {
@@ -2222,8 +2225,8 @@ describe("Integration", () => {
 
     it("causes no problems when unsubscribing when not subscribed", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const result = await resource.unsubscribeFromNotifications();
-      expect(result.type).toBe("unsubscribeFromNotificationSuccess");
+      const result = await resource.unsubscribeFromAllNotifications();
+      expect(result.length).toBe(0);
     });
   });
 });

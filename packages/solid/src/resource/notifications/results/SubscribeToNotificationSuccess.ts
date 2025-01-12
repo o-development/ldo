@@ -5,4 +5,5 @@ import type { ResourceSuccess } from "../../../requester/results/success/Success
  */
 export interface SubscribeToNotificationSuccess extends ResourceSuccess {
   type: "subscribeToNotificationSuccess";
+  subscriptionId: string;
 }
