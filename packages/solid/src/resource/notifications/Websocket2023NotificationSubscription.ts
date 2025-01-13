@@ -1,5 +1,4 @@
 import { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
-import type { CloseResult, OpenResult } from "./NotificationSubscription";
 import { NotificationSubscription } from "./NotificationSubscription";
 import { SubscriptionClient } from "@solid-notifications/subscription";
 import { WebSocket } from "ws";
@@ -31,7 +30,7 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
   // Whether or not the socket was manually closes
   private isManualClose = false;
   // Maximum number of attempts to reconnect
-  private maxReconnectAttempts = 10;
+  private maxReconnectAttempts = 6;
 
   constructor(
     resource: Resource,
@@ -43,18 +42,24 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
     this.createWebsocket = createWebsocket ?? createWebsocketDefault;
   }
 
-  async open(): Promise<OpenResult> {
+  async open(): Promise<void> {
     try {
       const notificationChannel = await this.discoverNotificationChannel();
-      return this.subscribeToWebsocket(notificationChannel);
+      await this.subscribeToWebsocket(notificationChannel);
     } catch (err) {
       if (
         err instanceof Error &&
         err.message.startsWith("Discovery did not succeed")
       ) {
-        return new UnsupportedNotificationError(this.resource.uri, err.message);
+        this.onNotificationError(
+          new UnsupportedNotificationError(this.resource.uri, err.message),
+        );
+      } else {
+        this.onNotificationError(
+          UnexpectedResourceError.fromThrown(this.resource.uri, err),
+        );
       }
-      return UnexpectedResourceError.fromThrown(this.resource.uri, err);
+      this.onClose();
     }
   }
 
@@ -68,40 +73,30 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
 
   public async subscribeToWebsocket(
     notificationChannel: NotificationChannel,
-  ): Promise<OpenResult> {
-    return new Promise<OpenResult>((resolve) => {
-      let didResolve = false;
-      this.socket = this.createWebsocket(
-        notificationChannel.receiveFrom as string,
+  ): Promise<void> {
+    this.socket = this.createWebsocket(
+      notificationChannel.receiveFrom as string,
+    );
+
+    this.socket.onopen = () => {
+      this.reconnectAttempts = 0; // Reset attempts on successful connection
+      this.isManualClose = false; // Reset manual close flag
+    };
+
+    this.socket.onmessage = (message) => {
+      const messageData = message.data.toString();
+      // TODO uncompliant Pod error on misformatted message
+      this.onNotification(JSON.parse(messageData) as NotificationMessage);
+    };
+
+    this.socket.onclose = this.onClose.bind(this);
+
+    this.socket.onerror = (err) => {
+      this.onNotificationError(
+        new UnexpectedResourceError(this.resource.uri, err.error),
       );
-
-      this.socket.onopen = () => {
-        this.reconnectAttempts = 0; // Reset attempts on successful connection
-        this.isManualClose = false; // Reset manual close flag
-        didResolve = true;
-        resolve({
-          type: "success",
-        });
-      };
-
-      this.socket.onmessage = (message) => {
-        const messageData = message.data.toString();
-        // TODO uncompliant Pod error on misformatted message
-        this.onNotification(JSON.parse(messageData) as NotificationMessage);
-      };
-
-      this.socket.onclose = this.onClose.bind(this);
-
-      this.socket.onerror = (err) => {
-        if (!didResolve) {
-          resolve(UnexpectedResourceError.fromThrown(this.resource.uri, err));
-        } else {
-          this.onNotificationError(
-            new UnexpectedResourceError(this.resource.uri, err.error),
-          );
-        }
-      };
-    });
+    };
+    return;
   }
 
   private onClose() {
@@ -109,11 +104,9 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
       // Attempt to reconnect only if the disconnection was unintentional
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-        const backoffTime = Math.min(
-          this.reconnectInterval * this.reconnectAttempts,
-          30000,
-        ); // Cap backoff at 30 seconds
-        setTimeout(this.open, backoffTime);
+        setTimeout(() => {
+          this.open();
+        }, this.reconnectInterval);
         this.onNotificationError(
           new DisconnectedAttemptingReconnectError(
             this.resource.uri,
@@ -131,11 +124,8 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
     }
   }
 
-  protected async close(): Promise<CloseResult> {
+  protected async close(): Promise<void> {
     this.socket?.terminate();
-    return {
-      type: "success",
-    };
   }
 }
 

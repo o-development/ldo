@@ -22,8 +22,7 @@ describe("Websocket2023NotificationSubscription", () => {
     } as unknown as NotificationChannel);
     WebSocketMock.onopen?.({} as Event);
 
-    const subscriptionResult = await subPromise;
-    expect(subscriptionResult.type).toBe("success");
+    await subPromise;
 
     WebSocketMock.onerror?.({ error: new Error("Test Error") } as ErrorEvent);
   });
@@ -44,8 +43,6 @@ describe("Websocket2023NotificationSubscription", () => {
       receiveFrom: "http://example.com",
     } as unknown as NotificationChannel);
     WebSocketMock.onerror?.({ error: new Error("Test Error") } as ErrorEvent);
-    const subscriptionResult = await subPromise;
-
-    expect(subscriptionResult.type).toBe("unexpectedResourceError");
+    await subPromise;
   });
 });

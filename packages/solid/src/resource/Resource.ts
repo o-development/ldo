@@ -38,8 +38,7 @@ import type { LeafUri } from "../util/uriTypes";
 import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 import type {
   NotificationSubscription,
-  SubscribeResult,
-  UnsubscribeResult,
+  SubscriptionCallbacks,
 } from "./notifications/NotificationSubscription";
 import { Websocket2023NotificationSubscription } from "./notifications/Websocket2023NotificationSubscription";
 import type { NotificationMessage } from "./notifications/NotificationMessage";
@@ -329,13 +328,9 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    *
    * @example
    * ```typescript
-   * // Logs "undefined"
-   * console.log(resource.isPresent());
-   * const result = resource.read();
-   * if (!result.isError) {
-   *   // True if the resource exists, false if it does not
-   *   console.log(resource.isPresent());
-   * }
+   * await resource.subscribeToNotifications();
+   * // Logs "true"
+   * console.log(resource.isSubscribedToNotifications());
    * ```
    */
   isSubscribedToNotifications(): boolean {
@@ -740,7 +735,7 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    *
    * @param onNotificationError - A callback function if there is an error
    * with notifications.
-   * @returns SubscriptionResult
+   * @returns SubscriptionId: A string to use to unsubscribe
    *
    * @example
    * ```typescript
@@ -759,22 +754,20 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * );
    *
    * // Subscribe
-   * const subscriptionResult = await testContainer.subscribeToNotifications(
+   * const subscriptionId = await testContainer.subscribeToNotifications({
    *   // These are optional callbacks. A subscription will automatically keep
    *   // the dataset in sync. Use these callbacks for additional functionality.
    *   onNotification: (message) => console.log(message),
    *   onNotificationError: (err) => console.log(err.message)
-   * );
-   * // ... From there you can ait for a file to be changed on the Pod.
+   * });
+   * // ... From there you can wait for a file to be changed on the Pod.
    */
   async subscribeToNotifications(
-    onNotification?: (message: NotificationMessage) => void,
-    onNotificationError?: (err: Error) => void,
-  ): Promise<SubscribeResult> {
-    return await this.notificationSubscription.subscribeToNotifications({
-      onNotification,
-      onNotificationError,
-    });
+    callbacks?: SubscriptionCallbacks,
+  ): Promise<string> {
+    return await this.notificationSubscription.subscribeToNotifications(
+      callbacks,
+    );
   }
 
   /**
@@ -814,15 +807,11 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    *
    * @example
    * ```typescript
-   * const subscriptionResult = await testContainer.subscribeToNotifications();
-   * await testContainer.unsubscribeFromNotifications(
-   *  subscriptionResult.subscriptionId
-   * );
+   * const subscriptionId = await testContainer.subscribeToNotifications();
+   * await testContainer.unsubscribeFromNotifications(subscriptionId);
    * ```
    */
-  async unsubscribeFromNotifications(
-    subscriptionId: string,
-  ): Promise<UnsubscribeResult> {
+  async unsubscribeFromNotifications(subscriptionId: string): Promise<void> {
     return this.notificationSubscription.unsubscribeFromNotification(
       subscriptionId,
     );
@@ -836,12 +825,10 @@ export abstract class Resource extends (EventEmitter as new () => TypedEmitter<{
    * @example
    * ```typescript
    * const subscriptionResult = await testContainer.subscribeToNotifications();
-   * await testContainer.unsubscribeFromNotifications(
-   *  subscriptionResult.subscriptionId
-   * );
+   * await testContainer.unsubscribeFromAllNotifications();
    * ```
    */
-  async unsubscribeFromAllNotifications(): Promise<UnsubscribeResult[]> {
+  async unsubscribeFromAllNotifications(): Promise<void> {
     return this.notificationSubscription.unsubscribeFromAllNotifications();
   }
 }

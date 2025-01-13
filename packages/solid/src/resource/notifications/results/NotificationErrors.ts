@@ -1,6 +1,12 @@
 import type { UnexpectedResourceError } from "../../../requester/results/error/ErrorResult";
 import { ResourceError } from "../../../requester/results/error/ErrorResult";
 
+export type NotificationCallbackError =
+  | DisconnectedAttemptingReconnectError
+  | DisconnectedNotAttemptingReconnectError
+  | UnsupportedNotificationError
+  | UnexpectedResourceError;
+
 /**
  * Indicates that the requested method for receiving notifications is not
  * supported by this Pod.
@@ -8,17 +14,6 @@ import { ResourceError } from "../../../requester/results/error/ErrorResult";
 export class UnsupportedNotificationError extends ResourceError {
   readonly type = "unsupportedNotificationError" as const;
 }
-
-/**
- * =============================================================================
- * CALLBACK ERRORS
- * =============================================================================
- */
-
-export type NotificationCallbackError =
-  | DisconnectedAttemptingReconnectError
-  | DisconnectedNotAttemptingReconnectError
-  | UnexpectedResourceError;
 
 /**
  * Indicates that the socket has disconnected and is attempting to reconnect.

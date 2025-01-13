@@ -1,30 +1,8 @@
-import type { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
 import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
 import type { Resource } from "../Resource";
 import type { NotificationMessage } from "./NotificationMessage";
-import type {
-  NotificationCallbackError,
-  UnsupportedNotificationError,
-} from "./results/NotificationErrors";
-import type { SubscribeToNotificationSuccess } from "./results/SubscribeToNotificationSuccess";
-import type { UnsubscribeToNotificationSuccess } from "./results/UnsubscribeFromNotificationSuccess";
+import type { NotificationCallbackError } from "./results/NotificationErrors";
 import { v4 } from "uuid";
-
-export type SubscribeResult =
-  | SubscribeToNotificationSuccess
-  | UnsupportedNotificationError
-  | UnexpectedResourceError;
-
-export type UnsubscribeResult =
-  | UnsubscribeToNotificationSuccess
-  | UnexpectedResourceError;
-
-export type OpenResult =
-  | { type: "success" }
-  | UnsupportedNotificationError
-  | UnexpectedResourceError;
-
-export type CloseResult = { type: "success" } | UnexpectedResourceError;
 
 export interface SubscriptionCallbacks {
   onNotification?: (message: NotificationMessage) => void;
@@ -57,6 +35,83 @@ export abstract class NotificationSubscription {
     return this.isOpen;
   }
 
+  /**
+   * ===========================================================================
+   * PUBLIC
+   * ===========================================================================
+   */
+
+  /**
+   * @internal
+   * subscribeToNotifications
+   */
+  async subscribeToNotifications(
+    subscriptionCallbacks?: SubscriptionCallbacks,
+  ): Promise<string> {
+    const subscriptionId = v4();
+    this.subscriptions[subscriptionId] = subscriptionCallbacks ?? {};
+    if (!this.isOpen) {
+      await this.open();
+      this.isOpen = true;
+    }
+    return subscriptionId;
+  }
+
+  /**
+   * @internal
+   * unsubscribeFromNotification
+   */
+  async unsubscribeFromNotification(subscriptionId: string): Promise<void> {
+    if (
+      !!this.subscriptions[subscriptionId] &&
+      Object.keys(this.subscriptions).length === 1
+    ) {
+      await this.close();
+      this.isOpen = false;
+    }
+    delete this.subscriptions[subscriptionId];
+  }
+
+  /**
+   * @internal
+   * unsubscribeFromAllNotifications
+   */
+  async unsubscribeFromAllNotifications(): Promise<void> {
+    await Promise.all(
+      Object.keys(this.subscriptions).map((id) =>
+        this.unsubscribeFromNotification(id),
+      ),
+    );
+  }
+
+  /**
+   * ===========================================================================
+   * HELPERS
+   * ===========================================================================
+   */
+
+  /**
+   * @internal
+   * Opens the subscription
+   */
+  protected abstract open(): Promise<void>;
+
+  /**
+   * @internal
+   * Closes the subscription
+   */
+  protected abstract close(): Promise<void>;
+
+  /**
+   * ===========================================================================
+   * CALLBACKS
+   * ===========================================================================
+   */
+
+  /**
+   * @internal
+   * onNotification
+   */
   protected onNotification(message: NotificationMessage): void {
     this.parentSubscription(message);
     Object.values(this.subscriptions).forEach(({ onNotification }) => {
@@ -64,6 +119,10 @@ export abstract class NotificationSubscription {
     });
   }
 
+  /**
+   * @internal
+   * onNotificationError
+   */
   protected onNotificationError(message: NotificationCallbackError): void {
     Object.values(this.subscriptions).forEach(({ onNotificationError }) => {
       onNotificationError?.(message);
@@ -72,59 +131,4 @@ export abstract class NotificationSubscription {
       this.isOpen = false;
     }
   }
-
-  async subscribeToNotifications(
-    subscriptionCallbacks: SubscriptionCallbacks,
-  ): Promise<SubscribeResult> {
-    if (!this.isOpen) {
-      const openResult = await this.open();
-      if (openResult.type !== "success") return openResult;
-      this.isOpen = true;
-    }
-    const subscriptionId = v4();
-    this.subscriptions[subscriptionId] = subscriptionCallbacks;
-    return {
-      isError: false,
-      type: "subscribeToNotificationSuccess",
-      uri: this.resource.uri,
-      subscriptionId,
-    };
-  }
-
-  async unsubscribeFromNotification(
-    subscriptionId: string,
-  ): Promise<UnsubscribeResult> {
-    delete this.subscriptions[subscriptionId];
-    if (Object.keys(this.subscriptions).length === 0) {
-      const closeResult = await this.close();
-      if (closeResult.type !== "success") return closeResult;
-      this.isOpen = false;
-    }
-    return {
-      isError: false,
-      type: "unsubscribeFromNotificationSuccess",
-      uri: this.resource.uri,
-      subscriptionId,
-    };
-  }
-
-  async unsubscribeFromAllNotifications(): Promise<UnsubscribeResult[]> {
-    return Promise.all(
-      Object.keys(this.subscriptions).map((id) =>
-        this.unsubscribeFromNotification(id),
-      ),
-    );
-  }
-
-  /**
-   * @internal
-   * Opens the subscription
-   */
-  protected abstract open(): Promise<OpenResult>;
-
-  /**
-   * @internal
-   * Closes the subscription
-   */
-  protected abstract close(): Promise<CloseResult>;
 }

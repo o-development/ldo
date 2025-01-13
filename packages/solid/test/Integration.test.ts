@@ -2035,9 +2035,7 @@ describe("Integration", () => {
         spidermanCallback,
       );
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
-      if (subscriptionResult.type !== "subscribeToNotificationSuccess") return;
+      const subscriptionId = await resource.subscribeToNotifications();
 
       expect(resource.isSubscribedToNotifications()).toBe(true);
 
@@ -2061,12 +2059,7 @@ describe("Integration", () => {
 
       // Notification is not propogated after unsubscribe
       spidermanCallback.mockClear();
-      const unsubscribeResponse = await resource.unsubscribeFromNotifications(
-        subscriptionResult.subscriptionId,
-      );
-      expect(unsubscribeResponse.type).toBe(
-        "unsubscribeFromNotificationSuccess",
-      );
+      await resource.unsubscribeFromNotifications(subscriptionId);
       expect(resource.isSubscribedToNotifications()).toBe(false);
       await authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
@@ -2104,8 +2097,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await resource.subscribeToNotifications();
 
       await authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
@@ -2139,8 +2131,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await testContainer.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await testContainer.subscribeToNotifications();
 
       await authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
@@ -2174,8 +2165,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await testContainer.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await testContainer.subscribeToNotifications();
 
       await authFetch(TEST_CONTAINER_URI, {
         method: "POST",
@@ -2198,17 +2188,17 @@ describe("Integration", () => {
 
     it("returns an error when it cannot subscribe to a notification", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
 
       await app.stop();
-
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("unexpectedResourceError");
-
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+      expect(onError).toHaveBeenCalledTimes(2);
       await app.start();
     });
 
     it("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
 
       await app.stop();
       const disabledWebsocketsApp = await createApp(
@@ -2216,8 +2206,36 @@ describe("Integration", () => {
       );
       await disabledWebsocketsApp.start();
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("unsupportedNotificationError");
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+      expect(onError).toHaveBeenCalledTimes(2);
+
+      await disabledWebsocketsApp.stop();
+      await app.start();
+    });
+
+    it("attempts to reconnect multiple times before giving up.", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
+
+      await app.stop();
+      const disabledWebsocketsApp = await createApp(
+        path.join(__dirname, "./configs/server-config-without-websocket.json"),
+      );
+      await disabledWebsocketsApp.start();
+
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+
+      // TODO: This is a bad test because of the wait. Instead inject better
+      // numbers into the websocket class.
+      await wait(35000);
+
+      expect(onError).toHaveBeenCalledTimes(14);
+      expect(onError.mock.calls[1][0].type).toBe(
+        "disconnectedAttemptingReconnectError",
+      );
+      expect(onError.mock.calls[13][0].type).toBe(
+        "disconnectedNotAttemptingReconnectError",
+      );
 
       await disabledWebsocketsApp.stop();
       await app.start();
@@ -2225,8 +2243,8 @@ describe("Integration", () => {
 
     it("causes no problems when unsubscribing when not subscribed", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const result = await resource.unsubscribeFromAllNotifications();
-      expect(result.length).toBe(0);
+      await resource.unsubscribeFromAllNotifications();
+      expect(resource.isSubscribedToNotifications()).toBe(false);
     });
   });
 });
