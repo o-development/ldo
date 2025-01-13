@@ -372,7 +372,10 @@ describe("Integration Tests", () => {
 
     it("rerenders when asked to subscribe to a resource", async () => {
       const NotificationTest: FunctionComponent = () => {
-        const resource = useResource(SAMPLE_DATA_URI, { subscribe: true });
+        const [isSubscribed, setIsSubscribed] = useState(true);
+        const resource = useResource(SAMPLE_DATA_URI, {
+          subscribe: isSubscribed,
+        });
         const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
 
         const addPublisher = useCallback(async () => {
@@ -389,12 +392,16 @@ describe("Integration Tests", () => {
 
         return (
           <div>
+            <p role="resource">
+              {resource.isSubscribedToNotifications().toString()}
+            </p>
             <ul role="list">
               {post.publisher.map((publisher) => {
                 return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
               })}
             </ul>
             <button onClick={addPublisher}>Add Publisher</button>
+            <button onClick={() => setIsSubscribed(false)}>Unsubscribe</button>
           </div>
         );
       };
@@ -404,14 +411,16 @@ describe("Integration Tests", () => {
         </UnauthenticatedSolidLdoProvider>,
       );
 
-      const list = await screen.findByRole("list");
-      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
-      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
-
       // Wait for subscription to connect
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       });
+
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
+      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
+      const resourceP = await screen.findByRole("resource");
+      expect(resourceP.innerHTML).toBe("true");
 
       // Click button to add a publisher
       await fireEvent.click(screen.getByText("Add Publisher"));
@@ -423,11 +432,11 @@ describe("Integration Tests", () => {
         "https://example.com/Publisher3",
       );
 
-      unmount();
+      await fireEvent.click(screen.getByText("Unsubscribe"));
+      const resourcePUpdated = await screen.findByRole("resource");
+      expect(resourcePUpdated.innerHTML).toBe("false");
 
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      });
+      unmount();
     });
   });
 

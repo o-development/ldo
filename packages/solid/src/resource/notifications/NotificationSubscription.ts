@@ -19,7 +19,7 @@ export abstract class NotificationSubscription {
   protected parentSubscription: (message: NotificationMessage) => void;
   protected context: SolidLdoDatasetContext;
   protected subscriptions: Record<string, SubscriptionCallbacks> = {};
-  protected isOpen: boolean = false;
+  private isOpen: boolean = false;
 
   constructor(
     resource: Resource,
@@ -52,7 +52,7 @@ export abstract class NotificationSubscription {
     this.subscriptions[subscriptionId] = subscriptionCallbacks ?? {};
     if (!this.isOpen) {
       await this.open();
-      this.isOpen = true;
+      this.setIsOpen(true);
     }
     return subscriptionId;
   }
@@ -67,7 +67,7 @@ export abstract class NotificationSubscription {
       Object.keys(this.subscriptions).length === 1
     ) {
       await this.close();
-      this.isOpen = false;
+      this.setIsOpen(false);
     }
     delete this.subscriptions[subscriptionId];
   }
@@ -128,7 +128,17 @@ export abstract class NotificationSubscription {
       onNotificationError?.(message);
     });
     if (message.type === "disconnectedNotAttemptingReconnectError") {
-      this.isOpen = false;
+      this.setIsOpen(false);
     }
+  }
+
+  /**
+   * @internal
+   * setIsOpen
+   */
+  protected setIsOpen(status: boolean) {
+    const shouldUpdate = status === this.isOpen;
+    this.isOpen = status;
+    if (shouldUpdate) this.resource.emit("update");
   }
 }

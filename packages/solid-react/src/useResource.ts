@@ -40,6 +40,7 @@ export function useResource(
   options?: UseResourceOptions,
 ): Leaf | Container | undefined {
   const { getResource } = useLdo();
+  const subscriptionIdRef = useRef<string | undefined>();
 
   // Get the resource
   const resource = useMemo(() => {
@@ -65,12 +66,15 @@ export function useResource(
 
   useEffect(() => {
     if (options?.subscribe) {
-      resource?.subscribeToNotifications();
-    } else {
-      resource?.unsubscribeFromNotifications();
+      resource
+        ?.subscribeToNotifications()
+        .then((subscriptionId) => (subscriptionIdRef.current = subscriptionId));
+    } else if (subscriptionIdRef.current) {
+      resource?.unsubscribeFromNotifications(subscriptionIdRef.current);
     }
     return () => {
-      resource?.unsubscribeFromNotifications();
+      if (subscriptionIdRef.current)
+        resource?.unsubscribeFromNotifications(subscriptionIdRef.current);
     };
   }, [resource, options?.subscribe]);
 
