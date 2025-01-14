@@ -1,31 +1,20 @@
-import type { ContainerUri, LeafUri, SolidLdoDataset } from "@ldo/solid";
-import { createSolidLdoDataset } from "@ldo/solid";
+import type { ContainerUri, LeafUri } from "@ldo/solid";
 import type { TypeRegistration } from "./.ldo/typeIndex.typings";
-import { guaranteeFetch } from "@ldo/solid/dist/util/guaranteeFetch";
 import type { TypeIndexProfile } from "./.ldo/profile.typings";
 import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
 import { TypeRegistrationShapeType } from "./.ldo/typeIndex.shapeTypes";
 import { RDF_TYPE, TYPE_REGISTRATION } from "./constants";
-
-interface GetInstanceUrisOptions {
-  solidLdoDataset?: SolidLdoDataset;
-  fetch?: typeof fetch;
-}
+import type { Options } from "./util/Options";
+import { guaranteeOptions } from "./util/Options";
 
 export async function getTypeRegistrations(
   webId: string,
-  options?: GetInstanceUrisOptions,
+  options?: Options,
 ): Promise<TypeRegistration[]> {
-  const fetch = guaranteeFetch(options?.fetch);
-  const dataset = options?.solidLdoDataset ?? createSolidLdoDataset({ fetch });
+  const { dataset } = guaranteeOptions(options);
 
   // Get Profile
-  const profileResource = dataset.getResource(webId);
-  const readResult = await profileResource.readIfUnfetched();
-  if (readResult.isError) throw readResult;
-  const profile = dataset
-    .usingType(TypeIndexProfileShapeType)
-    .fromSubject(webId);
+  const profile = await getProfile(webId, options);
 
   // Get Type Indexes
   const typeIndexUris = getTypeIndexesUrisFromProfile(profile);
@@ -45,6 +34,17 @@ export async function getTypeRegistrations(
     .matchSubject(RDF_TYPE, TYPE_REGISTRATION);
 }
 
+export async function getProfile(
+  webId: string,
+  options?: Options,
+): Promise<TypeIndexProfile> {
+  const { dataset } = guaranteeOptions(options);
+  const profileResource = dataset.getResource(webId);
+  const readResult = await profileResource.readIfUnfetched();
+  if (readResult.isError) throw readResult;
+  return dataset.usingType(TypeIndexProfileShapeType).fromSubject(webId);
+}
+
 export function getTypeIndexesUrisFromProfile(
   profile: TypeIndexProfile,
 ): LeafUri[] {
@@ -61,10 +61,9 @@ export function getTypeIndexesUrisFromProfile(
 export async function getInstanceUris(
   classUri: string,
   typeRegistrations: TypeRegistration[],
-  options?: GetInstanceUrisOptions,
+  options?: Options,
 ): Promise<LeafUri[]> {
-  const fetch = guaranteeFetch(options?.fetch);
-  const dataset = options?.solidLdoDataset ?? createSolidLdoDataset({ fetch });
+  const { dataset } = guaranteeOptions(options);
 
   const leafUris = new Set<LeafUri>();
   await Promise.all(

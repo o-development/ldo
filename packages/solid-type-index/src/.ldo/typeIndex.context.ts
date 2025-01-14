@@ -6,6 +6,9 @@ import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
  * =============================================================================
  */
 export const typeIndexContext: LdoJsonldContext = {
+  type: {
+    "@id": "@type"
+  },
   TypeIndex: {
     "@id": "http://www.w3.org/ns/solid/terms#TypeIndex",
     "@context": {

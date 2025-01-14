@@ -117,6 +117,8 @@ export class SolidLdoTransactionDataset
     const changes = this.getChanges();
     const changesByGraph = splitChangesByGraph(changes);
 
+    console.log(changesByGraph);
+
     // Iterate through all changes by graph in
     const results: [
       GraphNode,
@@ -138,6 +140,7 @@ export class SolidLdoTransactionDataset
             ];
           }
           if (isContainerUri(graph.value)) {
+            console.log(datasetChanges.removed?.toString());
             return [
               graph,
               datasetChanges,

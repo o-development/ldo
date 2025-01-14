@@ -53,6 +53,77 @@ export interface SetUpServerReturn {
   >;
 }
 
+export async function setupFullTypeIndex(s: SetUpServerReturn) {
+  // Create a new document called sample.ttl
+  await s.authFetch(WEB_ID, { method: "DELETE" });
+  await s.authFetch(ROOT_CONTAINER, {
+    method: "POST",
+    headers: {
+      link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
+      slug: "myBookmarks/",
+    },
+  });
+  await Promise.all([
+    s.authFetch(PROFILE_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "card.ttl" },
+      body: PROFILE_TTL,
+    }),
+    s.authFetch(PROFILE_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "publicTypeIndex.ttl" },
+      body: PUBLIC_TYPE_INDEX_TTL,
+    }),
+    s.authFetch(PROFILE_CONTAINER, {
+      method: "POST",
+      headers: {
+        "content-type": "text/turtle",
+        slug: "privateTypeIndex.ttl",
+      },
+      body: PRIVATE_TYPE_INDEX_TTL,
+    }),
+    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "bookmark1.ttl" },
+      body: "",
+    }),
+    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "bookmark2.ttl" },
+      body: "",
+    }),
+  ]);
+}
+
+export async function setupEmptyTypeIndex(s: SetUpServerReturn) {
+  // Create a new document called sample.ttl
+  await s.authFetch(WEB_ID, { method: "DELETE" });
+  await s.authFetch(ROOT_CONTAINER, {
+    method: "POST",
+    headers: {
+      link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
+      slug: "myBookmarks/",
+    },
+  });
+  await Promise.all([
+    s.authFetch(PROFILE_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "card.ttl" },
+      body: "",
+    }),
+    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "bookmark1.ttl" },
+      body: "",
+    }),
+    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+      method: "POST",
+      headers: { "content-type": "text/turtle", slug: "bookmark2.ttl" },
+      body: "",
+    }),
+  ]);
+}
+
 export function setUpServer(): SetUpServerReturn {
   // Ignore to build s
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -66,45 +137,6 @@ export function setUpServer(): SetUpServerReturn {
 
   beforeEach(async () => {
     s.fetchMock = jest.fn(s.authFetch);
-    // Create a new document called sample.ttl
-    await s.authFetch(WEB_ID, { method: "DELETE" });
-    await s.authFetch(ROOT_CONTAINER, {
-      method: "POST",
-      headers: {
-        link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
-        slug: "myBookmarks/",
-      },
-    });
-    await Promise.all([
-      s.authFetch(PROFILE_CONTAINER, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "card.ttl" },
-        body: PROFILE_TTL,
-      }),
-      s.authFetch(PROFILE_CONTAINER, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "publicTypeIndex.ttl" },
-        body: PUBLIC_TYPE_INDEX_TTL,
-      }),
-      s.authFetch(PROFILE_CONTAINER, {
-        method: "POST",
-        headers: {
-          "content-type": "text/turtle",
-          slug: "privateTypeIndex.ttl",
-        },
-        body: PRIVATE_TYPE_INDEX_TTL,
-      }),
-      s.authFetch(MY_BOOKMARKS_CONTAINER, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "bookmark1.ttl" },
-        body: "",
-      }),
-      s.authFetch(MY_BOOKMARKS_CONTAINER, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "bookmark2.ttl" },
-        body: "",
-      }),
-    ]);
   });
 
   afterEach(async () => {
