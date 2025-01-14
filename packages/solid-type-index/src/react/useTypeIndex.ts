@@ -1,12 +1,11 @@
 import type { LeafUri } from "@ldo/solid";
 import { useTypeIndexProfile } from "./useTypeIndexProfile";
-import { useEffect, useMemo } from "react";
-import { useLdo } from "@ldo/solid-react";
+import { useMemo } from "react";
+import { useSubscribeToUris } from "./util/useSubscribeToUris";
 
 export function useTypeIndex(classUri: string): Promise<LeafUri[]> {
-  const { dataset } = useLdo();
-
   const profile = useTypeIndexProfile();
+
   const typeIndexUris: string[] = useMemo(() => {
     const uris: string[] = [];
     profile?.privateTypeIndex?.forEach((indexNode) => {
@@ -15,17 +14,10 @@ export function useTypeIndex(classUri: string): Promise<LeafUri[]> {
     profile?.publicTypeIndex?.forEach((indexNode) => {
       uris.push(indexNode["@id"]);
     });
+    return uris;
   }, [profile]);
 
-  useEffect(() => {
-    const resources = typeIndexUris.map((uri) => dataset.getResource(uri));
-    resources.forEach((resource) => {
-      resource.readIfUnfetched();
-      resource.subscribeToNotifications();
-    });
+  useSubscribeToUris(typeIndexUris);
 
-    return () => {
-      resources.forEach((resource) => resource.unsubscribeFromNotifications());
-    }
-  }, [typeIndexUris]);
+  
 }

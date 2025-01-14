@@ -16,6 +16,7 @@ import type { PostSh } from "./.ldo/post.typings";
 import { useSubject } from "../src/useSubject";
 import { useMatchSubject } from "../src/useMatchSubject";
 import { useMatchObject } from "../src/useMatchObject";
+import { useSubscribeToResource } from "../src/useSubscribeToResource";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -517,6 +518,121 @@ describe("Integration Tests", () => {
       const list = await screen.findByRole("list");
       expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
       expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * useSubscribeToResource
+   * ===========================================================================
+   */
+  describe("useSubscribeToResource", () => {
+    it("handles useSubscribeToResource", async () => {
+      const NotificationTest: FunctionComponent = () => {
+        const [subscribedUris, setSubScribedUris] = useState<string[]>([
+          SAMPLE_DATA_URI,
+        ]);
+        useSubscribeToResource(...subscribedUris);
+
+        const resource1 = useResource(SAMPLE_DATA_URI);
+        const resource2 = useResource(SAMPLE_BINARY_URI);
+        const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+
+        const addPublisher = useCallback(async () => {
+          await fetch(SAMPLE_DATA_URI, {
+            method: "PATCH",
+            body: `INSERT DATA { <${SAMPLE_DATA_URI}#Post1> <http://schema.org/publisher> <https://example.com/Publisher3> . }`,
+            headers: {
+              "Content-Type": "application/sparql-update",
+            },
+          });
+        }, []);
+
+        if (resource1.isLoading() || resource2.isLoading())
+          return <p>Loading</p>;
+
+        return (
+          <div>
+            <p role="resource1">
+              {resource1.isSubscribedToNotifications().toString()}
+            </p>
+            <p role="resource2">
+              {resource2.isSubscribedToNotifications().toString()}
+            </p>
+            <ul role="list">
+              {post.publisher.map((publisher) => {
+                return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
+              })}
+            </ul>
+            <button onClick={addPublisher}>Add Publisher</button>
+            <button
+              onClick={() =>
+                setSubScribedUris([SAMPLE_DATA_URI, SAMPLE_BINARY_URI])
+              }
+            >
+              Subscribe More
+            </button>
+            <button onClick={() => setSubScribedUris([SAMPLE_BINARY_URI])}>
+              Subscribe Less
+            </button>
+          </div>
+        );
+      };
+      const { unmount } = render(
+        <UnauthenticatedSolidLdoProvider>
+          <NotificationTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+
+      const preResource1P = await screen.findByRole("resource1");
+      expect(preResource1P.innerHTML).toBe("false");
+
+      // Wait for subscription to connect
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+
+      const list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("https://example.com/Publisher1");
+      expect(list.children[1].innerHTML).toBe("https://example.com/Publisher2");
+      const resource1P = await screen.findByRole("resource1");
+      expect(resource1P.innerHTML).toBe("true");
+      const resource2P = await screen.findByRole("resource2");
+      expect(resource2P.innerHTML).toBe("false");
+
+      // Click button to add a publisher
+      await fireEvent.click(screen.getByText("Add Publisher"));
+      await screen.findByText("https://example.com/Publisher3");
+
+      // Verify the new publisher is in the list
+      const updatedList = await screen.findByRole("list");
+      expect(updatedList.children[2].innerHTML).toBe(
+        "https://example.com/Publisher3",
+      );
+
+      await fireEvent.click(screen.getByText("Subscribe More"));
+      // Wait for subscription to connect
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+
+      const resource1PUpdated = await screen.findByRole("resource1");
+      expect(resource1PUpdated.innerHTML).toBe("true");
+      const resource2PUpdated = await screen.findByRole("resource2");
+      expect(resource2PUpdated.innerHTML).toBe("true");
+
+      await fireEvent.click(screen.getByText("Subscribe Less"));
+      // Wait for subscription to connect
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      });
+
+      const resource1PUpdatedAgain = await screen.findByRole("resource1");
+      expect(resource1PUpdatedAgain.innerHTML).toBe("false");
+      const resource2PUpdatedAgain = await screen.findByRole("resource2");
+      expect(resource2PUpdatedAgain.innerHTML).toBe("true");
+
+      unmount();
     });
   });
 });

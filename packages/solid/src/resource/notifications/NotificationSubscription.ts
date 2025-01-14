@@ -137,7 +137,7 @@ export abstract class NotificationSubscription {
    * setIsOpen
    */
   protected setIsOpen(status: boolean) {
-    const shouldUpdate = status === this.isOpen;
+    const shouldUpdate = status !== this.isOpen;
     this.isOpen = status;
     if (shouldUpdate) this.resource.emit("update");
   }
