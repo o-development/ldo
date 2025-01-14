@@ -533,7 +533,6 @@ describe("Integration Tests", () => {
           SAMPLE_DATA_URI,
         ]);
         useSubscribeToResource(...subscribedUris);
-
         const resource1 = useResource(SAMPLE_DATA_URI);
         const resource2 = useResource(SAMPLE_BINARY_URI);
         const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);

@@ -1,11 +1,11 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 
 /**
  * =============================================================================
  * typeIndexContext: JSONLD Context for typeIndex
  * =============================================================================
  */
-export const typeIndexContext: ContextDefinition = {
+export const typeIndexContext: LdoJsonldContext = {
   TypeIndex: {
     "@id": "http://www.w3.org/ns/solid/terms#TypeIndex",
     "@context": {

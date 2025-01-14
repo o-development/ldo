@@ -1,11 +1,11 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 
 /**
  * =============================================================================
  * profileContext: JSONLD Context for profile
  * =============================================================================
  */
-export const profileContext: ContextDefinition = {
+export const profileContext: LdoJsonldContext = {
   privateTypeIndex: {
     "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex",
     "@type": "@id",
