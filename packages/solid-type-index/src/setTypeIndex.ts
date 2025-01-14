@@ -5,12 +5,13 @@ import {
 } from "./.ldo/typeIndex.shapeTypes";
 import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants";
 import { guaranteeOptions, type Options } from "./util/Options";
-import { namedNode } from "@rdfjs/data-model";
+import { namedNode, quad } from "@rdfjs/data-model";
 import type { TypeRegistration } from "./.ldo/typeIndex.typings";
 import { getProfile } from "./getTypeIndex";
 import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
-import type { SolidLdoDataset } from "@ldo/solid";
 import type { Container } from "@ldo/solid";
+import type { ISolidLdoDataset } from "@ldo/solid";
+import type { NamedNode } from "@rdfjs/types";
 
 /**
  * =============================================================================
@@ -32,7 +33,7 @@ export async function initTypeIndex(
       await createIndex(webId, profileFolder, dataset, true);
     }
     if (!profile.publicTypeIndex?.length) {
-      await createIndex(webId, profileFolder, dataset, true);
+      await createIndex(webId, profileFolder, dataset, false);
     }
   }
 }
@@ -46,7 +47,7 @@ export async function initTypeIndex(
 export async function createIndex(
   webId,
   profileFolder: Container,
-  dataset: SolidLdoDataset,
+  dataset: ISolidLdoDataset,
   isPrivate: boolean,
 ) {
   // Create a private type index
@@ -88,19 +89,9 @@ export async function createIndex(
     .write(indexResource.uri)
     .fromSubject(indexResource.uri);
 
-  console.log(indexResource.uri, webId);
   cTypeIndex.type = [{ "@id": "ListedDocument" }, { "@id": "TypeIndex" }];
-  console.log("added", transaction.getChanges().added?.toString());
-  console.log("removed", transaction.getChanges().added?.toString());
   const commitResult = await transaction.commitToPod();
-  if (commitResult.isError) {
-    commitResult.errors.forEach((err) => {
-      if (err.type === "invalidUriError") {
-        console.log(err.uri);
-      }
-    });
-    throw commitResult;
-  }
+  if (commitResult.isError) throw commitResult;
 }
 
 /**
@@ -148,6 +139,8 @@ export async function removeRegistration(
     options,
   );
 
+  console.log(typeRegistration["@id"]);
+
   // Add instances to type registration
   instances.instance?.forEach((instance) => {
     typeRegistration.instance?.splice(
@@ -156,8 +149,9 @@ export async function removeRegistration(
     );
   });
   instances.instanceContainer?.forEach((instanceContainer) => {
-    typeRegistration.instance?.splice(
-      typeRegistration.instance.findIndex(
+    console.log("Splicing instanceContainers", instanceContainer);
+    typeRegistration.instanceContainer?.splice(
+      typeRegistration.instanceContainer.findIndex(
         (val) => val["@id"] === instanceContainer,
       ),
       1,
@@ -172,27 +166,40 @@ export function findAppropriateTypeRegistration(
 ) {
   const { dataset } = guaranteeOptions(options);
   // Check to see if its already in the index
-  const existingRegistrationUri: string | undefined = dataset
+  const existingRegistrationsUris: NamedNode[] = dataset
     .match(
       null,
       namedNode(RDF_TYPE),
       namedNode(TYPE_REGISTRATION),
       namedNode(indexUri),
     )
-    .match(null, namedNode(FOR_CLASS), namedNode(classUri))
-    .toArray()[0]?.subject.value;
+    .toArray()
+    .map((quad) => quad.subject) as NamedNode[];
+
+  const existingRegistrationForClassUri = existingRegistrationsUris.find(
+    (registrationUri) => {
+      return dataset.has(
+        quad(
+          registrationUri,
+          namedNode(FOR_CLASS),
+          namedNode(classUri),
+          namedNode(indexUri),
+        ),
+      );
+    },
+  )?.value;
+
   let typeRegistration: TypeRegistration;
-  if (existingRegistrationUri) {
+  if (existingRegistrationForClassUri) {
     typeRegistration = dataset
       .usingType(TypeRegistrationShapeType)
       .write(indexUri)
-      .fromSubject(existingRegistrationUri);
+      .fromSubject(existingRegistrationForClassUri);
   } else {
-    typeRegistration = dataset.createData(
-      TypeRegistrationShapeType,
-      `${indexUri}#${v4()}`,
-      dataset.getResource(indexUri),
-    );
+    typeRegistration = dataset
+      .usingType(TypeRegistrationShapeType)
+      .write(indexUri)
+      .fromSubject(`${indexUri}#${v4()}`);
     typeRegistration.type = { "@id": "TypeRegistration" };
     typeRegistration.forClass = { "@id": classUri };
   }

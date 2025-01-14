@@ -1,8 +1,9 @@
-import { createSolidLdoDataset, type SolidLdoDataset } from "@ldo/solid";
+import { createSolidLdoDataset } from "@ldo/solid";
+import type { ISolidLdoDataset } from "@ldo/solid";
 import { guaranteeFetch } from "@ldo/solid/dist/util/guaranteeFetch";
 
 export interface Options {
-  solidLdoDataset?: SolidLdoDataset;
+  solidLdoDataset?: ISolidLdoDataset;
   fetch?: typeof fetch;
 }
 

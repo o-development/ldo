@@ -14,7 +14,6 @@ import {
   updateDatasetInBulk,
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
-import type { SolidLdoDataset } from "./SolidLdoDataset";
 import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
 import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
 import type {
@@ -75,7 +74,7 @@ export class SolidLdoTransactionDataset
    * @param initialDataset - A set of triples to initialize this dataset
    */
   constructor(
-    parentDataset: SolidLdoDataset,
+    parentDataset: ISolidLdoDataset,
     context: SolidLdoDatasetContext,
     datasetFactory: DatasetFactory,
     transactionDatasetFactory: ITransactionDatasetFactory<Quad>,
@@ -108,6 +107,15 @@ export class SolidLdoTransactionDataset
     return this.context.resourceStore.get(uri, options);
   }
 
+  public startTransaction(): SolidLdoTransactionDataset {
+    return new SolidLdoTransactionDataset(
+      this,
+      this.context,
+      this.datasetFactory,
+      this.transactionDatasetFactory,
+    );
+  }
+
   async commitToPod(): Promise<
     | AggregateSuccess<
         ResourceResult<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
@@ -116,8 +124,6 @@ export class SolidLdoTransactionDataset
   > {
     const changes = this.getChanges();
     const changesByGraph = splitChangesByGraph(changes);
-
-    console.log(changesByGraph);
 
     // Iterate through all changes by graph in
     const results: [
