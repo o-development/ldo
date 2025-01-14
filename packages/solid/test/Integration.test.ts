@@ -18,6 +18,7 @@ import {
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
 import type {
+  IgnoredInvalidUpdateSuccess,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
 } from "../src/requester/results/success/UpdateSuccess";
@@ -1204,7 +1205,7 @@ describe("Integration", () => {
       expect(aggregateError.errors[0].type).toBe("unexpectedResourceError");
     });
 
-    it("errors when trying to update a container", async () => {
+    it("ignores update when trying to update a container", async () => {
       const badContainerQuad = createQuad(
         namedNode("http://example.org/#green-goblin"),
         namedNode("http://xmlns.com/foaf/0.1/name"),
@@ -1214,13 +1215,15 @@ describe("Integration", () => {
       const transaction = solidLdoDataset.startTransaction();
       transaction.add(badContainerQuad);
       const result = await transaction.commitToPod();
-      expect(result.isError).toBe(true);
-      expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        UpdateResultError | InvalidUriError
+      expect(result.isError).toBe(false);
+      expect(result.type).toBe("aggregateSuccess");
+      const aggregateSuccess = result as AggregateSuccess<
+        UpdateSuccess | IgnoredInvalidUpdateSuccess
       >;
-      expect(aggregateError.errors.length).toBe(1);
-      expect(aggregateError.errors[0].type === "invalidUriError").toBe(true);
+      expect(aggregateSuccess.results.length).toBe(1);
+      expect(aggregateSuccess.results[0].type).toBe(
+        "ignoredInvalidUpdateSuccess",
+      );
     });
 
     it("writes to the default graph without fetching", async () => {

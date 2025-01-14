@@ -14,3 +14,11 @@ export interface UpdateSuccess extends ResourceSuccess {
 export interface UpdateDefaultGraphSuccess extends ResourceSuccess {
   type: "updateDefaultGraphSuccess";
 }
+
+/**
+ * Indicates that LDO ignored an invalid update (usually because a container
+ * attempted an update)
+ */
+export interface IgnoredInvalidUpdateSuccess extends ResourceSuccess {
+  type: "ignoredInvalidUpdateSuccess";
+}
