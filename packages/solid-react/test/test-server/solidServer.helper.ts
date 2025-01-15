@@ -26,7 +26,7 @@ export async function createApp(): Promise<App> {
     ),
     variableBindings: {},
     shorthand: {
-      port: 3_001,
+      port: 3_002,
       loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
     },

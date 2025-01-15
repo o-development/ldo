@@ -30,7 +30,6 @@
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^27.0.3",
-    "@types/uuid": "^10.0.0",
     "jest-environment-jsdom": "^27.0.0",
     "start-server-and-test": "^2.0.3",
     "ts-jest": "^27.1.2",
@@ -38,8 +37,7 @@
   },
   "dependencies": {
     "@ldo/solid": "^0.0.1-alpha.28",
-    "@ldo/solid-react": "^0.0.1-alpha.28",
-    "uuid": "^11.0.5"
+    "@ldo/solid-react": "^0.0.1-alpha.28"
   },
   "files": [
     "dist",

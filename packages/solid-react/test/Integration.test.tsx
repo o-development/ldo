@@ -475,10 +475,10 @@ describe("Integration Tests", () => {
 
       const list = await screen.findByRole("list");
       expect(list.children[0].innerHTML).toBe(
-        "http://localhost:3001/example/test_ldo/sample.ttl#Post1",
+        "http://localhost:3002/example/test_ldo/sample.ttl#Post1",
       );
       expect(list.children[1].innerHTML).toBe(
-        "http://localhost:3001/example/test_ldo/sample.ttl#Post2",
+        "http://localhost:3002/example/test_ldo/sample.ttl#Post2",
       );
     });
   });
@@ -494,7 +494,7 @@ describe("Integration Tests", () => {
         const resource = useResource(SAMPLE_DATA_URI);
         const publishers = useMatchObject(
           PostShShapeType,
-          "http://localhost:3001/example/test_ldo/sample.ttl#Post1",
+          "http://localhost:3002/example/test_ldo/sample.ttl#Post1",
           "http://schema.org/publisher",
         );
         if (resource.isLoading()) return <p>loading</p>;
