@@ -28,7 +28,7 @@ import type {
   UnionTransformerDefinition,
   UnionTransformerInputDefinition,
 } from "./Transformers";
-import { InstanceGraph } from "../instanceGraph/instanceGraph";
+import { InstanceGraph } from "../instanceGraph/InstanceGraph";
 
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
 // but if I ever feel so inclined, I should fix this in the future.

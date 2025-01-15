@@ -7,7 +7,7 @@ import type {
   TraverserDefinitions,
   TraverserTypes,
 } from "../../../";
-import type { InstanceGraph } from "../../../instanceGraph/instanceGraph";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
 import type { Transformers } from "../../Transformers";
 import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter";
 import type { MultiMap } from "./MultiMap";
