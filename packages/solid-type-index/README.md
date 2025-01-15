@@ -1,8 +1,43 @@
 # @ldo/solid-type-index
 
-Alpha
+A library to handle [type indexes](https://solid.github.io/type-indexes/index.html) with [LDO](https://ldo.js.org).
 
-// TODO: Write readme
+## Installation
+
+```
+npm i @ldo/solid-type-index @ldo/solid
+```
+
+## Usage
+
+
+```typescript
+import { initTypeIndex } from "@ldo/solid-type-index";
+import { createSolidLdoDataset } from "@ldo/solid"; 
+
+async function main() {
+  const myWebId = "https://example.com/profile/card#me";
+  const solidLdoDataset = createSolidLodDataset();
+
+  // Initialize a type index for a webId in case it isn't initialized
+  await initTypeIndex(myWebId, { solidLdoDataset });
+
+  // Get Type Registrations
+  const typeRegistrations = await getTypeRegistrations(WEB_ID, { 
+    solidLdoDataset,
+  });
+
+  // Get Instance Uris (the URIs for resources that contain an instance of a
+  // class)
+  const bookmarkUris: string[] = await getInstanceUris(
+    "http://www.w3.org/2002/01/bookmark#Bookmark",
+    typeRegistrations,
+    { solidLdoDataset }
+  );
+
+}
+main();
+```
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
