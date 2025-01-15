@@ -1,12 +1,12 @@
 import { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
-import type {
-  CloseSubscriptionResult,
-  OpenSubscriptionResult,
-} from "./NotificationSubscription";
 import { NotificationSubscription } from "./NotificationSubscription";
 import { SubscriptionClient } from "@solid-notifications/subscription";
 import { WebSocket } from "ws";
-import { UnsupportedNotificationError } from "./results/NotificationErrors";
+import {
+  DisconnectedAttemptingReconnectError,
+  DisconnectedNotAttemptingReconnectError,
+  UnsupportedNotificationError,
+} from "./results/NotificationErrors";
 import type { NotificationMessage } from "./NotificationMessage";
 import type { Resource } from "../Resource";
 import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
@@ -22,33 +22,48 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
   private socket: WebSocket | undefined;
   private createWebsocket: (address: string) => WebSocket;
 
+  // Reconnection data
+  // How often we should attempt a reconnection
+  private reconnectInterval = 5000;
+  // How many attempts have already been tried for a reconnection
+  private reconnectAttempts = 0;
+  // Whether or not the socket was manually closes
+  private isManualClose = false;
+  // Maximum number of attempts to reconnect
+  private maxReconnectAttempts = 6;
+
   constructor(
     resource: Resource,
-    onNotification: (message: NotificationMessage) => void,
-    onError: ((err: Error) => void) | undefined,
+    parentSubscription: (message: NotificationMessage) => void,
     context: SolidLdoDatasetContext,
     createWebsocket?: (address: string) => WebSocket,
   ) {
-    super(resource, onNotification, onError, context);
+    super(resource, parentSubscription, context);
     this.createWebsocket = createWebsocket ?? createWebsocketDefault;
   }
 
-  async open(): Promise<OpenSubscriptionResult> {
+  async open(): Promise<void> {
     try {
       const notificationChannel = await this.discoverNotificationChannel();
-      return this.subscribeToWebsocket(notificationChannel);
+      await this.subscribeToWebsocket(notificationChannel);
     } catch (err) {
       if (
         err instanceof Error &&
         err.message.startsWith("Discovery did not succeed")
       ) {
-        return new UnsupportedNotificationError(this.resource.uri, err.message);
+        this.onNotificationError(
+          new UnsupportedNotificationError(this.resource.uri, err.message),
+        );
+      } else {
+        this.onNotificationError(
+          UnexpectedResourceError.fromThrown(this.resource.uri, err),
+        );
       }
-      return UnexpectedResourceError.fromThrown(this.resource.uri, err);
+      this.onClose();
     }
   }
 
-  async discoverNotificationChannel(): Promise<NotificationChannel> {
+  public async discoverNotificationChannel(): Promise<NotificationChannel> {
     const client = new SubscriptionClient(this.context.fetch);
     return await client.subscribe(
       this.resource.uri,
@@ -56,44 +71,61 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
     );
   }
 
-  async subscribeToWebsocket(
+  public async subscribeToWebsocket(
     notificationChannel: NotificationChannel,
-  ): Promise<OpenSubscriptionResult> {
-    return new Promise<OpenSubscriptionResult>((resolve) => {
-      let didResolve = false;
-      this.socket = this.createWebsocket(
-        notificationChannel.receiveFrom as string,
+  ): Promise<void> {
+    this.socket = this.createWebsocket(
+      notificationChannel.receiveFrom as string,
+    );
+
+    this.socket.onopen = () => {
+      this.reconnectAttempts = 0; // Reset attempts on successful connection
+      this.isManualClose = false; // Reset manual close flag
+    };
+
+    this.socket.onmessage = (message) => {
+      const messageData = message.data.toString();
+      // TODO uncompliant Pod error on misformatted message
+      this.onNotification(JSON.parse(messageData) as NotificationMessage);
+    };
+
+    this.socket.onclose = this.onClose.bind(this);
+
+    this.socket.onerror = (err) => {
+      this.onNotificationError(
+        new UnexpectedResourceError(this.resource.uri, err.error),
       );
-      this.socket.onmessage = (message) => {
-        const messageData = message.data.toString();
-        // TODO uncompliant Pod error on misformatted message
-        this.onNotification(JSON.parse(messageData) as NotificationMessage);
-      };
-      this.socket.onerror = (err) => {
-        if (!didResolve) {
-          resolve(UnexpectedResourceError.fromThrown(this.resource.uri, err));
-        } else {
-          this.onError?.(err.error);
-        }
-      };
-      this.socket.onopen = () => {
-        didResolve = true;
-        resolve({
-          isError: false,
-          type: "subscribeToNotificationSuccess",
-          uri: this.resource.uri,
-        });
-      };
-    });
+    };
+    return;
   }
 
-  async close(): Promise<CloseSubscriptionResult> {
+  private onClose() {
+    if (!this.isManualClose) {
+      // Attempt to reconnect only if the disconnection was unintentional
+      if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        this.reconnectAttempts++;
+        setTimeout(() => {
+          this.open();
+        }, this.reconnectInterval);
+        this.onNotificationError(
+          new DisconnectedAttemptingReconnectError(
+            this.resource.uri,
+            `Attempting to reconnect to Websocket for ${this.resource.uri}.`,
+          ),
+        );
+      } else {
+        this.onNotificationError(
+          new DisconnectedNotAttemptingReconnectError(
+            this.resource.uri,
+            `Lost connection to websocket for ${this.resource.uri}.`,
+          ),
+        );
+      }
+    }
+  }
+
+  protected async close(): Promise<void> {
     this.socket?.terminate();
-    return {
-      type: "unsubscribeFromNotificationSuccess",
-      isError: false,
-      uri: this.resource.uri,
-    };
   }
 }
 

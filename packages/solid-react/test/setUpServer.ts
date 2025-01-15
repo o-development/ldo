@@ -4,6 +4,7 @@ import fetch from "cross-fetch";
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
 export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
 export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
+export const WEB_ID = `${SERVER_DOMAIN}${ROOT_ROUTE}profile/card#me`;
 export const TEST_CONTAINER_SLUG = "test_ldo/";
 export const TEST_CONTAINER_URI =
   `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as ContainerUri;

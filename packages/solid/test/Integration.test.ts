@@ -18,6 +18,7 @@ import {
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
 import type {
+  IgnoredInvalidUpdateSuccess,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
 } from "../src/requester/results/success/UpdateSuccess";
@@ -175,7 +176,7 @@ describe("Integration", () => {
     app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, "../data");
+    const testDataPath = path.join(__dirname, "./data");
     await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
@@ -1204,7 +1205,7 @@ describe("Integration", () => {
       expect(aggregateError.errors[0].type).toBe("unexpectedResourceError");
     });
 
-    it("errors when trying to update a container", async () => {
+    it("ignores update when trying to update a container", async () => {
       const badContainerQuad = createQuad(
         namedNode("http://example.org/#green-goblin"),
         namedNode("http://xmlns.com/foaf/0.1/name"),
@@ -1214,13 +1215,15 @@ describe("Integration", () => {
       const transaction = solidLdoDataset.startTransaction();
       transaction.add(badContainerQuad);
       const result = await transaction.commitToPod();
-      expect(result.isError).toBe(true);
-      expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        UpdateResultError | InvalidUriError
+      expect(result.isError).toBe(false);
+      expect(result.type).toBe("aggregateSuccess");
+      const aggregateSuccess = result as AggregateSuccess<
+        UpdateSuccess | IgnoredInvalidUpdateSuccess
       >;
-      expect(aggregateError.errors.length).toBe(1);
-      expect(aggregateError.errors[0].type === "invalidUriError").toBe(true);
+      expect(aggregateSuccess.results.length).toBe(1);
+      expect(aggregateSuccess.results[0].type).toBe(
+        "ignoredInvalidUpdateSuccess",
+      );
     });
 
     it("writes to the default graph without fetching", async () => {
@@ -2035,8 +2038,7 @@ describe("Integration", () => {
         spidermanCallback,
       );
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      const subscriptionId = await resource.subscribeToNotifications();
 
       expect(resource.isSubscribedToNotifications()).toBe(true);
 
@@ -2060,10 +2062,7 @@ describe("Integration", () => {
 
       // Notification is not propogated after unsubscribe
       spidermanCallback.mockClear();
-      const unsubscribeResponse = await resource.unsubscribeFromNotifications();
-      expect(unsubscribeResponse.type).toBe(
-        "unsubscribeFromNotificationSuccess",
-      );
+      await resource.unsubscribeFromNotifications(subscriptionId);
       expect(resource.isSubscribedToNotifications()).toBe(false);
       await authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
@@ -2101,8 +2100,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await resource.subscribeToNotifications();
 
       await authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
@@ -2116,7 +2114,7 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await resource.unsubscribeFromNotifications();
+      await resource.unsubscribeFromAllNotifications();
     });
 
     it("handles notification when subscribed to a parent with a deleted child", async () => {
@@ -2136,8 +2134,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await testContainer.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await testContainer.subscribeToNotifications();
 
       await authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
@@ -2151,7 +2148,7 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await testContainer.unsubscribeFromNotifications();
+      await testContainer.unsubscribeFromAllNotifications();
     });
 
     it("handles notification when subscribed to a parent with an added child", async () => {
@@ -2171,8 +2168,7 @@ describe("Integration", () => {
         containerCallback,
       );
 
-      const subscriptionResult = await testContainer.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("subscribeToNotificationSuccess");
+      await testContainer.subscribeToNotifications();
 
       await authFetch(TEST_CONTAINER_URI, {
         method: "POST",
@@ -2190,22 +2186,22 @@ describe("Integration", () => {
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
       expect(containerCallback).toHaveBeenCalledTimes(1);
 
-      await testContainer.unsubscribeFromNotifications();
+      await testContainer.unsubscribeFromAllNotifications();
     });
 
     it("returns an error when it cannot subscribe to a notification", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
 
       await app.stop();
-
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("unexpectedResourceError");
-
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+      expect(onError).toHaveBeenCalledTimes(2);
       await app.start();
     });
 
     it("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
 
       await app.stop();
       const disabledWebsocketsApp = await createApp(
@@ -2213,8 +2209,36 @@ describe("Integration", () => {
       );
       await disabledWebsocketsApp.start();
 
-      const subscriptionResult = await resource.subscribeToNotifications();
-      expect(subscriptionResult.type).toBe("unsupportedNotificationError");
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+      expect(onError).toHaveBeenCalledTimes(2);
+
+      await disabledWebsocketsApp.stop();
+      await app.start();
+    });
+
+    it("attempts to reconnect multiple times before giving up.", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const onError = jest.fn();
+
+      await app.stop();
+      const disabledWebsocketsApp = await createApp(
+        path.join(__dirname, "./configs/server-config-without-websocket.json"),
+      );
+      await disabledWebsocketsApp.start();
+
+      await resource.subscribeToNotifications({ onNotificationError: onError });
+
+      // TODO: This is a bad test because of the wait. Instead inject better
+      // numbers into the websocket class.
+      await wait(35000);
+
+      expect(onError).toHaveBeenCalledTimes(14);
+      expect(onError.mock.calls[1][0].type).toBe(
+        "disconnectedAttemptingReconnectError",
+      );
+      expect(onError.mock.calls[13][0].type).toBe(
+        "disconnectedNotAttemptingReconnectError",
+      );
 
       await disabledWebsocketsApp.stop();
       await app.start();
@@ -2222,8 +2246,8 @@ describe("Integration", () => {
 
     it("causes no problems when unsubscribing when not subscribed", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const result = await resource.unsubscribeFromNotifications();
-      expect(result.type).toBe("unsubscribeFromNotificationSuccess");
+      await resource.unsubscribeFromAllNotifications();
+      expect(resource.isSubscribedToNotifications()).toBe(false);
     });
   });
 });

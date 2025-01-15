@@ -14,10 +14,10 @@ import {
   updateDatasetInBulk,
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
-import type { SolidLdoDataset } from "./SolidLdoDataset";
 import type { AggregateSuccess } from "./requester/results/success/SuccessResult";
 import type { ResourceResult } from "./resource/resourceResult/ResourceResult";
 import type {
+  IgnoredInvalidUpdateSuccess,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
 } from "./requester/results/success/UpdateSuccess";
@@ -26,7 +26,6 @@ import type {
   UpdateResult,
   UpdateResultError,
 } from "./requester/requests/updateDataResource";
-import { InvalidUriError } from "./requester/results/error/InvalidUriError";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
 
@@ -75,7 +74,7 @@ export class SolidLdoTransactionDataset
    * @param initialDataset - A set of triples to initialize this dataset
    */
   constructor(
-    parentDataset: SolidLdoDataset,
+    parentDataset: ISolidLdoDataset,
     context: SolidLdoDatasetContext,
     datasetFactory: DatasetFactory,
     transactionDatasetFactory: ITransactionDatasetFactory<Quad>,
@@ -108,11 +107,20 @@ export class SolidLdoTransactionDataset
     return this.context.resourceStore.get(uri, options);
   }
 
+  public startTransaction(): SolidLdoTransactionDataset {
+    return new SolidLdoTransactionDataset(
+      this,
+      this.context,
+      this.datasetFactory,
+      this.transactionDatasetFactory,
+    );
+  }
+
   async commitToPod(): Promise<
     | AggregateSuccess<
         ResourceResult<UpdateSuccess | UpdateDefaultGraphSuccess, Leaf>
       >
-    | AggregateError<UpdateResultError | InvalidUriError>
+    | AggregateError<UpdateResultError>
   > {
     const changes = this.getChanges();
     const changesByGraph = splitChangesByGraph(changes);
@@ -121,7 +129,7 @@ export class SolidLdoTransactionDataset
     const results: [
       GraphNode,
       DatasetChanges<Quad>,
-      UpdateResult | InvalidUriError | UpdateDefaultGraphSuccess,
+      UpdateResult | IgnoredInvalidUpdateSuccess | UpdateDefaultGraphSuccess,
     ][] = await Promise.all(
       Array.from(changesByGraph.entries()).map(
         async ([graph, datasetChanges]) => {
@@ -141,10 +149,10 @@ export class SolidLdoTransactionDataset
             return [
               graph,
               datasetChanges,
-              new InvalidUriError(
-                graph.value,
-                `Container URIs are not allowed for custom data.`,
-              ),
+              {
+                type: "ignoredInvalidUpdateSuccess",
+                isError: false,
+              } as IgnoredInvalidUpdateSuccess,
             ];
           }
           const resource = this.getResource(graph.value as LeafUri);
@@ -159,9 +167,7 @@ export class SolidLdoTransactionDataset
 
     if (errors.length > 0) {
       return new AggregateError(
-        errors.map(
-          (result) => result[2] as UpdateResultError | InvalidUriError,
-        ),
+        errors.map((result) => result[2] as UpdateResultError),
       );
     }
     return {
@@ -172,7 +178,8 @@ export class SolidLdoTransactionDataset
         .filter(
           (result): result is ResourceResult<UpdateSuccess, Leaf> =>
             result.type === "updateSuccess" ||
-            result.type === "updateDefaultGraphSuccess",
+            result.type === "updateDefaultGraphSuccess" ||
+            result.type === "ignoredInvalidUpdateSuccess",
         ),
     };
   }

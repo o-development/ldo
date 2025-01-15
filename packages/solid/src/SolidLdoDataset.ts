@@ -15,6 +15,7 @@ import type { NoRootContainerError } from "./requester/results/error/NoRootConta
 import type { ReadResultError } from "./requester/requests/readResource";
 import { ProfileWithStorageShapeType } from "./.ldo/solid.shapeTypes";
 import type { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
+import type { ISolidLdoDataset } from "./types";
 
 /**
  * A SolidLdoDataset has all the functionality of an LdoDataset with the added
@@ -41,7 +42,7 @@ import type { GetStorageContainerFromWebIdSuccess } from "./requester/results/su
  *   .fromSubject("https://example.com/profile#me");
  * ```
  */
-export class SolidLdoDataset extends LdoDataset {
+export class SolidLdoDataset extends LdoDataset implements ISolidLdoDataset {
   /**
    * @internal
    */

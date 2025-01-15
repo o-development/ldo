@@ -27,3 +27,5 @@ export * from "./resource/wac/results/GetWacRuleSuccess";
 export * from "./resource/wac/results/GetWacUriSuccess";
 export * from "./resource/wac/results/SetWacRuleSuccess";
 export * from "./resource/wac/results/WacRuleAbsent";
+
+export * from "./types";
