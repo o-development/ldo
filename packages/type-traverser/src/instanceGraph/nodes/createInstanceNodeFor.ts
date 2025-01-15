@@ -5,7 +5,7 @@ import type {
   TraverserTypes,
   UnionType,
 } from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../instanceGraph";
+import type { InstanceGraph } from "../InstanceGraph";
 import { InterfaceInstanceNode } from "./InterfaceInstanceNode";
 import { PrimitiveInstanceNode } from "./PrimitiveInstanceNode";
 import { UnionInstanceNode } from "./UnionInstanceNode";

@@ -5,7 +5,7 @@ import type {
   TraverserTypes,
   Visitors,
 } from "../../../";
-import type { InstanceGraph } from "../../../instanceGraph/instanceGraph";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
 import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet";
 
 export type VisitorSubTraverser<

@@ -16,7 +16,7 @@ import type {
   Visitors,
   VisitorsInput,
 } from "../";
-import { InstanceGraph } from "../instanceGraph/instanceGraph";
+import { InstanceGraph } from "../instanceGraph/InstanceGraph";
 import { MultiSet } from "../transformer/transformerSubTraversers/util/MultiSet";
 import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentSubTraverser";
 

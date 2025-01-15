@@ -1,5 +1,5 @@
 import type { TraverserDefinitions, ValidateTraverserTypes } from "../../src";
-import { InstanceGraph } from "../../src/instanceGraph/instanceGraph";
+import { InstanceGraph } from "../../src/instanceGraph/InstanceGraph";
 
 describe("InstanceGraph", () => {
   /**

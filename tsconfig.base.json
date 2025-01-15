@@ -13,7 +13,8 @@
     "target": "ES2021",
     "sourceMap": true,
     "jsx": "react-jsx",
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules",

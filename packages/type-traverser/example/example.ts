@@ -1,10 +1,9 @@
-import type {
-  ValidateTraverserTypes,
-  ItemNamed,
-  TraverserDefinitions,
+import {
+  type ValidateTraverserTypes,
+  type TraverserDefinitions,
+  Traverser,
 } from "../src";
-import { InstanceGraph } from "../src/instanceGraph/instanceGraph";
-import type { ParentIdentifiers } from "../src/ReverseRelationshipTypes";
+import type { ParentIdentifiers } from "../src";
 
 async function run() {
   /**
