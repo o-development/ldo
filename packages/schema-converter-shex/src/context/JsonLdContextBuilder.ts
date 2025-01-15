@@ -1,5 +1,6 @@
 import type { Annotation } from "shexj";
-import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
+import type { ExpandedTermDefinition } from "jsonld";
+import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 
 /**
  * Name functions
@@ -184,8 +185,8 @@ export class JsonLdContextBuilder {
     }
   }
 
-  generateJsonldContext(): ContextDefinition {
-    const contextDefnition: ContextDefinition = {};
+  generateJsonldContext(): LdoJsonldContext {
+    const contextDefnition: LdoJsonldContext = {};
     const namesMap = this.generateNames();
     Object.entries(namesMap).forEach(([iri, name]) => {
       if (this.iriTypes[iri]) {
