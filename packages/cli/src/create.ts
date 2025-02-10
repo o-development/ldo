@@ -88,7 +88,7 @@ export async function create(directory: string) {
   await modifyPackageJson(directory, async (packageJson) => {
     if (!packageJson.scripts) packageJson.scripts = {};
     packageJson.scripts.prepublish =
-      "npm run build:ldo & npm run generate-readme";
+      "npm run build:ldo && npm run generate-readme";
     packageJson.scripts[
       "generate-readme"
     ] = `ldo generate-readme --project ./ --shapes ./.shapes --ldo ./.ldo`;

@@ -4,6 +4,7 @@ import { program } from "commander";
 import { build } from "./build";
 import { init } from "./init";
 import { create } from "./create";
+import { generateReadme } from "./generateReadme";
 
 program
   .name("LDO-CLI")
@@ -47,6 +48,6 @@ program
     "Provide the path to the ldo folder",
     "./.ldo",
   )
-  .action(build);
+  .action(generateReadme);
 
 program.parse();
