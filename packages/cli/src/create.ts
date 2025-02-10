@@ -90,21 +90,10 @@ export async function create(directory: string) {
     packageJson.scripts.prepublish =
       "npm run build:ldo & npm run generate-readme";
     packageJson.scripts[
-      "genenerate-readme"
+      "generate-readme"
     ] = `ldo generate-readme --project ./ --shapes ./.shapes --ldo ./.ldo`;
     return packageJson;
   });
-
-  // Create index.js
-  load.text = "Generating index.js";
-  const ldoDir = await fs.readdir(path.join(directory, "./.ldo"), {
-    withFileTypes: true,
-  });
-  const indexText = await renderFile(
-    path.join(__dirname, "./templates/readme/projectIndex.ejs"),
-    { fileNames: ldoDir.map((file) => file.name) },
-  );
-  await fs.writeFile(path.join(directory, "index.js"), indexText);
 
   // Generate ReadMe
   load.text = "Generating README";
@@ -113,6 +102,10 @@ export async function create(directory: string) {
     shapes: path.join(directory, ".shapes"),
     ldo: path.join(directory, ".ldo"),
   });
+
+  // Create .gitignore
+  load.text = "Create .gitignore";
+  await fs.writeFile(path.join(directory, ".gitignore"), "node_modules");
 
   load.stop();
 }

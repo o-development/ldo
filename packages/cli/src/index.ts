@@ -33,9 +33,9 @@ program
   .command("generate-readme")
   .description("Create a ReadMe from the shapes and generated code.")
   .requiredOption(
-    "-r, --readme <readmePath>",
-    "Provide the path to the readme",
-    "./.shapes",
+    "-p, --project <projectPath>",
+    "Provide the path to the root project",
+    "./",
   )
   .requiredOption(
     "-s, --shapes <shapesPath>",

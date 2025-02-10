@@ -66,6 +66,8 @@ export async function generateReadme(options: GenerateReadmeOptions) {
   );
   // Save readme to document
   await fs.writeFile(path.join(options.project, "README.md"), finalContent);
+
+  await generateIndex({ project: options.project });
 }
 
 /**
@@ -78,4 +80,22 @@ function listInterfaces(filePath: string): string[] {
   // Get all interfaces in the file
   const interfaces = sourceFile.getInterfaces().map((iface) => iface.getName());
   return interfaces;
+}
+
+/**
+ * Generate Index
+ */
+interface GenerateIndexOptions {
+  project: string;
+}
+
+export async function generateIndex(options: GenerateIndexOptions) {
+  const ldoDir = await fs.readdir(path.join(options.project, "./.ldo"), {
+    withFileTypes: true,
+  });
+  const indexText = await renderFile(
+    path.join(__dirname, "./templates/readme/projectIndex.ejs"),
+    { fileNames: ldoDir.map((file) => file.name) },
+  );
+  await fs.writeFile(path.join(options.project, "index.js"), indexText);
 }
