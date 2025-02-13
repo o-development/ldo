@@ -34,12 +34,12 @@ export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
     }
   }
 
-  map<U>(callbackfn: (value: T, set: LdSet<T>) => U, thisArg?: any): LdSet<U> {
-    const newSet = new BasicLdSet<U>();
+  map<U>(callbackfn: (value: T, set: LdSet<T>) => U, thisArg?: any): U[] {
+    const returnValues: U[] = [];
     for (const value of this) {
-      newSet.add(callbackfn.call(thisArg, value, this));
+      returnValues.push(callbackfn.call(thisArg, value, this));
     }
-    return newSet;
+    return returnValues;
   }
 
   filter<S extends T>(

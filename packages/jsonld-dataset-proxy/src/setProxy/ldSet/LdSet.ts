@@ -96,7 +96,7 @@ interface LdSet<T> extends Set<T> {
    * @param callbackfn A function that accepts up to two arguments. The map method calls the callbackfn function one time for each element in the set.
    * @param thisArg An object to which the this keyword can refer in the callbackfn function. If thisArg is omitted, undefined is used as the this value.
    */
-  map<U>(callbackfn: (value: T, set: LdSet<T>) => U, thisArg?: any): LdSet<U>;
+  map<U>(callbackfn: (value: T, set: LdSet<T>) => U, thisArg?: any): U[];
   /**
    * Returns the elements of a set that meet the condition specified in a callback function.
    * @param predicate A function that accepts up to two arguments. The filter method calls the predicate function one time for each element in the set.
