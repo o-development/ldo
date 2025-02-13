@@ -1,10 +1,10 @@
 import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
-import type { ArrayProxyTarget } from "./arrayProxy/createArrayHandler";
-import { createArrayHandler } from "./arrayProxy/createArrayHandler";
+import type { ArrayProxyTarget } from "./setProxy/createArrayHandler";
+import { createArrayHandler } from "./setProxy/createArrayHandler";
 import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
 import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
-import type { ArrayProxy } from "./arrayProxy/ArrayProxy";
+import type { ArrayProxy } from "./setProxy/ldSet/LdSet";
 import { _getUnderlyingArrayTarget } from "./types";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";

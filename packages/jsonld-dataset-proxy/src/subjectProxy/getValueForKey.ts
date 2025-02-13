@@ -2,7 +2,7 @@ import type { SubjectProxyTarget } from "./createSubjectHandler";
 import { namedNode } from "@rdfjs/data-model";
 import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
 import type { SubjectProxy } from "./SubjectProxy";
-import type { ArrayProxy } from "../arrayProxy/ArrayProxy";
+import type { ArrayProxy } from "../setProxy/ldSet/LdSet";
 import type { ProxyContext } from "../ProxyContext";
 import { filterQuadsByLanguageOrdering } from "../language/languageUtils";
 
