@@ -1,5 +1,67 @@
+import type { ProxyContext } from "../../ProxyContext";
+import type { SubjectProxy } from "../../subjectProxy/SubjectProxy";
+import { _getUnderlyingNode } from "../../types";
+import { getNodeFromRawObject } from "../../util/getNodeFromRaw";
+import { nodeToString } from "../../util/NodeSet";
+import type { RawObject } from "../../util/RawObject";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
+export class BasicLdSet<T extends RawObject>
+  extends Set<T>
+  implements LdSet<T>
+{
+  protected context: ProxyContext;
+  private hashMap = new Map();
+
+  constructor(proxyContext: ProxyContext) {
+    super();
+    this.context = proxyContext;
+  }
+
+  private hashFn(value: T) {
+    return nodeToString(getNodeFromRawObject(value, this.context.contextUtil));
+  }
+
+  /**
+   * ===========================================================================
+   * Base Set Functions
+   * ===========================================================================
+   */
+
+  add(value: T): this {
+    const key = this.hashFn(value);
+    if (!this.hashMap.has(key)) {
+      this.hashMap.set(key, value);
+      super.add(value);
+    }
+    return this;
+  }
+
+  clear(): void {
+    this.hashMap.clear();
+    super.clear();
+  }
+
+  delete(value: T): boolean {
+    const key = this.hashFn(value);
+    if (this.hashMap.has(key)) {
+      this.hashMap.delete(key);
+      return super.delete(value);
+    }
+    return false;
+  }
+
+  has(value: T): boolean {
+    const key = this.hashFn(value);
+    return this.hashMap.has(key);
+  }
+
+  /**
+   * ===========================================================================
+   * Array Functions
+   * ===========================================================================
+   */
+
   every<S extends T>(
     predicate: (value: T, set: LdSet<T>) => value is S,
     thisArg?: any,
@@ -54,7 +116,7 @@ export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
     predicate: (value: T, set: LdSet<T>) => any,
     thisArg?: unknown,
   ): LdSet<T> {
-    const newSet = new BasicLdSet<T>();
+    const newSet = new BasicLdSet<T>(this.context);
     for (const value of this) {
       if (predicate.call(thisArg, value, this)) newSet.add(value);
     }
@@ -95,12 +157,18 @@ export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
     return accumulator;
   }
 
+  /**
+   * ===========================================================================
+   * Set Methods
+   * ===========================================================================
+   */
+
   difference(other: Set<T>): LdSet<T> {
     return this.filter((value) => !other.has(value));
   }
 
   intersection(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>();
+    const newSet = new BasicLdSet<T>(this.context);
     const iteratingSet = this.size < other.size ? this : other;
     const comparingSet = this.size < other.size ? other : this;
     for (const value of iteratingSet) {
@@ -137,7 +205,7 @@ export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
   }
 
   symmetricDifference(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>();
+    const newSet = new BasicLdSet<T>(this.context);
     this.forEach((value) => newSet.add(value));
     other.forEach((value) => {
       if (newSet.has(value)) {
@@ -150,7 +218,7 @@ export class BasicLdSet<T> extends Set<T> implements LdSet<T> {
   }
 
   union(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>();
+    const newSet = new BasicLdSet<T>(this.context);
     this.forEach((value) => newSet.add(value));
     other.forEach((value) => newSet.add(value));
     return newSet;

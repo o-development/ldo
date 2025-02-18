@@ -13,7 +13,7 @@ interface LdSet<T> extends Set<T> {
    */
   add(value: T): this;
   /**
-   * Clears the set of value
+   * Clears this set of all values, but keeps the values in the datastore
    */
   clear(): void;
   /**

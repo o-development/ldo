@@ -3,139 +3,181 @@
  * helper methods
  */
 import type { Dataset } from "@rdfjs/types";
-import type { ObjectNode, QuadMatch } from "@ldo/rdf-utils";
-import type { ArrayProxyTarget } from "./createArrayHandler";
 import type {
-  _getNodeAtIndex,
-  _getUnderlyingArrayTarget,
+  ObjectNode,
+  PredicateNode,
+  QuadMatch,
+  SubjectNode,
+} from "@ldo/rdf-utils";
+import {
+  _isSubjectOriented,
   _getUnderlyingDataset,
-  _getUnderlyingMatch,
   _proxyContext,
+  _isLangString,
+  _getUnderlyingMatch,
+  _getUnderlyingNode,
 } from "../types";
-import { _getUnderlyingNode } from "../types";
 import type { ProxyContext } from "../ProxyContext";
+import { addObjectToDataset } from "../util/addObjectToDataset";
+import type { RawObject } from "../util/RawObject";
+import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
+import { BasicLdSet } from "./ldSet/BasicLdSet";
+import { getNodeFromRawObject } from "../util/getNodeFromRaw";
 
-export class SetProxy<T> implements LdSet<T> {
-  context: ProxyContext;
-  quadMatch: QuadMatch;
-  isSubjectOriented?: boolean;
-  isLangStringSet?: boolean;
+export class SetProxy<T extends RawObject> extends BasicLdSet<T> {
+  private quadMatch: QuadMatch;
+  private isLangStringSet?: boolean;
 
   constructor(
     context: ProxyContext,
     quadMatch: QuadMatch,
-    isSubjectOriented?: boolean,
     isLangStringSet?: boolean,
   ) {
-    this.context = context;
+    super(context);
     this.quadMatch = quadMatch;
-    this.isSubjectOriented = isSubjectOriented;
     this.isLangStringSet = isLangStringSet;
   }
 
+  /**
+   * Detects if this set is subject oriented. The set is subject oriented if the
+   * given quadMatch has a predicate and an object but no subject, meanting
+   */
+  private isSubjectOriented(): boolean {
+    if (this.quadMatch[0] && this.quadMatch[1] && !this.quadMatch[2])
+      return false;
+    if (this.quadMatch[1] && !this.quadMatch[0]) return true;
+    throw new Error(
+      `SetProxy has an invalid quad match: [${this.quadMatch[0]}, ${this.quadMatch[1]}, ${this.quadMatch[2]}, ${this.quadMatch[3]}]`,
+    );
+  }
+
+  /**
+   * Gets the subject, predicate and object for this set
+   */
+  private getSPO(value?: T): {
+    subject?: SubjectNode;
+    predicate: PredicateNode;
+    object?: ObjectNode;
+  } {
+    const valueNode = value
+      ? getNodeFromRawObject(value, this.context.contextUtil)
+      : undefined;
+    const subject: SubjectNode | undefined = this.isSubjectOriented()
+      ? valueNode
+      : this.quadMatch[0]!;
+    const predicate = this.quadMatch[1]!;
+    const object: ObjectNode | undefined = this.isSubjectOriented()
+      ? this.quadMatch[2] ?? undefined
+      : valueNode;
+    return { subject, predicate, object };
+  }
+
   add(value: T): this {
-    throw new Error("Method not implemented.");
+    // Add value
+    const added = addObjectToDataset(value as RawObject, false, this.context);
+    // Add connecting edges
+    if (!this.isSubjectOriented) {
+      addObjectToDataset(
+        {
+          "@id": this.quadMatch[0],
+          [this.context.contextUtil.iriToKey(
+            this.quadMatch[1]!.value,
+            this.context.getRdfType(this.quadMatch[0]!),
+          )]: added,
+        } as RawObject,
+        false,
+        this.context,
+      );
+    } else {
+      // Account for subject-oriented
+      added[
+        this.context.contextUtil.iriToKey(
+          this.quadMatch[1]!.value,
+          this.context.getRdfType(added[_getUnderlyingNode]),
+        )
+      ] = nodeToJsonldRepresentation(this.quadMatch[2]!, this.context);
+    }
+    return this;
   }
 
   clear(): void {
-    throw new Error("Method not implemented.");
+    for (const value of this) {
+      this.delete(value);
+    }
   }
 
   delete(value: T): boolean {
-    throw new Error("Method not implemented.");
+    const { dataset } = this.context;
+    const { subject, predicate, object } = this.getSPO(value);
+    dataset.deleteMatches(subject, predicate, object);
+    return true;
   }
 
   has(value: T): boolean {
-    throw new Error("Method not implemented.");
+    const { dataset } = this.context;
+    const { subject, predicate, object } = this.getSPO(value);
+    return dataset.match(subject, predicate, object).size > 0;
   }
 
-  get size(): number {
-    throw new Error("Method not implemented.");
+  get size() {
+    const { dataset } = this.context;
+    const { subject, predicate, object } = this.getSPO();
+    return dataset.match(subject, predicate, object).size;
   }
 
   entries(): SetIterator<[T, T]> {
-    throw new Error("Method not implemented.");
+    const iteratorSet = new Set<[T, T]>();
+    for (const value of this) {
+      iteratorSet.add([value, value]);
+    }
+    return iteratorSet[Symbol.iterator]();
   }
 
   keys(): SetIterator<T> {
-    throw new Error("Method not implemented.");
+    return this.values();
   }
 
   values(): SetIterator<T> {
-    throw new Error("Method not implemented.");
-  }
-
-  every<S extends T>(predicate: (value: T, set: LdSet<T>) => value is S, thisArg?: any): this is LdSet<S>;
-
-  every(predicate: (value: T, set: LdSet<T>) => unknown, thisArg?: any): boolean;
-  every(predicate: unknown, thisArg?: unknown): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  some(predicate: (value: T, set: LdSet<T>) => unknown, thisArg?: any): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  forEach(callbackfn: (value: T, value2: T, set: LdSet<T>) => void, thisArg?: any): void {
-    throw new Error("Method not implemented.");
-  }
-
-  map<U>(callbackfn: (value: T, set: LdSet<T>) => U, thisArg?: any): LdSet<T> {
-    throw new Error("Method not implemented.");
-  }
-
-  filter<S extends T>(predicate: (value: T, set: LdSet<T>) => value is S, thisArg?: any): LdSet<S>;
-  filter(predicate: (value: T, set: LdSet<T>) => unknown, thisArg?: any): LdSet<T>;
-  filter(predicate: unknown, thisArg?: unknown): LdSet<T> | LdSet<S> {
-    throw new Error("Method not implemented.");
-  }
-
-  reduce(callbackfn: (previousValue: T, currentValue: T, set: LdSet<T>) => T): T;
-  reduce(callbackfn: (previousValue: T, currentValue: T, set: LdSet<T>) => T, initialValue: T): T;
-  reduce<U>(callbackfn: (previousValue: U, currentValue: T, array: LdSet<T>) => U, initialValue: U): U;
-  reduce(callbackfn: unknown, initialValue?: unknown): T | U {
-    throw new Error("Method not implemented.");
-  }
-
-  difference(other: Set<T>): LdSet<T> {
-    throw new Error("Method not implemented.");
-  }
-
-  intersection(other: Set<T>): LdSet<T> {
-    throw new Error("Method not implemented.");
-  }
-
-  isDisjointFrom(other: Set<T>): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  isSubsetOf(other: Set<T>): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  isSupersetOf(other: Set<T>): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  symmetricDifference(other: Set<T>): LdSet<T> {
-    throw new Error("Method not implemented.");
-  }
-
-  union(other: Set<T>): LdSet<T> {
-    throw new Error("Method not implemented.");
+    return this[Symbol.iterator]();
   }
 
   [Symbol.iterator](): SetIterator<T> {
-    throw new Error("Method not implemented.");
+    const { dataset } = this.context;
+    const { subject, predicate, object } = this.getSPO();
+    const quads = dataset.match(subject, predicate, object);
+    const collection: T[] = quads.toArray().map((quad) => {
+      const quadSubject = this.isSubjectOriented() ? quad.object : quad.subject;
+      return nodeToJsonldRepresentation(quadSubject, this.context) as T;
+    });
+    return new Set(collection)[Symbol.iterator]();
   }
 
-  [Symbol.toStringTag]: string;
-}
+  get [Symbol.toStringTag]() {
+    // TODO: Change this to be human readable.
+    return "LdSet";
+  }
 
-export type ArrayProxy = Array<unknown> & {
-  readonly [_getUnderlyingDataset]: Dataset;
-  readonly [_getUnderlyingMatch]: ArrayProxyTarget[0];
-  readonly [_getNodeAtIndex]: (index: number) => ObjectNode | undefined;
-  readonly [_getUnderlyingArrayTarget]: ArrayProxyTarget;
-  [_proxyContext]: ProxyContext;
-};
+  get [_getUnderlyingDataset](): Dataset {
+    return this.context.dataset;
+  }
+
+  get [_getUnderlyingMatch](): QuadMatch {
+    return this.quadMatch;
+  }
+
+  get [_isSubjectOriented](): boolean {
+    return this.isSubjectOriented();
+  }
+
+  get [_isLangString](): boolean {
+    return !!this.isLangStringSet;
+  }
+
+  get [_proxyContext](): ProxyContext {
+    return this.context;
+  }
+
+  set [_proxyContext](newContext: ProxyContext) {
+    this.context = newContext;
+  }
+}

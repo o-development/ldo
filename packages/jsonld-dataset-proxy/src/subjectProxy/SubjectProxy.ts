@@ -12,7 +12,7 @@ import type {
 export type SubjectProxy = {
   "@id"?: string;
   "@context": ContextDefinition;
-  readonly [key: string | number | symbol]: unknown;
+  [key: string | number | symbol]: unknown;
   readonly [_getUnderlyingDataset]: Dataset;
   readonly [_getUnderlyingNode]: NamedNode | BlankNode;
   [_proxyContext]: ProxyContext;

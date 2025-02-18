@@ -15,7 +15,7 @@ import {
 import { nodeToString } from "../util/NodeSet";
 import type { ObjectJsonRepresentation } from "../util/nodeToJsonldRepresentation";
 import type { RawObject, RawValue } from "../util/RawObject";
-import type { ArrayProxyTarget } from "./createArrayHandler";
+import type { ArrayProxyTarget } from "./createSetHandler";
 
 export function checkArrayModification(
   target: ArrayProxyTarget,
