@@ -1,12 +1,12 @@
 import type { ProxyContext } from "../../ProxyContext";
-import type { SubjectProxy } from "../../subjectProxy/SubjectProxy";
 import { _getUnderlyingNode } from "../../types";
 import { getNodeFromRawObject } from "../../util/getNodeFromRaw";
 import { nodeToString } from "../../util/NodeSet";
-import type { RawObject } from "../../util/RawObject";
+import type { RawValue } from "../../util/RawObject";
+import type { LdSet } from "./LdSet";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export class BasicLdSet<T extends RawObject>
+export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   extends Set<T>
   implements LdSet<T>
 {
@@ -19,6 +19,7 @@ export class BasicLdSet<T extends RawObject>
   }
 
   private hashFn(value: T) {
+    if (typeof value !== "object") return value.toString();
     return nodeToString(getNodeFromRawObject(value, this.context.contextUtil));
   }
 

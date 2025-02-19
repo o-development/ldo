@@ -1,21 +1,18 @@
 import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
-import type { ArrayProxyTarget } from "./setProxy/createSetHandler";
-import { createArrayHandler } from "./setProxy/createSetHandler";
 import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
 import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
-import type { ArrayProxy } from "./setProxy/ldSet/LdSet";
-import { _getUnderlyingArrayTarget } from "./types";
+import { SetProxy } from "./setProxy/setProxy";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";
 import { namedNode } from "@rdfjs/data-model";
+import type { RawObject } from "./util/RawObject";
 
 export interface ProxyContextOptions {
   dataset: Dataset;
   contextUtil: ContextUtil;
   writeGraphs: GraphNode[];
   languageOrdering: LanguageOrdering;
-  prefilledArrayTargets?: ArrayProxyTarget[];
   state?: Record<string, unknown>;
 }
 
@@ -28,7 +25,7 @@ const rdfType = namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
  */
 export class ProxyContext {
   private subjectMap: Map<string, SubjectProxy> = new Map();
-  private arrayMap: Map<string, ArrayProxy> = new Map();
+  private setMap: Map<string, SetProxy<RawObject>> = new Map();
 
   readonly dataset: Dataset;
   readonly contextUtil: ContextUtil;
@@ -42,11 +39,6 @@ export class ProxyContext {
     this.writeGraphs = options.writeGraphs;
     this.languageOrdering = options.languageOrdering;
     this.state = options.state || {};
-    if (options.prefilledArrayTargets) {
-      options.prefilledArrayTargets.forEach((target) => {
-        this.createArrayProxy(target[0], target[2], target);
-      });
-    }
   }
 
   public createSubjectProxy(node: NamedNode | BlankNode): SubjectProxy {
@@ -64,7 +56,7 @@ export class ProxyContext {
     return createSubjectHandler(this);
   }
 
-  private getArrayKey(...quadMatch: QuadMatch) {
+  private getSetKey(...quadMatch: QuadMatch) {
     return `${quadMatch[0]?.value || "undefined"}|${
       quadMatch[1]?.value || "undefined"
     }|${quadMatch[2]?.value || "undefined"}|${
@@ -72,39 +64,25 @@ export class ProxyContext {
     }`;
   }
 
-  public createArrayProxy(
+  public createSetProxy(
     quadMatch: QuadMatch,
-    isSubjectOriented = false,
-    initialTarget?: ArrayProxyTarget,
-    isLangStringArray?: boolean,
-  ): ArrayProxy {
-    const key = this.getArrayKey(...quadMatch);
-    if (!this.arrayMap.has(key)) {
-      const proxy = new Proxy(
-        initialTarget || [quadMatch, [], isSubjectOriented, isLangStringArray],
-        this.createArrayHandler(),
-      ) as unknown as ArrayProxy;
-      this.arrayMap.set(key, proxy);
+    isLangStringSet?: boolean,
+  ): SetProxy {
+    const key = this.getSetKey(...quadMatch);
+    if (!this.setMap.has(key)) {
+      const proxy = new SetProxy(this, quadMatch, isLangStringSet);
+      this.setMap.set(key, proxy);
     }
-    return this.arrayMap.get(key) as ArrayProxy;
-  }
-
-  protected createArrayHandler() {
-    return createArrayHandler(this);
+    return this.setMap.get(key)!;
   }
 
   public duplicate(alternativeOptions: Partial<ProxyContextOptions>) {
-    const prefilledArrayTargets: ArrayProxyTarget[] = [];
-    this.arrayMap.forEach((value) => {
-      prefilledArrayTargets.push(value[_getUnderlyingArrayTarget]);
-    });
     const fullOptions: ProxyContextOptions = {
       ...{
         dataset: this.dataset,
         contextUtil: this.contextUtil,
         writeGraphs: this.writeGraphs,
         languageOrdering: this.languageOrdering,
-        prefilledArrayTargets,
       },
       ...alternativeOptions,
     };

@@ -17,11 +17,10 @@ export * from "./language/languageSet";
 export * from "./language/languageTypes";
 export * from "./language/languageUtils";
 
-export * from "./arrayProxy/createArrayHandler";
-export * from "./arrayProxy/arrayMethods";
-export * from "./arrayProxy/ArrayProxy";
-export * from "./arrayProxy/modifyArray";
-export * from "./arrayProxy/isArrayProxy";
+export * from "./setProxy/isSetProxy";
+export * from "./setProxy/setProxy";
+export * from "./setProxy/ldSet/LdSet";
+export * from "./setProxy/ldSet/BasicLdSet";
 
 export * from "./subjectProxy/createSubjectHandler";
 export * from "./subjectProxy/SubjectProxy";

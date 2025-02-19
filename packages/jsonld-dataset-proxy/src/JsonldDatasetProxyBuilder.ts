@@ -4,6 +4,7 @@ import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
 import type { LanguageOrdering } from "./language/languageTypes";
 import type { ProxyContext } from "./ProxyContext";
 import type { ObjectLike } from "./types";
+import type { LdSet } from "./setProxy/ldSet/LdSet";
 
 /**
  * Helps build JSON LD Dataset Proxies for a specific dataset and context
@@ -56,14 +57,14 @@ export class JsonldDatasetProxyBuilder {
    * @param graph The graph to match
    */
   matchSubject<T extends ObjectLike>(
-    predicate?: QuadMatch[1],
+    predicate: QuadMatch[1],
     object?: QuadMatch[2],
     graph?: QuadMatch[3],
-  ): T[] {
-    return this.proxyContext.createArrayProxy(
+  ): LdSet<T> {
+    return this.proxyContext.createSetProxy(
       [null, predicate, object, graph],
       true,
-    ) as unknown as T[];
+    ) as LdSet<T>;
   }
 
   /**
@@ -75,10 +76,10 @@ export class JsonldDatasetProxyBuilder {
    */
   matchObject<T extends ObjectLike>(
     subject?: QuadMatch[0],
-    predicate?: QuadMatch[1],
+    predicate: QuadMatch[1],
     graph?: QuadMatch[3],
   ): T[] {
-    return this.proxyContext.createArrayProxy([
+    return this.proxyContext.createSetProxy([
       subject,
       predicate,
       null,

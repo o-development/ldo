@@ -2,7 +2,7 @@
 /**
  * An abract representation for a set of Linked Data Objects
  */
-interface LdSet<T> extends Set<T> {
+export interface LdSet<T> extends Set<T> {
   /**
    * ===========================================================================
    * BASE METHODS
