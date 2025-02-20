@@ -53,13 +53,11 @@ describe("ContextUtil", () => {
     });
   });
 
-  describe("isArray", () => {
+  describe("isSet", () => {
     it("indicates that the special @isCollection field means array", () => {
       const contextUtil = new ContextUtil(scopedContext);
       expect(
-        contextUtil.isArray("element", [
-          namedNode("http://example.com/Avatar"),
-        ]),
+        contextUtil.isSet("element", [namedNode("http://example.com/Avatar")]),
       ).toBe(true);
     });
   });

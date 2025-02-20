@@ -1,9 +1,9 @@
+import type { BlankNode, NamedNode } from "@rdfjs/types";
 import type { ProxyContext } from "../../ProxyContext";
 import { _getUnderlyingNode } from "../../types";
-import { getNodeFromRawObject } from "../../util/getNodeFromRaw";
-import { nodeToString } from "../../util/NodeSet";
 import type { RawValue } from "../../util/RawObject";
 import type { LdSet } from "./LdSet";
+import { blankNode } from "@rdfjs/data-model";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
@@ -13,14 +13,19 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   protected context: ProxyContext;
   private hashMap = new Map();
 
-  constructor(proxyContext: ProxyContext) {
-    super();
-    this.context = proxyContext;
+  constructor(values?: Iterable<T> | null) {
+    super(values);
   }
 
   private hashFn(value: T) {
     if (typeof value !== "object") return value.toString();
-    return nodeToString(getNodeFromRawObject(value, this.context.contextUtil));
+    if (value[_getUnderlyingNode]) {
+      return (value[_getUnderlyingNode] as NamedNode | BlankNode).value;
+    } else if (!value["@id"]) {
+      return blankNode().value;
+    } else {
+      return value["@id"];
+    }
   }
 
   /**
@@ -117,7 +122,7 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
     predicate: (value: T, set: LdSet<T>) => any,
     thisArg?: unknown,
   ): LdSet<T> {
-    const newSet = new BasicLdSet<T>(this.context);
+    const newSet = new BasicLdSet<T>();
     for (const value of this) {
       if (predicate.call(thisArg, value, this)) newSet.add(value);
     }
@@ -169,7 +174,7 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   }
 
   intersection(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>(this.context);
+    const newSet = new BasicLdSet<T>();
     const iteratingSet = this.size < other.size ? this : other;
     const comparingSet = this.size < other.size ? other : this;
     for (const value of iteratingSet) {
@@ -206,7 +211,7 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   }
 
   symmetricDifference(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>(this.context);
+    const newSet = new BasicLdSet<T>();
     this.forEach((value) => newSet.add(value));
     other.forEach((value) => {
       if (newSet.has(value)) {
@@ -219,7 +224,7 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   }
 
   union(other: Set<T>): LdSet<T> {
-    const newSet = new BasicLdSet<T>(this.context);
+    const newSet = new BasicLdSet<T>();
     this.forEach((value) => newSet.add(value));
     other.forEach((value) => newSet.add(value));
     return newSet;

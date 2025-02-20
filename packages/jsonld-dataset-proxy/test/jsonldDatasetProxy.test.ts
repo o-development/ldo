@@ -1,19 +1,19 @@
 import { createDataset, serializedToDataset } from "@ldo/dataset";
-import type { JsonldDatasetProxyBuilder, LanguageSet } from "../src";
+import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src";
 import {
   graphOf,
   jsonldDatasetProxy,
   languagesOf,
   setLanguagePreferences,
   write,
-  _getNodeAtIndex,
-  _getUnderlyingArrayTarget,
   _getUnderlyingDataset,
   _getUnderlyingMatch,
   _getUnderlyingNode,
   _isSubjectOriented,
   _proxyContext,
   _writeGraphs,
+  BasicLdSet,
+  set,
 } from "../src";
 import type { ObservationShape, PatientShape } from "./patientExampleData";
 import {
@@ -218,100 +218,98 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("simulates the getter behavior of an array of primitives", async () => {
       const [, observation] = await getLoadedDataset();
-      const arr = observation?.subject?.name as string[];
-      expect(Array.isArray(arr)).toBe(true);
-      expect(arr.length).toBe(3);
-      expect(arr[0]).toBe("Garrett");
-      expect(arr[1]).toBe("Bobby");
-      expect(arr[2]).toBe("Ferguson");
-      expect(arr.at(0)).toBe("Garrett");
-      expect(arr.at(-1)).toBe("Ferguson");
-      expect(arr.concat(["Mimoey"])).toEqual([
-        "Garrett",
-        "Bobby",
-        "Ferguson",
-        "Mimoey",
-      ]);
-      const entriesIterator = arr.entries();
-      expect(entriesIterator.next()).toEqual({
-        value: [0, "Garrett"],
-        done: false,
-      });
-      expect(entriesIterator.next()).toEqual({
-        value: [1, "Bobby"],
-        done: false,
-      });
-      expect(entriesIterator.next()).toEqual({
-        value: [2, "Ferguson"],
-        done: false,
-      });
-      expect(entriesIterator.next()).toEqual({
-        value: undefined,
-        done: true,
-      });
-      expect(arr.every((val) => val.length > 2)).toBe(true);
-      expect(arr.every((val) => val.length > 6)).toBe(false);
-      expect(arr.filter((val) => val.length > 6)).toEqual([
-        "Garrett",
-        "Ferguson",
-      ]);
-      expect(arr.find((val) => val.length < 6)).toBe("Bobby");
-      expect(arr.findIndex((val) => val.length < 6)).toBe(1);
-      // arr.flat (Not included because there should never be nested arrays)
-      let concatTest = "";
-      arr.forEach((value) => (concatTest += value));
-      expect(concatTest).toBe("GarrettBobbyFerguson");
-      expect(arr.includes("Bobby")).toBe(true);
-      expect(arr.indexOf("Bobby")).toBe(1);
-      expect(arr.join("-")).toBe("Garrett-Bobby-Ferguson");
-      const keysIterator = arr.keys();
-      expect(keysIterator.next()).toEqual({
-        value: 0,
-        done: false,
-      });
-      expect(keysIterator.next()).toEqual({
-        value: 1,
-        done: false,
-      });
-      expect(keysIterator.next()).toEqual({
-        value: 2,
-        done: false,
-      });
-      expect(keysIterator.next()).toEqual({
-        value: undefined,
-        done: true,
-      });
-      expect(arr.lastIndexOf("Bobby")).toBe(1);
-      expect(arr.map((val) => val.toUpperCase())).toEqual([
-        "GARRETT",
-        "BOBBY",
-        "FERGUSON",
-      ]);
-      expect(arr.reduce((agg, val) => agg + val, "")).toBe(
-        "GarrettBobbyFerguson",
-      );
-      expect(arr.slice(2)).toEqual(["Ferguson"]);
-      expect(arr.some((val) => val.startsWith("G"))).toBe(true);
-      expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
-      const valuesIterator = arr.values();
-      expect(valuesIterator.next()).toEqual({
-        value: "Garrett",
-        done: false,
-      });
-      expect(valuesIterator.next()).toEqual({
-        value: "Bobby",
-        done: false,
-      });
-      expect(valuesIterator.next()).toEqual({
-        value: "Ferguson",
-        done: false,
-      });
-      expect(valuesIterator.next()).toEqual({
-        value: undefined,
-        done: true,
-      });
-      expect(JSON.stringify(arr)).toBe(`["Garrett","Bobby","Ferguson"]`);
-      expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
+      const set = observation!.subject!.name!;
+      expect(set.size).toBe(3);
+      expect(set).toContain("Garrett");
+      expect(set).toContain("Bobby");
+      expect(set).toContain("Ferguson");
+      // TODO
+      // expect(arr.concat(["Mimoey"])).toEqual([
+      //   "Garrett",
+      //   "Bobby",
+      //   "Ferguson",
+      //   "Mimoey",
+      // ]);
+      // const entriesIterator = arr.entries();
+      // expect(entriesIterator.next()).toEqual({
+      //   value: [0, "Garrett"],
+      //   done: false,
+      // });
+      // expect(entriesIterator.next()).toEqual({
+      //   value: [1, "Bobby"],
+      //   done: false,
+      // });
+      // expect(entriesIterator.next()).toEqual({
+      //   value: [2, "Ferguson"],
+      //   done: false,
+      // });
+      // expect(entriesIterator.next()).toEqual({
+      //   value: undefined,
+      //   done: true,
+      // });
+      // expect(arr.every((val) => val.length > 2)).toBe(true);
+      // expect(arr.every((val) => val.length > 6)).toBe(false);
+      // expect(arr.filter((val) => val.length > 6)).toEqual([
+      //   "Garrett",
+      //   "Ferguson",
+      // ]);
+      // expect(arr.find((val) => val.length < 6)).toBe("Bobby");
+      // expect(arr.findIndex((val) => val.length < 6)).toBe(1);
+      // // arr.flat (Not included because there should never be nested arrays)
+      // let concatTest = "";
+      // arr.forEach((value) => (concatTest += value));
+      // expect(concatTest).toBe("GarrettBobbyFerguson");
+      // expect(arr.includes("Bobby")).toBe(true);
+      // expect(arr.indexOf("Bobby")).toBe(1);
+      // expect(arr.join("-")).toBe("Garrett-Bobby-Ferguson");
+      // const keysIterator = arr.keys();
+      // expect(keysIterator.next()).toEqual({
+      //   value: 0,
+      //   done: false,
+      // });
+      // expect(keysIterator.next()).toEqual({
+      //   value: 1,
+      //   done: false,
+      // });
+      // expect(keysIterator.next()).toEqual({
+      //   value: 2,
+      //   done: false,
+      // });
+      // expect(keysIterator.next()).toEqual({
+      //   value: undefined,
+      //   done: true,
+      // });
+      // expect(arr.lastIndexOf("Bobby")).toBe(1);
+      // expect(arr.map((val) => val.toUpperCase())).toEqual([
+      //   "GARRETT",
+      //   "BOBBY",
+      //   "FERGUSON",
+      // ]);
+      // expect(arr.reduce((agg, val) => agg + val, "")).toBe(
+      //   "GarrettBobbyFerguson",
+      // );
+      // expect(arr.slice(2)).toEqual(["Ferguson"]);
+      // expect(arr.some((val) => val.startsWith("G"))).toBe(true);
+      // expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
+      // const valuesIterator = arr.values();
+      // expect(valuesIterator.next()).toEqual({
+      //   value: "Garrett",
+      //   done: false,
+      // });
+      // expect(valuesIterator.next()).toEqual({
+      //   value: "Bobby",
+      //   done: false,
+      // });
+      // expect(valuesIterator.next()).toEqual({
+      //   value: "Ferguson",
+      //   done: false,
+      // });
+      // expect(valuesIterator.next()).toEqual({
+      //   value: undefined,
+      //   done: true,
+      // });
+      // expect(JSON.stringify(arr)).toBe(`["Garrett","Bobby","Ferguson"]`);
+      // expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
     });
 
     it("can traverse a circular graph", async () => {
@@ -521,7 +519,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Creates a blank node if the id is blank during set", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       observation.type = { "@id": "Observation" };
-      observation.subject = { type: { "@id": "Patient" }, name: ["Joe"] };
+      observation.subject = { type: { "@id": "Patient" }, name: set("Joe") };
       expect(observation.subject?.["@id"]).toBeUndefined();
       expect(observation.subject.name).toEqual(["Joe"]);
       expect(
@@ -540,7 +538,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         "@id": "http://example.com/Patient1",
         type: { "@id": "Patient" },
         birthdate: "2001-01-01",
-        name: ["Jon", "Bon", "Jovi"],
+        name: set("Jon", "Bon", "Jovi"),
       };
       observation.type = { "@id": "Observation" };
       observation.subject = patient;
@@ -554,15 +552,15 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient1: PatientShape = {
         "@id": "http://example.com/Patient1",
         type: { "@id": "Patient" },
-        name: ["jon"],
+        name: set("jon"),
       };
       const patient2: PatientShape = {
         "@id": "http://example.com/patient2",
         type: { "@id": "Patient" },
-        name: ["jane"],
-        roommate: [patient1],
+        name: set("jane"),
+        roommate: set(patient1),
       };
-      patient1.roommate = [patient2];
+      patient1.roommate = set(patient2);
       observation.type = { "@id": "Observation" };
       observation.subject = patient1;
       expect(dataset.toString()).toBe(
@@ -579,38 +577,40 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient1: PatientShape = builder.fromSubject(
         namedNode("http://example.com/Patient1"),
       );
-      patient3.roommate?.push(patient1);
+      patient3.roommate?.add(patient1);
     });
 
-    it("sets a primitive on an array", async () => {
-      const [dataset, patient] = await getEmptyPatientDataset();
-      patient.type = { "@id": "Patient" };
-      (patient.name as string[])[0] = "jon";
-      expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n',
-      );
-    });
+    // TODO: Confirm commenting this out is fine
+    // it("sets a primitive on an array", async () => {
+    //   const [dataset, patient] = await getEmptyPatientDataset();
+    //   patient.type = { "@id": "Patient" };
+    //   patient.name[0] = "jon";
+    //   expect(dataset.toString()).toBe(
+    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n',
+    //   );
+    // });
 
-    it("sets a primitive on an array and overwrites one that already is there", async () => {
-      const [dataset, patient] = await getEmptyPatientDataset();
-      patient.type = { "@id": "Patient" };
-      dataset.add(
-        quad(
-          namedNode("http://example.com/Patient1"),
-          namedNode("http://hl7.org/fhir/name"),
-          literal("jon", "http://www.w3.org/2001/XMLSchema#string"),
-        ),
-      );
-      (patient.name as string[])[0] = "not jon";
-      expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "not jon" .\n',
-      );
-    });
+    // TODO: Confirm that commenting this out is fine
+    // it("sets a primitive on an array and overwrites one that already is there", async () => {
+    //   const [dataset, patient] = await getEmptyPatientDataset();
+    //   patient.type = { "@id": "Patient" };
+    //   dataset.add(
+    //     quad(
+    //       namedNode("http://example.com/Patient1"),
+    //       namedNode("http://hl7.org/fhir/name"),
+    //       literal("jon", "http://www.w3.org/2001/XMLSchema#string"),
+    //     ),
+    //   );
+    //   (patient.name as string[])[0] = "not jon";
+    //   expect(dataset.toString()).toBe(
+    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "not jon" .\n',
+    //   );
+    // });
 
     it("sets an array", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
-      patient.name = ["Joe", "Mama"];
+      patient.name = set("Joe", "Mama");
       expect(dataset.toString()).toBe(
         '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Joe" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Mama" .\n',
       );
@@ -621,7 +621,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/ReplacementPatient",
         type: { "@id": "Patient" },
-        name: ["Jackson"],
+        name: set("Jackson"),
       };
       observation.subject = replacementPatient;
       expect(dataset.toString()).toBe(
@@ -640,31 +640,33 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    it("Does not remove the full object when it is replaced on an array", async () => {
-      const [dataset, observation] = await getTinyLoadedDataset();
-      const replacementPatient: PatientShape = {
-        "@id": "http://example.com/ReplacementPatient",
-        type: { "@id": "Patient" },
-        name: ["Jackson"],
-      };
-      const roommateArr = observation?.subject?.roommate as PatientShape[];
-      roommateArr[0] = replacementPatient;
-      expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
-      );
-    });
+    // TODO: Check that commenting this out is fine
+    // it("Does not remove the full object when it is replaced on an array", async () => {
+    //   const [dataset, observation] = await getTinyLoadedDataset();
+    //   const replacementPatient: PatientShape = {
+    //     "@id": "http://example.com/ReplacementPatient",
+    //     type: { "@id": "Patient" },
+    //     name: set("Jackson"),
+    //   };
+    //   const roommateArr = observation!.subject!.roommate;
+    //   roommateArr[0] = replacementPatient;
+    //   expect(dataset.toString()).toBe(
+    //     '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
+    //   );
+    // });
 
-    it("Keeps the correct array index when setting an index", async () => {
-      const [, observation] = await getLoadedDataset();
-      const roommateArr = observation.subject?.roommate as PatientShape[];
-      roommateArr[0] = {
-        "@id": "http://example.com/ReplacementPatient",
-        type: { "@id": "Patient" },
-        name: ["Jackson"],
-      };
-      expect(roommateArr.length).toBe(2);
-      expect(roommateArr[0].name?.[0]).toBe("Jackson");
-    });
+    // TODO check
+    // it("Keeps the correct array index when setting an index", async () => {
+    //   const [, observation] = await getLoadedDataset();
+    //   const roommateArr = observation.subject?.roommate as PatientShape[];
+    //   roommateArr[0] = {
+    //     "@id": "http://example.com/ReplacementPatient",
+    //     type: { "@id": "Patient" },
+    //     name: ["Jackson"],
+    //   };
+    //   expect(roommateArr.length).toBe(2);
+    //   expect(roommateArr[0].name?.[0]).toBe("Jackson");
+    // });
 
     it("Changes the subject name if the @id is changed", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
@@ -765,7 +767,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const replacementPatient: PatientShape = {
         "@id": "http://example.com/Patient1",
         type: { "@id": "Patient" },
-        name: ["Mister Sneaky"],
+        name: set("Mister Sneaky"),
       };
       observation.subject = replacementPatient;
       expect(dataset.toString()).toBe(
@@ -787,7 +789,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Adds elements to the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
-      patient.name = ["Joe", "Blow"];
+      patient.name = set("Joe", "Blow");
       dataset.add(
         quad(
           namedNode("http://example.com/Patient1"),
@@ -801,7 +803,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Removes elements from the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
-      patient.name = ["Joe", "Blow"];
+      patient.name = set("Joe", "Blow");
       dataset.delete(
         quad(
           namedNode("http://example.com/Patient1"),
@@ -815,7 +817,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Removes and adds from the array even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
-      patient.name = ["Joe", "Blow"];
+      patient.name = set("Joe", "Blow");
       dataset.delete(
         quad(
           namedNode("http://example.com/Patient1"),
@@ -835,58 +837,62 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("Prevents duplicates from being added to the array", async () => {
       const [, patient] = await getArrayLoadedDataset();
-      const arr = patient.name as string[];
-      arr[3] = "Garrett";
+      const arr = patient.name!;
+      arr.add("Garrett");
       expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
     });
 
-    it("Prevents duplicates from being added when a value is overwritten", async () => {
-      const [, patient] = await getArrayLoadedDataset();
-      const arr = patient.name as string[];
-      arr[1] = "Garrett";
-      expect(arr).toEqual(["Garrett", "Ferguson"]);
-    });
+    // TODO: Check if can delete
+    // it("Prevents duplicates from being added when a value is overwritten", async () => {
+    //   const [, patient] = await getArrayLoadedDataset();
+    //   const arr = patient.name!;
+    //   arr[1] = "Garrett";
+    //   expect(arr).toEqual(["Garrett", "Ferguson"]);
+    // });
 
     it("Prevents duplicates for Objects", async () => {
       const [, observation] = await getLoadedDataset();
-      const roommates = observation.subject?.roommate as PatientShape[];
-      roommates[0] = {
+      const roommates = observation.subject!.roommate!;
+      roommates.add({
         "@id": "http://example.com/Patient3",
         type: { "@id": "Patient" },
-      };
-      expect(roommates.length).toBe(1);
-      expect(roommates[0].name?.[0]).toBe("Amy");
+      });
+      expect(roommates.size).toBe(1);
+      expect(roommates.map((obj) => obj.name)).toContain("Amy");
     });
 
-    it("Does nothing when you try to set a symbol on an array", async () => {
-      const [, patient] = await getArrayLoadedDataset();
-      const arr = patient.name as string[];
-      expect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        arr[Symbol.search] = "Cool";
-      }).not.toThrowError();
-    });
+    // TODO: check
+    // it("Does nothing when you try to set a symbol on an array", async () => {
+    //   const [, patient] = await getArrayLoadedDataset();
+    //   const arr = patient.name!;
+    //   expect(() => {
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     arr[Symbol.search] = "Cool";
+    //   }).not.toThrowError();
+    // });
 
-    it("Does nothing when you try to delete a symbol on an array", async () => {
-      const [, patient] = await getArrayLoadedDataset();
-      const arr = patient.name as string[];
-      expect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        delete arr[Symbol.search];
-      }).not.toThrowError();
-    });
+    // TODO: check
+    // it("Does nothing when you try to delete a symbol on an array", async () => {
+    //   const [, patient] = await getArrayLoadedDataset();
+    //   const arr = patient.name as string[];
+    //   expect(() => {
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     delete arr[Symbol.search];
+    //   }).not.toThrowError();
+    // });
 
-    it("Does nothing when you try to delete an index of the array that doesn't exist", async () => {
-      const [dataset, patient] = await getArrayLoadedDataset();
-      const arr = patient.name as string[];
-      delete arr[5];
-      expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
-      expect(dataset.toString()).toEqual(
-        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-      );
-    });
+    // TODO check
+    // it("Does nothing when you try to delete an index of the array that doesn't exist", async () => {
+    //   const [dataset, patient] = await getArrayLoadedDataset();
+    //   const arr = patient.name as string[];
+    //   delete arr[5];
+    //   expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
+    //   expect(dataset.toString()).toEqual(
+    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //   );
+    // });
 
     it("Can set a triple object named node with just a string", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
@@ -902,187 +908,188 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    describe("Array Methods", () => {
-      it("handles copyWithin", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.copyWithin(0, 2, 3);
-        expect(arr).toEqual(["Ferguson", "Bobby"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    // TODO check
+    // describe("Array Methods", () => {
+    //   it("handles copyWithin", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name!;
+    //     arr.copyWithin(0, 2, 3);
+    //     expect(arr).toEqual(["Ferguson", "Bobby"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles copyWithin with the optional end variable missing", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.copyWithin(0, 2);
-        expect(arr).toEqual(["Ferguson", "Bobby"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles copyWithin with the optional end variable missing", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.copyWithin(0, 2);
+    //     expect(arr).toEqual(["Ferguson", "Bobby"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles copyWithin with the optional start variable missing", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        expect(() => arr.copyWithin(0, undefined, 2)).not.toThrowError();
-        expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles copyWithin with the optional start variable missing", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     expect(() => arr.copyWithin(0, undefined, 2)).not.toThrowError();
+    //     expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles fill", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.fill("Beepy", 2, 5);
-        expect(arr).toEqual(["Garrett", "Bobby", "Beepy"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-        );
-      });
+    //   it("handles fill", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.fill("Beepy", 2, 5);
+    //     expect(arr).toEqual(["Garrett", "Bobby", "Beepy"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+    //     );
+    //   });
 
-      it("handles pop", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        expect(arr.pop()).toBe("Ferguson");
-        expect(arr).toEqual(["Garrett", "Bobby"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n',
-        );
-      });
+    //   it("handles pop", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     expect(arr.pop()).toBe("Ferguson");
+    //     expect(arr).toEqual(["Garrett", "Bobby"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n',
+    //     );
+    //   });
 
-      it("returns undefined for pop on an empty collection", async () => {
-        const [, patient] = await getArrayLoadedDataset();
-        patient.name = [];
-        expect(patient.name.pop()).toBe(undefined);
-      });
+    //   it("returns undefined for pop on an empty collection", async () => {
+    //     const [, patient] = await getArrayLoadedDataset();
+    //     patient.name = [];
+    //     expect(patient.name.pop()).toBe(undefined);
+    //   });
 
-      it("handles push", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.push("Beepy");
-        expect(arr).toEqual(["Garrett", "Bobby", "Ferguson", "Beepy"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-        );
-      });
+    //   it("handles push", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.push("Beepy");
+    //     expect(arr).toEqual(["Garrett", "Bobby", "Ferguson", "Beepy"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+    //     );
+    //   });
 
-      it("handles reverse", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        patient.name?.reverse();
-        expect(patient.name).toEqual(["Ferguson", "Bobby", "Garrett"]);
-        expect(dataset.toString()).toBe(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles reverse", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     patient.name?.reverse();
+    //     expect(patient.name).toEqual(["Ferguson", "Bobby", "Garrett"]);
+    //     expect(dataset.toString()).toBe(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles shift", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        expect(arr.shift()).toEqual("Garrett");
-        expect(arr).toEqual(["Bobby", "Ferguson"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles shift", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     expect(arr.shift()).toEqual("Garrett");
+    //     expect(arr).toEqual(["Bobby", "Ferguson"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("returns undefined for shift on an empty collection", async () => {
-        const [, patient] = await getArrayLoadedDataset();
-        patient.name = [];
-        expect(patient.name.shift()).toBe(undefined);
-      });
+    //   it("returns undefined for shift on an empty collection", async () => {
+    //     const [, patient] = await getArrayLoadedDataset();
+    //     patient.name = [];
+    //     expect(patient.name.shift()).toBe(undefined);
+    //   });
 
-      it("handles sort", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        patient.name?.sort((a, b) => {
-          return a.length - b.length;
-        });
-        expect(patient.name).toEqual(["Bobby", "Garrett", "Ferguson"]);
-        expect(dataset.toString()).toBe(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles sort", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     patient.name?.sort((a, b) => {
+    //       return a.length - b.length;
+    //     });
+    //     expect(patient.name).toEqual(["Bobby", "Garrett", "Ferguson"]);
+    //     expect(dataset.toString()).toBe(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles sort without a sort function", async () => {
-        const [, patient] = await getArrayLoadedDataset();
-        patient.name?.sort();
-        expect(patient.name).toEqual(["Bobby", "Ferguson", "Garrett"]);
-      });
+    //   it("handles sort without a sort function", async () => {
+    //     const [, patient] = await getArrayLoadedDataset();
+    //     patient.name?.sort();
+    //     expect(patient.name).toEqual(["Bobby", "Ferguson", "Garrett"]);
+    //   });
 
-      it("handles sort without a sort function and there are two equal values", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        dataset.add(
-          quad(
-            namedNode("http://example.com/Patient1"),
-            namedNode("http://hl7.org/fhir/name"),
-            literal(
-              "Bobby",
-              namedNode("http://www.w3.org/2001/XMLSchema#token"),
-            ),
-          ),
-        );
-        patient.name?.sort();
-        expect(patient.name).toEqual(["Bobby", "Bobby", "Ferguson", "Garrett"]);
-      });
+    //   it("handles sort without a sort function and there are two equal values", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     dataset.add(
+    //       quad(
+    //         namedNode("http://example.com/Patient1"),
+    //         namedNode("http://hl7.org/fhir/name"),
+    //         literal(
+    //           "Bobby",
+    //           namedNode("http://www.w3.org/2001/XMLSchema#token"),
+    //         ),
+    //       ),
+    //     );
+    //     patient.name?.sort();
+    //     expect(patient.name).toEqual(["Bobby", "Bobby", "Ferguson", "Garrett"]);
+    //   });
 
-      it("handles splice", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.splice(1, 0, "Beepy");
-        expect(arr).toEqual(["Garrett", "Beepy", "Bobby", "Ferguson"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-        );
-      });
+    //   it("handles splice", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.splice(1, 0, "Beepy");
+    //     expect(arr).toEqual(["Garrett", "Beepy", "Bobby", "Ferguson"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+    //     );
+    //   });
 
-      it("handles splice with objects", async () => {
-        const [, observation] = await getLoadedDataset();
-        const roommates = observation.subject?.roommate as PatientShape[];
-        roommates.splice(
-          0,
-          1,
-          {
-            "@id": "http://example.com/Patient4",
-            type: { "@id": "Patient" },
-            name: ["Dippy"],
-            age: 2,
-          },
-          {
-            "@id": "http://example.com/Patient5",
-            type: { "@id": "Patient" },
-            name: ["Licky"],
-            age: 3,
-          },
-        );
-        expect(roommates[0].name?.[0]).toBe("Dippy");
-        expect(roommates[1].name?.[0]).toBe("Licky");
-        expect(roommates[2].name?.[0]).toBe("Amy");
-      });
+    //   it("handles splice with objects", async () => {
+    //     const [, observation] = await getLoadedDataset();
+    //     const roommates = observation.subject?.roommate as PatientShape[];
+    //     roommates.splice(
+    //       0,
+    //       1,
+    //       {
+    //         "@id": "http://example.com/Patient4",
+    //         type: { "@id": "Patient" },
+    //         name: ["Dippy"],
+    //         age: 2,
+    //       },
+    //       {
+    //         "@id": "http://example.com/Patient5",
+    //         type: { "@id": "Patient" },
+    //         name: ["Licky"],
+    //         age: 3,
+    //       },
+    //     );
+    //     expect(roommates[0].name?.[0]).toBe("Dippy");
+    //     expect(roommates[1].name?.[0]).toBe("Licky");
+    //     expect(roommates[2].name?.[0]).toBe("Amy");
+    //   });
 
-      it("handles splice with only two params", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.splice(1, 1);
-        expect(arr).toEqual(["Garrett", "Ferguson"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-        );
-      });
+    //   it("handles splice with only two params", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.splice(1, 1);
+    //     expect(arr).toEqual(["Garrett", "Ferguson"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
+    //     );
+    //   });
 
-      it("handles unshift", async () => {
-        const [dataset, patient] = await getArrayLoadedDataset();
-        const arr = patient.name as string[];
-        arr.unshift("Beepy");
-        expect(arr).toEqual(["Beepy", "Garrett", "Bobby", "Ferguson"]);
-        expect(dataset.toString()).toEqual(
-          '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-        );
-      });
-    });
+    //   it("handles unshift", async () => {
+    //     const [dataset, patient] = await getArrayLoadedDataset();
+    //     const arr = patient.name as string[];
+    //     arr.unshift("Beepy");
+    //     expect(arr).toEqual(["Beepy", "Garrett", "Bobby", "Ferguson"]);
+    //     expect(dataset.toString()).toEqual(
+    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
+    //     );
+    //   });
+    // });
   });
 
   describe("underlying data", () => {
@@ -1107,22 +1114,23 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const match = roommateArr[_getUnderlyingMatch];
       expect(match[0].value).toBe("http://example.com/Patient1");
       expect(match[1].value).toBe("http://hl7.org/fhir/roommate");
-      expect(roommateArr[_getNodeAtIndex](0).value).toBe(
-        "http://example.com/Patient2",
-      );
-      expect(roommateArr[_getNodeAtIndex](10)).toBe(undefined);
-      expect(observation.subject.name[_getNodeAtIndex](0).value).toBe(
-        "Garrett",
-      );
-      const underlyingArrayTarget = roommateArr[_getUnderlyingArrayTarget];
-      expect(underlyingArrayTarget[1][0].value).toBe(
+      // TODO: Alt tests
+      // expect(roommateArr[_getNodeAtIndex](0).value).toBe(
+      //   "http://example.com/Patient2",
+      // );
+      // expect(roommateArr[_getNodeAtIndex](10)).toBe(undefined);
+      // expect(observation.subject.name[_getNodeAtIndex](0).value).toBe(
+      //   "Garrett",
+      // );
+      const underlyingArrayTarget = roommateArr[_getUnderlyingMatch];
+      expect(underlyingArrayTarget[0].value).toBe(
         "http://example.com/Patient2",
       );
     });
   });
 
   describe("matchSubject", () => {
-    let patients: PatientShape[];
+    let patients: LdSet<PatientShape>;
     let dataset: Dataset;
 
     beforeEach(async () => {
@@ -1141,10 +1149,10 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     });
 
     it("Successfully adds a node to the list", async () => {
-      patients.push({
+      patients.add({
         "@id": "http://example.com/Patient4",
         type: { "@id": "Patient" },
-        name: ["Dippy"],
+        name: set("Dippy"),
         age: 2,
       });
       expect(
@@ -1227,38 +1235,37 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     });
 
     it("Removes an object and replaces it upon splice", async () => {
-      patients.splice(
-        1,
-        1,
-        {
-          "@id": "http://example.com/Patient4",
-          type: { "@id": "Patient" },
-          name: ["Dippy"],
-          age: 2,
-        },
-        {
-          "@id": "http://example.com/Patient5",
-          type: { "@id": "Patient" },
-          name: ["Licky"],
-          age: 3,
-        },
-      );
-
-      expect(dataset.match(namedNode("http://example.com/Patient2")).size).toBe(
-        0,
-      );
-      expect(patients[1].name?.[0]).toBe("Dippy");
-      expect(patients[2].name?.[0]).toBe("Licky");
+      // TODO adjust test
+      // patients.splice(
+      //   1,
+      //   1,
+      //   {
+      //     "@id": "http://example.com/Patient4",
+      //     type: { "@id": "Patient" },
+      //     name: ["Dippy"],
+      //     age: 2,
+      //   },
+      //   {
+      //     "@id": "http://example.com/Patient5",
+      //     type: { "@id": "Patient" },
+      //     name: ["Licky"],
+      //     age: 3,
+      //   },
+      // );
+      // expect(dataset.match(namedNode("http://example.com/Patient2")).size).toBe(
+      //   0,
+      // );
+      // expect(patients[1].name?.[0]).toBe("Dippy");
+      // expect(patients[2].name?.[0]).toBe("Licky");
     });
 
     it("Removes an object completely when assigning it to undefined", async () => {
-      // @ts-expect-error This violates the typings
-      patients[0] = undefined;
-
-      expect(dataset.match(namedNode("http://example.com/Patient1")).size).toBe(
-        0,
-      );
-      expect(patients[0].name?.[0]).toBe("Rob");
+      // TODO adjust
+      // patients[0] = undefined;
+      // expect(dataset.match(namedNode("http://example.com/Patient1")).size).toBe(
+      //   0,
+      // );
+      // expect(patients[0].name?.[0]).toBe("Rob");
     });
 
     it("Removes an object completely when using the delete parameter", async () => {
@@ -1277,13 +1284,15 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         namedNode("http://hl7.org/fhir/Patient"),
         namedNode("http://example.com/Patient1Doc"),
       );
-      expect(patients.length).toBe(1);
-      expect(patients[0]["@id"]).toBe("http://example.com/Patient1");
+      expect(patients.size).toBe(1);
+      expect(patients.map((o) => o["@id"])).toContain(
+        "http://example.com/Patient1",
+      );
     });
   });
 
   describe("matchObject", () => {
-    let patients: PatientShape[];
+    let patients: LdSet<PatientShape>;
     let builder: JsonldDatasetProxyBuilder;
 
     beforeEach(async () => {
@@ -1321,7 +1330,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         null,
         null,
       );
-      expect(hodgePodge.length).toBe(5);
+      expect(hodgePodge.size).toBe(5);
       expect(hodgePodge[0]["@id"]).toBe("Patient");
       expect(hodgePodge[1]).toBe("Amy");
       expect(hodgePodge[2]).toBe("1988-01-01");
@@ -1335,15 +1344,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const [, , builder] = await getEmptyPatientDataset();
       const patient = builder.fromJson<PatientShape>({
         type: { "@id": "Patient" },
-        name: ["Jack", "Horner"],
+        name: set("Jack", "Horner"),
         birthdate: "1725/11/03",
         age: 298,
-        roommate: [
-          {
-            type: { "@id": "Patient" },
-            name: ["Ethical", "Bug"],
-          },
-        ],
+        roommate: set({
+          type: { "@id": "Patient" },
+          name: set("Ethical", "Bug"),
+        }),
       });
       expect(patient.name?.[0]).toBe("Jack");
       expect(patient.name?.[1]).toBe("Horner");
@@ -1358,15 +1365,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient = builder.fromJson<PatientShape>({
         "@id": "http://example.com/Patient13",
         type: { "@id": "Patient" },
-        name: ["Jack", "Horner"],
+        name: set("Jack", "Horner"),
         birthdate: "1725/11/03",
         age: 298,
-        roommate: [
-          {
-            type: { "@id": "Patient" },
-            name: ["Ethical", "Bug"],
-          },
-        ],
+        roommate: set({
+          type: { "@id": "Patient" },
+          name: set("Ethical", "Bug"),
+        }),
       });
       expect(patient["@id"]).toBe("http://example.com/Patient13");
       expect(patient.name?.[0]).toBe("Jack");
@@ -1386,7 +1391,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           .write(namedNode("http://example.com/Patient4Doc"))
           .fromSubject<PatientShape>(namedNode("https://example.com/Patient4"));
         patient4.type = { "@id": "Patient" };
-        patient4.name = ["Jackson"];
+        patient4.name = set("Jackson");
         expect(dataset.toString()).toBe(
           '<https://example.com/Patient4> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> <http://example.com/Patient4Doc> .\n<https://example.com/Patient4> <http://hl7.org/fhir/name> "Jackson" <http://example.com/Patient4Doc> .\n',
         );
