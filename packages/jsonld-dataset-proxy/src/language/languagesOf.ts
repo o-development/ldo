@@ -59,6 +59,6 @@ export function languagesOf<
     subject,
     predicate,
     proxyContext,
-    proxyContext.contextUtil.isArray(key as string, rdfTypes),
+    proxyContext.contextUtil.isSet(key as string, rdfTypes),
   ) as LanguageOfConditionalReturn<SubjectObject, Key>;
 }

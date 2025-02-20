@@ -1,18 +1,18 @@
-import type { ArrayProxy } from "../arrayProxy/ArrayProxy";
-import { isArrayProxy } from "../arrayProxy/isArrayProxy";
+import { isSetProxy } from "../setProxy/isSetProxy";
+import type { SetProxy } from "../setProxy/setProxy";
 import { isSubjectProxy } from "../subjectProxy/isSubjectProxy";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
 import type { ObjectLike } from "../types";
 
 export function isProxy(
   someObject?: unknown,
-): someObject is ArrayProxy | SubjectProxy {
-  return isSubjectProxy(someObject) || isArrayProxy(someObject);
+): someObject is SetProxy | SubjectProxy {
+  return isSubjectProxy(someObject) || isSetProxy(someObject);
 }
 
 export function getProxyFromObject(
   object: ObjectLike | ObjectLike[],
-): SubjectProxy | ArrayProxy {
+): SubjectProxy | SetProxy {
   if (!isProxy(object)) {
     throw new Error(`${object} is not a Jsonld Dataset Proxy`);
   }

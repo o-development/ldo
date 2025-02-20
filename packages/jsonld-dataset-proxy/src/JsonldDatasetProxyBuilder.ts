@@ -57,14 +57,14 @@ export class JsonldDatasetProxyBuilder {
    * @param graph The graph to match
    */
   matchSubject<T extends ObjectLike>(
-    predicate: QuadMatch[1],
-    object?: QuadMatch[2],
-    graph?: QuadMatch[3],
+    predicate: QuadMatch[1] | undefined | null,
+    object: QuadMatch[2] | undefined | null,
+    graph: QuadMatch[3] | undefined | null,
   ): LdSet<T> {
     return this.proxyContext.createSetProxy(
       [null, predicate, object, graph],
       true,
-    ) as LdSet<T>;
+    ) as unknown as LdSet<T>;
   }
 
   /**
@@ -75,16 +75,16 @@ export class JsonldDatasetProxyBuilder {
    * @param graph The graph to match
    */
   matchObject<T extends ObjectLike>(
-    subject?: QuadMatch[0],
+    subject: QuadMatch[0] | undefined | null,
     predicate: QuadMatch[1],
-    graph?: QuadMatch[3],
-  ): T[] {
+    graph: QuadMatch[3] | undefined | null,
+  ): LdSet<T> {
     return this.proxyContext.createSetProxy([
       subject,
       predicate,
       null,
       graph,
-    ]) as unknown as T[];
+    ]) as unknown as LdSet<T>;
   }
 
   /**

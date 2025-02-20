@@ -2,11 +2,12 @@ import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
 import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
 import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
-import { SetProxy } from "./setProxy/setProxy";
+import type { SetProxy } from "./setProxy/setProxy";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";
 import { namedNode } from "@rdfjs/data-model";
-import type { RawObject } from "./util/RawObject";
+import type { RawValue } from "./util/RawObject";
+import { createNewSetProxy } from "./setProxy/createNewSetProxy";
 
 export interface ProxyContextOptions {
   dataset: Dataset;
@@ -25,7 +26,7 @@ const rdfType = namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
  */
 export class ProxyContext {
   private subjectMap: Map<string, SubjectProxy> = new Map();
-  private setMap: Map<string, SetProxy<RawObject>> = new Map();
+  private setMap: Map<string, SetProxy<NonNullable<RawValue>>> = new Map();
 
   readonly dataset: Dataset;
   readonly contextUtil: ContextUtil;
@@ -66,11 +67,16 @@ export class ProxyContext {
 
   public createSetProxy(
     quadMatch: QuadMatch,
-    isLangStringSet?: boolean,
+    isSubjectOriented?: boolean,
+    _isLangStringSet?: boolean,
   ): SetProxy {
     const key = this.getSetKey(...quadMatch);
     if (!this.setMap.has(key)) {
-      const proxy = new SetProxy(this, quadMatch, isLangStringSet);
+      const proxy = createNewSetProxy(
+        quadMatch,
+        isSubjectOriented ?? false,
+        this,
+      );
       this.setMap.set(key, proxy);
     }
     return this.setMap.get(key)!;

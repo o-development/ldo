@@ -35,11 +35,10 @@ export function getValueForKey(
   const subject = target["@id"];
   const rdfType = proxyContext.getRdfType(subject);
   const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
-  if (contextUtil.isArray(key, rdfType)) {
-    const arrayProxy = proxyContext.createArrayProxy(
+  if (contextUtil.isSet(key, rdfType)) {
+    const arrayProxy = proxyContext.createSetProxy(
       [subject, predicate, null, null],
       false,
-      undefined,
       contextUtil.isLangString(key, rdfType),
     );
     return arrayProxy;
@@ -60,6 +59,6 @@ export function getValueForKey(
     );
     return thing;
   } else {
-    return proxyContext.createArrayProxy([subject, predicate, null, null]);
+    return proxyContext.createSetProxy([subject, predicate, null, null]);
   }
 }

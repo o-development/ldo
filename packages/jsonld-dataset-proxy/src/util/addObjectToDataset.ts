@@ -25,7 +25,11 @@ export function addRawValueToDatasetRecursive(
   const rdfType = proxyContext.getRdfType(subject);
   const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
   // Get the Object Node
-  const object = getNodeFromRawValue(key, value, rdfType, proxyContext);
+  const object = getNodeFromRawValue(
+    value,
+    proxyContext,
+    contextUtil.getDataType(key, rdfType),
+  );
   if (object == undefined) {
     dataset.deleteMatches(subject, predicate);
   } else if (object.termType === "Literal") {
