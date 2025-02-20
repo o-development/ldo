@@ -85,7 +85,7 @@ export abstract class SetProxy<
     return dataset.match(subject, predicate, object).size;
   }
 
-  entries(): SetIterator<[T, T]> {
+  entries(): IterableIterator<[T, T]> {
     const iteratorSet = new Set<[T, T]>();
     for (const value of this) {
       iteratorSet.add([value, value]);
@@ -93,15 +93,15 @@ export abstract class SetProxy<
     return iteratorSet[Symbol.iterator]();
   }
 
-  keys(): SetIterator<T> {
+  keys(): IterableIterator<T> {
     return this.values();
   }
 
-  values(): SetIterator<T> {
+  values(): IterableIterator<T> {
     return this[Symbol.iterator]();
   }
 
-  [Symbol.iterator](): SetIterator<T> {
+  [Symbol.iterator](): IterableIterator<T> {
     const { dataset } = this.context;
     const { subject, predicate, object } = this.getSPO();
     const quads = dataset.match(subject, predicate, object);

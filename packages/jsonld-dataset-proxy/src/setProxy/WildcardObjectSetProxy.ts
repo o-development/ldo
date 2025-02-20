@@ -6,7 +6,7 @@ import type {
 } from "@ldo/rdf-utils";
 import type { Dataset, Quad } from "@rdfjs/types";
 import type { RawValue } from "../util/RawObject";
-import { SetProxy } from "./setProxy";
+import { SetProxy } from "./SetProxy";
 import type { ProxyContext } from "../ProxyContext";
 import { getNodeFromRawValue } from "../util/getNodeFromRaw";
 

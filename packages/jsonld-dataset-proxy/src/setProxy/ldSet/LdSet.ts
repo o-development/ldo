@@ -30,19 +30,19 @@ export interface LdSet<T> extends Set<T> {
    */
   readonly size: number;
   /** Iterates over values in the set. */
-  [Symbol.iterator](): SetIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
   /**
    * Returns an iterable of [v,v] pairs for every value `v` in the set.
    */
-  entries(): SetIterator<[T, T]>;
+  entries(): IterableIterator<[T, T]>;
   /**
    * Despite its name, returns an iterable of the values in the set.
    */
-  keys(): SetIterator<T>;
+  keys(): IterableIterator<T>;
   /**
    * Returns an iterable of values in the set.
    */
-  values(): SetIterator<T>;
+  values(): IterableIterator<T>;
   /**
    * ===========================================================================
    * ITERATOR METHODS

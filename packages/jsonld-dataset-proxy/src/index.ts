@@ -18,7 +18,7 @@ export * from "./language/languageTypes";
 export * from "./language/languageUtils";
 
 export * from "./setProxy/isSetProxy";
-export * from "./setProxy/setProxy";
+export * from "./setProxy/SetProxy";
 export * from "./setProxy/ldSet/LdSet";
 export * from "./setProxy/ldSet/BasicLdSet";
 

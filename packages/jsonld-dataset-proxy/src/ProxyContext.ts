@@ -2,7 +2,7 @@ import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
 import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
 import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
-import type { SetProxy } from "./setProxy/setProxy";
+import type { SetProxy } from "./setProxy/SetProxy";
 import type { ContextUtil } from "./ContextUtil";
 import type { LanguageOrdering } from "./language/languageTypes";
 import { namedNode } from "@rdfjs/data-model";
