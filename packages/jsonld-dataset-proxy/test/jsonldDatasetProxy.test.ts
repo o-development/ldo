@@ -12,7 +12,6 @@ import {
   _isSubjectOriented,
   _proxyContext,
   _writeGraphs,
-  BasicLdSet,
   set,
 } from "../src";
 import type { ObservationShape, PatientShape } from "./patientExampleData";
@@ -1401,7 +1400,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     describe("graphOf", () => {
       it("detects the graph of a single value", async () => {
         const [, observation] = await getGraphLoadedDataset();
-        expect(graphOf(observation, "subject")[0].value).toBe(
+        expect(graphOf(observation, "subject").map((n) => n.value)).toContain(
           "http://example.com/Observation1Doc",
         );
         expect(
@@ -1415,15 +1414,14 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       it("detects the graph of an array value", async () => {
         const [, observation] = await getGraphLoadedDataset();
         const patient1 = observation.subject as PatientShape;
-        expect(graphOf(patient1, "name", 0)[0].value).toBe(
-          "http://example.com/Patient1Doc",
-        );
-        expect(graphOf(patient1, "roommate", 0)[0].value).toBe(
-          "http://example.com/Patient1Doc",
-        );
         expect(
-          graphOf(patient1, "roommate", patient1.roommate?.[1])[0].value,
-        ).toBe("http://example.com/Patient1Doc");
+          graphOf(patient1, "name", "Garrett").map((n) => n.value),
+        ).toContain("http://example.com/Patient1Doc");
+        expect(
+          graphOf(patient1, "roommate", {
+            "@id": "http://example.com/Patient2",
+          } as PatientShape).map((n) => n.value),
+        ).toContain("http://example.com/Patient1Doc");
       });
 
       it("detects the graph of a value in multiple graphs", async () => {
@@ -1451,13 +1449,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           `Key "subject" of [object Object] is not an array.`,
         );
       });
-
-      it("throws an error if the index is out of bounds", async () => {
-        const [, observation] = await getGraphLoadedDataset();
-        expect(() =>
-          graphOf(observation.subject as PatientShape, "name", 10),
-        ).toThrowError(`Index 10 does not exist.`);
-      });
     });
 
     describe("write method", () => {
@@ -1477,27 +1468,31 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
         const [, patient] = await getEmptyPatientDataset();
         patient.type = { "@id": "Patient" };
-        patient.name?.push("default");
+        patient.name?.add("default");
         const end1 = write(doc1).using(patient);
-        patient.name?.push("1");
+        patient.name?.add("1");
         const end2 = write(doc2).using(patient);
-        patient.name?.push("2");
+        patient.name?.add("2");
         const end3 = write(doc3).using(patient);
-        patient.name?.push("3");
+        patient.name?.add("3");
         end3();
-        patient.name?.push("2 again");
+        patient.name?.add("2 again");
         end2();
-        patient.name?.push("1 again");
+        patient.name?.add("1 again");
         end1();
-        patient.name?.push("default again");
+        patient.name?.add("default again");
 
-        expect(graphOf(patient, "name", 0)[0].value).toBe(defaultGraph().value);
-        expect(graphOf(patient, "name", 1)[0].value).toBe(doc1.value);
-        expect(graphOf(patient, "name", 2)[0].value).toBe(doc2.value);
-        expect(graphOf(patient, "name", 3)[0].value).toBe(doc3.value);
-        expect(graphOf(patient, "name", 4)[0].value).toBe(doc2.value);
-        expect(graphOf(patient, "name", 5)[0].value).toBe(doc1.value);
-        expect(graphOf(patient, "name", 6)[0].value).toBe(defaultGraph().value);
+        expect(graphOf(patient, "name", "default")[0].value).toBe(
+          defaultGraph().value,
+        );
+        expect(graphOf(patient, "name", "1")[0].value).toBe(doc1.value);
+        expect(graphOf(patient, "name", "2")[0].value).toBe(doc2.value);
+        expect(graphOf(patient, "name", "3")[0].value).toBe(doc3.value);
+        expect(graphOf(patient, "name", "4")[0].value).toBe(doc2.value);
+        expect(graphOf(patient, "name", "5")[0].value).toBe(doc1.value);
+        expect(graphOf(patient, "name", "default again")[0].value).toBe(
+          defaultGraph().value,
+        );
       });
 
       it("copies the proxy and changes the write graphs without modifying the original", async () => {
@@ -1505,11 +1500,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
         const [, patient] = await getEmptyPatientDataset();
         patient.type = { "@id": "Patient" };
-        patient.name?.push("Default");
+        patient.name?.add("Default");
         const [patientOnDoc1] = write(doc1).usingCopy(patient);
-        patientOnDoc1.name?.push("Doc1");
-        expect(graphOf(patient, "name", 0)[0].value).toBe(defaultGraph().value);
-        expect(graphOf(patient, "name", 1)[0].value).toBe(doc1.value);
+        patientOnDoc1.name?.add("Doc1");
+        expect(graphOf(patient, "name", "Default")[0].value).toBe(
+          defaultGraph().value,
+        );
+        expect(graphOf(patient, "name", "Doc1")[0].value).toBe(doc1.value);
       });
 
       it("works with array proxies", async () => {
@@ -1548,7 +1545,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       setLanguagePreferences("ru", "zh").using(observation, patient);
 
       expect(observation.langNotes).toBeUndefined();
-      expect(patient.langName?.length).toBe(0);
+      expect(patient.langName?.size).toBe(0);
 
       setLanguagePreferences("@other", "fr").using(observation, patient);
       expect(observation.langNotes).not.toBe("Notes Sympas");
@@ -1556,7 +1553,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
       setLanguagePreferences().using(observation, patient);
       expect(observation.langNotes).toBe(undefined);
-      expect(patient.langName?.length).toBe(0);
+      expect(patient.langName?.size).toBe(0);
     });
 
     it("sets language strings based on the default language", async () => {
@@ -1574,7 +1571,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         es: "Notas Geniales",
       });
       const patient = observation.subject as PatientShape;
-      patient.langName?.push("Luc");
+      patient.langName?.add("Luc");
       expect(languagesOf(patient, "langName").fr?.has("Jean")).toBe(true);
       expect(languagesOf(patient, "langName").fr?.has("Luc")).toBe(true);
       expect(languagesOf(patient, "langName")["@none"]?.has("Jon")).toBe(true);

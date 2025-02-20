@@ -8,21 +8,20 @@ import {
   _getUnderlyingNode,
   _proxyContext,
 } from "./types";
+import type { LdSet } from "./setProxy/ldSet/LdSet";
 
 /**
  * Returns the graph for which a defined triple is a member
  * @param subject A JsonldDatasetProxy that represents the subject
  * @param predicate The key on the JsonldDatasetProxy
  * @param object The direct object. This can be a JsonldDatasetProxy. This field
- * is optional if this field does not have a "set" object.
+ * is optional.
  * @returns a list of graphs for which the triples are members
  */
 export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
   subject: Subject,
   predicate: Key,
-  object: NonNullable<Subject[Key]> extends Set<infer T>
-    ? T
-    : Subject[Key] | undefined,
+  object?: NonNullable<Subject[Key]> extends LdSet<infer T> ? T : Subject[Key],
 ): GraphNode[] {
   const subjectProxy = getSubjectProxyFromObject(subject);
   const proxyContext = subjectProxy[_proxyContext];
