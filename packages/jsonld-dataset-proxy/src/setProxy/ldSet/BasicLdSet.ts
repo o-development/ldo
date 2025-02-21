@@ -1,5 +1,4 @@
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import type { ProxyContext } from "../../ProxyContext";
 import { _getUnderlyingNode } from "../../types";
 import type { RawValue } from "../../util/RawObject";
 import type { LdSet } from "./LdSet";
@@ -10,7 +9,6 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   extends Set<T>
   implements LdSet<T>
 {
-  protected context: ProxyContext;
   private hashMap = new Map();
 
   constructor(values?: Iterable<T> | null) {
@@ -161,6 +159,16 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
     }
 
     return accumulator;
+  }
+
+  toArray(): T[] {
+    const arr: T[] = [];
+    this.forEach((value) => arr.push(value));
+    return arr;
+  }
+
+  toJSON(): T[] {
+    return this.toArray();
   }
 
   /**

@@ -32,9 +32,11 @@ export abstract class SetProxy<
   T extends NonNullable<RawValue> = NonNullable<RawValue>,
 > extends BasicLdSet<T> {
   protected quadMatch: QuadMatch;
+  protected context: ProxyContext;
 
   constructor(context: ProxyContext, quadMatch: QuadMatch) {
-    super(context);
+    super();
+    this.context = context;
     this.quadMatch = quadMatch;
   }
 

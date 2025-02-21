@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * An abract representation for a set of Linked Data Objects
  */
@@ -141,6 +142,16 @@ export interface LdSet<T> extends Set<T> {
     callbackfn: (previousValue: U, currentValue: T, array: LdSet<T>) => U,
     initialValue: U,
   ): U;
+
+  /**
+   * Converts the current LdSet to an array.
+   */
+  toArray(): T[];
+
+  /**
+   * Converts to JSON
+   */
+  toJSON(): T[];
 
   /**
    * ===========================================================================

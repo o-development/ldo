@@ -13,6 +13,7 @@ import {
   _proxyContext,
   _writeGraphs,
   set,
+  SetProxy,
 } from "../src";
 import type { ObservationShape, PatientShape } from "./patientExampleData";
 import {
@@ -207,7 +208,9 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("retrieves a nested primitive with a blank node", async () => {
       const [, observation] = await getLoadedDatasetWithBlankNodes();
-      expect(observation?.subject?.roommate?.[0].age).toBe(34);
+      expect(observation?.subject?.roommate?.map((obj) => obj.age)).toContain(
+        34,
+      );
     });
 
     it("retreives a @type value as rdf:type", async () => {
@@ -313,9 +316,12 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("can traverse a circular graph", async () => {
       const [, observation] = await getLoadedDataset();
-      expect(observation.subject?.roommate?.[0].roommate?.[0]?.name?.[0]).toBe(
-        "Garrett",
-      );
+      expect(
+        observation.subject?.roommate
+          ?.toArray()[0]
+          .roommate?.toArray()[0]
+          ?.name?.toArray()[0],
+      ).toBe("Garrett");
     });
 
     it("simulates getter object properties", async () => {
@@ -324,17 +330,27 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
       expect(obj["@id"]).toEqual("http://example.com/Patient1");
       expect(obj.type).toEqual({ "@id": "Patient" });
-      expect(obj.name).toEqual(["Garrett", "Bobby", "Ferguson"]);
+      expect(obj.name).toContain("Garrett");
+      expect(obj.name).toContain("Bobby");
+      expect(obj.name).toContain("Ferguson");
       expect(obj.birthdate).toEqual("1986-01-01");
       expect(obj.age).toEqual(35);
       expect(obj.isHappy).toEqual(true);
       const entries = Object.entries(obj);
-      expect(entries[0]).toEqual(["@id", "http://example.com/Patient1"]);
-      expect(entries[1]).toEqual(["type", { "@id": "Patient" }]);
-      expect(entries[2]).toEqual(["name", ["Garrett", "Bobby", "Ferguson"]]);
-      expect(entries[3]).toEqual(["birthdate", "1986-01-01"]);
-      expect(entries[4]).toEqual(["age", 35]);
-      expect(entries[5]).toEqual(["isHappy", true]);
+      expect(entries[0][0]).toBe("@id");
+      expect(entries[0][1]).toBe("http://example.com/Patient1");
+      expect(entries[1][0]).toBe("type");
+      expect(entries[1][1]).toEqual({ "@id": "Patient" });
+      expect(entries[2][0]).toBe("name");
+      expect(entries[2][1]).toContain("Garrett");
+      expect(entries[2][1]).toContain("Bobby");
+      expect(entries[2][1]).toContain("Ferguson");
+      expect(entries[3][0]).toBe("birthdate");
+      expect(entries[3][1]).toBe("1986-01-01");
+      expect(entries[4][0]).toBe("age");
+      expect(entries[4][1]).toBe(35);
+      expect(entries[5][0]).toBe("isHappy");
+      expect(entries[5][1]).toBe(true);
       expect(entries[6][0]).toEqual("roommate");
       expect(Object.keys(obj)).toEqual([
         "@id",
@@ -348,7 +364,9 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const values = Object.values(obj);
       expect(values[0]).toEqual("http://example.com/Patient1");
       expect(values[1]).toEqual({ "@id": "Patient" });
-      expect(values[2]).toEqual(["Garrett", "Bobby", "Ferguson"]);
+      expect(values[2]).toContain("Garrett");
+      expect(values[2]).toContain("Bobby");
+      expect(values[2]).toContain("Ferguson");
       expect(values[3]).toEqual("1986-01-01");
       expect(values[4]).toEqual(35);
       expect(values[5]).toEqual(true);
@@ -356,7 +374,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("handles stringification of a non circular object", async () => {
       const [, observation] = await getLoadedDataset();
-      const obj = observation.subject?.roommate?.[1] as PatientShape;
+      const obj = observation.subject!.roommate!.toArray()[1];
       expect(obj.toString()).toBe("[object Object]");
       expect(JSON.stringify(obj)).toBe(
         `{"@id":"http://example.com/Patient3","type":{"@id":"Patient"},"name":["Amy"],"birthdate":"1988-01-01","age":33,"isHappy":true}`,
@@ -365,8 +383,9 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("Returns an array for required array fields even if no data is in the dataset", async () => {
       const [, observation] = await getLoadedDataset();
-      const obj = observation.subject?.roommate?.[1] as PatientShape;
-      expect(obj.roommate).toEqual([]);
+      const obj = observation.subject!.roommate!.toArray()[1];
+      expect(obj.roommate).toBeInstanceOf(SetProxy);
+      expect(obj.roommate?.size).toBe(0);
     });
 
     it("updates when the dataset is updated", async () => {
@@ -406,7 +425,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(observation[Symbol.toPrimitive]).toBe(undefined);
     });
 
-    it("returns an array object if multiple triples exist, even if @container is not @set", async () => {
+    it("If a container is not a set, but multiple triples exist, it should still return only 1.", async () => {
       const dataset = await serializedToDataset(patientData);
       const fakePatientSContext: ContextDefinition = {
         name: {
@@ -418,7 +437,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient = builder.fromSubject(
         namedNode("http://example.com/Patient1"),
       );
-      expect(patient.name).toEqual(["Garrett", "Bobby", "Ferguson"]);
+      expect(patient.name).toBe("Garrett");
     });
 
     it("returns context when the @context key is called", async () => {
@@ -428,8 +447,12 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("reads an array for collections, but a var for non collections", async () => {
       const [, bender, avatar] = await getScopedDataset();
-      expect(avatar.element[0]["@id"]).toBe("http://example.com/Air");
-      expect(avatar.element[1]["@id"]).toBe("http://example.com/Water");
+      expect(avatar.element.map((obj) => obj["@id"])).toContain(
+        "http://example.com/Air",
+      );
+      expect(avatar.element.map((obj) => obj["@id"])).toContain(
+        "http://example.com/Water",
+      );
       expect(bender.element["@id"]).toBe("http://example.com/Water");
     });
   });
@@ -498,13 +521,16 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("sets a retrieved blank node object", async () => {
       const [, observation] = await getTinyLoadedDatasetWithBlankNodes();
-      const patient2 = observation.subject?.roommate?.[0] as PatientShape;
+      const patient2 = observation.subject?.roommate?.toArray()[0];
       observation.subject = patient2;
-      expect(observation.subject.name).toEqual(["Rob"]);
-      expect(observation.subject.roommate?.[0]?.name).toEqual(["Garrett"]);
-      expect(observation.subject.roommate?.[0]?.roommate?.[0].name).toEqual([
-        "Rob",
-      ]);
+      expect(observation.subject?.name).toContain("Rob");
+      expect(observation.subject?.roommate?.toArray()[0].name).toContain(
+        "Garrett",
+      );
+      expect(
+        observation.subject?.roommate?.toArray()[0]?.roommate?.toArray()[0]
+          .name,
+      ).toContain("Rob");
     });
 
     it("only removes the connection when a value is set to undefined", async () => {
