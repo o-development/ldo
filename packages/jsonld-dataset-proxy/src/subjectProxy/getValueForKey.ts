@@ -52,13 +52,11 @@ export function getValueForKey(
   }
   if (objectDataset.size === 0) {
     return undefined;
-  } else if (objectDataset.size === 1) {
+  } else {
     const thing = nodeToJsonldRepresentation(
       objectDataset.toArray()[0].object,
       proxyContext,
     );
     return thing;
-  } else {
-    return proxyContext.createSetProxy([subject, predicate, null, null]);
   }
 }

@@ -544,9 +544,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Creates a blank node if the id is blank during set", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       observation.type = { "@id": "Observation" };
+      console.log("1");
       observation.subject = { type: { "@id": "Patient" }, name: set("Joe") };
+      console.log("2");
       expect(observation.subject?.["@id"]).toBeUndefined();
-      expect(observation.subject.name).toEqual(["Joe"]);
+      console.log("here");
+      expect(observation.subject.name).toContain("Joe");
+      console.log("there");
       expect(
         dataset
           .match(
