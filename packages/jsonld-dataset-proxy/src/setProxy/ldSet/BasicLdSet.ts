@@ -9,20 +9,28 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
   extends Set<T>
   implements LdSet<T>
 {
-  private hashMap = new Map();
+  private hashMap: Map<string, T>;
 
   constructor(values?: Iterable<T> | null) {
-    super(values);
+    super();
+    this.hashMap = new Map();
+    if (values) {
+      for (const value of values) {
+        this.add(value);
+      }
+    }
   }
 
-  private hashFn(value: T) {
+  private hashFn(value: T): string {
     if (typeof value !== "object") return value.toString();
     if (value[_getUnderlyingNode]) {
       return (value[_getUnderlyingNode] as NamedNode | BlankNode).value;
     } else if (!value["@id"]) {
       return blankNode().value;
-    } else {
+    } else if (typeof value["@id"] === "string") {
       return value["@id"];
+    } else {
+      return value["@id"].value;
     }
   }
 

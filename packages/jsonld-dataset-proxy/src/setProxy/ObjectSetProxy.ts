@@ -38,4 +38,26 @@ export class ObjectSetProxy<
     );
     return this;
   }
+
+  /**
+   * Clears the set of all values
+   */
+  clear(): void {
+    for (const value of this) {
+      this.delete(value);
+    }
+  }
+
+  /**
+   * Deletes an item for the set
+   * @param value the item to delete
+   * @returns true if the item was present before deletion
+   */
+  delete(value: T): boolean {
+    const { dataset } = this.context;
+    const { subject, predicate, object, graph } = this.getSPOG(value);
+    const didDelete = dataset.match(subject, predicate, object, graph).size > 0;
+    dataset.deleteMatches(subject, predicate, object, graph);
+    return didDelete;
+  }
 }

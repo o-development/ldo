@@ -9,6 +9,7 @@ import {
   _proxyContext,
 } from "./types";
 import type { LdSet } from "./setProxy/ldSet/LdSet";
+import { getNodeFromRawValue } from "./util/getNodeFromRaw";
 
 /**
  * Returns the graph for which a defined triple is a member
@@ -36,8 +37,11 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
   if (object == null) {
     objectNode = null;
   } else {
-    const objectProxy = getSubjectProxyFromObject(object);
-    objectNode = objectProxy[_getUnderlyingNode];
+    const datatype = proxyContext.contextUtil.getDataType(
+      predicate as string,
+      proxyContext.getRdfType(subjectNode),
+    );
+    objectNode = getNodeFromRawValue(object, proxyContext, datatype) ?? null;
   }
   const quads = subjectProxy[_getUnderlyingDataset].match(
     subjectNode,

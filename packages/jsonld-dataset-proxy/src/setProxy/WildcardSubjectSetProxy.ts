@@ -9,6 +9,7 @@ import type { RawObject } from "../util/RawObject";
 import { SetProxy } from "./SetProxy";
 import type { ProxyContext } from "../ProxyContext";
 import { getNodeFromRawObject } from "../util/getNodeFromRaw";
+import { _isSubjectOriented } from "../types";
 
 export type WildcardSubjectSetProxyQuadMatch = [
   undefined | null,
@@ -33,20 +34,23 @@ export class WildcardSubjectSetProxy<T extends RawObject> extends SetProxy<T> {
     this.quadMatch = quadMatch;
   }
 
-  protected getSPO(value?: T | undefined): {
+  protected getSPOG(value?: T | undefined): {
     subject?: SubjectNode;
     predicate?: PredicateNode;
     object?: ObjectNode;
+    graph?: GraphNode;
   } {
     // Get the RDF Node that represents the value, skip is no value
     const predicate = this.quadMatch[1] ?? undefined;
     const object = this.quadMatch[2] ?? undefined;
+    const graph = this.quadMatch[3] ?? undefined;
     if (value) {
       const valueNode = getNodeFromRawObject(value, this.context.contextUtil);
       return {
         subject: valueNode,
         predicate,
         object,
+        graph,
       };
     }
     // SPO for no value
@@ -54,10 +58,15 @@ export class WildcardSubjectSetProxy<T extends RawObject> extends SetProxy<T> {
       subject: undefined,
       predicate,
       object,
+      graph,
     };
   }
 
   protected getNodeOfFocus(quad: Quad): SubjectNode {
     return quad.subject as SubjectNode;
+  }
+
+  get [_isSubjectOriented](): true {
+    return true;
   }
 }

@@ -37,6 +37,8 @@ import {
   type Bender,
 } from "./scopedExampleData";
 
+global.console.warn = () => {};
+
 const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
   async function getLoadedDataset(): Promise<
     [Dataset, ObservationShape, JsonldDatasetProxyBuilder]
@@ -544,13 +546,9 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Creates a blank node if the id is blank during set", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
       observation.type = { "@id": "Observation" };
-      console.log("1");
       observation.subject = { type: { "@id": "Patient" }, name: set("Joe") };
-      console.log("2");
       expect(observation.subject?.["@id"]).toBeUndefined();
-      console.log("here");
       expect(observation.subject.name).toContain("Joe");
-      console.log("there");
       expect(
         dataset
           .match(
@@ -707,6 +705,10 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
+    // TODO changes to blank node when set undefined on ID
+
+    // TODO deletes the object if delete on an ID
+
     it("Removes all adjoining triples when garbage collection is indicated via the delete operator on an object", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject;
@@ -723,25 +725,33 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    it("Removes all adjoining triples when garbage collection is indicated via the delete operator on an array", async () => {
+    it("Removes connecting triples when the delete method is called on a set", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      delete observation.subject?.roommate?.[0];
+      const firstRoommate = observation.subject!.roommate!.toArray()[0];
+      observation.subject!.roommate!.delete(firstRoommate);
       expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n',
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
     });
 
-    it("Removes all adjoining triples when garbage collection is indicated via the delete operator on an array with blank nodes", async () => {
+    it("Removes connecting triples when the delete method is called on a set with blank nodes", async () => {
       const [dataset, observation] = await getTinyLoadedDatasetWithBlankNodes();
-      const deletedBlankNode =
-        observation.subject?.roommate?.[0][_getUnderlyingNode];
-      delete observation.subject?.roommate?.[0];
-      expect(dataset.match(deletedBlankNode).size).toBe(0);
+      const originalDatasetSize = dataset.size;
+      const roommate1 = observation.subject!.roommate!.toArray()[0];
+      observation.subject!.roommate!.delete(roommate1);
+      expect(dataset.size).toBe(originalDatasetSize - 1);
+      expect(
+        dataset.match(
+          observation.subject![_getUnderlyingNode],
+          null,
+          roommate1[_getUnderlyingNode],
+        ).size,
+      ).toBe(0);
     });
 
-    it("Removes a literal in an array when using the delete operator", async () => {
+    it("Removes a literal in an array when using the delete method", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      delete observation.subject?.name?.[0];
+      observation.subject!.name!.delete("Garrett");
       expect(dataset.toString()).toBe(
         '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
       );
@@ -826,10 +836,13 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           literal("Tow"),
         ),
       );
-      expect(patient.name).toEqual(["Joe", "Blow", "Tow"]);
+      expect(patient.name.size).toBe(3);
+      expect(patient.name).toContain("Joe");
+      expect(patient.name).toContain("Blow");
+      expect(patient.name).toContain("Tow");
     });
 
-    it("Removes elements from the array even if they were modified by the datastore", async () => {
+    it("Removes elements from the set even if they were modified by the datastore", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
       patient.name = set("Joe", "Blow");
@@ -840,7 +853,8 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           literal("Blow"),
         ),
       );
-      expect(patient.name).toEqual(["Joe"]);
+      expect(patient.name.size).toBe(1);
+      expect(patient.name).toContain("Joe");
     });
 
     it("Removes and adds from the array even if they were modified by the datastore", async () => {
@@ -861,14 +875,19 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           literal("Tow"),
         ),
       );
-      expect(patient.name).toEqual(["Joe", "Tow"]);
+      expect(patient.name.size).toBe(2);
+      expect(patient.name).toContain("Joe");
+      expect(patient.name).toContain("Tow");
     });
 
     it("Prevents duplicates from being added to the array", async () => {
       const [, patient] = await getArrayLoadedDataset();
       const arr = patient.name!;
       arr.add("Garrett");
-      expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
+      expect(arr.size).toBe(3);
+      expect(arr).toContain("Garrett");
+      expect(arr).toContain("Bobby");
+      expect(arr).toContain("Ferguson");
     });
 
     // TODO: Check if can delete
@@ -886,8 +905,12 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         "@id": "http://example.com/Patient3",
         type: { "@id": "Patient" },
       });
-      expect(roommates.size).toBe(1);
-      expect(roommates.map((obj) => obj.name)).toContain("Amy");
+      expect(roommates.size).toBe(2);
+      const roommateNames = roommates.reduce((s, obj) => {
+        obj.name?.forEach((n) => s.add(n));
+        return s;
+      }, set());
+      expect(roommateNames).toContain("Amy");
     });
 
     // TODO: check
@@ -1143,18 +1166,8 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const match = roommateArr[_getUnderlyingMatch];
       expect(match[0].value).toBe("http://example.com/Patient1");
       expect(match[1].value).toBe("http://hl7.org/fhir/roommate");
-      // TODO: Alt tests
-      // expect(roommateArr[_getNodeAtIndex](0).value).toBe(
-      //   "http://example.com/Patient2",
-      // );
-      // expect(roommateArr[_getNodeAtIndex](10)).toBe(undefined);
-      // expect(observation.subject.name[_getNodeAtIndex](0).value).toBe(
-      //   "Garrett",
-      // );
-      const underlyingArrayTarget = roommateArr[_getUnderlyingMatch];
-      expect(underlyingArrayTarget[0].value).toBe(
-        "http://example.com/Patient2",
-      );
+      expect(match[2]).toBe(null);
+      expect(match[3]).toBe(null);
     });
   });
 
@@ -1172,9 +1185,9 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     });
 
     it("creates a list of subjects that match a certain pattern", async () => {
-      expect(patients[0].name?.[0]).toBe("Garrett");
-      expect(patients[1].name?.[0]).toBe("Rob");
-      expect(patients[2].name?.[0]).toBe("Amy");
+      expect(patients.toArray()[0].name?.toArray()[0]).toBe("Garrett");
+      expect(patients.toArray()[1].name?.toArray()[0]).toBe("Rob");
+      expect(patients.toArray()[2].name?.toArray()[0]).toBe("Amy");
     });
 
     it("Successfully adds a node to the list", async () => {
@@ -1195,7 +1208,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
             return quad.subject.value === "http://example.com/Patient4";
           }),
       ).toBe(true);
-      expect(patients[3].name?.[0]).toBe("Dippy");
+      expect(patients.toArray()[3].name?.toArray()[0]).toBe("Dippy");
     });
 
     it("will read a new object if something has been added to the dataset after object creation", async () => {
@@ -1225,15 +1238,14 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
             return quad.subject.value === "http://example.com/Patient4";
           }),
       ).toBe(true);
-      expect(patients[3].name?.[0]).toBe("Dippy");
+      expect(patients.toArray()[3].name?.toArray()[0]).toBe("Dippy");
     });
 
     it("errors if an object is added without the correct parameters", async () => {
       expect(() =>
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        patients.push({
+        patients.add({
           "@id": "http://example.com/Patient4",
+          // @ts-expect-error This object is purposely wrong
           name: ["Dippy"],
           age: 2,
         }),
@@ -1244,66 +1256,15 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
     it("errors if a literal is added to the collection", async () => {
       // @ts-expect-error Purposely pushing an incorrect value to trigger an error
-      expect(() => patients.push("some string")).toThrowError(
+      expect(() => patients.add("some string")).toThrowError(
         `Cannot add a literal "some string"(string) to a subject-oriented collection.`,
       );
     });
 
-    it("Removes all an object and replaces in upon set", async () => {
-      patients[0] = {
-        "@id": "http://example.com/Patient4",
-        type: { "@id": "Patient" },
-        name: ["Dippy"],
-        age: 2,
-      };
-
-      expect(dataset.match(namedNode("http://example.com/Patient1")).size).toBe(
-        0,
-      );
-      expect(patients[0].name?.[0]).toBe("Dippy");
-    });
-
-    it("Removes an object and replaces it upon splice", async () => {
-      // TODO adjust test
-      // patients.splice(
-      //   1,
-      //   1,
-      //   {
-      //     "@id": "http://example.com/Patient4",
-      //     type: { "@id": "Patient" },
-      //     name: ["Dippy"],
-      //     age: 2,
-      //   },
-      //   {
-      //     "@id": "http://example.com/Patient5",
-      //     type: { "@id": "Patient" },
-      //     name: ["Licky"],
-      //     age: 3,
-      //   },
-      // );
-      // expect(dataset.match(namedNode("http://example.com/Patient2")).size).toBe(
-      //   0,
-      // );
-      // expect(patients[1].name?.[0]).toBe("Dippy");
-      // expect(patients[2].name?.[0]).toBe("Licky");
-    });
-
-    it("Removes an object completely when assigning it to undefined", async () => {
-      // TODO adjust
-      // patients[0] = undefined;
-      // expect(dataset.match(namedNode("http://example.com/Patient1")).size).toBe(
-      //   0,
-      // );
-      // expect(patients[0].name?.[0]).toBe("Rob");
-    });
-
-    it("Removes an object completely when using the delete parameter", async () => {
-      delete patients[0];
-
-      expect(dataset.match(namedNode("http://example.com/Patient1")).size).toBe(
-        0,
-      );
-      expect(patients[0].name?.[0]).toBe("Rob");
+    it("Removes an object completely when using the delete method", async () => {
+      const firstPatient = patients.toArray()[0];
+      patients.delete(firstPatient);
+      expect(patients.has(firstPatient)).toBe(true);
     });
 
     it("creates a collection that matches only collections in a certain graph", async () => {
@@ -1323,9 +1284,11 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
   describe("matchObject", () => {
     let patients: LdSet<PatientShape>;
     let builder: JsonldDatasetProxyBuilder;
+    let dataset: Dataset;
 
     beforeEach(async () => {
-      const [, , receivedBuilder] = await getLoadedDataset();
+      const [recievedDataset, , receivedBuilder] = await getLoadedDataset();
+      dataset = recievedDataset;
       builder = receivedBuilder;
       patients = builder.matchObject<PatientShape>(
         null,
@@ -1335,20 +1298,18 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     });
 
     it("create a collection that matches the null, predicate, null pattern", async () => {
-      expect(patients[0].name?.[0]).toBe("Garrett");
-      expect(patients[1].name?.[0]).toBe("Amy");
-      expect(patients[2].name?.[0]).toBe("Rob");
+      expect(patients.toArray()[0].name?.toArray()[0]).toBe("Garrett");
+      expect(patients.toArray()[1].name?.toArray()[0]).toBe("Amy");
+      expect(patients.toArray()[2].name?.toArray()[0]).toBe("Rob");
     });
 
     it("cannot write to a collection that matches the null, predicate, null pattern", () => {
-      expect(
-        () =>
-          (patients[1] = {
-            "@id": "http://example.com/Patient4",
-            type: { "@id": "Patient" },
-          }),
-      ).toThrow(
-        "A collection that does not specify a match for both a subject or predicate cannot be modified directly.",
+      patients.add({
+        "@id": "http://example.com/Patient4",
+        type: { "@id": "Patient" },
+      });
+      expect(dataset.match(namedNode("http://example.com/Patient4")).size).toBe(
+        0,
       );
     });
 
@@ -1360,11 +1321,11 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         null,
       );
       expect(hodgePodge.size).toBe(5);
-      expect(hodgePodge[0]["@id"]).toBe("Patient");
-      expect(hodgePodge[1]).toBe("Amy");
-      expect(hodgePodge[2]).toBe("1988-01-01");
-      expect(hodgePodge[3]).toBe(33);
-      expect(hodgePodge[4]).toBe(true);
+      expect(hodgePodge.toArray()[0]["@id"]).toBe("Patient");
+      expect(hodgePodge.toArray()[1]).toBe("Amy");
+      expect(hodgePodge.toArray()[2]).toBe("1988-01-01");
+      expect(hodgePodge.toArray()[3]).toBe(33);
+      expect(hodgePodge.toArray()[4]).toBe(true);
     });
   });
 
@@ -1381,12 +1342,12 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
           name: set("Ethical", "Bug"),
         }),
       });
-      expect(patient.name?.[0]).toBe("Jack");
-      expect(patient.name?.[1]).toBe("Horner");
+      expect(patient.name).toContain("Jack");
+      expect(patient.name).toContain("Horner");
       expect(patient.birthdate).toBe("1725/11/03");
       expect(patient.age).toBe(298);
-      expect(patient.roommate?.[0].name?.[0]).toBe("Ethical");
-      expect(patient.roommate?.[0].name?.[1]).toBe("Bug");
+      expect(patient.roommate?.toArray()[0].name).toContain("Ethical");
+      expect(patient.roommate?.toArray()[0].name).toContain("Bug");
     });
 
     it("initializes a patient using the fromJSON method with a named node", async () => {
@@ -1403,12 +1364,12 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         }),
       });
       expect(patient["@id"]).toBe("http://example.com/Patient13");
-      expect(patient.name?.[0]).toBe("Jack");
-      expect(patient.name?.[1]).toBe("Horner");
+      expect(patient.name).toContain("Jack");
+      expect(patient.name).toContain("Horner");
       expect(patient.birthdate).toBe("1725/11/03");
       expect(patient.age).toBe(298);
-      expect(patient.roommate?.[0].name?.[0]).toBe("Ethical");
-      expect(patient.roommate?.[0].name?.[1]).toBe("Bug");
+      expect(patient.roommate?.toArray()[0].name).toContain("Ethical");
+      expect(patient.roommate?.toArray()[0].name).toContain("Bug");
     });
   });
 
@@ -1443,7 +1404,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
       it("detects the graph of an array value", async () => {
         const [, observation] = await getGraphLoadedDataset();
-        const patient1 = observation.subject as PatientShape;
+        const patient1 = observation.subject!;
         expect(
           graphOf(patient1, "name", "Garrett").map((n) => n.value),
         ).toContain("http://example.com/Patient1Doc");
@@ -1469,14 +1430,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         );
         expect(graphOf(observation, "subject")[1].value).toBe(
           "http://example.com/SomeOtherDoc",
-        );
-      });
-
-      it("throws an error if a number is provided as an object and the object is not an array", async () => {
-        const [, observation] = await getGraphLoadedDataset();
-        // @ts-expect-error this should not be allowed
-        expect(() => graphOf(observation, "subject", 0)).toThrowError(
-          `Key "subject" of [object Object] is not an array.`,
         );
       });
     });
@@ -1518,8 +1471,8 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         expect(graphOf(patient, "name", "1")[0].value).toBe(doc1.value);
         expect(graphOf(patient, "name", "2")[0].value).toBe(doc2.value);
         expect(graphOf(patient, "name", "3")[0].value).toBe(doc3.value);
-        expect(graphOf(patient, "name", "4")[0].value).toBe(doc2.value);
-        expect(graphOf(patient, "name", "5")[0].value).toBe(doc1.value);
+        expect(graphOf(patient, "name", "2 again")[0].value).toBe(doc2.value);
+        expect(graphOf(patient, "name", "1 again")[0].value).toBe(doc1.value);
         expect(graphOf(patient, "name", "default again")[0].value).toBe(
           defaultGraph().value,
         );
@@ -1539,18 +1492,16 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         expect(graphOf(patient, "name", "Doc1")[0].value).toBe(doc1.value);
       });
 
-      it("works with array proxies", async () => {
+      it("works with set proxies", async () => {
         const [, , builder] = await getTinyLoadedDataset();
         const allRoommates = builder.matchObject<PatientShape>(
           namedNode("http://example.com/Patient1"),
           namedNode("http://hl7.org/fhir/roommate"),
         );
-        write(namedNode("http://example.com/SomeGraph")).using(
-          allRoommates,
-          allRoommates,
-        );
-        allRoommates[0].age = 20;
-        expect(graphOf(allRoommates[0], "age")[0].value).toBe(
+        write(namedNode("http://example.com/SomeGraph")).using(allRoommates);
+        const firstRoommate = allRoommates.toArray()[0];
+        firstRoommate.age = 20;
+        expect(graphOf(firstRoommate, "age")[0].value).toBe(
           "http://example.com/SomeGraph",
         );
       });
@@ -1570,7 +1521,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient = observation.subject as PatientShape;
 
       expect(observation.langNotes).toBe("Notes Sympas");
-      expect(patient.langName?.[0]).toBe("Jean");
+      expect(patient.langName?.toArray()[0]).toBe("Jean");
 
       setLanguagePreferences("ru", "zh").using(observation, patient);
 
@@ -1579,7 +1530,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
 
       setLanguagePreferences("@other", "fr").using(observation, patient);
       expect(observation.langNotes).not.toBe("Notes Sympas");
-      expect(patient.langName?.[0]).not.toBe("Jean");
+      expect(patient.langName?.toArray()[0]).not.toBe("Jean");
 
       setLanguagePreferences().using(observation, patient);
       expect(observation.langNotes).toBe(undefined);

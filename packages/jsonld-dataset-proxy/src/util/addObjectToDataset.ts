@@ -12,6 +12,7 @@ import {
   languageDeleteMatch,
   languageKeyToLiteralLanguage,
 } from "../language/languageUtils";
+import { BasicLdSet } from "../setProxy/ldSet/BasicLdSet";
 
 export function addRawValueToDatasetRecursive(
   subject: NamedNode | BlankNode,
@@ -110,7 +111,7 @@ export function addRawObjectToDatasetRecursive(
         dataset.deleteMatches(subject, predicate);
       }
     }
-    if (Array.isArray(value)) {
+    if (value instanceof BasicLdSet) {
       value.forEach((valueItem) => {
         addRawValueToDatasetRecursive(
           subject,

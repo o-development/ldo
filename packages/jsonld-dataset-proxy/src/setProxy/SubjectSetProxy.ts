@@ -1,10 +1,21 @@
-import type { GraphNode, ObjectNode, PredicateNode } from "@ldo/rdf-utils";
+import {
+  type GraphNode,
+  type ObjectNode,
+  type PredicateNode,
+} from "@ldo/rdf-utils";
 import type { RawObject } from "../util/RawObject";
 import { addObjectToDataset } from "../util/addObjectToDataset";
 import type { ProxyContext } from "../ProxyContext";
 import { WildcardSubjectSetProxy } from "./WildcardSubjectSetProxy";
 import { _getUnderlyingNode } from "../types";
-import { quad } from "@rdfjs/data-model";
+import { defaultGraph, quad } from "@rdfjs/data-model";
+import {
+  createTransactionDatasetFactory,
+  TransactionDataset,
+} from "@ldo/subscribable-dataset";
+import { createDatasetFactory } from "@ldo/dataset";
+import { getNodeFromRawObject } from "../util/getNodeFromRaw";
+import { nodeToString } from "../util/NodeSet";
 
 export type SubjectSetProxyQuadMatch = [
   undefined | null,
@@ -27,6 +38,45 @@ export class SubjectSetProxy<
    * Appends a new element with a specified value to the end of the Set.
    */
   add(value: T): this {
+    // Undefined is fine no matter what
+    if (value === undefined) {
+      return this;
+    }
+    if (typeof value !== "object") {
+      throw new Error(
+        `Cannot add a literal "${value}"(${typeof value}) to a subject-oriented collection.`,
+      );
+    }
+    // Create a test dataset to see if the inputted data is valid
+    const testDataset = new TransactionDataset(
+      this.context.dataset,
+      createDatasetFactory(),
+      createTransactionDatasetFactory(),
+    );
+    addObjectToDataset(
+      value,
+      false,
+      this.context.duplicate({
+        writeGraphs: [defaultGraph()],
+      }),
+    );
+    const isValidAddition =
+      testDataset.match(
+        getNodeFromRawObject(value, this.context.contextUtil),
+        this.quadMatch[1],
+        this.quadMatch[2],
+      ).size !== 0;
+    if (!isValidAddition) {
+      throw new Error(
+        `Cannot add value to collection. This must contain a quad that matches (${nodeToString(
+          this.quadMatch[0],
+        )}, ${nodeToString(this.quadMatch[1])}, ${nodeToString(
+          this.quadMatch[2],
+        )}, ${nodeToString(this.quadMatch[3])})`,
+      );
+    }
+
+    // Add the object if everything's okay
     const added = addObjectToDataset(value as RawObject, false, this.context);
     const addedNode = added[_getUnderlyingNode];
     this.context.writeGraphs.forEach((graph) => {

@@ -9,6 +9,7 @@ import type { RawValue } from "../util/RawObject";
 import { SetProxy } from "./SetProxy";
 import type { ProxyContext } from "../ProxyContext";
 import { getNodeFromRawValue } from "../util/getNodeFromRaw";
+import { _isSubjectOriented } from "../types";
 
 export type WildcardObjectSetProxyQuadMatch = [
   SubjectNode | undefined | null,
@@ -35,14 +36,16 @@ export class WildcardObjectSetProxy<
     this.quadMatch = quadMatch;
   }
 
-  protected getSPO(value?: T | undefined): {
+  protected getSPOG(value?: T | undefined): {
     subject?: SubjectNode;
     predicate?: PredicateNode;
     object?: ObjectNode;
+    graph?: GraphNode;
   } {
     // Get the RDF Node that represents the value, skip is no value
     const subject = this.quadMatch[0] ?? undefined;
     const predicate = this.quadMatch[1] ?? undefined;
+    const graph = this.quadMatch[3] ?? undefined;
     if (value) {
       // Get datatype if applicable
       let datatype: string | undefined = undefined;
@@ -56,6 +59,7 @@ export class WildcardObjectSetProxy<
         subject,
         predicate,
         object: valueNode,
+        graph,
       };
     }
     // SPO for no value
@@ -63,6 +67,7 @@ export class WildcardObjectSetProxy<
       subject,
       predicate,
       object: undefined,
+      graph,
     };
   }
 
@@ -73,11 +78,17 @@ export class WildcardObjectSetProxy<
   private manuallyMatchWithUnknownObjectNode(
     subject: SubjectNode | undefined,
     predicate: PredicateNode | undefined,
+    graph: GraphNode | undefined,
     value: T,
   ): Dataset<Quad, Quad> {
     // If there's not an object, that means that we don't know the object node
     // and need to find it manually.
-    const matchingQuads = this.context.dataset.match(subject, predicate, null);
+    const matchingQuads = this.context.dataset.match(
+      subject,
+      predicate,
+      null,
+      graph,
+    );
     return matchingQuads.filter(
       (quad) =>
         quad.object.termType === "Literal" && quad.object.value === value,
@@ -86,32 +97,42 @@ export class WildcardObjectSetProxy<
 
   delete(value: T): boolean {
     const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO(value);
+    const { subject, predicate, object, graph } = this.getSPOG(value);
     if (!object) {
       const matchedQuads = this.manuallyMatchWithUnknownObjectNode(
         subject,
         predicate,
+        graph,
         value,
       );
       matchedQuads.forEach((quad) => dataset.delete(quad));
       return matchedQuads.size > 0;
     } else {
-      const willDelete = dataset.match(subject, predicate, object).size > 0;
-      dataset.deleteMatches(subject, predicate, object);
+      const willDelete =
+        dataset.match(subject, predicate, object, graph).size > 0;
+      dataset.deleteMatches(subject, predicate, object, graph);
       return willDelete;
     }
   }
 
   has(value: T): boolean {
     const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO(value);
+    const { subject, predicate, object, graph } = this.getSPOG(value);
     if (!object) {
       return (
-        this.manuallyMatchWithUnknownObjectNode(subject, predicate, value)
-          .size > 0
+        this.manuallyMatchWithUnknownObjectNode(
+          subject,
+          predicate,
+          graph,
+          value,
+        ).size > 0
       );
     } else {
-      return dataset.match(subject, predicate, object).size > 0;
+      return dataset.match(subject, predicate, object, graph).size > 0;
     }
+  }
+
+  get [_isSubjectOriented](): false {
+    return false;
   }
 }

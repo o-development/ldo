@@ -43,10 +43,11 @@ export abstract class SetProxy<
   /**
    * Gets the subject, predicate and object for this set
    */
-  protected abstract getSPO(value?: T): {
+  protected abstract getSPOG(value?: T): {
     subject?: SubjectNode;
     predicate?: PredicateNode;
     object?: ObjectNode;
+    graph?: GraphNode;
   };
 
   protected abstract getNodeOfFocus(quad: Quad): SubjectNode | ObjectNode;
@@ -62,29 +63,38 @@ export abstract class SetProxy<
     return this;
   }
 
+  /**
+   * The clear method on an abstract set does nothing.
+   * @deprecated You cannot clear data from an abstract set as it is simply a proxy to an underlying dataset
+   */
   clear(): void {
-    for (const value of this) {
-      this.delete(value);
-    }
+    console.warn(
+      'You\'ve attempted to call "clear" on an abstract set. You cannot clear data from an abstract set as it is simply a proxy to an underlying dataset',
+    );
+    return;
   }
 
-  delete(value: T): boolean {
-    const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO(value);
-    dataset.deleteMatches(subject, predicate, object);
-    return true;
+  /**
+   * The delete method on an abstract set does nothing.
+   * @deprecated You cannot delete data from an abstract set as it is simply a proxy to an underlying dataset
+   */
+  delete(_value: T): boolean {
+    console.warn(
+      'You\'ve attempted to call "clear" on an abstract set. You cannot delete data from an abstract set as it is simply a proxy to an underlying dataset',
+    );
+    return false;
   }
 
   has(value: T): boolean {
     const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO(value);
-    return dataset.match(subject, predicate, object).size > 0;
+    const { subject, predicate, object, graph } = this.getSPOG(value);
+    return dataset.match(subject, predicate, object, graph).size > 0;
   }
 
   get size() {
     const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO();
-    return dataset.match(subject, predicate, object).size;
+    const { subject, predicate, object, graph } = this.getSPOG();
+    return dataset.match(subject, predicate, object, graph).size;
   }
 
   entries(): IterableIterator<[T, T]> {
@@ -105,8 +115,8 @@ export abstract class SetProxy<
 
   [Symbol.iterator](): IterableIterator<T> {
     const { dataset } = this.context;
-    const { subject, predicate, object } = this.getSPO();
-    const quads = dataset.match(subject, predicate, object);
+    const { subject, predicate, object, graph } = this.getSPOG();
+    const quads = dataset.match(subject, predicate, object, graph);
     const collection: T[] = quads.toArray().map((quad) => {
       const quadSubject = this.getNodeOfFocus(quad);
       return nodeToJsonldRepresentation(quadSubject, this.context) as T;
@@ -138,4 +148,6 @@ export abstract class SetProxy<
   get [_writeGraphs](): GraphNode[] {
     return this.context.writeGraphs;
   }
+
+  abstract get [_isSubjectOriented](): boolean;
 }
