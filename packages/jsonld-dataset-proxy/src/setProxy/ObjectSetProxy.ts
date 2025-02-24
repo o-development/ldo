@@ -59,9 +59,8 @@ export class ObjectSetProxy<
    */
   delete(value: T): boolean {
     const { dataset } = this.context;
-    const { subject, predicate, object, graph } = this.getSPOG(value);
-    const didDelete = dataset.match(subject, predicate, object, graph).size > 0;
-    dataset.deleteMatches(subject, predicate, object, graph);
-    return didDelete;
+    const quads = this.getQuads(value);
+    quads.forEach((quad) => dataset.delete(quad));
+    return quads.size > 0;
   }
 }

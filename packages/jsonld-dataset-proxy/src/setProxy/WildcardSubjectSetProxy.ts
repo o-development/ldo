@@ -4,7 +4,7 @@ import type {
   ObjectNode,
   GraphNode,
 } from "@ldo/rdf-utils";
-import type { Quad } from "@rdfjs/types";
+import type { Dataset, Quad } from "@rdfjs/types";
 import type { RawObject } from "../util/RawObject";
 import { SetProxy } from "./SetProxy";
 import type { ProxyContext } from "../ProxyContext";
@@ -34,32 +34,18 @@ export class WildcardSubjectSetProxy<T extends RawObject> extends SetProxy<T> {
     this.quadMatch = quadMatch;
   }
 
-  protected getSPOG(value?: T | undefined): {
-    subject?: SubjectNode;
-    predicate?: PredicateNode;
-    object?: ObjectNode;
-    graph?: GraphNode;
-  } {
+  protected getQuads(value?: T | undefined): Dataset<Quad, Quad> {
+    const { dataset } = this.context;
     // Get the RDF Node that represents the value, skip is no value
     const predicate = this.quadMatch[1] ?? undefined;
     const object = this.quadMatch[2] ?? undefined;
     const graph = this.quadMatch[3] ?? undefined;
     if (value) {
       const valueNode = getNodeFromRawObject(value, this.context.contextUtil);
-      return {
-        subject: valueNode,
-        predicate,
-        object,
-        graph,
-      };
+      return dataset.match(valueNode, predicate, object, graph);
     }
     // SPO for no value
-    return {
-      subject: undefined,
-      predicate,
-      object,
-      graph,
-    };
+    return dataset.match(undefined, predicate, object, graph);
   }
 
   protected getNodeOfFocus(quad: Quad): SubjectNode {

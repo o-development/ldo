@@ -1264,7 +1264,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     it("Removes an object completely when using the delete method", async () => {
       const firstPatient = patients.toArray()[0];
       patients.delete(firstPatient);
-      expect(patients.has(firstPatient)).toBe(true);
+      expect(patients.has(firstPatient)).toBe(false);
     });
 
     it("creates a collection that matches only collections in a certain graph", async () => {

@@ -68,7 +68,7 @@ export class ProxyContext {
   public createSetProxy(
     quadMatch: QuadMatch,
     isSubjectOriented?: boolean,
-    _isLangStringSet?: boolean,
+    isLangStringSet?: boolean,
   ): SetProxy {
     const key = this.getSetKey(...quadMatch);
     if (!this.setMap.has(key)) {
@@ -76,6 +76,7 @@ export class ProxyContext {
         quadMatch,
         isSubjectOriented ?? false,
         this,
+        isLangStringSet,
       );
       this.setMap.set(key, proxy);
     }

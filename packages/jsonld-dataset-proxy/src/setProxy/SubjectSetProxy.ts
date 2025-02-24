@@ -86,4 +86,25 @@ export class SubjectSetProxy<
     });
     return this;
   }
+
+  /**
+   * Clears the set of all values
+   */
+  clear(): void {
+    for (const value of this) {
+      this.delete(value);
+    }
+  }
+
+  /**
+   * Deletes an item for the set
+   * @param value the item to delete
+   * @returns true if the item was present before deletion
+   */
+  delete(value: T): boolean {
+    const { dataset } = this.context;
+    const quads = this.getQuads(value);
+    quads.forEach((quad) => dataset.delete(quad));
+    return quads.size > 0;
+  }
 }
