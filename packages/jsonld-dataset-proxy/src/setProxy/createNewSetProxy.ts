@@ -15,17 +15,20 @@ export function createNewSetProxy<T extends NonNullable<RawValue>>(
   quadMatch: QuadMatch,
   isSubjectOriented: boolean,
   proxyContext: ProxyContext,
+  isLangSet?: boolean,
 ): SetProxy<T> {
   if (!isSubjectOriented) {
     if (quadMatch[0] && quadMatch[1]) {
       return new ObjectSetProxy<T>(
         proxyContext,
         quadMatch as ObjectSetProxyQuadMatch,
+        isLangSet,
       );
     } else {
       return new WildcardObjectSetProxy<T>(
         proxyContext,
         quadMatch as WildcardObjectSetProxyQuadMatch,
+        isLangSet,
       );
     }
   } else {

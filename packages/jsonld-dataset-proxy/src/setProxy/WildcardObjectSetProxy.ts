@@ -27,13 +27,16 @@ export class WildcardObjectSetProxy<
   T extends NonNullable<RawValue>,
 > extends SetProxy<T> {
   protected quadMatch: WildcardObjectSetProxyQuadMatch;
+  protected isLangSet: boolean;
 
   constructor(
     context: ProxyContext,
     quadMatch: WildcardObjectSetProxyQuadMatch,
+    isLangSet?: boolean,
   ) {
     super(context, quadMatch);
     this.quadMatch = quadMatch;
+    this.isLangSet = isLangSet ?? false;
   }
 
   protected getSPOG(value?: T | undefined): {

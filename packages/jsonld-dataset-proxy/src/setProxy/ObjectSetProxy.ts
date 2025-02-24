@@ -16,8 +16,12 @@ export class ObjectSetProxy<
 > extends WildcardObjectSetProxy<T> {
   protected quadMatch: ObjectSetProxyQuadMatch;
 
-  constructor(context: ProxyContext, quadMatch: ObjectSetProxyQuadMatch) {
-    super(context, quadMatch);
+  constructor(
+    context: ProxyContext,
+    quadMatch: ObjectSetProxyQuadMatch,
+    isLangSet?: boolean,
+  ) {
+    super(context, quadMatch, isLangSet);
     this.quadMatch = quadMatch;
   }
 
