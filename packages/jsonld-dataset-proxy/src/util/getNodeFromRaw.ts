@@ -43,7 +43,12 @@ export function getNodeFromRawValue(
     } else {
       return literal(value.toString(), datatype);
     }
+  } else if (
+    typeof value.termType === "string" &&
+    (value.termType === "NamedNode" || value.termType === "BlankNode")
+  ) {
+    return value as NamedNode | BlankNode;
   } else {
-    return getNodeFromRawObject(value, proxyContext.contextUtil);
+    return getNodeFromRawObject(value as RawObject, proxyContext.contextUtil);
   }
 }

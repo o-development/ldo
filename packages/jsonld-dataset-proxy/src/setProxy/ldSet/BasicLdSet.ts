@@ -6,13 +6,11 @@ import { blankNode } from "@rdfjs/data-model";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
-  extends Set<T>
   implements LdSet<T>
 {
   private hashMap: Map<string, T>;
 
   constructor(values?: Iterable<T> | null) {
-    super();
     this.hashMap = new Map();
     if (values) {
       for (const value of values) {
@@ -44,28 +42,48 @@ export class BasicLdSet<T extends NonNullable<RawValue> = NonNullable<RawValue>>
     const key = this.hashFn(value);
     if (!this.hashMap.has(key)) {
       this.hashMap.set(key, value);
-      super.add(value);
     }
     return this;
   }
 
   clear(): void {
     this.hashMap.clear();
-    super.clear();
   }
 
   delete(value: T): boolean {
     const key = this.hashFn(value);
-    if (this.hashMap.has(key)) {
-      this.hashMap.delete(key);
-      return super.delete(value);
-    }
-    return false;
+    return this.hashMap.delete(key);
   }
 
   has(value: T): boolean {
     const key = this.hashFn(value);
     return this.hashMap.has(key);
+  }
+
+  get size(): number {
+    return this.hashMap.size;
+  }
+
+  *entries(): IterableIterator<[T, T]> {
+    for (const [, value] of this.hashMap.entries()) {
+      yield [value, value];
+    }
+  }
+
+  keys(): IterableIterator<T> {
+    return this.hashMap.values();
+  }
+
+  values(): IterableIterator<T> {
+    return this.hashMap.values();
+  }
+  [Symbol.iterator](): IterableIterator<T> {
+    return this.hashMap.values();
+  }
+
+  get [Symbol.toStringTag]() {
+    // TODO: Change this to be human readable.
+    return "BasicLdSet";
   }
 
   /**
