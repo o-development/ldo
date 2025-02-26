@@ -1,8 +1,9 @@
 import type { Literal, Quad_Object } from "@rdfjs/types";
 import type { ProxyContext } from "../ProxyContext";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
+import type { LiteralLike } from "../types";
 
-export type ObjectJsonRepresentation = string | number | boolean | SubjectProxy;
+export type ObjectJsonRepresentation = LiteralLike | SubjectProxy;
 
 export function literalToJsonldRepresentation(literal: Literal) {
   switch (literal.datatype.value) {
@@ -66,7 +67,7 @@ export function literalToJsonldRepresentation(literal: Literal) {
 export function nodeToJsonldRepresentation(
   node: Quad_Object,
   proxyContext: ProxyContext,
-): string | number | boolean | SubjectProxy {
+): ObjectJsonRepresentation {
   if (node.termType === "Literal") {
     return literalToJsonldRepresentation(node);
   } else if (node.termType === "NamedNode" || node.termType === "BlankNode") {

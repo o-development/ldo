@@ -32,16 +32,4 @@ export class NodeSet {
   has(node: ObjectNode): boolean {
     return this.set.has(nodeToString(node));
   }
-
-  delete(node: ObjectNode) {
-    const key = nodeToString(node);
-    delete this.map[key];
-    return this.set.delete(nodeToString(node));
-  }
-
-  toArray() {
-    return Array.from(this.set).map((stringVal) => {
-      return this.map[stringVal];
-    });
-  }
 }

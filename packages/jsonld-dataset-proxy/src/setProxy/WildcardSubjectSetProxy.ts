@@ -37,9 +37,9 @@ export class WildcardSubjectSetProxy<T extends RawObject> extends SetProxy<T> {
   protected getQuads(value?: T | undefined): Dataset<Quad, Quad> {
     const { dataset } = this.context;
     // Get the RDF Node that represents the value, skip is no value
-    const predicate = this.quadMatch[1] ?? undefined;
-    const object = this.quadMatch[2] ?? undefined;
-    const graph = this.quadMatch[3] ?? undefined;
+    const predicate = this.quadMatch[1];
+    const object = this.quadMatch[2];
+    const graph = this.quadMatch[3];
     if (value) {
       const valueNode = getNodeFromRawObject(value, this.context.contextUtil);
       return dataset.match(valueNode, predicate, object, graph);

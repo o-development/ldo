@@ -26,7 +26,13 @@ import {
   patientUnnestedContext,
   patientNestedContext,
 } from "./patientExampleData";
-import { namedNode, quad, literal, defaultGraph } from "@rdfjs/data-model";
+import {
+  namedNode,
+  quad,
+  literal,
+  defaultGraph,
+  blankNode,
+} from "@rdfjs/data-model";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 import type { LdoJsonldContext } from "../src/LdoJsonldContext";
@@ -36,6 +42,7 @@ import {
   type Avatar,
   type Bender,
 } from "./scopedExampleData";
+import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy";
 
 global.console.warn = () => {};
 
@@ -227,93 +234,78 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(set).toContain("Garrett");
       expect(set).toContain("Bobby");
       expect(set).toContain("Ferguson");
-      // TODO
-      // expect(arr.concat(["Mimoey"])).toEqual([
-      //   "Garrett",
-      //   "Bobby",
-      //   "Ferguson",
-      //   "Mimoey",
-      // ]);
-      // const entriesIterator = arr.entries();
-      // expect(entriesIterator.next()).toEqual({
-      //   value: [0, "Garrett"],
-      //   done: false,
-      // });
-      // expect(entriesIterator.next()).toEqual({
-      //   value: [1, "Bobby"],
-      //   done: false,
-      // });
-      // expect(entriesIterator.next()).toEqual({
-      //   value: [2, "Ferguson"],
-      //   done: false,
-      // });
-      // expect(entriesIterator.next()).toEqual({
-      //   value: undefined,
-      //   done: true,
-      // });
-      // expect(arr.every((val) => val.length > 2)).toBe(true);
-      // expect(arr.every((val) => val.length > 6)).toBe(false);
-      // expect(arr.filter((val) => val.length > 6)).toEqual([
-      //   "Garrett",
-      //   "Ferguson",
-      // ]);
-      // expect(arr.find((val) => val.length < 6)).toBe("Bobby");
-      // expect(arr.findIndex((val) => val.length < 6)).toBe(1);
-      // // arr.flat (Not included because there should never be nested arrays)
-      // let concatTest = "";
-      // arr.forEach((value) => (concatTest += value));
-      // expect(concatTest).toBe("GarrettBobbyFerguson");
-      // expect(arr.includes("Bobby")).toBe(true);
-      // expect(arr.indexOf("Bobby")).toBe(1);
-      // expect(arr.join("-")).toBe("Garrett-Bobby-Ferguson");
-      // const keysIterator = arr.keys();
-      // expect(keysIterator.next()).toEqual({
-      //   value: 0,
-      //   done: false,
-      // });
-      // expect(keysIterator.next()).toEqual({
-      //   value: 1,
-      //   done: false,
-      // });
-      // expect(keysIterator.next()).toEqual({
-      //   value: 2,
-      //   done: false,
-      // });
-      // expect(keysIterator.next()).toEqual({
-      //   value: undefined,
-      //   done: true,
-      // });
-      // expect(arr.lastIndexOf("Bobby")).toBe(1);
-      // expect(arr.map((val) => val.toUpperCase())).toEqual([
-      //   "GARRETT",
-      //   "BOBBY",
-      //   "FERGUSON",
-      // ]);
-      // expect(arr.reduce((agg, val) => agg + val, "")).toBe(
-      //   "GarrettBobbyFerguson",
-      // );
-      // expect(arr.slice(2)).toEqual(["Ferguson"]);
-      // expect(arr.some((val) => val.startsWith("G"))).toBe(true);
-      // expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
-      // const valuesIterator = arr.values();
-      // expect(valuesIterator.next()).toEqual({
-      //   value: "Garrett",
-      //   done: false,
-      // });
-      // expect(valuesIterator.next()).toEqual({
-      //   value: "Bobby",
-      //   done: false,
-      // });
-      // expect(valuesIterator.next()).toEqual({
-      //   value: "Ferguson",
-      //   done: false,
-      // });
-      // expect(valuesIterator.next()).toEqual({
-      //   value: undefined,
-      //   done: true,
-      // });
-      // expect(JSON.stringify(arr)).toBe(`["Garrett","Bobby","Ferguson"]`);
-      // expect(arr.toString()).toBe("Garrett,Bobby,Ferguson");
+      const entriesIterator = set.entries();
+      expect(entriesIterator.next()).toEqual({
+        value: ["Garrett", "Garrett"],
+        done: false,
+      });
+      expect(entriesIterator.next()).toEqual({
+        value: ["Bobby", "Bobby"],
+        done: false,
+      });
+      expect(entriesIterator.next()).toEqual({
+        value: ["Ferguson", "Ferguson"],
+        done: false,
+      });
+      expect(entriesIterator.next()).toEqual({
+        value: undefined,
+        done: true,
+      });
+      expect(set.every((val) => val.length > 2)).toBe(true);
+      expect(set.every((val) => val.length > 6)).toBe(false);
+      const filteredSet = set.filter((val) => val.length > 6);
+      expect(filteredSet.size).toBe(2);
+      expect(filteredSet).toContain("Garrett");
+      expect(filteredSet).toContain("Ferguson");
+      let concatTest = "";
+      set.forEach((value) => (concatTest += value));
+      expect(concatTest).toBe("GarrettBobbyFerguson");
+      expect(set.has("Bobby")).toBe(true);
+      const keysIterator = set.keys();
+      expect(keysIterator.next()).toEqual({
+        value: "Garrett",
+        done: false,
+      });
+      expect(keysIterator.next()).toEqual({
+        value: "Bobby",
+        done: false,
+      });
+      expect(keysIterator.next()).toEqual({
+        value: "Ferguson",
+        done: false,
+      });
+      expect(keysIterator.next()).toEqual({
+        value: undefined,
+        done: true,
+      });
+      expect(set.map((val) => val.toUpperCase())).toEqual([
+        "GARRETT",
+        "BOBBY",
+        "FERGUSON",
+      ]);
+      expect(set.reduce((agg, val) => agg + val, "")).toBe(
+        "GarrettBobbyFerguson",
+      );
+      expect(set.some((val) => val.startsWith("G"))).toBe(true);
+      const valuesIterator = set.values();
+      expect(valuesIterator.next()).toEqual({
+        value: "Garrett",
+        done: false,
+      });
+      expect(valuesIterator.next()).toEqual({
+        value: "Bobby",
+        done: false,
+      });
+      expect(valuesIterator.next()).toEqual({
+        value: "Ferguson",
+        done: false,
+      });
+      expect(valuesIterator.next()).toEqual({
+        value: undefined,
+        done: true,
+      });
+      expect(JSON.stringify(set)).toBe(`["Garrett","Bobby","Ferguson"]`);
+      expect(set.toString()).toBe("[object LdSet]");
     });
 
     it("can traverse a circular graph", async () => {
@@ -607,33 +599,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       patient3.roommate?.add(patient1);
     });
 
-    // TODO: Confirm commenting this out is fine
-    // it("sets a primitive on an array", async () => {
-    //   const [dataset, patient] = await getEmptyPatientDataset();
-    //   patient.type = { "@id": "Patient" };
-    //   patient.name[0] = "jon";
-    //   expect(dataset.toString()).toBe(
-    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "jon" .\n',
-    //   );
-    // });
-
-    // TODO: Confirm that commenting this out is fine
-    // it("sets a primitive on an array and overwrites one that already is there", async () => {
-    //   const [dataset, patient] = await getEmptyPatientDataset();
-    //   patient.type = { "@id": "Patient" };
-    //   dataset.add(
-    //     quad(
-    //       namedNode("http://example.com/Patient1"),
-    //       namedNode("http://hl7.org/fhir/name"),
-    //       literal("jon", "http://www.w3.org/2001/XMLSchema#string"),
-    //     ),
-    //   );
-    //   (patient.name as string[])[0] = "not jon";
-    //   expect(dataset.toString()).toBe(
-    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "not jon" .\n',
-    //   );
-    // });
-
     it("sets an array", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };
@@ -667,33 +632,14 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    // TODO: Check that commenting this out is fine
-    // it("Does not remove the full object when it is replaced on an array", async () => {
-    //   const [dataset, observation] = await getTinyLoadedDataset();
-    //   const replacementPatient: PatientShape = {
-    //     "@id": "http://example.com/ReplacementPatient",
-    //     type: { "@id": "Patient" },
-    //     name: set("Jackson"),
-    //   };
-    //   const roommateArr = observation!.subject!.roommate;
-    //   roommateArr[0] = replacementPatient;
-    //   expect(dataset.toString()).toBe(
-    //     '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/ReplacementPatient> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n<http://example.com/ReplacementPatient> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/ReplacementPatient> <http://hl7.org/fhir/name> "Jackson" .\n',
-    //   );
-    // });
-
-    // TODO check
-    // it("Keeps the correct array index when setting an index", async () => {
-    //   const [, observation] = await getLoadedDataset();
-    //   const roommateArr = observation.subject?.roommate as PatientShape[];
-    //   roommateArr[0] = {
-    //     "@id": "http://example.com/ReplacementPatient",
-    //     type: { "@id": "Patient" },
-    //     name: ["Jackson"],
-    //   };
-    //   expect(roommateArr.length).toBe(2);
-    //   expect(roommateArr[0].name?.[0]).toBe("Jackson");
-    // });
+    it("allows instances of proxies to be set", async () => {
+      const [dataset, observation] = await getTinyLoadedDataset();
+      const patient2 = observation.subject!.roommate!.toArray()[0];
+      observation.subject = patient2;
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient2> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+      );
+    });
 
     it("Changes the subject name if the @id is changed", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
@@ -705,19 +651,35 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    // TODO changes to blank node when set undefined on ID
-
-    // TODO deletes the object if delete on an ID
-
-    it("Removes all adjoining triples when garbage collection is indicated via the delete operator on an object", async () => {
+    it("converts a node to a blank node when @id is set to undefined", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      delete observation.subject;
-      expect(dataset.toString()).toBe(
-        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n',
+      const patient1 = observation.subject!;
+      patient1["@id"] = undefined;
+      const underlyingNode = patient1[_getUnderlyingNode];
+      expect(underlyingNode.termType).toBe("BlankNode");
+      expect(dataset.match(underlyingNode).size).toBe(3);
+      expect(patient1.name).toContain("Garrett");
+      expect(patient1.roommate?.toArray()[0].name).toContain("Rob");
+      const roommatesRoommate = patient1
+        .roommate!.toArray()[0]!
+        .roommate!.toArray()[0];
+      expect(roommatesRoommate.name).toContain("Garrett");
+      expect(roommatesRoommate[_getUnderlyingNode].termType).toBe("BlankNode");
+      expect(roommatesRoommate[_getUnderlyingNode].equals(underlyingNode)).toBe(
+        true,
       );
     });
 
-    it("Removes all adjoining triples in an array when garbage collection is indicated via the delete operator on an object", async () => {
+    it("treats deleting a field as setting that field to undefined", async () => {
+      const [dataset, observation] = await getTinyLoadedDataset();
+      delete observation.subject;
+
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+      );
+    });
+
+    it("treats deleting a field to a collection as setting that field to undefined", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
       delete observation.subject?.name;
       expect(dataset.toString()).toBe(
@@ -757,10 +719,16 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
+    it("removes all literals in a set using the clear method", async () => {
+      const [dataset, observation] = await getTinyLoadedDataset();
+      observation.subject!.name!.clear();
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/roommate> <http://example.com/Patient2> .\n<http://example.com/Patient2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient2> <http://hl7.org/fhir/name> "Rob" .\n<http://example.com/Patient2> <http://hl7.org/fhir/roommate> <http://example.com/Patient1> .\n',
+      );
+    });
+
     it("Deletes itself if @id is deleted", async () => {
       const [dataset, observation] = await getTinyLoadedDataset();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       delete observation["@id"];
       expect(observation).toEqual({ "@id": "http://example.com/Observation1" });
       expect(dataset.toString()).toBe(
@@ -890,14 +858,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(arr).toContain("Ferguson");
     });
 
-    // TODO: Check if can delete
-    // it("Prevents duplicates from being added when a value is overwritten", async () => {
-    //   const [, patient] = await getArrayLoadedDataset();
-    //   const arr = patient.name!;
-    //   arr[1] = "Garrett";
-    //   expect(arr).toEqual(["Garrett", "Ferguson"]);
-    // });
-
     it("Prevents duplicates for Objects", async () => {
       const [, observation] = await getLoadedDataset();
       const roommates = observation.subject!.roommate!;
@@ -913,38 +873,28 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(roommateNames).toContain("Amy");
     });
 
-    // TODO: check
-    // it("Does nothing when you try to set a symbol on an array", async () => {
-    //   const [, patient] = await getArrayLoadedDataset();
-    //   const arr = patient.name!;
-    //   expect(() => {
-    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //     // @ts-ignore
-    //     arr[Symbol.search] = "Cool";
-    //   }).not.toThrowError();
-    // });
+    it("allows rdf namedNodes to be added to a set", async () => {
+      const [, observation] = await getTinyLoadedDataset();
+      observation.subject?.roommate?.add(
+        // @ts-expect-error This isn't technically allowed by the generated types
+        namedNode("http://example.com/Patient3"),
+      );
+      expect(observation.subject?.roommate?.map((r) => r["@id"])).toContain(
+        "http://example.com/Patient3",
+      );
+    });
 
-    // TODO: check
-    // it("Does nothing when you try to delete a symbol on an array", async () => {
-    //   const [, patient] = await getArrayLoadedDataset();
-    //   const arr = patient.name as string[];
-    //   expect(() => {
-    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //     // @ts-ignore
-    //     delete arr[Symbol.search];
-    //   }).not.toThrowError();
-    // });
-
-    // TODO check
-    // it("Does nothing when you try to delete an index of the array that doesn't exist", async () => {
-    //   const [dataset, patient] = await getArrayLoadedDataset();
-    //   const arr = patient.name as string[];
-    //   delete arr[5];
-    //   expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
-    //   expect(dataset.toString()).toEqual(
-    //     '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //   );
-    // });
+    it("allows rdf bankNodes to be added to a set", async () => {
+      const [, observation] = await getTinyLoadedDataset();
+      const blank = blankNode();
+      observation.subject?.roommate?.add(
+        // @ts-expect-error This isn't technically allowed by the generated types
+        blank,
+      );
+      expect(
+        observation.subject?.roommate?.map((r) => r[_getUnderlyingNode]),
+      ).toContain(blank);
+    });
 
     it("Can set a triple object named node with just a string", async () => {
       const [dataset, observation] = await getEmptyObservationDataset();
@@ -959,189 +909,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         "<http://example.com/Observation1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Observation> .\n<http://example.com/Observation1> <http://hl7.org/fhir/subject> <http://example.com/Patient1> .\n",
       );
     });
-
-    // TODO check
-    // describe("Array Methods", () => {
-    //   it("handles copyWithin", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name!;
-    //     arr.copyWithin(0, 2, 3);
-    //     expect(arr).toEqual(["Ferguson", "Bobby"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles copyWithin with the optional end variable missing", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.copyWithin(0, 2);
-    //     expect(arr).toEqual(["Ferguson", "Bobby"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles copyWithin with the optional start variable missing", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //     // @ts-ignore
-    //     expect(() => arr.copyWithin(0, undefined, 2)).not.toThrowError();
-    //     expect(arr).toEqual(["Garrett", "Bobby", "Ferguson"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles fill", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.fill("Beepy", 2, 5);
-    //     expect(arr).toEqual(["Garrett", "Bobby", "Beepy"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-    //     );
-    //   });
-
-    //   it("handles pop", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     expect(arr.pop()).toBe("Ferguson");
-    //     expect(arr).toEqual(["Garrett", "Bobby"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n',
-    //     );
-    //   });
-
-    //   it("returns undefined for pop on an empty collection", async () => {
-    //     const [, patient] = await getArrayLoadedDataset();
-    //     patient.name = [];
-    //     expect(patient.name.pop()).toBe(undefined);
-    //   });
-
-    //   it("handles push", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.push("Beepy");
-    //     expect(arr).toEqual(["Garrett", "Bobby", "Ferguson", "Beepy"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-    //     );
-    //   });
-
-    //   it("handles reverse", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     patient.name?.reverse();
-    //     expect(patient.name).toEqual(["Ferguson", "Bobby", "Garrett"]);
-    //     expect(dataset.toString()).toBe(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles shift", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     expect(arr.shift()).toEqual("Garrett");
-    //     expect(arr).toEqual(["Bobby", "Ferguson"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("returns undefined for shift on an empty collection", async () => {
-    //     const [, patient] = await getArrayLoadedDataset();
-    //     patient.name = [];
-    //     expect(patient.name.shift()).toBe(undefined);
-    //   });
-
-    //   it("handles sort", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     patient.name?.sort((a, b) => {
-    //       return a.length - b.length;
-    //     });
-    //     expect(patient.name).toEqual(["Bobby", "Garrett", "Ferguson"]);
-    //     expect(dataset.toString()).toBe(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles sort without a sort function", async () => {
-    //     const [, patient] = await getArrayLoadedDataset();
-    //     patient.name?.sort();
-    //     expect(patient.name).toEqual(["Bobby", "Ferguson", "Garrett"]);
-    //   });
-
-    //   it("handles sort without a sort function and there are two equal values", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     dataset.add(
-    //       quad(
-    //         namedNode("http://example.com/Patient1"),
-    //         namedNode("http://hl7.org/fhir/name"),
-    //         literal(
-    //           "Bobby",
-    //           namedNode("http://www.w3.org/2001/XMLSchema#token"),
-    //         ),
-    //       ),
-    //     );
-    //     patient.name?.sort();
-    //     expect(patient.name).toEqual(["Bobby", "Bobby", "Ferguson", "Garrett"]);
-    //   });
-
-    //   it("handles splice", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.splice(1, 0, "Beepy");
-    //     expect(arr).toEqual(["Garrett", "Beepy", "Bobby", "Ferguson"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-    //     );
-    //   });
-
-    //   it("handles splice with objects", async () => {
-    //     const [, observation] = await getLoadedDataset();
-    //     const roommates = observation.subject?.roommate as PatientShape[];
-    //     roommates.splice(
-    //       0,
-    //       1,
-    //       {
-    //         "@id": "http://example.com/Patient4",
-    //         type: { "@id": "Patient" },
-    //         name: ["Dippy"],
-    //         age: 2,
-    //       },
-    //       {
-    //         "@id": "http://example.com/Patient5",
-    //         type: { "@id": "Patient" },
-    //         name: ["Licky"],
-    //         age: 3,
-    //       },
-    //     );
-    //     expect(roommates[0].name?.[0]).toBe("Dippy");
-    //     expect(roommates[1].name?.[0]).toBe("Licky");
-    //     expect(roommates[2].name?.[0]).toBe("Amy");
-    //   });
-
-    //   it("handles splice with only two params", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.splice(1, 1);
-    //     expect(arr).toEqual(["Garrett", "Ferguson"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n',
-    //     );
-    //   });
-
-    //   it("handles unshift", async () => {
-    //     const [dataset, patient] = await getArrayLoadedDataset();
-    //     const arr = patient.name as string[];
-    //     arr.unshift("Beepy");
-    //     expect(arr).toEqual(["Beepy", "Garrett", "Bobby", "Ferguson"]);
-    //     expect(dataset.toString()).toEqual(
-    //       '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Garrett" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Bobby" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Ferguson" .\n<http://example.com/Patient1> <http://hl7.org/fhir/name> "Beepy" .\n',
-    //     );
-    //   });
-    // });
   });
 
   describe("underlying data", () => {
@@ -1261,12 +1028,6 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
-    it("Removes an object completely when using the delete method", async () => {
-      const firstPatient = patients.toArray()[0];
-      patients.delete(firstPatient);
-      expect(patients.has(firstPatient)).toBe(false);
-    });
-
     it("creates a collection that matches only collections in a certain graph", async () => {
       const [, , builder] = await getGraphLoadedDataset();
       patients = builder.matchSubject<PatientShape>(
@@ -1278,6 +1039,38 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(patients.map((o) => o["@id"])).toContain(
         "http://example.com/Patient1",
       );
+    });
+
+    it("creates a WildcardSubjectSetProxy when providing wildcard subject matches", async () => {
+      const [, , builder] = await getLoadedDataset();
+      patients = builder.matchSubject<PatientShape>(
+        namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+      );
+      expect(patients).toBeInstanceOf(WildcardSubjectSetProxy);
+      expect(patients[_isSubjectOriented]).toBe(true);
+      expect(
+        patients.has({
+          "@id": "http://example.com/Patient1",
+          type: { "@id": "Patient" },
+        }),
+      ).toBe(true);
+    });
+
+    it("does nothing when attempting to modify an abstract set", async () => {
+      const [dataset, , builder] = await getLoadedDataset();
+      patients = builder.matchSubject<PatientShape>(
+        namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+      );
+      const unmodifiedDataset = dataset.toString();
+      patients.add({ "@id": "dontaddthisguy", type: { "@id": "Patient" } });
+      expect(dataset.toString()).toBe(unmodifiedDataset);
+      patients.delete({
+        "@id": "http://example.com/Patient1",
+        type: { "@id": "Patient" },
+      });
+      expect(dataset.toString()).toBe(unmodifiedDataset);
+      patients.clear();
+      expect(dataset.toString()).toBe(unmodifiedDataset);
     });
   });
 
@@ -1326,6 +1119,22 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(hodgePodge.toArray()[2]).toBe("1988-01-01");
       expect(hodgePodge.toArray()[3]).toBe(33);
       expect(hodgePodge.toArray()[4]).toBe(true);
+    });
+
+    it("can match object when the object is a literal.", () => {
+      const allNames = builder.matchObject<string>(
+        null,
+        namedNode("http://hl7.org/fhir/name"),
+        null,
+      );
+      expect(allNames.size).toBe(5);
+      expect(allNames).toContain("Garrett");
+      expect(allNames).toContain("Bobby");
+      expect(allNames).toContain("Ferguson");
+      expect(allNames).toContain("Rob");
+      expect(allNames).toContain("Amy");
+      expect(allNames.has("Bobby")).toBe(true);
+      expect(allNames.has("WrongName")).toBe(false);
     });
   });
 

@@ -82,9 +82,6 @@ export function addRawObjectToDatasetRecursive(
   shouldDeleteOldTriples: boolean,
   proxyContext: ProxyContext,
 ): SubjectProxy {
-  if (isSubjectProxy(item)) {
-    return item as SubjectProxy;
-  }
   const { dataset } = proxyContext;
   const subject = getNodeFromRawObject(item, proxyContext.contextUtil);
   const rdfType = proxyContext.getRdfType(subject);

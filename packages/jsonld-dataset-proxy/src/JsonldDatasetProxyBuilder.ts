@@ -3,7 +3,7 @@ import type { BlankNode, NamedNode } from "@rdfjs/types";
 import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
 import type { LanguageOrdering } from "./language/languageTypes";
 import type { ProxyContext } from "./ProxyContext";
-import type { ObjectLike } from "./types";
+import type { LiteralLike, ObjectLike } from "./types";
 import type { LdSet } from "./setProxy/ldSet/LdSet";
 
 /**
@@ -74,7 +74,7 @@ export class JsonldDatasetProxyBuilder {
    * @param predicate The predicate to match
    * @param graph The graph to match
    */
-  matchObject<T extends ObjectLike>(
+  matchObject<T extends ObjectLike | LiteralLike>(
     subject?: QuadMatch[0] | undefined | null,
     predicate?: QuadMatch[1],
     graph?: QuadMatch[3] | undefined | null,

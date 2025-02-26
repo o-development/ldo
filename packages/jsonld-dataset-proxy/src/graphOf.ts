@@ -33,7 +33,7 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
       proxyContext.getRdfType(subjectNode),
     ),
   );
-  let objectNode: ObjectNode | null;
+  let objectNode: ObjectNode | undefined | null;
   if (object == null) {
     objectNode = null;
   } else {
@@ -41,7 +41,7 @@ export function graphOf<Subject extends ObjectLike, Key extends keyof Subject>(
       predicate as string,
       proxyContext.getRdfType(subjectNode),
     );
-    objectNode = getNodeFromRawValue(object, proxyContext, datatype) ?? null;
+    objectNode = getNodeFromRawValue(object, proxyContext, datatype);
   }
   const quads = subjectProxy[_getUnderlyingDataset].match(
     subjectNode,
