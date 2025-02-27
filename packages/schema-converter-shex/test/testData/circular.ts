@@ -47,5 +47,5 @@ export const circular: TestData = {
     },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
 };

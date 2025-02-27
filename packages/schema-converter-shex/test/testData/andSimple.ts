@@ -43,5 +43,5 @@ export const andSimple: TestData = {
     Image: "https://example.com/Image",
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface MediaContainerShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "MediaContainer";\n    };\n    videoImage: VideoShape & ImageShape;\n}\n\nexport interface VideoShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Video";\n    };\n}\n\nexport interface ImageShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Image";\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainerShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "MediaContainer";\n    };\n    videoImage: VideoShape & ImageShape;\n}\n\nexport interface VideoShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Video";\n    };\n}\n\nexport interface ImageShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Image";\n    };\n}\n\n',
 };

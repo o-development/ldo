@@ -47,7 +47,7 @@ export async function shexjToTyping(
     };
   });
   const typingsString =
-    `import {ContextDefinition} from "jsonld"\n\n` +
+    `import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\n` +
     typings.map((typing) => `export ${typing.typingString}`).join("");
 
   const typeingReturn: TypeingReturn = {

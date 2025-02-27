@@ -10,24 +10,22 @@ export function dedupeObjectTypeMembers(
     // Combine properties if they're duplicates
     if (properties[propertyDeclaration.name]) {
       const oldPropertyDeclaration = properties[propertyDeclaration.name];
-      const oldPropertyTypeAsArray =
-        oldPropertyDeclaration.type as dom.ArrayTypeReference;
-      const oldProeprtyType =
-        oldPropertyTypeAsArray.kind === "array"
-          ? oldPropertyTypeAsArray.type
-          : oldPropertyDeclaration.type;
-      const propertyTypeAsArray =
-        propertyDeclaration.type as dom.ArrayTypeReference;
-      const propertyType =
-        propertyTypeAsArray.kind === "array"
-          ? propertyTypeAsArray.type
-          : propertyDeclaration.type;
+      const oldPropertyType = isLdSetType(oldPropertyDeclaration.type)
+        ? oldPropertyDeclaration.type.typeArguments[0]
+        : oldPropertyDeclaration.type;
+      const propertyType = isLdSetType(propertyDeclaration.type)
+        ? propertyDeclaration.type.typeArguments[0]
+        : propertyDeclaration.type;
       const isOptional =
         propertyDeclaration.flags === dom.DeclarationFlags.Optional ||
         oldPropertyDeclaration.flags === dom.DeclarationFlags.Optional;
       properties[propertyDeclaration.name] = dom.create.property(
         propertyDeclaration.name,
-        dom.type.array(dom.create.union([oldProeprtyType, propertyType])),
+        {
+          kind: "name",
+          name: "LdSet",
+          typeArguments: [dom.create.union([oldPropertyType, propertyType])],
+        },
         isOptional ? dom.DeclarationFlags.Optional : dom.DeclarationFlags.None,
       );
       // Set JS Comment
@@ -41,4 +39,13 @@ export function dedupeObjectTypeMembers(
     }
   });
   return Object.values(properties);
+}
+
+function isLdSetType(
+  potentialLdSet: dom.Type,
+): potentialLdSet is dom.NamedTypeReference {
+  return (
+    (potentialLdSet as dom.NamedTypeReference).kind === "name" &&
+    (potentialLdSet as dom.NamedTypeReference).name === "LdSet"
+  );
 }

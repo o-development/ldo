@@ -222,7 +222,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         tripleConstraint.predicate,
         rdfTypes[0],
       );
-      const isArray =
+      const isSet =
         tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
       const isOptional = tripleConstraint.min === 0;
       let type: dom.Type = dom.type.any;
@@ -232,7 +232,13 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
 
       const propertyDeclaration = dom.create.property(
         propertyName,
-        isArray ? dom.type.array(type) : type,
+        isSet
+          ? {
+              kind: "name",
+              name: "LdSet",
+              typeArguments: [type],
+            }
+          : type,
         isOptional ? dom.DeclarationFlags.Optional : dom.DeclarationFlags.None,
       );
 

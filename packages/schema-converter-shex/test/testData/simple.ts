@@ -46,5 +46,5 @@ export const simple: TestData = {
     mbox: { "@id": "http://xmlns.com/foaf/0.1/mbox", "@type": "@id" },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    givenName: string[];\n    familyName: string;\n    phone?: {\n        "@id": string;\n    }[];\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    givenName: LdSet<string>;\n    familyName: string;\n    phone?: LdSet<{\n        "@id": string;\n    }>;\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
 };
