@@ -2,6 +2,7 @@ import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type {
   LanguageOrdering,
   JsonldDatasetProxyBuilder,
+  LdSet,
 } from "@ldo/jsonld-dataset-proxy";
 import type { ShapeType } from "./ShapeType";
 import type { LdoBase } from "./util";
@@ -93,7 +94,7 @@ export class LdoBuilder<Type extends LdoBase> {
     predicate: QuadMatch[1] | string,
     object?: QuadMatch[2] | string,
     graph?: QuadMatch[3] | string,
-  ): Type[] {
+  ): LdSet<Type> {
     return this.jsonldDatasetProxyBuilder.matchSubject<Type>(
       predicate != undefined ? normalizeNodeName(predicate) : undefined,
       object != undefined ? normalizeNodeName(object) : undefined,
@@ -123,7 +124,7 @@ export class LdoBuilder<Type extends LdoBase> {
     subject?: QuadMatch[0] | string,
     predicate?: QuadMatch[1] | string,
     graph?: QuadMatch[3] | string,
-  ): Type[] {
+  ): LdSet<Type> {
     return this.jsonldDatasetProxyBuilder.matchObject<Type>(
       subject != undefined ? normalizeNodeName(subject) : undefined,
       predicate != undefined ? normalizeNodeName(predicate) : undefined,

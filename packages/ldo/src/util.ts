@@ -1,6 +1,6 @@
 import { namedNode } from "@rdfjs/data-model";
 import type { Dataset, Quad } from "@rdfjs/types";
-import type { ArrayProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
+import type { SetProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
@@ -57,7 +57,7 @@ export function isTransactionalDataset(
 
 export function getTransactionalDatasetFromLdo(
   ldo: LdoBase,
-): [ITransactionDataset<Quad>, SubjectProxy | ArrayProxy] {
+): [ITransactionDataset<Quad>, SubjectProxy | SetProxy] {
   const proxy = getProxyFromObject(ldo);
   const dataset = proxy[_getUnderlyingDataset];
   if (
