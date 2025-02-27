@@ -115,7 +115,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       newInterface.members.push(
         dom.create.property(
           "@context",
-          dom.create.namedTypeReference("ContextDefinition"),
+          dom.create.namedTypeReference("LdoJsonldContext"),
           dom.DeclarationFlags.Optional,
         ),
       );

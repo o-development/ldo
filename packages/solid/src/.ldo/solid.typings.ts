@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext, LdSet } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -11,18 +11,18 @@ import { ContextDefinition } from "jsonld";
  */
 export interface Container {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * A container on a Solid server
    */
-  type?: (
+  type?: LdSet<
     | {
         "@id": "Container";
       }
     | {
         "@id": "Resource";
       }
-  )[];
+  >;
   /**
    * Date modified
    */
@@ -30,7 +30,7 @@ export interface Container {
   /**
    * Defines a Solid Resource
    */
-  contains?: Resource[];
+  contains?: LdSet<Resource>;
   /**
    * ?
    */
@@ -46,18 +46,18 @@ export interface Container {
  */
 export interface Resource {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * Any resource on a Solid server
    */
-  type?: (
+  type?: LdSet<
     | {
         "@id": "Resource";
       }
     | {
         "@id": "Resource2";
       }
-  )[];
+  >;
   /**
    * Date modified
    */
@@ -77,8 +77,8 @@ export interface Resource {
  */
 export interface ProfileWithStorage {
   "@id"?: string;
-  "@context"?: ContextDefinition;
-  storage?: {
+  "@context"?: LdoJsonldContext;
+  storage?: LdSet<{
     "@id": string;
-  }[];
+  }>;
 }

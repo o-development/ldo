@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext, LdSet } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -11,7 +11,7 @@ import { ContextDefinition } from "jsonld";
  */
 export interface Authorization {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * Denotes this as an acl:Authorization
    */
@@ -33,30 +33,30 @@ export interface Authorization {
   /**
    * An agent is a person, social entity or software identified by a URI, e.g., a WebID denotes an agent
    */
-  agent?: {
+  agent?: LdSet<{
     "@id": string;
-  }[];
+  }>;
   /**
    * Denotes a group of agents being given the access permission
    */
-  agentGroup?: {
+  agentGroup?: LdSet<{
     "@id": string;
-  }[];
+  }>;
   /**
    * An agent class is a class of persons or entities identified by a URI.
    */
-  agentClass?: (
+  agentClass?: LdSet<
     | {
         "@id": "AuthenticatedAgent";
       }
     | {
         "@id": "Agent";
       }
-  )[];
+  >;
   /**
    * Denotes a class of operations that the agents can perform on a resource.
    */
-  mode?: (
+  mode?: LdSet<
     | {
         "@id": "Read";
       }
@@ -69,5 +69,5 @@ export interface Authorization {
     | {
         "@id": "Control";
       }
-  )[];
+  >;
 }

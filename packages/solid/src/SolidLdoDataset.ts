@@ -148,7 +148,7 @@ export class SolidLdoDataset extends LdoDataset implements ISolidLdoDataset {
     const profile = this.usingType(ProfileWithStorageShapeType).fromSubject(
       webId,
     );
-    if (profile.storage && profile.storage.length > 0) {
+    if (profile.storage && profile.storage.size > 0) {
       const containers = profile.storage.map((storageNode) =>
         this.getResource(storageNode["@id"] as ContainerUri),
       );
