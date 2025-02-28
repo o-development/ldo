@@ -17,6 +17,7 @@ export * from "./language/languageSet";
 export * from "./language/languageTypes";
 export * from "./language/languageUtils";
 
+export * from "./setProxy/createNewSetProxy";
 export * from "./setProxy/isSetProxy";
 export * from "./setProxy/SetProxy";
 export * from "./setProxy/set";

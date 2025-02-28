@@ -44,17 +44,17 @@ export class ProxyContext {
 
   public createSubjectProxy(node: NamedNode | BlankNode): SubjectProxy {
     if (!this.subjectMap.has(node.value)) {
-      const proxy = new Proxy(
-        { "@id": node },
-        this.createSubjectHandler(),
-      ) as unknown as SubjectProxy;
+      const proxy = this.createNewSubjectProxy(node);
       this.subjectMap.set(node.value, proxy);
     }
     return this.subjectMap.get(node.value) as SubjectProxy;
   }
 
-  protected createSubjectHandler() {
-    return createSubjectHandler(this);
+  protected createNewSubjectProxy(node: NamedNode | BlankNode): SubjectProxy {
+    return new Proxy(
+      { "@id": node },
+      createSubjectHandler(this),
+    ) as unknown as SubjectProxy;
   }
 
   private getSetKey(...quadMatch: QuadMatch) {
@@ -72,15 +72,27 @@ export class ProxyContext {
   ): SetProxy {
     const key = this.getSetKey(...quadMatch);
     if (!this.setMap.has(key)) {
-      const proxy = createNewSetProxy(
+      const proxy = this.createNewSetProxy(
         quadMatch,
-        isSubjectOriented ?? false,
-        this,
+        isSubjectOriented,
         isLangStringSet,
       );
       this.setMap.set(key, proxy);
     }
     return this.setMap.get(key)!;
+  }
+
+  protected createNewSetProxy(
+    quadMatch: QuadMatch,
+    isSubjectOriented?: boolean,
+    isLangStringSet?: boolean,
+  ) {
+    return createNewSetProxy(
+      quadMatch,
+      isSubjectOriented ?? false,
+      this,
+      isLangStringSet,
+    );
   }
 
   public duplicate(alternativeOptions: Partial<ProxyContextOptions>) {
