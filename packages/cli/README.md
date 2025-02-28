@@ -12,7 +12,10 @@ cd my-typescript-project
 npx @ldo/cli init
 ```
 
-### Manual Setup
+<details>
+<summary>
+Manual Setup
+</summary>
 The following is handled by the __automatic setup__:
 
 Install the LDO dependencies.
@@ -38,6 +41,7 @@ Create a script to build ShEx shapes and convert them into Linked Data Objects. 
   ...
 }
 ```
+</details>
 
 ## Generating a ShapeType
 
@@ -67,7 +71,7 @@ This script will generate a project with a place to put your shapes. Running `np
  - [`init` command](https://ldo.js.org/api/cli/init/)
  - [`build` command](https://ldo.js.org/api/cli/build/)
  - [`create` command](https://ldo.js.org/api/cli/create/)
-```
+
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

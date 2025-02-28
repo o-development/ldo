@@ -7,9 +7,6 @@ Turn ShexJ into typescript typings and JSON-LD context.
 npm i @ldo/schema-converter-shex
 ```
 
-## API
-See the [full API docs](docs/modules.md).
-
 ## Usage
 
 ```typescript
@@ -83,14 +80,15 @@ async function run() {
 
   /*
   Logs:
-  declare namespace  {
-    interface EmployeeShape {
-        givenName: string[];
-        familyName: string;
-        phone?: string[];
-        mbox: string;
-    }
+  import { LdoJsonldContext, LdSet } from "@ldo/ldo";
 
+  interface EmployeeShape {
+      "@id"?: string;
+      "@context"?: LdoJsonldContext;
+      givenName: LdSet<string>;
+      familyName: string;
+      phone?: LdSet<string>;
+      mbox: string;
   }
   */
   console.log(typings.typingsString);

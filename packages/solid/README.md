@@ -16,13 +16,17 @@ Now install the @ldo/solid library
 npm i @ldo/solid
 ```
 
-### Manual Installation
+<details>
+<summary>
+Manual Installation
+</summary>
 
 If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
 
 ```
 npm i @ldo/ldo @ldo/solid
 ```
+</details>
 
 ## Simple Examples
 

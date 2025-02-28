@@ -11,7 +11,7 @@ npm i @ldo/dataset
 ## Simple Example
 
 ```typescript
-import { createDataset } from "o-dataset-pack";
+import { createDataset } from "@ldo/dataset";
 import { quad, namedNode } from "@rdfjs/data-model";
 const dataset = createDataset();
 dataset.add(
@@ -38,8 +38,8 @@ import { createDataset } from "@ldo/dataset";
 import { quad, namedNode, literal } from "@rdfjs/data-model";
 // Required for advanced features:
 import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
-import { ExtendedDatasetFactory } from "o-dataset-pack";
-import { Dataset, Quad, DatasetCoreFactory, DatasetCore } from "rdf-js";
+import { ExtendedDatasetFactory } from "@ldo/dataset";
+import { Dataset, Quad, DatasetCoreFactory, DatasetCore } from "@rdfjs/types";
 
 /**
  * Create a dataset with default settings
