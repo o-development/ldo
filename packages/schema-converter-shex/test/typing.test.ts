@@ -3,6 +3,8 @@ import { testData } from "./testData/testData";
 import { shexjToTyping } from "../src/typing/shexjToTyping";
 import type { Schema } from "shexj";
 
+console.warn = () => {};
+
 describe("typing", () => {
   testData.forEach(({ name, shexc, successfulTypings }) => {
     it(`Creates a typings for ${name}`, async () => {

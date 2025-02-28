@@ -76,14 +76,21 @@ export class JsonLdContextBuilder {
     return this.iriTypes[rdfType] as JsonLdContextBuilder;
   }
 
-  addSubject(iri: string, rdfType?: string, annotations?: Annotation[]) {
+  private getRelevantBuilders(rdfType?: string): JsonLdContextBuilder[] {
     const relevantBuilder = this.getRelevantBuilder(rdfType);
-    if (!relevantBuilder.iriAnnotations[iri]) {
-      relevantBuilder.iriAnnotations[iri] = [];
-    }
-    if (annotations && annotations.length > 0) {
-      relevantBuilder.iriAnnotations[iri].push(...annotations);
-    }
+    return relevantBuilder === this ? [this] : [this, relevantBuilder];
+  }
+
+  addSubject(iri: string, rdfType?: string, annotations?: Annotation[]) {
+    const relevantBuilders = this.getRelevantBuilders(rdfType);
+    relevantBuilders.forEach((relevantBuilder) => {
+      if (!relevantBuilder.iriAnnotations[iri]) {
+        relevantBuilder.iriAnnotations[iri] = [];
+      }
+      if (annotations && annotations.length > 0) {
+        relevantBuilder.iriAnnotations[iri].push(...annotations);
+      }
+    });
   }
 
   addPredicate(
@@ -93,41 +100,30 @@ export class JsonLdContextBuilder {
     rdfType?: string,
     annotations?: Annotation[],
   ) {
-    const relevantBuilder = this.getRelevantBuilder(rdfType);
-    relevantBuilder.addSubject(iri, undefined, annotations);
-    if (!relevantBuilder.iriTypes[iri]) {
-      relevantBuilder.iriTypes[iri] = expandedTermDefinition;
-      if (isContainer) {
-        relevantBuilder.iriTypes[iri]["@isCollection"] = true;
-      }
-    } else {
-      const curDef = relevantBuilder.iriTypes[iri];
-      const newDef = expandedTermDefinition;
-      // TODO: if you reuse the same predicate with a different cardinality,
-      // it will overwrite the past cardinality. Perhapse we might want to
-      // split contexts in the various shapes.
-      if (isContainer) {
-        curDef["@isCollection"] = true;
-      }
-      // If the old and new versions both have types
-      if (curDef["@type"] && newDef["@type"]) {
-        if (
-          Array.isArray(curDef["@type"]) &&
-          !(curDef["@type"] as string[]).includes(newDef["@type"])
-        ) {
-          curDef["@type"].push(newDef["@type"]);
-        } else if (
-          typeof curDef["@type"] === "string" &&
-          curDef["@type"] !== newDef["@type"]
-        ) {
-          // The typings are incorrect. String arrays are allowed on @type
-          // see https://w3c.github.io/json-ld-syntax/#example-specifying-multiple-types-for-a-node
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          curDef["@type"] = [curDef["@type"], newDef["@type"]];
+    const relevantBuilders = this.getRelevantBuilders(rdfType);
+    relevantBuilders.forEach((relevantBuilder) => {
+      relevantBuilder.addSubject(iri, undefined, annotations);
+      if (!relevantBuilder.iriTypes[iri]) {
+        relevantBuilder.iriTypes[iri] = expandedTermDefinition;
+        if (isContainer) {
+          relevantBuilder.iriTypes[iri]["@isCollection"] = true;
+        }
+      } else {
+        const curDef = relevantBuilder.iriTypes[iri];
+        const newDef = expandedTermDefinition;
+        if (isContainer) {
+          curDef["@isCollection"] = true;
+        }
+        // If the old and new versions both have types
+        if (curDef["@type"] && newDef["@type"]) {
+          if (curDef["@type"] !== newDef["@type"]) {
+            console.warn(
+              `You've specified that a specific field "${iri}" can have an object of multiple literal types (${curDef["@type"]} or ${newDef["@type"]}). This is not expressable in JSON-LD context, and we will randomly select one type to use.`,
+            );
+          }
         }
       }
-    }
+    });
   }
 
   generateNames(): Record<string, string> {

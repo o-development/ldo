@@ -7,7 +7,7 @@
     "example": "ts-node ./example/example.ts",
     "build": "tsc --project tsconfig.build.json",
     "watch": "tsc --watch",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage -t \"sets wac rules for a resource that\"",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "build:ldo": "ldo build --input src/.shapes --output src/.ldo",

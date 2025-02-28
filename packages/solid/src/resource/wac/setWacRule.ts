@@ -80,8 +80,6 @@ export async function setWacRuleForAclUri(
     addRuleToDataset("agent", accessModeList, agentUri);
   });
 
-  console.log(dataset.toString());
-
   // Save to Pod
   const response = await fetch(aclUri, {
     method: "PUT",

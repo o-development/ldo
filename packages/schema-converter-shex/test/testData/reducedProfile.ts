@@ -51,6 +51,9 @@ srs:EmailShape EXTRA a {
   sampleTurtle: ``,
   baseNode: "",
   successfulContext: {
+    type: {
+      "@id": "@type",
+    },
     Person: {
       "@id": "http://schema.org/Person",
       "@context": {
@@ -84,6 +87,11 @@ srs:EmailShape EXTRA a {
           "@type": "http://www.w3.org/2001/XMLSchema#string",
         },
       },
+    },
+    hasEmail: {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasEmail",
+      "@type": "@id",
+      "@isCollection": true,
     },
     Dom: {
       "@id": "http://www.w3.org/2006/vcard/ns#Dom",
@@ -217,7 +225,15 @@ srs:EmailShape EXTRA a {
         },
       },
     },
+    value: {
+      "@id": "http://www.w3.org/2006/vcard/ns#value",
+      "@type": "@id",
+    },
+    name: {
+      "@id": "http://xmlns.com/foaf/0.1/name",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Defines the node as a Person | Defines the node as a Person\n     */\n    type: LdSet<{\n        "@id": "Person";\n    } | {\n        "@id": "Person2";\n    }>;\n    /**\n     * The person\'s email.\n     */\n    hasEmail?: LdSet<EmailShape>;\n    /**\n     * An alternate way to define a person\'s name\n     */\n    name?: string;\n}\n\nexport interface EmailShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * The type of email.\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Defines the node as a Person | Defines the node as a Person\n     */\n    type: LdSet<{\n        "@id": "Person";\n    } | {\n        "@id": "Person2";\n    }>;\n    /**\n     * The person\'s email.\n     */\n    hasEmail?: LdSet<EmailShape>;\n    /**\n     * An alternate way to define a person\'s name\n     */\n    name?: string;\n}\n\nexport interface EmailShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * The type of email.\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\n',
 };

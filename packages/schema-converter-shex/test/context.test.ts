@@ -3,6 +3,8 @@ import { shexjToContext } from "../src/context/shexjToContext";
 import parser from "@shexjs/parser";
 import type { Schema } from "shexj";
 
+console.warn = () => {};
+
 describe("context", () => {
   testData.forEach(({ name, shexc, successfulContext }) => {
     it(`Creates a context for ${name}`, async () => {

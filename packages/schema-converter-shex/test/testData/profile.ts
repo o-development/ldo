@@ -366,6 +366,9 @@ srs:RSAPublicKeyShape {
   `,
   baseNode: "https://jackson.solidcommunity.net/profile/card#me",
   successfulContext: {
+    type: {
+      "@id": "@type",
+    },
     Person: {
       "@id": "http://schema.org/Person",
       "@context": {
@@ -552,6 +555,19 @@ srs:RSAPublicKeyShape {
         },
       },
     },
+    fn: {
+      "@id": "http://www.w3.org/2006/vcard/ns#fn",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    name: {
+      "@id": "http://xmlns.com/foaf/0.1/name",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    hasAddress: {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasAddress",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     countryName: {
       "@id": "http://www.w3.org/2006/vcard/ns#country-name",
       "@type": "http://www.w3.org/2001/XMLSchema#string",
@@ -571,6 +587,11 @@ srs:RSAPublicKeyShape {
     streetAddress: {
       "@id": "http://www.w3.org/2006/vcard/ns#street-address",
       "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    hasEmail: {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasEmail",
+      "@type": "@id",
+      "@isCollection": true,
     },
     Dom: {
       "@id": "http://www.w3.org/2006/vcard/ns#Dom",
@@ -704,6 +725,40 @@ srs:RSAPublicKeyShape {
         },
       },
     },
+    value: {
+      "@id": "http://www.w3.org/2006/vcard/ns#value",
+      "@type": "@id",
+    },
+    hasPhoto: {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto",
+      "@type": "@id",
+    },
+    img: {
+      "@id": "http://xmlns.com/foaf/0.1/img",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    hasTelephone: {
+      "@id": "http://www.w3.org/2006/vcard/ns#hasTelephone",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    phone: {
+      "@id": "http://www.w3.org/2006/vcard/ns#phone",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    organizationName: {
+      "@id": "http://www.w3.org/2006/vcard/ns#organization-name",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    role: {
+      "@id": "http://www.w3.org/2006/vcard/ns#role",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    trustedApp: {
+      "@id": "http://www.w3.org/ns/auth/acl#trustedApp",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     mode: {
       "@id": "http://www.w3.org/ns/auth/acl#mode",
       "@isCollection": true,
@@ -716,6 +771,11 @@ srs:RSAPublicKeyShape {
       "@id": "http://www.w3.org/ns/auth/acl#origin",
       "@type": "@id",
     },
+    key: {
+      "@id": "http://www.w3.org/ns/auth/cert#key",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     modulus: {
       "@id": "http://www.w3.org/ns/auth/cert#modulus",
       "@type": "http://www.w3.org/2001/XMLSchema#string",
@@ -724,7 +784,39 @@ srs:RSAPublicKeyShape {
       "@id": "http://www.w3.org/ns/auth/cert#exponent",
       "@type": "http://www.w3.org/2001/XMLSchema#integer",
     },
+    inbox: {
+      "@id": "http://www.w3.org/ns/ldp#inbox",
+      "@type": "@id",
+    },
+    preferencesFile: {
+      "@id": "http://www.w3.org/ns/pim/space#preferencesFile",
+      "@type": "@id",
+    },
+    storage: {
+      "@id": "http://www.w3.org/ns/pim/space#storage",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    account: {
+      "@id": "http://www.w3.org/ns/solid/terms#account",
+      "@type": "@id",
+    },
+    privateTypeIndex: {
+      "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    publicTypeIndex: {
+      "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    knows: {
+      "@id": "http://xmlns.com/foaf/0.1/knows",
+      "@type": "@id",
+      "@isCollection": true,
+    },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)\n     */\n    type: LdSet<{\n        "@id": "Person";\n    } | {\n        "@id": "Person2";\n    }>;\n    /**\n     * The formatted name of a person. Example: John Smith\n     */\n    fn?: string;\n    /**\n     * An alternate way to define a person\'s name.\n     */\n    name?: string;\n    /**\n     * The person\'s street address.\n     */\n    hasAddress?: LdSet<AddressShape>;\n    /**\n     * The person\'s email.\n     */\n    hasEmail?: LdSet<EmailShape>;\n    /**\n     * A link to the person\'s photo\n     */\n    hasPhoto?: {\n        "@id": string;\n    };\n    /**\n     * Photo link but in string form\n     */\n    img?: string;\n    /**\n     * Person\'s telephone number\n     */\n    hasTelephone?: LdSet<PhoneNumberShape>;\n    /**\n     * An alternative way to define a person\'s telephone number using a string\n     */\n    phone?: string;\n    /**\n     * The name of the organization with which the person is affiliated\n     */\n    organizationName?: string;\n    /**\n     * The name of the person\'s role in their organization\n     */\n    role?: string;\n    /**\n     * A list of app origins that are trusted by this user\n     */\n    trustedApp?: LdSet<TrustedAppShape>;\n    /**\n     * A list of RSA public keys that are associated with private keys the user holds.\n     */\n    key?: LdSet<RSAPublicKeyShape>;\n    /**\n     * The user\'s LDP inbox to which apps can post notifications\n     */\n    inbox: {\n        "@id": string;\n    };\n    /**\n     * The user\'s preferences\n     */\n    preferencesFile?: {\n        "@id": string;\n    };\n    /**\n     * The location of a Solid storage server related to this WebId\n     */\n    storage?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * The user\'s account\n     */\n    account?: {\n        "@id": string;\n    };\n    /**\n     * A registry of all types used on the user\'s Pod (for private access only)\n     */\n    privateTypeIndex?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * A registry of all types used on the user\'s Pod (for public access)\n     */\n    publicTypeIndex?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * A list of WebIds for all the people this user knows.\n     */\n    knows?: LdSet<{\n        "@id": string;\n    }>;\n}\n\nexport interface AddressShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * The name of the user\'s country of residence\n     */\n    countryName?: string;\n    /**\n     * The name of the user\'s locality (City, Town etc.) of residence\n     */\n    locality?: string;\n    /**\n     * The user\'s postal code\n     */\n    postalCode?: string;\n    /**\n     * The name of the user\'s region (State, Province etc.) of residence\n     */\n    region?: string;\n    /**\n     * The user\'s street address\n     */\n    streetAddress?: string;\n}\n\nexport interface EmailShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * The type of email.\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\nexport interface PhoneNumberShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * They type of Phone Number\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of a phone number as a tel link (Example <tel:555-555-5555>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\nexport interface TrustedAppShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * The level of access provided to this origin\n     */\n    mode: LdSet<{\n        "@id": "Append";\n    } | {\n        "@id": "Control";\n    } | {\n        "@id": "Read";\n    } | {\n        "@id": "Write";\n    }>;\n    /**\n     * The app origin the user trusts\n     */\n    origin: {\n        "@id": string;\n    };\n}\n\nexport interface RSAPublicKeyShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * RSA Modulus\n     */\n    modulus: string;\n    /**\n     * RSA Exponent\n     */\n    exponent: number;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface SolidProfileShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)\n     */\n    type: LdSet<{\n        "@id": "Person";\n    } | {\n        "@id": "Person2";\n    }>;\n    /**\n     * The formatted name of a person. Example: John Smith\n     */\n    fn?: string;\n    /**\n     * An alternate way to define a person\'s name.\n     */\n    name?: string;\n    /**\n     * The person\'s street address.\n     */\n    hasAddress?: LdSet<AddressShape>;\n    /**\n     * The person\'s email.\n     */\n    hasEmail?: LdSet<EmailShape>;\n    /**\n     * A link to the person\'s photo\n     */\n    hasPhoto?: {\n        "@id": string;\n    };\n    /**\n     * Photo link but in string form\n     */\n    img?: string;\n    /**\n     * Person\'s telephone number\n     */\n    hasTelephone?: LdSet<PhoneNumberShape>;\n    /**\n     * An alternative way to define a person\'s telephone number using a string\n     */\n    phone?: string;\n    /**\n     * The name of the organization with which the person is affiliated\n     */\n    organizationName?: string;\n    /**\n     * The name of the person\'s role in their organization\n     */\n    role?: string;\n    /**\n     * A list of app origins that are trusted by this user\n     */\n    trustedApp?: LdSet<TrustedAppShape>;\n    /**\n     * A list of RSA public keys that are associated with private keys the user holds.\n     */\n    key?: LdSet<RSAPublicKeyShape>;\n    /**\n     * The user\'s LDP inbox to which apps can post notifications\n     */\n    inbox: {\n        "@id": string;\n    };\n    /**\n     * The user\'s preferences\n     */\n    preferencesFile?: {\n        "@id": string;\n    };\n    /**\n     * The location of a Solid storage server related to this WebId\n     */\n    storage?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * The user\'s account\n     */\n    account?: {\n        "@id": string;\n    };\n    /**\n     * A registry of all types used on the user\'s Pod (for private access only)\n     */\n    privateTypeIndex?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * A registry of all types used on the user\'s Pod (for public access)\n     */\n    publicTypeIndex?: LdSet<{\n        "@id": string;\n    }>;\n    /**\n     * A list of WebIds for all the people this user knows.\n     */\n    knows?: LdSet<{\n        "@id": string;\n    }>;\n}\n\nexport interface AddressShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * The name of the user\'s country of residence\n     */\n    countryName?: string;\n    /**\n     * The name of the user\'s locality (City, Town etc.) of residence\n     */\n    locality?: string;\n    /**\n     * The user\'s postal code\n     */\n    postalCode?: string;\n    /**\n     * The name of the user\'s region (State, Province etc.) of residence\n     */\n    region?: string;\n    /**\n     * The user\'s street address\n     */\n    streetAddress?: string;\n}\n\nexport interface EmailShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * The type of email.\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of an email as a mailto link (Example <mailto:jane@example.com>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\nexport interface PhoneNumberShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * They type of Phone Number\n     */\n    type?: {\n        "@id": "Dom";\n    } | {\n        "@id": "Home";\n    } | {\n        "@id": "ISDN";\n    } | {\n        "@id": "Internet";\n    } | {\n        "@id": "Intl";\n    } | {\n        "@id": "Label";\n    } | {\n        "@id": "Parcel";\n    } | {\n        "@id": "Postal";\n    } | {\n        "@id": "Pref";\n    } | {\n        "@id": "Work";\n    } | {\n        "@id": "X400";\n    };\n    /**\n     * The value of a phone number as a tel link (Example <tel:555-555-5555>)\n     */\n    value: {\n        "@id": string;\n    };\n}\n\nexport interface TrustedAppShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * The level of access provided to this origin\n     */\n    mode: LdSet<{\n        "@id": "Append";\n    } | {\n        "@id": "Control";\n    } | {\n        "@id": "Read";\n    } | {\n        "@id": "Write";\n    }>;\n    /**\n     * The app origin the user trusts\n     */\n    origin: {\n        "@id": string;\n    };\n}\n\nexport interface RSAPublicKeyShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * RSA Modulus\n     */\n    modulus: string;\n    /**\n     * RSA Exponent\n     */\n    exponent: number;\n}\n\n',
 };

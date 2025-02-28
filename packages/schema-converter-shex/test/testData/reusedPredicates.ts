@@ -31,6 +31,9 @@ export const reusedPredicates: TestData = {
   sampleTurtle: ``,
   baseNode: "http://example.com/SampleParent",
   successfulContext: {
+    type: {
+      "@id": "@type",
+    },
     Document: {
       "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Document",
       "@context": {
@@ -49,6 +52,12 @@ export const reusedPredicates: TestData = {
         },
       },
     },
+    vocabulary: {
+      "@id":
+        "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#vocabulary",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     Vocabulary: {
       "@id":
         "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Vocabulary",
@@ -59,6 +68,7 @@ export const reusedPredicates: TestData = {
         name: {
           "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
           "@type": "http://www.w3.org/2001/XMLSchema#string",
+          "@isCollection": true,
         },
         path: {
           "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
@@ -66,6 +76,20 @@ export const reusedPredicates: TestData = {
           "@isCollection": true,
         },
       },
+    },
+    name: {
+      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "@isCollection": true,
+    },
+    path: {
+      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    law: {
+      "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#law",
+      "@type": "@id",
     },
     Law: {
       "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Law",
@@ -86,5 +110,5 @@ export const reusedPredicates: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface DocumentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Document";\n    };\n    vocabulary?: LdSet<VocabularyShape>;\n    law: LawShape;\n}\n\nexport interface LawShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Law";\n    };\n    name?: LdSet<string>;\n    path: {\n        "@id": string;\n    };\n}\n\nexport interface VocabularyShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type: {\n        "@id": "Vocabulary";\n    };\n    name: string;\n    path?: LdSet<{\n        "@id": string;\n    }>;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface DocumentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Document";\n    };\n    vocabulary?: LdSet<VocabularyShape>;\n    law: LawShape;\n}\n\nexport interface LawShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Law";\n    };\n    name?: LdSet<string>;\n    path: {\n        "@id": string;\n    };\n}\n\nexport interface VocabularyShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Vocabulary";\n    };\n    name: string;\n    path?: LdSet<{\n        "@id": string;\n    }>;\n}\n\n',
 };
