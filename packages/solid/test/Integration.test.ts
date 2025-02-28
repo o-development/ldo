@@ -7,7 +7,12 @@ import type {
   SolidLdoDataset,
   UpdateResultError,
 } from "../src";
-import { changeData, commitData, createSolidLdoDataset } from "../src";
+import {
+  changeData,
+  commitData,
+  createSolidLdoDataset,
+  SolidLdoTransactionDataset,
+} from "../src";
 import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
@@ -1293,6 +1298,12 @@ describe("Integration", () => {
         ),
       ).toBe(false);
     });
+  });
+
+  it("allows a transaction on a transaction", () => {
+    const transaction = solidLdoDataset.startTransaction();
+    const transaction2 = transaction.startTransaction();
+    expect(transaction2).toBeInstanceOf(SolidLdoTransactionDataset);
   });
 
   /**
