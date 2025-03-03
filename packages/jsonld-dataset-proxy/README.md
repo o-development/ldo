@@ -132,7 +132,7 @@ start();
 For the most part, you can think of a JSONLD Dataset Proxy as a JavaScript Object Literal with "Sets" instead of arrays.
 
 ### Defining a Context and Type
-The first step to getting a JSONLD Dataset Proxy is defining the JSONLD Context and TypeScript Typings. This can either be done through a [generator](https://ldo.js.org/api/cli/build/) or defining them manually.
+The first step to getting a JSONLD Dataset Proxy is defining the JSONLD Context and TypeScript Typings. This can either be done through a [generator](https://ldo.js.org/latest/api/cli/build/) or defining them manually.
 
 In this example typescript typing `IPerson` is an interface that represents a person. Notice the `@id` and `@context` fields. Be sure to include them in your interfaces if you wish to use those properties.
 

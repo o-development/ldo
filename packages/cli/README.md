@@ -68,9 +68,9 @@ npx @ldo/cli create ./my-project
 This script will generate a project with a place to put your shapes. Running `npm publish` will build the shapes and push to project to NPM for you.
 
 ## API Details
- - [`init` command](https://ldo.js.org/api/cli/init/)
- - [`build` command](https://ldo.js.org/api/cli/build/)
- - [`create` command](https://ldo.js.org/api/cli/create/)
+ - [`init` command](https://ldo.js.org/latest/api/cli/init/)
+ - [`build` command](https://ldo.js.org/latest/api/cli/build/)
+ - [`create` command](https://ldo.js.org/latest/api/cli/create/)
 
 
 ## Sponsorship

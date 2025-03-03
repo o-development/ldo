@@ -4,7 +4,7 @@
 
 ## Guide
 
-A full walkthrough for using the `@ldo/ldo` library can be found in the [For RDF Usage Guide](https://ldo.js.org/raw_rdf/).
+A full walkthrough for using the `@ldo/ldo` library can be found in the [For RDF Usage Guide](https://ldo.js.org/latest/raw_rdf/).
 
 ## Installation
 
@@ -122,45 +122,45 @@ run();
 
 Types
 
- - [`LdoBase`](https://ldo.js.org/api/ldo/LdoBase/)
- - [`ShapeType`](https://ldo.js.org/api/ldo/ShapeType/)
+ - [`LdoBase`](https://ldo.js.org/latest/api/ldo/LdoBase/)
+ - [`ShapeType`](https://ldo.js.org/latest/api/ldo/ShapeType/)
 
 Getting an LdoDataset
 
- - [`parseRdf`](https://ldo.js.org/api/ldo/parseRdf/)
- - [`createLdoDatasetFactory`](https://ldo.js.org/api/ldo/createLdoDatasetFactory/)
- - [`LdoDatasetFactory`](https://ldo.js.org/api/ldo/LdoDatasetFactory/)
- - [`createLdoDataset`](https://ldo.js.org/api/ldo/createLdoDataset/)
- - [`LdoDataset`](https://ldo.js.org/api/ldo/LdoDataset/)
+ - [`parseRdf`](https://ldo.js.org/latest/api/ldo/parseRdf/)
+ - [`createLdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/createLdoDatasetFactory/)
+ - [`LdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/LdoDatasetFactory/)
+ - [`createLdoDataset`](https://ldo.js.org/latest/api/ldo/createLdoDataset/)
+ - [`LdoDataset`](https://ldo.js.org/latest/api/ldo/LdoDataset/)
 
 Getting a Linked Data Object
 
- - [`LdoBuilder`](https://ldo.js.org/api/ldo/LdoBuilder/)
+ - [`LdoBuilder`](https://ldo.js.org/latest/api/ldo/LdoBuilder/)
 
 Converting a Linked Data Object to Raw RDF
 
- - [`toTurtle`](https://ldo.js.org/api/ldo/toTurtle/)
- - [`toNTriples`](https://ldo.js.org/api/ldo/toNTriples/)
- - [`serialize`](https://ldo.js.org/api/ldo/serialize/)
+ - [`toTurtle`](https://ldo.js.org/latest/api/ldo/toTurtle/)
+ - [`toNTriples`](https://ldo.js.org/latest/api/ldo/toNTriples/)
+ - [`serialize`](https://ldo.js.org/latest/api/ldo/serialize/)
 
 Transactions
 
- - [transactions](https://ldo.js.org/api/ldo/transactions/)
- - [`toSparqlUpdate`](https://ldo.js.org/api/ldo/toSparqlUpdate/)
+ - [transactions](https://ldo.js.org/latest/api/ldo/transactions/)
+ - [`toSparqlUpdate`](https://ldo.js.org/latest/api/ldo/toSparqlUpdate/)
 
 Language Tag Support
 
- - [`languageOf`](https://ldo.js.org/api/ldo/languageOf/)
- - [`setLanguagePreferences`](https://ldo.js.org/api/ldo/setLanguagePreferences/)
+ - [`languageOf`](https://ldo.js.org/latest/api/ldo/languageOf/)
+ - [`setLanguagePreferences`](https://ldo.js.org/latest/api/ldo/setLanguagePreferences/)
 
 Graph Support
 
- - [`graphOf`](https://ldo.js.org/api/ldo/graphOf/)
- - [`write`](https://ldo.js.org/api/ldo/write/)
+ - [`graphOf`](https://ldo.js.org/latest/api/ldo/graphOf/)
+ - [`write`](https://ldo.js.org/latest/api/ldo/write/)
 
 Other Helper Functions
 
- - [`getDataset`](https://ldo.js.org/api/ldo/getDataset/)
+ - [`getDataset`](https://ldo.js.org/latest/api/ldo/getDataset/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
