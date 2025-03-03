@@ -12,6 +12,7 @@ import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
 import type { Container } from "@ldo/solid";
 import type { ISolidLdoDataset } from "@ldo/solid";
 import type { NamedNode } from "@rdfjs/types";
+import { set } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -24,15 +25,15 @@ export async function initTypeIndex(
 ): Promise<void> {
   const { dataset } = guaranteeOptions(options);
   const profile = await getProfile(webId, options);
-  if (!profile.privateTypeIndex?.length || !profile.publicTypeIndex?.length) {
+  if (!profile.privateTypeIndex?.size || !profile.publicTypeIndex?.size) {
     const profileFolder = await dataset.getResource(webId).getParentContainer();
     if (profileFolder?.isError) throw profileFolder;
     if (!profileFolder)
       throw new Error("No folder to save the type indexes to.");
-    if (!profile.privateTypeIndex?.length) {
+    if (!profile.privateTypeIndex?.size) {
       await createIndex(webId, profileFolder, dataset, true);
     }
-    if (!profile.publicTypeIndex?.length) {
+    if (!profile.publicTypeIndex?.size) {
       await createIndex(webId, profileFolder, dataset, false);
     }
   }
@@ -80,16 +81,16 @@ export async function createIndex(
     .write(dataset.getResource(webId).uri)
     .fromSubject(webId);
   if (isPrivate) {
-    cProfile.privateTypeIndex?.push({ "@id": indexResource.uri });
+    cProfile.privateTypeIndex?.add({ "@id": indexResource.uri });
   } else {
-    cProfile.publicTypeIndex?.push({ "@id": indexResource.uri });
+    cProfile.publicTypeIndex?.add({ "@id": indexResource.uri });
   }
   const cTypeIndex = transaction
     .usingType(TypeIndexDocumentShapeType)
     .write(indexResource.uri)
     .fromSubject(indexResource.uri);
 
-  cTypeIndex.type = [{ "@id": "ListedDocument" }, { "@id": "TypeIndex" }];
+  cTypeIndex.type = set({ "@id": "ListedDocument" }, { "@id": "TypeIndex" });
   const commitResult = await transaction.commitToPod();
   if (commitResult.isError) throw commitResult;
 }
@@ -104,6 +105,13 @@ interface Instances {
   instanceContainer?: string[];
 }
 
+/**
+ * Adds an instance to a TypeRegistration
+ * @param indexUri The URI of the TypeIndex
+ * @param classUri The URI for the class the instance should be added to
+ * @param instances Objects representing the instances to add
+ * @param options Options
+ */
 export function addRegistration(
   indexUri: string,
   classUri: string,
@@ -119,13 +127,20 @@ export function addRegistration(
 
   // Add instances to type registration
   instances.instance?.forEach((instance) => {
-    typeRegistration.instance?.push({ "@id": instance });
+    typeRegistration.instance?.add({ "@id": instance });
   });
   instances.instanceContainer?.forEach((instanceContainer) => {
-    typeRegistration.instanceContainer?.push({ "@id": instanceContainer });
+    typeRegistration.instanceContainer?.add({ "@id": instanceContainer });
   });
 }
 
+/**
+ * Removes instances from a TypeRegistration
+ * @param indexUri The URI of the TypeIndex
+ * @param classUri The URI for the class the instance should be removed from
+ * @param instances Objects representing the instances to remove
+ * @param options Options
+ */
 export async function removeRegistration(
   indexUri: string,
   classUri: string,
@@ -139,31 +154,28 @@ export async function removeRegistration(
     options,
   );
 
-  console.log(typeRegistration["@id"]);
-
   // Add instances to type registration
-  instances.instance?.forEach((instance) => {
-    typeRegistration.instance?.splice(
-      typeRegistration.instance.findIndex((val) => val["@id"] === instance),
-      1,
-    );
+  instances.instance?.forEach((instanceUri) => {
+    typeRegistration.instance?.delete({ "@id": instanceUri });
   });
-  instances.instanceContainer?.forEach((instanceContainer) => {
-    console.log("Splicing instanceContainers", instanceContainer);
-    typeRegistration.instanceContainer?.splice(
-      typeRegistration.instanceContainer.findIndex(
-        (val) => val["@id"] === instanceContainer,
-      ),
-      1,
-    );
+  instances.instanceContainer?.forEach((instanceContainerUri) => {
+    typeRegistration.instanceContainer?.delete({ "@id": instanceContainerUri });
   });
 }
 
+/**
+ * Finds a TypeRegistration inside of a type index. If it doesn't exist, it
+ * creates one.
+ * @param indexUri The URI of the typeIndex
+ * @param classUri The URI of the class in question for the TypeRegistration
+ * @param options
+ * @returns The Type Index
+ */
 export function findAppropriateTypeRegistration(
   indexUri: string,
   classUri: string,
   options?: Options,
-) {
+): TypeRegistration {
   const { dataset } = guaranteeOptions(options);
   // Check to see if its already in the index
   const existingRegistrationsUris: NamedNode[] = dataset

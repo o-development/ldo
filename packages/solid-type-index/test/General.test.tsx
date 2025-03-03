@@ -39,7 +39,7 @@ describe("General Tests", () => {
     });
     const addressBookUris = await getInstanceUris(
       ADDRESS_BOOK,
-      typeRegistrations,
+      typeRegistrations.toArray(),
       { solidLdoDataset },
     );
     expect(addressBookUris).toEqual(
@@ -48,9 +48,13 @@ describe("General Tests", () => {
         "https://example.com/myPublicAddressBook.ttl",
       ]),
     );
-    const bookmarkUris = await getInstanceUris(BOOKMARK, typeRegistrations, {
-      solidLdoDataset,
-    });
+    const bookmarkUris = await getInstanceUris(
+      BOOKMARK,
+      typeRegistrations.toArray(),
+      {
+        solidLdoDataset,
+      },
+    );
     expect(bookmarkUris).toEqual(
       expect.arrayContaining([MY_BOOKMARKS_1_URI, MY_BOOKMARKS_2_URI]),
     );
@@ -67,8 +71,8 @@ describe("General Tests", () => {
       .usingType(TypeIndexProfileShapeType)
       .fromSubject(WEB_ID);
 
-    expect(profile.privateTypeIndex?.[0]?.["@id"]).toBeDefined();
-    expect(profile.publicTypeIndex?.[0]?.["@id"]).toBeDefined();
+    expect(profile.privateTypeIndex?.toArray()[0]?.["@id"]).toBeDefined();
+    expect(profile.publicTypeIndex?.toArray()[0]?.["@id"]).toBeDefined();
   });
 
   it("Adds to the typeIndex", async () => {

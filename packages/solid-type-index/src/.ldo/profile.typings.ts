@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext, LdSet } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -11,17 +11,17 @@ import { ContextDefinition } from "jsonld";
  */
 export interface TypeIndexProfile {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * A registry of all types used on the user's Pod (for private access only)
    */
-  privateTypeIndex?: {
+  privateTypeIndex?: LdSet<{
     "@id": string;
-  }[];
+  }>;
   /**
    * A registry of all types used on the user's Pod (for public access)
    */
-  publicTypeIndex?: {
+  publicTypeIndex?: LdSet<{
     "@id": string;
-  }[];
+  }>;
 }

@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import { LdoJsonldContext, LdSet } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -11,18 +11,18 @@ import { ContextDefinition } from "jsonld";
  */
 export interface TypeIndexDocument {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * Defines the node as a TypeIndex | Defines the node as a Listed Document
    */
-  type: (
+  type: LdSet<
     | {
         "@id": "TypeIndex";
       }
     | {
         "@id": "ListedDocument";
       }
-  )[];
+  >;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface TypeIndexDocument {
  */
 export interface TypeRegistration {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   /**
    * Defines this node as a Type Registration
    */
@@ -46,13 +46,13 @@ export interface TypeRegistration {
   /**
    * A specific resource that contains the class.
    */
-  instance?: {
+  instance?: LdSet<{
     "@id": string;
-  }[];
+  }>;
   /**
    * Containers that contain resources with the class.
    */
-  instanceContainer?: {
+  instanceContainer?: LdSet<{
     "@id": string;
-  }[];
+  }>;
 }

@@ -36,7 +36,7 @@ export function useInstanceUris(classUri: string): LeafUri[] {
   );
 
   useEffect(() => {
-    getInstanceUris(classUri, typeRegistrations, {
+    getInstanceUris(classUri, typeRegistrations.toArray(), {
       solidLdoDataset: dataset,
     }).then(setLeafUris);
   }, [typeRegistrations]);

@@ -6,11 +6,12 @@ import { TypeRegistrationShapeType } from "./.ldo/typeIndex.shapeTypes";
 import { RDF_TYPE, TYPE_REGISTRATION } from "./constants";
 import type { Options } from "./util/Options";
 import { guaranteeOptions } from "./util/Options";
+import type { LdSet } from "@ldo/ldo";
 
 export async function getTypeRegistrations(
   webId: string,
   options?: Options,
-): Promise<TypeRegistration[]> {
+): Promise<LdSet<TypeRegistration>> {
   const { dataset } = guaranteeOptions(options);
 
   // Get Profile
