@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "0.0.1-alpha.29",
+  "version": "0.0.1-1.0.0-alpha.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -38,9 +38,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^0.0.1-alpha.24",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.29",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.24",
+    "@ldo/dataset": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/subscribable-dataset": "^0.0.1-1.0.0-alpha.1.0",
     "@rdfjs/data-model": "^1.2.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"

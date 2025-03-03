@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "0.0.1-alpha.32",
+  "version": "0.0.1-1.0.0-alpha.1.0",
   "description": "A React library for LDO and Solid",
   "main": "dist/index.js",
   "scripts": {
@@ -37,11 +37,11 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",
-    "@ldo/dataset": "^0.0.1-alpha.24",
-    "@ldo/jsonld-dataset-proxy": "^0.0.1-alpha.29",
-    "@ldo/ldo": "^0.0.1-alpha.29",
-    "@ldo/solid": "^0.0.1-alpha.32",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.24",
+    "@ldo/dataset": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/jsonld-dataset-proxy": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/ldo": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/solid": "^0.0.1-1.0.0-alpha.1.0",
+    "@ldo/subscribable-dataset": "^0.0.1-1.0.0-alpha.1.0",
     "@rdfjs/data-model": "^1.2.0",
     "cross-fetch": "^3.1.6"
   },
