@@ -52,11 +52,10 @@ export async function setWacRuleForAclUri(
         .usingType(AuthorizationShapeType)
         .fromSubject(`${aclUri}#${v4()}`);
       authorization.type = { "@id": "Authorization" };
-      if (accessModeList.read) authorization.mode?.push({ "@id": "Read" });
-      if (accessModeList.write) authorization.mode?.push({ "@id": "Write" });
-      if (accessModeList.append) authorization.mode?.push({ "@id": "Append" });
-      if (accessModeList.control)
-        authorization.mode?.push({ "@id": "Control" });
+      if (accessModeList.read) authorization.mode?.add({ "@id": "Read" });
+      if (accessModeList.write) authorization.mode?.add({ "@id": "Write" });
+      if (accessModeList.append) authorization.mode?.add({ "@id": "Append" });
+      if (accessModeList.control) authorization.mode?.add({ "@id": "Control" });
       authorization.accessTo = { "@id": accessTo };
       if (isContainerUri(accessTo)) {
         authorization.default = { "@id": accessTo };
@@ -66,11 +65,11 @@ export async function setWacRuleForAclUri(
     const authorization = ruleMap[accessModeListHash];
     // Add agents to the rule
     if (type === "public") {
-      authorization.agentClass?.push({ "@id": "Agent" });
+      authorization.agentClass?.add({ "@id": "Agent" });
     } else if (type === "authenticated") {
-      authorization.agentClass?.push({ "@id": "AuthenticatedAgent" });
+      authorization.agentClass?.add({ "@id": "AuthenticatedAgent" });
     } else if (type === "agent" && agentId) {
-      authorization.agent?.push({ "@id": agentId });
+      authorization.agent?.add({ "@id": agentId });
     }
   }
 

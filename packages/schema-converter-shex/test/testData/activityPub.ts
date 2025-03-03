@@ -806,6 +806,9 @@ export const activityPub: TestData = {
   sampleTurtle: "",
   baseNode: "",
   successfulContext: {
+    type: {
+      "@id": "@type",
+    },
     Object: {
       "@id": "https://www.w3.org/ns/activitystreams#Object",
       "@context": {
@@ -829,11 +832,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -843,11 +842,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -898,11 +893,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -916,8 +907,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -950,6 +940,11 @@ export const activityPub: TestData = {
         },
       },
     },
+    attachment: {
+      "@id": "https://www.w3.org/ns/activitystreams#attachment",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     Link: {
       "@id": "https://www.w3.org/ns/activitystreams#Link",
       "@context": {
@@ -971,11 +966,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         hreflang: {
@@ -996,6 +987,75 @@ export const activityPub: TestData = {
           "@isCollection": true,
         },
       },
+    },
+    href: {
+      "@id": "https://www.w3.org/ns/activitystreams#href",
+      "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
+    },
+    rel: {
+      "@id": "https://www.w3.org/ns/activitystreams#rel",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "@isCollection": true,
+    },
+    mediaType: {
+      "@id": "https://www.w3.org/ns/activitystreams#mediaType",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    name: {
+      "@id": "https://www.w3.org/ns/activitystreams#name",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "@isCollection": true,
+    },
+    hreflang: {
+      "@id": "https://www.w3.org/ns/activitystreams#hreflang",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+    },
+    height: {
+      "@id": "https://www.w3.org/ns/activitystreams#height",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+    },
+    width: {
+      "@id": "https://www.w3.org/ns/activitystreams#width",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+    },
+    preview: {
+      "@id": "https://www.w3.org/ns/activitystreams#preview",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    attributedTo: {
+      "@id": "https://www.w3.org/ns/activitystreams#attributedTo",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    audience: {
+      "@id": "https://www.w3.org/ns/activitystreams#audience",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    content: {
+      "@id": "https://www.w3.org/ns/activitystreams#content",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "@isCollection": true,
+    },
+    context: {
+      "@id": "https://www.w3.org/ns/activitystreams#context",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    endTime: {
+      "@id": "https://www.w3.org/ns/activitystreams#endTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    },
+    generator: {
+      "@id": "https://www.w3.org/ns/activitystreams#generator",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    icon: {
+      "@id": "https://www.w3.org/ns/activitystreams#icon",
+      "@type": "@id",
+      "@isCollection": true,
     },
     Document: {
       "@id": "https://www.w3.org/ns/activitystreams#Document",
@@ -1020,11 +1080,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1034,11 +1090,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1089,11 +1141,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1107,8 +1155,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1164,11 +1211,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1178,11 +1221,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1233,11 +1272,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1251,8 +1286,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1285,6 +1319,29 @@ export const activityPub: TestData = {
         },
       },
     },
+    image: {
+      "@id": "https://www.w3.org/ns/activitystreams#image",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    inReplyTo: {
+      "@id": "https://www.w3.org/ns/activitystreams#inReplyTo",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    location: {
+      "@id": "https://www.w3.org/ns/activitystreams#location",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    published: {
+      "@id": "https://www.w3.org/ns/activitystreams#published",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    },
+    replies: {
+      "@id": "https://www.w3.org/ns/activitystreams#replies",
+      "@type": "@id",
+    },
     Collection: {
       "@id": "https://www.w3.org/ns/activitystreams#Collection",
       "@context": {
@@ -1308,11 +1365,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1322,11 +1375,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1386,11 +1435,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1404,8 +1449,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1437,6 +1481,10 @@ export const activityPub: TestData = {
           "@type": "http://www.w3.org/2001/XMLSchema#duration",
         },
       },
+    },
+    totalItems: {
+      "@id": "https://www.w3.org/ns/activitystreams#totalItems",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
     },
     current: {
       "@id": "https://www.w3.org/ns/activitystreams#current",
@@ -1465,11 +1513,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1479,11 +1523,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1543,11 +1583,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1561,8 +1597,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1615,6 +1650,58 @@ export const activityPub: TestData = {
       "@id": "https://www.w3.org/ns/activitystreams#last",
       "@type": "@id",
     },
+    items: {
+      "@id": "https://www.w3.org/ns/activitystreams#items",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    startTime: {
+      "@id": "https://www.w3.org/ns/activitystreams#startTime",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    },
+    summary: {
+      "@id": "https://www.w3.org/ns/activitystreams#summary",
+      "@type": "http://www.w3.org/2001/XMLSchema#string",
+      "@isCollection": true,
+    },
+    tag: {
+      "@id": "https://www.w3.org/ns/activitystreams#tag",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    updated: {
+      "@id": "https://www.w3.org/ns/activitystreams#updated",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    },
+    url: {
+      "@id": "https://www.w3.org/ns/activitystreams#url",
+      "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
+      "@isCollection": true,
+    },
+    to: {
+      "@id": "https://www.w3.org/ns/activitystreams#to",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    bto: {
+      "@id": "https://www.w3.org/ns/activitystreams#bto",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    cc: {
+      "@id": "https://www.w3.org/ns/activitystreams#cc",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    bcc: {
+      "@id": "https://www.w3.org/ns/activitystreams#bcc",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    duration: {
+      "@id": "https://www.w3.org/ns/activitystreams#duration",
+      "@type": "http://www.w3.org/2001/XMLSchema#duration",
+    },
     Activity: {
       "@id": "https://www.w3.org/ns/activitystreams#Activity",
       "@context": {
@@ -1638,11 +1725,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1652,11 +1735,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1707,11 +1786,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1725,8 +1800,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1789,6 +1863,36 @@ export const activityPub: TestData = {
         },
       },
     },
+    actor: {
+      "@id": "https://www.w3.org/ns/activitystreams#actor",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    object: {
+      "@id": "https://www.w3.org/ns/activitystreams#object",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    target: {
+      "@id": "https://www.w3.org/ns/activitystreams#target",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    result: {
+      "@id": "https://www.w3.org/ns/activitystreams#result",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    origin: {
+      "@id": "https://www.w3.org/ns/activitystreams#origin",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    instrument: {
+      "@id": "https://www.w3.org/ns/activitystreams#instrument",
+      "@type": "@id",
+      "@isCollection": true,
+    },
     IntransitiveActivity: {
       "@id": "https://www.w3.org/ns/activitystreams#IntransitiveActivity",
       "@context": {
@@ -1812,11 +1916,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -1826,11 +1926,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -1881,11 +1977,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -1899,8 +1991,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -1986,11 +2077,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2000,11 +2087,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2064,11 +2147,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2082,8 +2161,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2139,11 +2217,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2153,11 +2227,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2217,11 +2287,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2235,8 +2301,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2273,6 +2338,10 @@ export const activityPub: TestData = {
         },
       },
     },
+    startIndex: {
+      "@id": "https://www.w3.org/ns/activitystreams#startIndex",
+      "@type": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
+    },
     Accept: {
       "@id": "https://www.w3.org/ns/activitystreams#Accept",
       "@context": {
@@ -2296,11 +2365,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2310,11 +2375,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2365,11 +2426,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2383,8 +2440,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2470,11 +2526,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2484,11 +2536,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2539,11 +2587,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2557,8 +2601,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2644,11 +2687,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2658,11 +2697,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2713,11 +2748,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2731,8 +2762,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2818,11 +2848,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -2832,11 +2858,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -2887,11 +2909,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -2905,8 +2923,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -2992,11 +3009,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3006,11 +3019,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3061,11 +3070,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3079,8 +3084,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -3166,11 +3170,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3180,11 +3180,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3235,11 +3231,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3253,8 +3245,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -3340,11 +3331,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3354,11 +3341,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3409,11 +3392,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3427,8 +3406,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -3514,11 +3492,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3528,11 +3502,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3583,11 +3553,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3601,8 +3567,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -3688,11 +3653,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3702,11 +3663,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3757,11 +3714,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3775,8 +3728,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -3862,11 +3814,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -3876,11 +3824,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -3931,11 +3875,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -3949,8 +3889,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4036,11 +3975,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4050,11 +3985,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4105,11 +4036,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4123,8 +4050,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4210,11 +4136,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4224,11 +4146,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4279,11 +4197,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4297,8 +4211,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4384,11 +4297,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4398,11 +4307,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4453,11 +4358,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4471,8 +4372,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4558,11 +4458,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4572,11 +4468,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4627,11 +4519,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4645,8 +4533,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4732,11 +4619,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4746,11 +4629,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4801,11 +4680,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4819,8 +4694,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -4906,11 +4780,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -4920,11 +4790,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -4975,11 +4841,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -4993,8 +4855,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5080,11 +4941,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5094,11 +4951,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -5149,11 +5002,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -5167,8 +5016,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5254,11 +5102,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5268,11 +5112,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -5323,11 +5163,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -5341,8 +5177,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5428,11 +5263,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5442,11 +5273,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -5497,11 +5324,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -5515,8 +5338,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5602,11 +5424,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5616,11 +5434,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -5671,11 +5485,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -5689,8 +5499,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5776,11 +5585,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5790,11 +5595,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -5845,11 +5646,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -5863,8 +5660,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -5950,11 +5746,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -5964,11 +5756,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6019,11 +5807,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6037,8 +5821,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6124,11 +5907,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -6138,11 +5917,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6193,11 +5968,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6211,8 +5982,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6298,11 +6068,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -6312,11 +6078,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6367,11 +6129,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6385,8 +6143,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6472,11 +6229,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -6486,11 +6239,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6541,11 +6290,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6559,8 +6304,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6646,11 +6390,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -6660,11 +6400,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6715,11 +6451,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6733,8 +6465,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6820,11 +6551,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -6834,11 +6561,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -6889,11 +6612,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -6907,8 +6626,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -6994,11 +6712,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7008,11 +6722,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7063,11 +6773,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7081,8 +6787,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7145,12 +6850,7 @@ export const activityPub: TestData = {
         },
         closed: {
           "@id": "https://www.w3.org/ns/activitystreams#closed",
-          // @ts-ignore
-          "@type": [
-            "@id",
-            "http://www.w3.org/2001/XMLSchema#dateTime",
-            "http://www.w3.org/2001/XMLSchema#boolean",
-          ],
+          "@type": "@id",
           "@isCollection": true,
         },
       },
@@ -7162,6 +6862,11 @@ export const activityPub: TestData = {
     },
     anyOf: {
       "@id": "https://www.w3.org/ns/activitystreams#anyOf",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    closed: {
+      "@id": "https://www.w3.org/ns/activitystreams#closed",
       "@type": "@id",
       "@isCollection": true,
     },
@@ -7188,11 +6893,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7202,11 +6903,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7257,11 +6954,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7275,8 +6968,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7332,11 +7024,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7346,11 +7034,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7401,11 +7085,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7419,8 +7099,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7476,11 +7155,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7490,11 +7165,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7545,11 +7216,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7563,8 +7230,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7620,11 +7286,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7634,11 +7296,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7689,11 +7347,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7707,8 +7361,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7764,11 +7417,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7778,11 +7427,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7833,11 +7478,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7851,8 +7492,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -7908,11 +7548,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -7922,11 +7558,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -7977,11 +7609,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -7995,8 +7623,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8038,9 +7665,10 @@ export const activityPub: TestData = {
       "@id": "https://www.w3.org/ns/activitystreams#subject",
       "@type": "@id",
     },
-    object: {
-      "@id": "https://www.w3.org/ns/activitystreams#object",
+    relationship: {
+      "@id": "https://www.w3.org/ns/activitystreams#relationship",
       "@type": "@id",
+      "@isCollection": true,
     },
     Article: {
       "@id": "https://www.w3.org/ns/activitystreams#Article",
@@ -8065,11 +7693,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8079,11 +7703,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8134,11 +7754,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8152,8 +7768,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8209,11 +7824,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8223,11 +7834,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8278,11 +7885,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8296,8 +7899,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8353,11 +7955,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8367,11 +7965,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8422,11 +8016,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8440,8 +8030,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8497,11 +8086,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8511,11 +8096,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8566,11 +8147,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8584,8 +8161,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8641,11 +8217,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8655,11 +8227,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8710,11 +8278,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8728,8 +8292,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8785,11 +8348,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8799,11 +8358,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8854,11 +8409,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -8872,8 +8423,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -8929,11 +8479,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -8943,11 +8489,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -8998,11 +8540,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -9016,8 +8554,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -9066,6 +8603,22 @@ export const activityPub: TestData = {
         },
       },
     },
+    accuracy: {
+      "@id": "https://www.w3.org/ns/activitystreams#accuracy",
+      "@type": "http://www.w3.org/2001/XMLSchema#float",
+    },
+    altitude: {
+      "@id": "https://www.w3.org/ns/activitystreams#altitude",
+      "@type": "http://www.w3.org/2001/XMLSchema#float",
+    },
+    latitude: {
+      "@id": "https://www.w3.org/ns/activitystreams#latitude",
+      "@type": "http://www.w3.org/2001/XMLSchema#float",
+    },
+    radius: {
+      "@id": "https://www.w3.org/ns/activitystreams#radius",
+      "@type": "http://www.w3.org/2001/XMLSchema#float",
+    },
     unit: {
       "@id": "https://www.w3.org/ns/activitystreams#unit",
     },
@@ -9090,11 +8643,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         hreflang: {
@@ -9139,11 +8688,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -9153,11 +8698,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -9208,11 +8749,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -9226,8 +8763,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -9264,6 +8800,10 @@ export const activityPub: TestData = {
         },
       },
     },
+    describes: {
+      "@id": "https://www.w3.org/ns/activitystreams#describes",
+      "@type": "@id",
+    },
     Tombstone: {
       "@id": "https://www.w3.org/ns/activitystreams#Tombstone",
       "@context": {
@@ -9287,11 +8827,7 @@ export const activityPub: TestData = {
         },
         content: {
           "@id": "https://www.w3.org/ns/activitystreams#content",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         context: {
@@ -9301,11 +8837,7 @@ export const activityPub: TestData = {
         },
         name: {
           "@id": "https://www.w3.org/ns/activitystreams#name",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         endTime: {
@@ -9356,11 +8888,7 @@ export const activityPub: TestData = {
         },
         summary: {
           "@id": "https://www.w3.org/ns/activitystreams#summary",
-          // @ts-ignore
-          "@type": [
-            "http://www.w3.org/2001/XMLSchema#string",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
-          ],
+          "@type": "http://www.w3.org/2001/XMLSchema#string",
           "@isCollection": true,
         },
         tag: {
@@ -9374,8 +8902,7 @@ export const activityPub: TestData = {
         },
         url: {
           "@id": "https://www.w3.org/ns/activitystreams#url",
-          // @ts-ignore
-          "@type": ["http://www.w3.org/2001/XMLSchema#anyURI", "@id"],
+          "@type": "http://www.w3.org/2001/XMLSchema#anyURI",
           "@isCollection": true,
         },
         to: {
@@ -9417,7 +8944,16 @@ export const activityPub: TestData = {
         },
       },
     },
+    formerType: {
+      "@id": "https://www.w3.org/ns/activitystreams#formerType",
+      "@type": "@id",
+      "@isCollection": true,
+    },
+    deleted: {
+      "@id": "https://www.w3.org/ns/activitystreams#deleted",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+    },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface ActivityPubObject {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection.\n     */\n    type: {\n        "@id": "Object";\n    };\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Link {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * A Link is an indirect, qualified reference to a resource identified by a URL. The fundamental model for links is established by [ RFC5988]. Many of the properties defined by the Activity Vocabulary allow values that are either instances of Object or Link. When a Link is used, it establishes a qualified relation connecting the subject (the containing object) to the resource identified by the href. Properties of the Link are properties of the reference as opposed to properties of the resource.\n     */\n    type: {\n        "@id": "Link";\n    };\n    /**\n     * The target resource pointed to by a Link.\n     */\n    href?: string;\n    /**\n     * A link relation associated with a Link. The value MUST conform to both the [HTML5] and [RFC5988] "link relation" definitions. In the [HTML5], any string not containing the "space" U+0020, "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C) characters can be used as a valid link relation.\n     */\n    rel?: string[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    name?: (string | string)[];\n    /**\n     * Hints as to the language used by the target resource. Value MUST be a [BCP47] Language-Tag.\n     */\n    hreflang?: string;\n    /**\n     * On a Link, specifies a hint as to the rendering height in device-independent pixels of the linked resource.\n     */\n    height?: number;\n    /**\n     * On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.\n     */\n    width?: number;\n    preview?: (ActivityPubObject | Link)[];\n}\n\nexport interface Activity {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface InstransitiveActivity {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Collection {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type. \n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: (ActivityPubObject | Link)[];\n}\n\nexport interface OrderedCollection {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | A subtype of Collection in which members of the logical collection are assumed to always be strictly ordered.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "OrderedCollection";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: (ActivityPubObject | Link)[];\n}\n\nexport interface CollectionPage {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | Used to represent distinct subsets of items from a Collection. Refer to the Activity Streams 2.0 Core for a complete description of the CollectionPage object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "CollectionPage";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: (ActivityPubObject | Link)[];\n}\n\nexport interface OrderedCollectionPage {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | A subtype of Collection in which members of the logical collection are assumed to always be strictly ordered. | Used to represent ordered subsets of items from an OrderedCollection. Refer to the Activity Streams 2.0 Core for a complete description of the OrderedCollectionPage object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "OrderedCollection";\n    } | {\n        "@id": "OrderedCollectionPage";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: (ActivityPubObject | Link)[];\n    /**\n     * A non-negative integer value identifying the relative position within the logical view of a strictly ordered collection.\n     */\n    startIndex?: number;\n}\n\nexport interface Accept {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor accepts the object. The target property can be used in certain circumstances to indicate the context into which the object has been accepted.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Accept";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface TentativeAccept {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor accepts the object. The target property can be used in certain circumstances to indicate the context into which the object has been accepted. | A specialization of Accept indicating that the acceptance is tentative.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Accept";\n    } | {\n        "@id": "TentativeAccept";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Add {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has added the object to the target. If the target property is not explicitly specified, the target would need to be determined implicitly by context. The origin can be used to identify the context from which the object originated. \n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Add";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Arrive {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. | An IntransitiveActivity that indicates that the actor has arrived at the location. The origin can be used to identify the context from which the actor originated. The target typically has no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Arrive";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Create {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has created the object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Create";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Delete {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has deleted the object. If specified, the origin indicates the context from which the object was deleted.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Delete";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Follow {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is "following" the object. Following is defined in the sense typically used within Social systems in which the actor is interested in any activity performed by or on the object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Follow";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Ignore {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is ignoring the object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Ignore";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Join {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has joined the object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Join";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Leave {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has left the object. The target and origin typically have no meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Leave";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Like {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor likes, recommends or endorses the object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Like";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Offer {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is offering the object. If specified, the target indicates the entity to which the object is being offered.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Offer";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Invite {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is offering the object. If specified, the target indicates the entity to which the object is being offered. | A specialization of Offer in which the actor is extending an invitation for the object to the target.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Offer";\n    } | {\n        "@id": "Invite";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Reject {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is rejecting the object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Reject";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface TentativeReject {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is rejecting the object. The target and origin typically have no defined meaning. | A specialization of Reject in which the rejection is considered tentative.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Reject";\n    } | {\n        "@id": "TentativeReject";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Remove {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is removing the object. If specified, the origin indicates the context from which the object is being removed.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Remove";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Undo {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. |  Indicates that the actor is undoing the object. In most cases, the object will be an Activity describing some previously performed action (for instance, a person may have previously "liked" an article but, for whatever reason, might choose to undo that like at some later point in time). The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Undo";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Update {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has updated the object. Note, however, that this vocabulary does not define a mechanism for describing the actual set of modifications made to object. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Update";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface View {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has viewed the object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "View";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Listen {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has listened to the object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Listen";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Read {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has read the object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Read";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Move {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has moved object from origin to target. If the origin or target are not specified, either can be determined by context.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Move";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Travel {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. | Indicates that the actor is traveling to target from origin. Travel is an IntransitiveObject whose actor specifies the direct object. If the target or origin are not specified, either can be determined by context.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Travel";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Announce {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is calling the target\'s attention the object. The origin typically has no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Announce";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Block {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is ignoring the object. The target and origin typically have no defined meaning. | Indicates that the actor is blocking the object. Blocking is a stronger form of Ignore. The typical use is to support social systems that allow one user to block activities or content of other users. The target and origin typically have no defined meaning.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Ignore";\n    } | {\n        "@id": "Block";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Flag {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is "flagging" the object. Flagging is defined in the sense common to many social platforms as reporting content as being inappropriate for any number of reasons.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Flag";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Dislike {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor dislikes the object.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Dislike";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n}\n\nexport interface Question {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. |  Represents a question being asked. Question objects are an extension of IntransitiveActivity. That is, the Question object is an Activity, but the direct object is the question itself and therefore it would not contain an object property. Either of the anyOf and oneOf properties MAY be used to express possible answers, but a Question object MUST NOT have both properties. \n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Question";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: (ActivityPubObject | Link)[];\n    object?: (ActivityPubObject | Link)[];\n    target?: (ActivityPubObject | Link)[];\n    result?: (ActivityPubObject | Link)[];\n    origin?: (ActivityPubObject | Link)[];\n    instrument?: (ActivityPubObject | Link)[];\n    closed?: (ActivityPubObject | Link | string | boolean)[];\n}\n\nexport interface Application {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Describes a software application.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Application";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Group {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a formal or informal collective of Actors.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Group";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Organization {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents an organization.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Organization";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Person {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents an individual person.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Person";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Service {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a service of any kind.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Service";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Relationship {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. |  Describes a relationship between two individuals. The subject and object properties are used to identify the connected individuals. See 5.2 Representing Relationships Between Entities for additional information. \n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Relationship";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Relationship object, the relationship property identifies the kind of relationship that exists between subject and object.\n     */\n    relationship?: (ActivityPubObject)[];\n}\n\nexport interface Article {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents any kind of multi-paragraph written work.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Article";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Document {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Audio {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents an audio document of any kind.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Audio";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Image {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | An image document of any kind\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Image";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Video {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents a video document of any kind. \n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Video";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Note {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a short written work typically less than a single paragraph in length.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Note";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Page {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents a Web Page.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Page";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Event {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents any kind of event.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Event";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Place {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a logical or physical location. See 5.3 Representing Places for additional information.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Place";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * Indicates the accuracy of position coordinates on a Place objects. Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".\n     */\n    accuracy?: string;\n    /**\n     * Indicates the altitude of a place. The measurement units is indicated using the units property. If units is not specified, the default is assumed to be "m" indicating meters. \n     */\n    altitude?: string;\n    /**\n     * The latitude of a place | The longitude of a place\n     */\n    latitude?: (string | string)[];\n    /**\n     * The radius from the given latitude and longitude for a Place. The units is expressed by the units property. If units is not specified, the default is assumed to be "m" indicating "meters".\n     */\n    radius?: string;\n}\n\nexport interface Mention {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * A Link is an indirect, qualified reference to a resource identified by a URL. The fundamental model for links is established by [ RFC5988]. Many of the properties defined by the Activity Vocabulary allow values that are either instances of Object or Link. When a Link is used, it establishes a qualified relation connecting the subject (the containing object) to the resource identified by the href. Properties of the Link are properties of the reference as opposed to properties of the resource. | A specialized Link that represents an @mention.\n     */\n    type: ({\n        "@id": "Link";\n    } | {\n        "@id": "Mention";\n    })[];\n    /**\n     * The target resource pointed to by a Link.\n     */\n    href?: string;\n    /**\n     * A link relation associated with a Link. The value MUST conform to both the [HTML5] and [RFC5988] "link relation" definitions. In the [HTML5], any string not containing the "space" U+0020, "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C) characters can be used as a valid link relation.\n     */\n    rel?: string[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    name?: (string | string)[];\n    /**\n     * Hints as to the language used by the target resource. Value MUST be a [BCP47] Language-Tag.\n     */\n    hreflang?: string;\n    /**\n     * On a Link, specifies a hint as to the rendering height in device-independent pixels of the linked resource.\n     */\n    height?: number;\n    /**\n     * On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.\n     */\n    width?: number;\n    preview?: (ActivityPubObject | Link)[];\n}\n\nexport interface Profile {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Profile is a content object that describes another Object, typically used to describe Actor Type objects. The describes property is used to reference the object being described by the profile.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Profile";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Profile object, the describes property identifies the object described by the Profile.\n     */\n    describes?: ActivityPubObject;\n}\n\nexport interface Tombstone {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Tombstone represents a content object that has been deleted. It can be used in Collections to signify that there used to be an object at this position, but it has been deleted.\n     */\n    type: ({\n        "@id": "Object";\n    } | {\n        "@id": "Tombstone";\n    })[];\n    attachment?: (ActivityPubObject | Link)[];\n    attributedTo?: (ActivityPubObject | Link)[];\n    audience?: (ActivityPubObject | Link)[];\n    content?: (string | string)[];\n    context?: (ActivityPubObject | Link)[];\n    name?: (string | string)[];\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: (ActivityPubObject | Link)[];\n    icon?: (Image | Link)[];\n    image?: (Image | Link)[];\n    inReplyTo?: (ActivityPubObject | Link)[];\n    location?: (ActivityPubObject | Link)[];\n    preview?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: (string | string)[];\n    tag?: (ActivityPubObject | Link)[];\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: (string | Link)[];\n    to?: (ActivityPubObject | Link)[];\n    bto?: (ActivityPubObject | Link)[];\n    cc?: (ActivityPubObject | Link)[];\n    bcc?: (ActivityPubObject | Link)[];\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Tombstone object, the formerType property identifies the type of the object that was deleted.\n     */\n    formerType?: (ActivityPubObject)[];\n    /**\n     * On a Tombstone object, the deleted property is a timestamp for when the object was deleted.\n     */\n    deleted?: string;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface ActivityPubObject {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection.\n     */\n    type: {\n        "@id": "Object";\n    };\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Link {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * A Link is an indirect, qualified reference to a resource identified by a URL. The fundamental model for links is established by [ RFC5988]. Many of the properties defined by the Activity Vocabulary allow values that are either instances of Object or Link. When a Link is used, it establishes a qualified relation connecting the subject (the containing object) to the resource identified by the href. Properties of the Link are properties of the reference as opposed to properties of the resource.\n     */\n    type: {\n        "@id": "Link";\n    };\n    /**\n     * The target resource pointed to by a Link.\n     */\n    href?: string;\n    /**\n     * A link relation associated with a Link. The value MUST conform to both the [HTML5] and [RFC5988] "link relation" definitions. In the [HTML5], any string not containing the "space" U+0020, "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C) characters can be used as a valid link relation.\n     */\n    rel?: LdSet<string>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    name?: LdSet<string | string>;\n    /**\n     * Hints as to the language used by the target resource. Value MUST be a [BCP47] Language-Tag.\n     */\n    hreflang?: string;\n    /**\n     * On a Link, specifies a hint as to the rendering height in device-independent pixels of the linked resource.\n     */\n    height?: number;\n    /**\n     * On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.\n     */\n    width?: number;\n    preview?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Activity {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface InstransitiveActivity {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Collection {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type. \n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface OrderedCollection {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | A subtype of Collection in which members of the logical collection are assumed to always be strictly ordered.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "OrderedCollection";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface CollectionPage {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | Used to represent distinct subsets of items from a Collection. Refer to the Activity Streams 2.0 Core for a complete description of the CollectionPage object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "CollectionPage";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface OrderedCollectionPage {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Collection is a subtype of Object that represents ordered or unordered sets of Object or Link instances. Refer to the Activity Streams 2.0 Core specification for a complete description of the Collection type.  | A subtype of Collection in which members of the logical collection are assumed to always be strictly ordered. | Used to represent ordered subsets of items from an OrderedCollection. Refer to the Activity Streams 2.0 Core for a complete description of the OrderedCollectionPage object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Collection";\n    } | {\n        "@id": "OrderedCollection";\n    } | {\n        "@id": "OrderedCollectionPage";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * A non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.\n     */\n    totalItems?: number;\n    items?: LdSet<ActivityPubObject | Link>;\n    /**\n     * A non-negative integer value identifying the relative position within the logical view of a strictly ordered collection.\n     */\n    startIndex?: number;\n}\n\nexport interface Accept {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor accepts the object. The target property can be used in certain circumstances to indicate the context into which the object has been accepted.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Accept";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface TentativeAccept {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor accepts the object. The target property can be used in certain circumstances to indicate the context into which the object has been accepted. | A specialization of Accept indicating that the acceptance is tentative.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Accept";\n    } | {\n        "@id": "TentativeAccept";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Add {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has added the object to the target. If the target property is not explicitly specified, the target would need to be determined implicitly by context. The origin can be used to identify the context from which the object originated. \n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Add";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Arrive {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. | An IntransitiveActivity that indicates that the actor has arrived at the location. The origin can be used to identify the context from which the actor originated. The target typically has no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Arrive";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Create {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has created the object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Create";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Delete {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has deleted the object. If specified, the origin indicates the context from which the object was deleted.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Delete";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Follow {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is "following" the object. Following is defined in the sense typically used within Social systems in which the actor is interested in any activity performed by or on the object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Follow";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Ignore {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is ignoring the object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Ignore";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Join {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has joined the object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Join";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Leave {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has left the object. The target and origin typically have no meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Leave";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Like {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor likes, recommends or endorses the object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Like";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Offer {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is offering the object. If specified, the target indicates the entity to which the object is being offered.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Offer";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Invite {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is offering the object. If specified, the target indicates the entity to which the object is being offered. | A specialization of Offer in which the actor is extending an invitation for the object to the target.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Offer";\n    } | {\n        "@id": "Invite";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Reject {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is rejecting the object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Reject";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface TentativeReject {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is rejecting the object. The target and origin typically have no defined meaning. | A specialization of Reject in which the rejection is considered tentative.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Reject";\n    } | {\n        "@id": "TentativeReject";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Remove {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is removing the object. If specified, the origin indicates the context from which the object is being removed.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Remove";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Undo {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. |  Indicates that the actor is undoing the object. In most cases, the object will be an Activity describing some previously performed action (for instance, a person may have previously "liked" an article but, for whatever reason, might choose to undo that like at some later point in time). The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Undo";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Update {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has updated the object. Note, however, that this vocabulary does not define a mechanism for describing the actual set of modifications made to object. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Update";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface View {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has viewed the object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "View";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Listen {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has listened to the object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Listen";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Read {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has read the object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Read";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Move {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor has moved object from origin to target. If the origin or target are not specified, either can be determined by context.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Move";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Travel {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. | Indicates that the actor is traveling to target from origin. Travel is an IntransitiveObject whose actor specifies the direct object. If the target or origin are not specified, either can be determined by context.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Travel";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Announce {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is calling the target\'s attention the object. The origin typically has no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Announce";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Block {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is ignoring the object. The target and origin typically have no defined meaning. | Indicates that the actor is blocking the object. Blocking is a stronger form of Ignore. The typical use is to support social systems that allow one user to block activities or content of other users. The target and origin typically have no defined meaning.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Ignore";\n    } | {\n        "@id": "Block";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Flag {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor is "flagging" the object. Flagging is defined in the sense common to many social platforms as reporting content as being inappropriate for any number of reasons.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Flag";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Dislike {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Indicates that the actor dislikes the object.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "Dislike";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Question {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | An Activity is a subtype of Object that describes some form of action that may happen, is currently happening, or has already happened. The Activity type itself serves as an abstract base type for all types of activities. It is important to note that the Activity type itself does not carry any specific semantics about the kind of action being taken. | Instances of IntransitiveActivity are a subtype of Activity representing intransitive actions. The object property is therefore inappropriate for these activities. |  Represents a question being asked. Question objects are an extension of IntransitiveActivity. That is, the Question object is an Activity, but the direct object is the question itself and therefore it would not contain an object property. Either of the anyOf and oneOf properties MAY be used to express possible answers, but a Question object MUST NOT have both properties. \n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Activity";\n    } | {\n        "@id": "IntransitiveActivity";\n    } | {\n        "@id": "Question";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    actor?: LdSet<ActivityPubObject | Link>;\n    object?: LdSet<ActivityPubObject | Link>;\n    target?: LdSet<ActivityPubObject | Link>;\n    result?: LdSet<ActivityPubObject | Link>;\n    origin?: LdSet<ActivityPubObject | Link>;\n    instrument?: LdSet<ActivityPubObject | Link>;\n    closed?: LdSet<ActivityPubObject | Link | string | boolean>;\n}\n\nexport interface Application {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Describes a software application.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Application";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Group {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a formal or informal collective of Actors.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Group";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Organization {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents an organization.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Organization";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Person {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents an individual person.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Person";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Service {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a service of any kind.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Service";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Relationship {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. |  Describes a relationship between two individuals. The subject and object properties are used to identify the connected individuals. See 5.2 Representing Relationships Between Entities for additional information. \n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Relationship";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Relationship object, the relationship property identifies the kind of relationship that exists between subject and object.\n     */\n    relationship?: LdSet<ActivityPubObject>;\n}\n\nexport interface Article {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents any kind of multi-paragraph written work.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Article";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Document {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Audio {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents an audio document of any kind.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Audio";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Image {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | An image document of any kind\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Image";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Video {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents a video document of any kind. \n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Video";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Note {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a short written work typically less than a single paragraph in length.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Note";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Page {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a document of any kind. | Represents a Web Page.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Document";\n    } | {\n        "@id": "Page";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Event {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents any kind of event.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Event";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n}\n\nexport interface Place {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | Represents a logical or physical location. See 5.3 Representing Places for additional information.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Place";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * Indicates the accuracy of position coordinates on a Place objects. Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".\n     */\n    accuracy?: string;\n    /**\n     * Indicates the altitude of a place. The measurement units is indicated using the units property. If units is not specified, the default is assumed to be "m" indicating meters. \n     */\n    altitude?: string;\n    /**\n     * The latitude of a place | The longitude of a place\n     */\n    latitude?: LdSet<string | string>;\n    /**\n     * The radius from the given latitude and longitude for a Place. The units is expressed by the units property. If units is not specified, the default is assumed to be "m" indicating "meters".\n     */\n    radius?: string;\n}\n\nexport interface Mention {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * A Link is an indirect, qualified reference to a resource identified by a URL. The fundamental model for links is established by [ RFC5988]. Many of the properties defined by the Activity Vocabulary allow values that are either instances of Object or Link. When a Link is used, it establishes a qualified relation connecting the subject (the containing object) to the resource identified by the href. Properties of the Link are properties of the reference as opposed to properties of the resource. | A specialized Link that represents an @mention.\n     */\n    type: LdSet<{\n        "@id": "Link";\n    } | {\n        "@id": "Mention";\n    }>;\n    /**\n     * The target resource pointed to by a Link.\n     */\n    href?: string;\n    /**\n     * A link relation associated with a Link. The value MUST conform to both the [HTML5] and [RFC5988] "link relation" definitions. In the [HTML5], any string not containing the "space" U+0020, "tab" (U+0009), "LF" (U+000A), "FF" (U+000C), "CR" (U+000D) or "," (U+002C) characters can be used as a valid link relation.\n     */\n    rel?: LdSet<string>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    name?: LdSet<string | string>;\n    /**\n     * Hints as to the language used by the target resource. Value MUST be a [BCP47] Language-Tag.\n     */\n    hreflang?: string;\n    /**\n     * On a Link, specifies a hint as to the rendering height in device-independent pixels of the linked resource.\n     */\n    height?: number;\n    /**\n     * On a Link, specifies a hint as to the rendering width in device-independent pixels of the linked resource.\n     */\n    width?: number;\n    preview?: LdSet<ActivityPubObject | Link>;\n}\n\nexport interface Profile {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Profile is a content object that describes another Object, typically used to describe Actor Type objects. The describes property is used to reference the object being described by the profile.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Profile";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Profile object, the describes property identifies the object described by the Profile.\n     */\n    describes?: ActivityPubObject;\n}\n\nexport interface Tombstone {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    /**\n     * Describes an object of any kind. The Object type serves as the base type for most of the other kinds of objects defined in the Activity Vocabulary, including other Core types such as Activity, IntransitiveActivity, Collection and OrderedCollection. | A Tombstone represents a content object that has been deleted. It can be used in Collections to signify that there used to be an object at this position, but it has been deleted.\n     */\n    type: LdSet<{\n        "@id": "Object";\n    } | {\n        "@id": "Tombstone";\n    }>;\n    attachment?: LdSet<ActivityPubObject | Link>;\n    attributedTo?: LdSet<ActivityPubObject | Link>;\n    audience?: LdSet<ActivityPubObject | Link>;\n    content?: LdSet<string | string>;\n    context?: LdSet<ActivityPubObject | Link>;\n    name?: LdSet<string | string>;\n    /**\n     * The date and time describing the actual or expected ending time of the object. When used with an Activity object, for instance, the endTime property specifies the moment the activity concluded or is expected to conclude.\n     */\n    endTime?: string;\n    generator?: LdSet<ActivityPubObject | Link>;\n    icon?: LdSet<Image | Link>;\n    image?: LdSet<Image | Link>;\n    inReplyTo?: LdSet<ActivityPubObject | Link>;\n    location?: LdSet<ActivityPubObject | Link>;\n    preview?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was published\n     */\n    published?: string;\n    /**\n     * Identifies a Collection containing objects considered to be responses to this object.\n     */\n    replies?: Collection;\n    /**\n     * The date and time describing the actual or expected starting time of the object. When used with an Activity object, for instance, the startTime property specifies the moment the activity began or is scheduled to begin.\n     */\n    startTime?: string;\n    summary?: LdSet<string | string>;\n    tag?: LdSet<ActivityPubObject | Link>;\n    /**\n     * The date and time at which the object was updated\n     */\n    updated?: string;\n    url?: LdSet<string | Link>;\n    to?: LdSet<ActivityPubObject | Link>;\n    bto?: LdSet<ActivityPubObject | Link>;\n    cc?: LdSet<ActivityPubObject | Link>;\n    bcc?: LdSet<ActivityPubObject | Link>;\n    /**\n     * When used on a Link, identifies the MIME media type of the referenced resource. When used on an Object, identifies the MIME media type of the value of the content property. If not specified, the content property is assumed to contain text/html content.\n     */\n    mediaType?: string;\n    /**\n     * When the object describes a time-bound resource, such as an audio or video, a meeting, etc, the duration property indicates the object\'s approximate duration. The value MUST be expressed as an xsd:duration as defined by [ xmlschema11-2], section 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").\n     */\n    duration?: string;\n    /**\n     * On a Tombstone object, the formerType property identifies the type of the object that was deleted.\n     */\n    formerType?: LdSet<ActivityPubObject>;\n    /**\n     * On a Tombstone object, the deleted property is a timestamp for when the object was deleted.\n     */\n    deleted?: string;\n}\n\n',
 };

@@ -31,21 +31,42 @@ export const circular: TestData = {
   `,
   baseNode: "http://example.com/SampleParent",
   successfulContext: {
+    type: {
+      "@id": "@type",
+    },
     Parent: {
       "@id": "http://example.com/Parent",
       "@context": {
-        type: { "@id": "@type" },
-        hasChild: { "@id": "http://example.com/hasChild", "@type": "@id" },
+        type: {
+          "@id": "@type",
+        },
+        hasChild: {
+          "@id": "http://example.com/hasChild",
+          "@type": "@id",
+        },
       },
+    },
+    hasChild: {
+      "@id": "http://example.com/hasChild",
+      "@type": "@id",
     },
     Child: {
       "@id": "http://example.com/Child",
       "@context": {
-        type: { "@id": "@type" },
-        hasParent: { "@id": "http://example.com/hasParent", "@type": "@id" },
+        type: {
+          "@id": "@type",
+        },
+        hasParent: {
+          "@id": "http://example.com/hasParent",
+          "@type": "@id",
+        },
       },
+    },
+    hasParent: {
+      "@id": "http://example.com/hasParent",
+      "@type": "@id",
     },
   },
   successfulTypings:
-    'import {ContextDefinition} from "jsonld"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: ContextDefinition;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
 };

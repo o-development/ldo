@@ -9,6 +9,7 @@ import { reusedPredicates } from "./reusedPredicates";
 import { oldExtends } from "./oldExtends";
 import { orSimple } from "./orSimple";
 import { andSimple } from "./andSimple";
+import { eachOfAndSimple } from "./eachOfAndSimple";
 
 export interface TestData {
   name: string;
@@ -30,4 +31,5 @@ export const testData: TestData[] = [
   reusedPredicates,
   orSimple,
   andSimple,
+  eachOfAndSimple,
 ];

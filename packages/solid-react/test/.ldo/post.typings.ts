@@ -1,4 +1,4 @@
-import { ContextDefinition } from "jsonld";
+import { LdSet, LdoJsonldContext } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -11,7 +11,7 @@ import { ContextDefinition } from "jsonld";
  */
 export interface PostSh {
   "@id"?: string;
-  "@context"?: ContextDefinition;
+  "@context"?: LdoJsonldContext;
   type:
     | {
         "@id": "SocialMediaPosting";
@@ -39,7 +39,7 @@ export interface PostSh {
   /**
    * The publisher of the creative work.
    */
-  publisher: {
+  publisher: LdSet<{
     "@id": string;
-  }[];
+  }>;
 }

@@ -1,6 +1,7 @@
 import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
 import type { LdoJsonldContext } from "../src/LdoJsonldContext";
+import type { LdSet } from "../src";
 
 export interface ObservationShape {
   "@id"?: string;
@@ -15,12 +16,12 @@ export type PatientShape = {
   "@id"?: string;
   "@context"?: ContextDefinition;
   type: { "@id": "Patient" };
-  name?: string[];
-  langName?: string[];
+  name?: LdSet<string>;
+  langName?: LdSet<string>;
   birthdate?: string;
   age?: number;
   isHappy?: boolean;
-  roommate?: PatientShape[];
+  roommate?: LdSet<PatientShape>;
 };
 
 // No need to fully define the schema because this library doesn't use it

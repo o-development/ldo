@@ -1,4 +1,4 @@
-import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
+import { LdoJsonldContext } from "@ldo/ldo";
 
 /**
  * =============================================================================

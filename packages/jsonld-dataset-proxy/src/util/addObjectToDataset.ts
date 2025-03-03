@@ -12,6 +12,7 @@ import {
   languageDeleteMatch,
   languageKeyToLiteralLanguage,
 } from "../language/languageUtils";
+import { BasicLdSet } from "../setProxy/ldSet/BasicLdSet";
 
 export function addRawValueToDatasetRecursive(
   subject: NamedNode | BlankNode,
@@ -25,7 +26,11 @@ export function addRawValueToDatasetRecursive(
   const rdfType = proxyContext.getRdfType(subject);
   const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
   // Get the Object Node
-  const object = getNodeFromRawValue(key, value, rdfType, proxyContext);
+  const object = getNodeFromRawValue(
+    value,
+    proxyContext,
+    contextUtil.getDataType(key, rdfType),
+  );
   if (object == undefined) {
     dataset.deleteMatches(subject, predicate);
   } else if (object.termType === "Literal") {
@@ -77,9 +82,6 @@ export function addRawObjectToDatasetRecursive(
   shouldDeleteOldTriples: boolean,
   proxyContext: ProxyContext,
 ): SubjectProxy {
-  if (isSubjectProxy(item)) {
-    return item as SubjectProxy;
-  }
   const { dataset } = proxyContext;
   const subject = getNodeFromRawObject(item, proxyContext.contextUtil);
   const rdfType = proxyContext.getRdfType(subject);
@@ -106,7 +108,7 @@ export function addRawObjectToDatasetRecursive(
         dataset.deleteMatches(subject, predicate);
       }
     }
-    if (Array.isArray(value)) {
+    if (value instanceof BasicLdSet) {
       value.forEach((valueItem) => {
         addRawValueToDatasetRecursive(
           subject,

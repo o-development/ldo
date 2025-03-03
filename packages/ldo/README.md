@@ -4,7 +4,7 @@
 
 ## Guide
 
-A full walkthrough for using the `@ldo/ldo` library can be found in the [For RDF Usage Guide](https://ldo.js.org/raw_rdf/).
+A full walkthrough for using the `@ldo/ldo` library can be found in the [For RDF Usage Guide](https://ldo.js.org/latest/raw_rdf/).
 
 ## Installation
 
@@ -16,20 +16,30 @@ cd my_project/
 npx run @ldo/cli init
 ```
 
-### Manual Installation
+<details>
+<summary>
+Manual Installation
+</summary>
 
 If you already have generated ShapeTypes, you may install the `@ldo/ldo` library independently.
 
 ```
 npm i @ldo/ldo
 ```
+</details>
 
 ## Simple Example
 
 Below is a simple example of LDO in a real use-case (changing the name on a Solid Pod). Assume that a ShapeType was previously generated and placed at `./.ldo/foafProfile.shapeTypes`.
 
 ```typescript
-import { parseRdf, startTransaction, toSparqlUpdate, toTurtle } from "@ldo/ldo";
+import {
+  parseRdf,
+  startTransaction,
+  toSparqlUpdate,
+  toTurtle,
+  set,
+} from "@ldo/ldo";
 import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
 
 async function run() {
@@ -60,26 +70,26 @@ async function run() {
   // Logs "Person"
   console.log(janeProfile.type);
   // Logs 0
-  console.log(janeProfile.knows?.length);
+  console.log(janeProfile.knows?.size);
 
   // Begins a transaction that tracks your changes
   startTransaction(janeProfile);
   janeProfile.name = "Jane Smith";
-  janeProfile.knows?.push({
+  janeProfile.knows?.add({
     "@id": "https://solidweb.me/john_smith/profile/card#me",
     type: {
       "@id": "Person",
     },
     name: "John Smith",
-    knows: [janeProfile],
+    knows: set(janeProfile),
   });
 
   // Logs "Jane Smith"
   console.log(janeProfile.name);
   // Logs "John Smith"
-  console.log(janeProfile.knows?.[0].name);
+  console.log(janeProfile.knows?.toArray()[0].name);
   // Logs "Jane Smith"
-  console.log(janeProfile.knows?.[0].knows?.[0].name);
+  console.log(janeProfile.knows?.toArray()[0].knows?.toArray()[0].name);
 
   /**
    * Step 3: Convert it back to RDF
@@ -112,45 +122,45 @@ run();
 
 Types
 
- - [`LdoBase`](https://ldo.js.org/api/ldo/LdoBase/)
- - [`ShapeType`](https://ldo.js.org/api/ldo/ShapeType/)
+ - [`LdoBase`](https://ldo.js.org/latest/api/ldo/LdoBase/)
+ - [`ShapeType`](https://ldo.js.org/latest/api/ldo/ShapeType/)
 
 Getting an LdoDataset
 
- - [`parseRdf`](https://ldo.js.org/api/ldo/parseRdf/)
- - [`createLdoDatasetFactory`](https://ldo.js.org/api/ldo/createLdoDatasetFactory/)
- - [`LdoDatasetFactory`](https://ldo.js.org/api/ldo/LdoDatasetFactory/)
- - [`createLdoDataset`](https://ldo.js.org/api/ldo/createLdoDataset/)
- - [`LdoDataset`](https://ldo.js.org/api/ldo/LdoDataset/)
+ - [`parseRdf`](https://ldo.js.org/latest/api/ldo/parseRdf/)
+ - [`createLdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/createLdoDatasetFactory/)
+ - [`LdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/LdoDatasetFactory/)
+ - [`createLdoDataset`](https://ldo.js.org/latest/api/ldo/createLdoDataset/)
+ - [`LdoDataset`](https://ldo.js.org/latest/api/ldo/LdoDataset/)
 
 Getting a Linked Data Object
 
- - [`LdoBuilder`](https://ldo.js.org/api/ldo/LdoBuilder/)
+ - [`LdoBuilder`](https://ldo.js.org/latest/api/ldo/LdoBuilder/)
 
 Converting a Linked Data Object to Raw RDF
 
- - [`toTurtle`](https://ldo.js.org/api/ldo/toTurtle/)
- - [`toNTriples`](https://ldo.js.org/api/ldo/toNTriples/)
- - [`serialize`](https://ldo.js.org/api/ldo/serialize/)
+ - [`toTurtle`](https://ldo.js.org/latest/api/ldo/toTurtle/)
+ - [`toNTriples`](https://ldo.js.org/latest/api/ldo/toNTriples/)
+ - [`serialize`](https://ldo.js.org/latest/api/ldo/serialize/)
 
 Transactions
 
- - [transactions](https://ldo.js.org/api/ldo/transactions/)
- - [`toSparqlUpdate`](https://ldo.js.org/api/ldo/toSparqlUpdate/)
+ - [transactions](https://ldo.js.org/latest/api/ldo/transactions/)
+ - [`toSparqlUpdate`](https://ldo.js.org/latest/api/ldo/toSparqlUpdate/)
 
 Language Tag Support
 
- - [`languageOf`](https://ldo.js.org/api/ldo/languageOf/)
- - [`setLanguagePreferences`](https://ldo.js.org/api/ldo/setLanguagePreferences/)
+ - [`languageOf`](https://ldo.js.org/latest/api/ldo/languageOf/)
+ - [`setLanguagePreferences`](https://ldo.js.org/latest/api/ldo/setLanguagePreferences/)
 
 Graph Support
 
- - [`graphOf`](https://ldo.js.org/api/ldo/graphOf/)
- - [`write`](https://ldo.js.org/api/ldo/write/)
+ - [`graphOf`](https://ldo.js.org/latest/api/ldo/graphOf/)
+ - [`write`](https://ldo.js.org/latest/api/ldo/write/)
 
 Other Helper Functions
 
- - [`getDataset`](https://ldo.js.org/api/ldo/getDataset/)
+ - [`getDataset`](https://ldo.js.org/latest/api/ldo/getDataset/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

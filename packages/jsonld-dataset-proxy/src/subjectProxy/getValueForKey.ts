@@ -2,7 +2,7 @@ import type { SubjectProxyTarget } from "./createSubjectHandler";
 import { namedNode } from "@rdfjs/data-model";
 import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
 import type { SubjectProxy } from "./SubjectProxy";
-import type { ArrayProxy } from "../arrayProxy/ArrayProxy";
+import type { SetProxy } from "../setProxy/SetProxy";
 import type { ProxyContext } from "../ProxyContext";
 import { filterQuadsByLanguageOrdering } from "../language/languageUtils";
 
@@ -13,7 +13,7 @@ export function getValueForKey(
   target: SubjectProxyTarget,
   key: string | symbol,
   proxyContext: ProxyContext,
-): SubjectProxy | ArrayProxy | string | number | boolean | undefined {
+): SubjectProxy | SetProxy | string | number | boolean | undefined {
   const { contextUtil, dataset } = proxyContext;
   if (key === "@id") {
     if (target["@id"].termType === "BlankNode") {
@@ -35,11 +35,10 @@ export function getValueForKey(
   const subject = target["@id"];
   const rdfType = proxyContext.getRdfType(subject);
   const predicate = namedNode(contextUtil.keyToIri(key, rdfType));
-  if (contextUtil.isArray(key, rdfType)) {
-    const arrayProxy = proxyContext.createArrayProxy(
+  if (contextUtil.isSet(key, rdfType)) {
+    const arrayProxy = proxyContext.createSetProxy(
       [subject, predicate, null, null],
       false,
-      undefined,
       contextUtil.isLangString(key, rdfType),
     );
     return arrayProxy;
@@ -53,13 +52,11 @@ export function getValueForKey(
   }
   if (objectDataset.size === 0) {
     return undefined;
-  } else if (objectDataset.size === 1) {
+  } else {
     const thing = nodeToJsonldRepresentation(
       objectDataset.toArray()[0].object,
       proxyContext,
     );
     return thing;
-  } else {
-    return proxyContext.createArrayProxy([subject, predicate, null, null]);
   }
 }

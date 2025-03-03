@@ -4,6 +4,7 @@ import { program } from "commander";
 import { build } from "./build";
 import { init } from "./init";
 import { create } from "./create";
+import { generateReadme } from "./generateReadme";
 
 program
   .name("LDO-CLI")
@@ -33,9 +34,9 @@ program
   .command("generate-readme")
   .description("Create a ReadMe from the shapes and generated code.")
   .requiredOption(
-    "-r, --readme <readmePath>",
-    "Provide the path to the readme",
-    "./.shapes",
+    "-p, --project <projectPath>",
+    "Provide the path to the root project",
+    "./",
   )
   .requiredOption(
     "-s, --shapes <shapesPath>",
@@ -47,6 +48,6 @@ program
     "Provide the path to the ldo folder",
     "./.ldo",
   )
-  .action(build);
+  .action(generateReadme);
 
 program.parse();

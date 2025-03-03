@@ -1,4 +1,4 @@
-import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
+import { LdoJsonldContext } from "@ldo/ldo";
 
 /**
  * =============================================================================
@@ -7,7 +7,7 @@ import { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
  */
 export const typeIndexContext: LdoJsonldContext = {
   type: {
-    "@id": "@type"
+    "@id": "@type",
   },
   TypeIndex: {
     "@id": "http://www.w3.org/ns/solid/terms#TypeIndex",
@@ -46,5 +46,19 @@ export const typeIndexContext: LdoJsonldContext = {
         "@isCollection": true,
       },
     },
+  },
+  forClass: {
+    "@id": "http://www.w3.org/ns/solid/terms#forClass",
+    "@type": "@id",
+  },
+  instance: {
+    "@id": "http://www.w3.org/ns/solid/terms#instance",
+    "@type": "@id",
+    "@isCollection": true,
+  },
+  instanceContainer: {
+    "@id": "http://www.w3.org/ns/solid/terms#instanceContainer",
+    "@type": "@id",
+    "@isCollection": true,
   },
 };

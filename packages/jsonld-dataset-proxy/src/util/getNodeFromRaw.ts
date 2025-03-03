@@ -23,10 +23,10 @@ export function getNodeFromRawObject(
 }
 
 export function getNodeFromRawValue(
-  key: string,
   value: RawValue,
-  rdfTypes: NamedNode[],
   proxyContext: ProxyContext,
+  // To get this run proxyContext.contextUtil.getDataType(key, proxyContext.getRdfType(subjectNode))
+  datatype?: string,
 ): BlankNode | NamedNode | Literal | undefined {
   // Get the Object Node
   if (value == undefined) {
@@ -36,14 +36,19 @@ export function getNodeFromRawValue(
     typeof value === "boolean" ||
     typeof value === "number"
   ) {
-    // PICKUP: figure out how to handle looking for the RDF Types of a raw value
-    const datatype = proxyContext.contextUtil.getDataType(key, rdfTypes);
-    if (datatype === "@id") {
+    if (!datatype) {
+      return undefined;
+    } else if (datatype === "@id") {
       return namedNode(value.toString());
     } else {
       return literal(value.toString(), datatype);
     }
+  } else if (
+    typeof value.termType === "string" &&
+    (value.termType === "NamedNode" || value.termType === "BlankNode")
+  ) {
+    return value as NamedNode | BlankNode;
   } else {
-    return getNodeFromRawObject(value, proxyContext.contextUtil);
+    return getNodeFromRawObject(value as RawObject, proxyContext.contextUtil);
   }
 }

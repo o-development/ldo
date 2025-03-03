@@ -1,6 +1,6 @@
 import type { Schema } from "shexj";
 import type { ContextDefinition } from "jsonld";
-import type { ShapeType } from "../src";
+import type { LdSet, ShapeType } from "../src";
 
 export const profileShex: Schema = {
   type: "Schema",
@@ -978,7 +978,7 @@ export interface SolidProfileShape {
   /**
    * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)
    */
-  type: ({ "@id": "Person" } | { "@id": "Person2" })[];
+  type: LdSet<{ "@id": "Person" } | { "@id": "Person2" }>;
   /**
    * The formatted name of a person. Example: John Smith
    */
@@ -990,11 +990,11 @@ export interface SolidProfileShape {
   /**
    * The person's street address.
    */
-  hasAddress?: AddressShape[];
+  hasAddress?: LdSet<AddressShape>;
   /**
    * The person's email.
    */
-  hasEmail?: EmailShape[];
+  hasEmail?: LdSet<EmailShape>;
   /**
    * A link to the person's photo
    */
@@ -1006,7 +1006,7 @@ export interface SolidProfileShape {
     /**
      * Person's telephone number
      */
-  hasTelephone?: PhoneNumberShape[];
+  hasTelephone?: LdSet<PhoneNumberShape>;
   /**
    * An alternative way to define a person's telephone number using a string
    */
@@ -1022,11 +1022,11 @@ export interface SolidProfileShape {
   /**
    * A list of app origins that are trusted by this user
    */
-  trustedApp?: TrustedAppShape[];
+  trustedApp?: LdSet<TrustedAppShape>;
   /**
    * A list of RSA public keys that are associated with private keys the user holds.
    */
-  key?: RSAPublicKeyShape[];
+  key?: LdSet<RSAPublicKeyShape>;
   /**
    * The user's LDP inbox to which apps can post notifications
    */
@@ -1038,7 +1038,7 @@ export interface SolidProfileShape {
   /**
    * The location of a Solid storage server related to this WebId
    */
-  storage?: string[];
+  storage?: LdSet<string>;
   /**
    * The user's account
    */
@@ -1046,15 +1046,15 @@ export interface SolidProfileShape {
   /**
    * A registry of all types used on the user's Pod (for private access only)
    */
-  privateTypeIndex?: string[];
+  privateTypeIndex?: LdSet<string>;
   /**
    * A registry of all types used on the user's Pod (for public access)
    */
-  publicTypeIndex?: string[];
+  publicTypeIndex?: LdSet<string>;
   /**
    * A list of WebIds for all the people this user knows.
    */
-  knows?: SolidProfileShape[];
+  knows?: LdSet<SolidProfileShape>;
 }
 
 export interface TrustedAppShape {
@@ -1063,12 +1063,12 @@ export interface TrustedAppShape {
   /**
    * The level of access provided to this origin
    */
-  mode: (
+  mode: LdSet<
     | { "@id": "Append" }
     | { "@id": "Control" }
     | { "@id": "Read" }
     | { "@id": "Write" }
-  )[];
+  >;
   /**
    * The app origin the user trusts
    */

@@ -3,6 +3,7 @@ import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy";
 import type { ObjectLike } from "../types";
 import { _getUnderlyingNode, _proxyContext } from "../types";
 import { createLanguageMapProxy } from "./languageMapProxy";
+import type { LdSet } from "../setProxy/ldSet/LdSet";
 
 /**
  * -----------------------------------------------------------------------------
@@ -25,7 +26,7 @@ export type LanguageSet = Set<string>;
 export type LanguageOfConditionalReturn<
   SubjectObject extends ObjectLike,
   Key extends keyof SubjectObject,
-> = NonNullable<SubjectObject[Key]> extends Array<unknown>
+> = NonNullable<SubjectObject[Key]> extends LdSet<unknown>
   ? LanguageSetMap
   : LanguageMap;
 
@@ -59,6 +60,6 @@ export function languagesOf<
     subject,
     predicate,
     proxyContext,
-    proxyContext.contextUtil.isArray(key as string, rdfTypes),
+    proxyContext.contextUtil.isSet(key as string, rdfTypes),
   ) as LanguageOfConditionalReturn<SubjectObject, Key>;
 }

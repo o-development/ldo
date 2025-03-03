@@ -1,12 +1,12 @@
 {
   "name": "@ldo/jsonld-dataset-proxy",
-  "version": "0.0.1-alpha.29",
+  "version": "1.0.0-alpha.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "build:watch": "tsc-watch",
-    "test": "jest --coverage",
+    "test": "NODE_NO_WARNINGS=1 jest --coverage",
     "prepublishOnly": "npm run test && npm run build",
     "start": "ts-node ./example/example.ts",
     "start:lang": "ts-node ./example/languageExample.ts",
@@ -40,8 +40,8 @@
     "src"
   ],
   "dependencies": {
-    "@ldo/rdf-utils": "^0.0.1-alpha.24",
-    "@ldo/subscribable-dataset": "^0.0.1-alpha.24",
+    "@ldo/rdf-utils": "^1.0.0-alpha.1",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.1",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/dataset": "^1.1.0",
     "jsonld2graphobject": "^0.0.4"

@@ -1,4 +1,4 @@
-import type { LdoBase, ShapeType } from "@ldo/ldo";
+import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type { LdoBuilder } from "@ldo/ldo";
 import { useCallback } from "react";
@@ -9,7 +9,7 @@ export function useMatchSubject<Type extends LdoBase>(
   predicate?: QuadMatch[1] | string,
   object?: QuadMatch[2] | string,
   graph?: QuadMatch[3] | string,
-): Type[] {
+): LdSet<Type> {
   const matchSubject = useCallback(
     (builder: LdoBuilder<Type>) => {
       return builder.matchSubject(predicate, object, graph);

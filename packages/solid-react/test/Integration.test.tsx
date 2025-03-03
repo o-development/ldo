@@ -252,7 +252,7 @@ describe("Integration Tests", () => {
       await screen.findByText("test");
     });
 
-    it("renders the array value from the useSubject value", async () => {
+    it("renders the set value from the useSubject value", async () => {
       const UseSubjectTest: FunctionComponent = () => {
         const resource = useResource(SAMPLE_DATA_URI);
         const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
@@ -260,7 +260,7 @@ describe("Integration Tests", () => {
 
         return (
           <div>
-            <p role="single">{post.publisher[0]["@id"]}</p>
+            <p role="single">{post.publisher.toArray()[0]["@id"]}</p>
             <ul role="list">
               {post.publisher.map((publisher) => {
                 return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
@@ -349,7 +349,12 @@ describe("Integration Tests", () => {
         return (
           <div>
             <p role="value">{post.articleBody}</p>
-            <button onClick={() => (post.articleBody = "bad")}>
+            <button
+              onClick={() => {
+                post.articleBody = "bad";
+                post.publisher.add({ "@id": "example" });
+              }}
+            >
               Attempt Change
             </button>
           </div>
@@ -367,6 +372,9 @@ describe("Integration Tests", () => {
       expect(article.innerHTML).not.toBe("bad");
       expect(warn).toHaveBeenCalledWith(
         "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",
+      );
+      expect(warn).toHaveBeenCalledWith(
+        "You've attempted to modify a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",
       );
       warn.mockReset();
     });

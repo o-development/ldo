@@ -3,7 +3,7 @@ import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData";
 import { ProfileShapeType } from "./profileData";
 import type { LdoBuilder, LdoDataset } from "../src";
-import { createLdoDataset, graphOf, parseRdf, toTurtle } from "../src";
+import { createLdoDataset, graphOf, parseRdf, toTurtle, set } from "../src";
 import { sampleJsonld, sampleTurtle } from "./sampleData";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
@@ -33,7 +33,7 @@ describe("LdoDataset", () => {
 
   it("initializes a profile using the fromJson method", () => {
     const profile = profileBuilder.fromJson({
-      type: [{ "@id": "Person" }, { "@id": "Person2" }],
+      type: set({ "@id": "Person" }, { "@id": "Person2" }),
       inbox: { "@id": "https://inbox.com" },
       fn: "Diplo",
     });
@@ -45,7 +45,7 @@ describe("LdoDataset", () => {
   it("initializes a profile with an id using the fromJson method", () => {
     const profile = profileBuilder.fromJson({
       "@id": "https://example.com/person1",
-      type: [{ "@id": "Person" }, { "@id": "Person2" }],
+      type: set({ "@id": "Person" }, { "@id": "Person2" }),
       inbox: { "@id": "https://inbox.com" },
       fn: "Diplo",
     });
@@ -128,7 +128,7 @@ describe("LdoDataset", () => {
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
       "http://xmlns.com/foaf/0.1/Person",
     );
-    expect(profiles[0].fn).toBe("Jackson Morgan");
+    expect(profiles.toArray()[0].fn).toBe("Jackson Morgan");
   });
 
   it("Handles alternate optionality for subject match", () => {
@@ -137,7 +137,7 @@ describe("LdoDataset", () => {
       undefined,
       "https://someGraph.com",
     );
-    expect(profiles.length).toBe(0);
+    expect(profiles.size).toBe(0);
   });
 
   it("Lets a match query retrieve objects", () => {
@@ -145,7 +145,7 @@ describe("LdoDataset", () => {
       null,
       "http://xmlns.com/foaf/0.1/primaryTopic",
     );
-    expect(profiles[0].fn).toBe("Jackson Morgan");
+    expect(profiles.toArray()[0].fn).toBe("Jackson Morgan");
   });
 
   it("Handles alternate optionality for object match", () => {
@@ -154,7 +154,7 @@ describe("LdoDataset", () => {
       undefined,
       "https://someGraph.com",
     );
-    expect(profiles.length).toBe(0);
+    expect(profiles.size).toBe(0);
   });
 
   it("Sets language preferences", () => {

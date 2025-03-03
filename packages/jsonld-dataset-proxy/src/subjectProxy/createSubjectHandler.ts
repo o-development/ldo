@@ -1,4 +1,4 @@
-import { namedNode, quad } from "@rdfjs/data-model";
+import { blankNode, namedNode, quad } from "@rdfjs/data-model";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
 import { addObjectToDataset } from "../util/addObjectToDataset";
 import { deleteValueFromDataset } from "./deleteFromDataset";
@@ -62,14 +62,18 @@ export function createSubjectHandler(
         proxyContext = value;
         return true;
       }
-      if (key === "@id" && typeof value === "string") {
+      if (
+        key === "@id" &&
+        (typeof value === "string" || typeof value == "undefined")
+      ) {
+        const newSubjectNode = value ? namedNode(value) : blankNode();
         // Replace Subject Quads
         const currentSubjectQuads = proxyContext.dataset
           .match(target["@id"])
           .toArray();
         const newSubjectQuads = currentSubjectQuads.map((curQuad) =>
           quad(
-            namedNode(value),
+            newSubjectNode,
             curQuad.predicate,
             curQuad.object,
             curQuad.graph,
@@ -87,7 +91,7 @@ export function createSubjectHandler(
           quad(
             curQuad.subject,
             curQuad.predicate,
-            namedNode(value),
+            newSubjectNode,
             curQuad.graph,
           ),
         );
@@ -95,7 +99,7 @@ export function createSubjectHandler(
           proxyContext.dataset.delete(curQuad),
         );
         proxyContext.dataset.addAll(newObjectQuads);
-        target["@id"] = namedNode(value);
+        target["@id"] = newSubjectNode;
       }
       addObjectToDataset(
         { "@id": target["@id"], [key]: value },

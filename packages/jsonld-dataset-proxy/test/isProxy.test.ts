@@ -1,7 +1,7 @@
 import {
   getProxyFromObject,
   getSubjectProxyFromObject,
-  isArrayProxy,
+  isSetProxy,
   isSubjectProxy,
 } from "../src";
 
@@ -25,12 +25,12 @@ describe("isProxy", () => {
   });
 });
 
-describe("isArrayProxy", () => {
+describe("isSetProxy", () => {
   it("returns false if undefined is passed as a parameter", () => {
-    expect(isArrayProxy(undefined)).toBe(false);
+    expect(isSetProxy(undefined)).toBe(false);
   });
 
   it("returns false if string is passed as a parameter", () => {
-    expect(isArrayProxy("hello")).toBe(false);
+    expect(isSetProxy("hello")).toBe(false);
   });
 });

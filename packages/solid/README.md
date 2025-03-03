@@ -16,13 +16,17 @@ Now install the @ldo/solid library
 npm i @ldo/solid
 ```
 
-### Manual Installation
+<details>
+<summary>
+Manual Installation
+</summary>
 
 If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
 
 ```
 npm i @ldo/ldo @ldo/solid
 ```
+</details>
 
 ## Simple Examples
 
@@ -201,28 +205,28 @@ main();
 
 SolidLdoDataset
 
- - [createSolidLdoDataset](https://ldo.js.org/api/solid/functions/createSolidLdoDataset/)
- - [SolidLdoDataset](https://ldo.js.org/api/solid/classes/SolidLdoDataset/)
+ - [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
+ - [SolidLdoDataset](https://ldo.js.org/latest/api/solid/classes/SolidLdoDataset/)
 
 Resources (Manage batching requests)
 
- - [LeafUri](https://ldo.js.org/api/solid/types/LeafUri/)
- - [ContainerUri](https://ldo.js.org/api/solid/types/ContainerUri/)
- - [Leaf](https://ldo.js.org/api/solid/classes/Leaf/)
- - [Container](https://ldo.js.org/api/solid/classes/Container/)
+ - [LeafUri](https://ldo.js.org/latest/api/solid/types/LeafUri/)
+ - [ContainerUri](https://ldo.js.org/latest/api/solid/types/ContainerUri/)
+ - [Leaf](https://ldo.js.org/latest/api/solid/classes/Leaf/)
+ - [Container](https://ldo.js.org/latest/api/solid/classes/Container/)
 
 Standalone Functions
 
- - [checkRootContainter](https://ldo.js.org/api/solid/functions/checkRootContainer/)
- - [createDataResource](https://ldo.js.org/api/solid/functions/createDataResource/)
- - [deleteResource](https://ldo.js.org/api/solid/functions/deleteResource/)
- - [readResource](https://ldo.js.org/api/solid/functions/readResource/)
- - [updateResource](https://ldo.js.org/api/solid/functions/updateResource/)
- - [uploadResource](https://ldo.js.org/api/solid/functions/uploadResource/)
+ - [checkRootContainter](https://ldo.js.org/latest/api/solid/functions/checkRootContainer/)
+ - [createDataResource](https://ldo.js.org/latest/api/solid/functions/createDataResource/)
+ - [deleteResource](https://ldo.js.org/latest/api/solid/functions/deleteResource/)
+ - [readResource](https://ldo.js.org/latest/api/solid/functions/readResource/)
+ - [updateResource](https://ldo.js.org/latest/api/solid/functions/updateResource/)
+ - [uploadResource](https://ldo.js.org/latest/api/solid/functions/uploadResource/)
 
 Data Functions
- - [changeData](https://ldo.js.org/api/solid/functions/changeData/)
- - [commitData](https://ldo.js.org/api/solid/functions/commitData/)
+ - [changeData](https://ldo.js.org/latest/api/solid/functions/changeData/)
+ - [commitData](https://ldo.js.org/latest/api/solid/functions/commitData/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

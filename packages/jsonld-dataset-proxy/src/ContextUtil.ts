@@ -144,7 +144,7 @@ export class ContextUtil {
   /**
    * Returns true if the object is a collection
    */
-  public isArray(key: string, typeName: NamedNode[]): boolean {
+  public isSet(key: string, typeName: NamedNode[]): boolean {
     const relevantContext = this.getRelevantContext(key, typeName);
     return !!(
       relevantContext[key] &&
