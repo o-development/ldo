@@ -216,7 +216,7 @@ export async function createDataResource(
       slug: getSlug(uri),
     };
     if (isContainerUri(uri)) {
-      headers.link = '<http://www.w3.org/ns/ldp#Container>; rel="type"';
+      headers.link = '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"';
     }
     const response = await fetch(parentUri, {
       method: "post",
