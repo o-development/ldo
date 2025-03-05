@@ -14,7 +14,7 @@ interface BuildOptions {
 }
 
 export async function build(options: BuildOptions) {
-  const load = loading("Peparing Environment");
+  const load = loading("Preparing Environment");
   load.start();
   // Prepare new folder by clearing/and/or creating it
   if (fs.existsSync(options.output)) {
