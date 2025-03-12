@@ -3,4 +3,4 @@ export * from "./NextGraphConnectedPlugin";
 
 export * from "./resources/NextGraphResource";
 
-export * from "./util/isSolidUri";
+export * from "./util/isNextGraphUri";

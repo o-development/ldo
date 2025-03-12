@@ -16,4 +16,5 @@ const containerResource = dataset.getResource("https://example.com/container/");
 const leafResource = dataset.getResource(
   "https://example.com/container/index.ttl",
 );
-const nextGraphResource = dataset.getResource("did:ng:cool", "solid");
+
+const nextGraphResource = dataset.getResource("did:ng:cool");

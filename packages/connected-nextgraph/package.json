@@ -1,5 +1,5 @@
 {
-  "name": "@ldo/connected-solid",
+  "name": "@ldo/connected-nextgraph",
   "version": "1.0.0-alpha.1",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "main": "dist/index.js",
