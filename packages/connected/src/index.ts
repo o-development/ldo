@@ -2,6 +2,7 @@ export * from "./ConnectedLdoDataset";
 export * from "./ConnectedPlugin";
 export * from "./Resource";
 export * from "./InvalidIdentifierResource";
+export * from "./ConnectedContext";
 
 export * from "./notifications/NotificationMessage";
 export * from "./notifications/NotificationSubscription";

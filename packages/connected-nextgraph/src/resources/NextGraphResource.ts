@@ -1,3 +1,4 @@
+import type { ConnectedContext } from "@ldo/connected";
 import {
   Unfetched,
   type ConnectedResult,
@@ -8,6 +9,8 @@ import {
 } from "@ldo/connected";
 import type { NextGraphUri } from "../types";
 import EventEmitter from "events";
+import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin";
+import ng from "nextgraph";
 
 export class NextGraphResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -16,11 +19,16 @@ export class NextGraphResource
   public readonly uri: NextGraphUri;
   public readonly type = "NextGraphResource" as const;
   public status: ConnectedResult;
+  protected context: ConnectedContext<NextGraphConnectedPlugin[]>;
 
-  constructor(uri: NextGraphUri) {
+  constructor(
+    uri: NextGraphUri,
+    context: ConnectedContext<NextGraphConnectedPlugin[]>,
+  ) {
     super();
     this.uri = uri;
     this.status = new Unfetched(this);
+    this.context = context;
   }
 
   isLoading(): boolean {
@@ -59,8 +67,12 @@ export class NextGraphResource
     throw new Error("Method not implemented.");
   }
 
+  protected async onNotification(message: unknown) {
+    // TODO
+  }
+
   subscribeToNotifications(callbacks?: SubscriptionCallbacks): Promise<string> {
-    throw new Error("Method not implemented.");
+    ng.
   }
 
   unsubscribeFromNotifications(subscriptionId: string): Promise<void> {
@@ -70,5 +82,4 @@ export class NextGraphResource
   unsubscribeFromAllNotifications(): Promise<void> {
     throw new Error("Method not implemented.");
   }
-
 }

@@ -5,6 +5,9 @@ import type { NextGraphResource } from "./resources/NextGraphResource";
 export interface NextGraphConnectedPlugin extends ConnectedPlugin {
   name: "nextGraph";
   getResource(uri: NextGraphUri): NextGraphResource;
+  context: {
+    sessionId: string;
+  };
 }
 
 export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
