@@ -9,6 +9,12 @@ export interface SolidConnectedPlugin extends ConnectedPlugin {
   getResource:
     | ((uri: SolidLeafUri) => SolidLeaf)
     | ((uri: SolidContainerUri) => SolidContainer);
+  createResource(): Promise<SolidLeaf>;
+  isUriValid(uri: string): uri is SolidLeafUri | SolidContainerUri;
+  normalizeUri?: (uri: string) => SolidLeafUri | SolidContainerUri;
+  context: {
+    fetch?: typeof fetch;
+  };
 }
 
 export const solidConnectedPlugin: SolidConnectedPlugin = {
@@ -17,4 +23,11 @@ export const solidConnectedPlugin: SolidConnectedPlugin = {
   getResource(_uri: SolidUri): SolidContainer | SolidLeaf {
     throw new Error("Not Implemented");
   },
+  createResource: function (): Promise<SolidLeaf> {
+    throw new Error("Function not implemented.");
+  },
+  isUriValid: function (uri: string): uri is SolidLeafUri | SolidContainerUri {
+    throw new Error("Function not implemented.");
+  },
+  context: {},
 };

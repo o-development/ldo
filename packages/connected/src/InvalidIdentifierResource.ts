@@ -1,7 +1,6 @@
 import EventEmitter from "events";
 import type { Resource, ResourceEventEmitter } from "./Resource";
 import { InvalidUriError } from "./results/error/InvalidUriError";
-import type { SubscriptionCallbacks } from "./notifications/NotificationSubscription";
 
 export class InvalidIdentifierResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -10,6 +9,7 @@ export class InvalidIdentifierResource
   public readonly uri: string;
   public readonly type = "InvalidIdentifierResouce" as const;
   public status: InvalidUriError<this>;
+  public readonly isError = false as const;
 
   constructor(uri: string) {
     super();
@@ -50,9 +50,7 @@ export class InvalidIdentifierResource
   async createIfAbsent(): Promise<InvalidUriError<this>> {
     return this.status;
   }
-  async subscribeToNotifications(
-    _callbacks?: SubscriptionCallbacks,
-  ): Promise<string> {
+  async subscribeToNotifications(_callbacks): Promise<string> {
     throw new Error("Cannot subscribe to an invalid resource.");
   }
   async unsubscribeFromNotifications(_subscriptionId: string): Promise<void> {

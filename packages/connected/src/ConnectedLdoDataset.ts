@@ -1,22 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LdoDataset } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
+import type { ConnectedContext } from "./ConnectedContext";
 
-type ReturnTypeFromArgs<T, Arg> = T extends (arg: Arg) => infer R ? R : never;
-type ResourceTypes<Plugins extends ConnectedPlugin[]> =
-  | ReturnType<Plugins[number]["getResource"]>
-  | InvalidIdentifierResource;
-type GetResourceReturn<
-  Plugin extends ConnectedPlugin,
-  UriType extends string,
-> = UriType extends Parameters<Plugin["getResource"]>[0]
-  ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
-  : ResourceTypes<[Plugin]>;
+type ReturnTypeFromArgs<Func, Arg> = Func extends (arg: Arg) => infer R
+  ? R
+  : never;
 
 export class ConnectedLdoDataset<
-  Plugins extends ConnectedPlugin[],
+  Plugins extends ConnectedPlugin<any, any, any, any>[],
 > extends LdoDataset {
   private plugins: Plugins;
   /**
@@ -24,7 +19,8 @@ export class ConnectedLdoDataset<
    *
    * A mapping between a resource URI and a Solid resource
    */
-  protected resourceMap: Map<string, ResourceTypes<Plugins>>;
+  protected resourceMap: Map<string, Plugins[number]["types"]["resource"]>;
+  protected context: ConnectedContext<Plugins>;
 
   constructor(
     plugins: Plugins,
@@ -35,6 +31,12 @@ export class ConnectedLdoDataset<
     super(datasetFactory, transactionDatasetFactory, initialDataset);
     this.plugins = plugins;
     this.resourceMap = new Map();
+    this.context = {
+      dataset: this,
+    };
+    this.plugins.forEach(
+      (plugin) => (this.context[plugin.name] = plugin.initialContext),
+    );
   }
 
   /**
@@ -58,16 +60,18 @@ export class ConnectedLdoDataset<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
-  >(uri: UriType, pluginName?: Name): GetResourceReturn<Plugin, UriType> {
+  >(
+    uri: UriType,
+    pluginName?: Name,
+  ): UriType extends Plugin["types"]["uri"]
+    ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
+    : ReturnType<Plugin["getResource"]> | InvalidIdentifierResource {
     // Check for which plugins this uri is valid
     const validPlugins = this.plugins
       .filter((plugin) => plugin.isUriValid(uri))
       .filter((plugin) => (pluginName ? pluginName === plugin.name : true));
     if (validPlugins.length === 0) {
-      return new InvalidIdentifierResource(uri) as GetResourceReturn<
-        Plugin,
-        UriType
-      >;
+      return new InvalidIdentifierResource(uri) as any;
     } else if (validPlugins.length > 1) {
       // TODO: LDO is currently not architected to have an ID valid in multiple
       // protocols. This will need to be refactored if this is ever the case.
@@ -80,9 +84,29 @@ export class ConnectedLdoDataset<
 
     let resource = this.resourceMap.get(normalizedUri);
     if (!resource) {
-      resource = plugin.getResource(uri) as ResourceTypes<Plugins>;
+      resource = plugin.getResource(uri, this.context);
       this.resourceMap.set(normalizedUri, resource);
     }
-    return resource as GetResourceReturn<Plugin, UriType>;
+    return resource as any;
+  }
+
+  async createResource<
+    Name extends Plugins[number]["name"],
+    Plugin extends Extract<Plugins[number], { name: Name }>,
+  >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
+    const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
+    const newResourceResult = await validPlugin.createResource(this.context);
+    if (newResourceResult.isError) return newResourceResult;
+    this.resourceMap.set(newResourceResult.uri, newResourceResult);
+    return newResourceResult;
+  }
+
+  setContext<
+    Name extends Plugins[number]["name"],
+    Plugin extends Extract<Plugins[number], { name: Name }>,
+  >(name: Name, context: Plugin["types"]["context"]) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.context[name] = context;
   }
 }
