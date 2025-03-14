@@ -1,3 +1,4 @@
+import type { ConnectedContext } from "./ConnectedContext";
 import type { Resource } from "./Resource";
 import type { ErrorResult } from "./results/error/ErrorResult";
 
@@ -8,9 +9,11 @@ export interface ConnectedPlugin<
   ContextType,
 > {
   name: Name;
-  getResource(uri: UriType, context: ContextType): ResourceType | ErrorResult;
-  createResource(context: ContextType): Promise<ResourceType | ErrorResult>;
-  isUriValid(uri: UriType): boolean;
+  getResource(uri: UriType, context: ConnectedContext<this[]>): ResourceType;
+  createResource(
+    context: ConnectedContext<this[]>,
+  ): Promise<ResourceType | ErrorResult>;
+  isUriValid(uri: UriType): uri is UriType;
   normalizeUri?: (uri: UriType) => UriType;
   initialContext: ContextType;
   // This object exists to transfer typescript types. It does not need to be

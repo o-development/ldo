@@ -9,6 +9,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
+    "build:ldo": "ldo build --input src/.shapes --output src/.ldo",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown"
   },

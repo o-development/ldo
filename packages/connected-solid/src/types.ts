@@ -3,7 +3,7 @@ export type SolidUriPrefix = `http${"s" | ""}://`;
 /**
  * A SolidUri is a URI that is valid in the Solid ecosystem ("http" and "https")
  */
-export type SolidUri = `${SolidUriPrefix}${string}`;
+export type SolidUri = SolidContainerUri | SolidLeafUri;
 
 /**
  * A SolidLeafUri is any URI that has a pahtname that ends in a "/". It represents a
@@ -11,7 +11,8 @@ export type SolidUri = `${SolidUriPrefix}${string}`;
  */
 // The & {} allows for alias preservation
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type SolidContainerUri = `${SolidUri}/${NonPathnameEnding}` & {};
+export type SolidContainerUri =
+  `${SolidUriPrefix}${string}/${NonPathnameEnding}` & {};
 
 /**
  * A LeafUri is any URI that does not have a pahtname that ends in a "/". It
@@ -20,7 +21,7 @@ export type SolidContainerUri = `${SolidUri}/${NonPathnameEnding}` & {};
 export type SolidLeafUri =
   // The & {} allows for alias preservation
   // eslint-disable-next-line @typescript-eslint/ban-types
-  `${SolidUri}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
+  `${SolidUriPrefix}${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
 
 /**
  * @internal

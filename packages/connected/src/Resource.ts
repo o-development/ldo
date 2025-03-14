@@ -18,11 +18,11 @@ export interface Resource<UriType extends string = string>
   isFetched(): boolean;
   isUnfetched(): boolean;
   isDoingInitialFetch(): boolean;
-  isPresent(): boolean;
-  isAbsent(): boolean;
+  isPresent(): boolean | undefined;
+  isAbsent(): boolean | undefined;
   isSubscribedToNotifications(): boolean;
-  read(): Promise<ResourceResult<this>>;
-  readIfAbsent(): Promise<ResourceResult<this>>;
+  read(): Promise<ResourceResult<any>>;
+  readIfAbsent(): Promise<ResourceResult<any>>;
   subscribeToNotifications(callbacks?: {
     onNotification: (message: any) => void;
     onNotificationError: (err: Error) => void;

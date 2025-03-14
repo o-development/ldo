@@ -84,6 +84,8 @@ export class ConnectedLdoDataset<
 
     let resource = this.resourceMap.get(normalizedUri);
     if (!resource) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore I'm not sure why this doesn't work
       resource = plugin.getResource(uri, this.context);
       this.resourceMap.set(normalizedUri, resource);
     }
@@ -95,6 +97,8 @@ export class ConnectedLdoDataset<
     Plugin extends Extract<Plugins[number], { name: Name }>,
   >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore I'm not sure why this doesn't work
     const newResourceResult = await validPlugin.createResource(this.context);
     if (newResourceResult.isError) return newResourceResult;
     this.resourceMap.set(newResourceResult.uri, newResourceResult);

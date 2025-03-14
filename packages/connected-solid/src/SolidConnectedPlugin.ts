@@ -1,33 +1,57 @@
-import type { ConnectedPlugin } from "@ldo/connected";
+import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri, SolidUri } from "./types";
-import type { SolidLeaf } from "./resources/SolidLeaf";
-import type { SolidContainer } from "./resources/SolidContainer";
+import { SolidLeaf } from "./resources/SolidLeaf";
+import { SolidContainer } from "./resources/SolidContainer";
+import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
 
-export interface SolidConnectedPlugin extends ConnectedPlugin {
+export interface SolidConnectedContext {
+  fetch?: typeof fetch;
+}
+export interface SolidConnectedPlugin
+  extends ConnectedPlugin<
+    "solid",
+    SolidUri,
+    SolidLeaf | SolidContainer,
+    SolidConnectedContext
+  > {
   name: "solid";
-  identifierType: SolidUri;
   getResource:
-    | ((uri: SolidLeafUri) => SolidLeaf)
-    | ((uri: SolidContainerUri) => SolidContainer);
-  createResource(): Promise<SolidLeaf>;
-  isUriValid(uri: string): uri is SolidLeafUri | SolidContainerUri;
-  normalizeUri?: (uri: string) => SolidLeafUri | SolidContainerUri;
-  context: {
-    fetch?: typeof fetch;
-  };
+    | ((uri: SolidLeafUri, context: ConnectedContext<this[]>) => SolidLeaf)
+    | ((
+        uri: SolidContainerUri,
+        context: ConnectedContext<this[]>,
+      ) => SolidContainer);
+  createResource(context: ConnectedContext<this[]>): Promise<SolidLeaf>;
 }
 
 export const solidConnectedPlugin: SolidConnectedPlugin = {
   name: "solid",
-  identifierType: "https://example.com",
-  getResource(_uri: SolidUri): SolidContainer | SolidLeaf {
-    throw new Error("Not Implemented");
+
+  getResource: function (
+    uri: SolidLeafUri | SolidContainerUri,
+    context: ConnectedContext<SolidConnectedPlugin[]>,
+  ): SolidLeaf | SolidContainer {
+    if (isSolidContainerUri(uri)) {
+      return new SolidContainer(uri, context);
+    } else {
+      return new SolidLeaf(uri, context);
+    }
   },
+
   createResource: function (): Promise<SolidLeaf> {
     throw new Error("Function not implemented.");
   },
-  isUriValid: function (uri: string): uri is SolidLeafUri | SolidContainerUri {
-    throw new Error("Function not implemented.");
+
+  isUriValid: function (
+    uri: SolidContainerUri | SolidLeafUri,
+  ): uri is SolidLeafUri | SolidContainerUri {
+    return isSolidUri(uri);
   },
-  context: {},
+
+  initialContext: {
+    fetch: undefined,
+  },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore "Types" only exists for the typing system
+  types: {},
 };
