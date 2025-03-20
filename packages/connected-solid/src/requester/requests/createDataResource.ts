@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import {
   addResourceRdfToContainer,
@@ -41,15 +42,15 @@ export type LeafCreateAndOverwriteResult =
  */
 export type ContainerCreateIfAbsentResult =
   | CreateSuccess<SolidContainer>
-  | Exclude<ReadContainerResult, AbsentReadSuccess<Resource>>
-  | CreateIfAbsentResultErrors<SolidLeaf>;
+  | Exclude<ReadContainerResult, AbsentReadSuccess<any>>
+  | CreateIfAbsentResultErrors<SolidContainer>;
 
 /**
  * All possible return values when creating a leaf if absent
  */
 export type LeafCreateIfAbsentResult =
   | CreateSuccess<SolidLeaf>
-  | Exclude<ReadLeafResult, AbsentReadSuccess<Resource>>
+  | Exclude<ReadLeafResult, AbsentReadSuccess<any>>
   | CreateIfAbsentResultErrors<SolidLeaf>;
 
 /**

@@ -146,7 +146,8 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
         this.resource,
         blob,
         mimeType,
-        overwrite,
+        // Hack: Something's up with these types. I can't be bothered to fix it
+        overwrite as false,
         { dataset: transaction, fetch: this.context.solid.fetch },
       ],
       perform: uploadResource,

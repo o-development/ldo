@@ -32,7 +32,7 @@ export const solidConnectedPlugin: SolidConnectedPlugin = {
     context: ConnectedContext<SolidConnectedPlugin[]>,
   ): SolidLeaf | SolidContainer {
     if (isSolidContainerUri(uri)) {
-      return new SolidContainer(uri, context);
+      return new SolidContainer(uri, context.solid);
     } else {
       return new SolidLeaf(uri, context);
     }

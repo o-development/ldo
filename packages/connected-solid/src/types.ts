@@ -6,13 +6,29 @@ export type SolidUriPrefix = `http${"s" | ""}://`;
 export type SolidUri = SolidContainerUri | SolidLeafUri;
 
 /**
+ * A SolidContainerSlug is any string that has a pahtname that ends in a "/". It
+ * represents a container.
+ */
+// The & {} allows for alias preservation
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type SolidContainerSlug = `${string}/${NonPathnameEnding}` & {};
+
+/**
  * A SolidLeafUri is any URI that has a pahtname that ends in a "/". It represents a
  * container.
  */
 // The & {} allows for alias preservation
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type SolidContainerUri =
-  `${SolidUriPrefix}${string}/${NonPathnameEnding}` & {};
+export type SolidContainerUri = `${SolidUriPrefix}${SolidContainerSlug}` & {};
+
+/**
+ * A SolidLeafSlug is any string that does not have a pahtname that ends in a
+ * "/". It represents a data resource or a binary resource. Not a container.
+ */
+export type SolidLeafSlug =
+  // The & {} allows for alias preservation
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  `${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
 
 /**
  * A LeafUri is any URI that does not have a pahtname that ends in a "/". It
@@ -21,7 +37,7 @@ export type SolidContainerUri =
 export type SolidLeafUri =
   // The & {} allows for alias preservation
   // eslint-disable-next-line @typescript-eslint/ban-types
-  `${SolidUriPrefix}${string}${EveryLegalPathnameCharacterOtherThanSlash}${NonPathnameEnding}` & {};
+  `${SolidUriPrefix}${SolidLeafSlug}` & {};
 
 /**
  * @internal

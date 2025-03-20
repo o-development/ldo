@@ -5,13 +5,17 @@ import type {
   ResourceEventEmitter,
   ResourceResult,
   ResourceSuccess,
+  Unfetched,
 } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "../types";
 import EventEmitter from "events";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { BatchedRequester } from "../requester/BatchedRequester";
 import type { WacRule } from "../wac/WacRule";
-import type { SolidNotificationSubscription } from "../notifications/SolidNotificationSubscription";
+import type {
+  SolidNotificationSubscription,
+  SubscriptionCallbacks,
+} from "../notifications/SolidNotificationSubscription";
 import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription";
 import { getParentUri } from "../util/rdfUtils";
 import {
@@ -22,8 +26,11 @@ import type {
   ReadContainerResult,
   ReadLeafResult,
 } from "../requester/requests/readResource";
-import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import type { DeleteResult } from "../requester/requests/deleteResource";
+import { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
+import {
+  updateDatasetOnSuccessfulDelete,
+  type DeleteResult,
+} from "../requester/requests/deleteResource";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
@@ -37,8 +44,19 @@ import type { SolidLeaf } from "./SolidLeaf";
 import type { GetWacUriError } from "../wac/getWacUri";
 import { getWacUri, type GetWacUriResult } from "../wac/getWacUri";
 import { getWacRuleWithAclUri, type GetWacRuleResult } from "../wac/getWacRule";
+import type { SetWacRuleResult } from "../wac/setWacRule";
 import { setWacRuleForAclUri } from "../wac/setWacRule";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import type { SolidNotificationMessage } from "../notifications/SolidNotificationMessage";
+import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
+
+/**
+ * Statuses shared between both Leaf and Container
+ */
+export type SharedStatuses<ResourceType extends SolidLeaf | SolidContainer> =
+  | Unfetched<ResourceType>
+  | DeleteResult<ResourceType>
+  | CreateSuccess<ResourceType>;
 
 export abstract class SolidResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -69,7 +87,9 @@ export abstract class SolidResource
    * @internal
    * Batched Requester for the Resource
    */
-  protected abstract readonly requester: BatchedRequester<this>;
+  protected abstract readonly requester: BatchedRequester<
+    SolidLeaf | SolidContainer
+  >;
 
   /**
    * @internal
@@ -420,7 +440,7 @@ export abstract class SolidResource
    * A helper method updates this resource's internal state upon delete success
    * @param result - the result of the delete success
    */
-  public updateWithDeleteSuccess(_result: DeleteSuccess<this>) {
+  public updateWithDeleteSuccess(_result: DeleteSuccess<SolidResource>) {
     this.absent = true;
     this.didInitialFetch = true;
   }
@@ -430,7 +450,9 @@ export abstract class SolidResource
    * Helper method that handles the core functions for deleting a resource
    * @returns DeleteResult
    */
-  protected async handleDelete(): Promise<DeleteResult<this>> {
+  protected async handleDelete(): Promise<
+    DeleteResult<SolidLeaf | SolidContainer>
+  > {
     const result = await this.requester.delete();
     this.status = result;
     if (result.isError) return result;
@@ -761,29 +783,27 @@ export abstract class SolidResource
    * @internal
    * Function that triggers whenever a notification is recieved.
    */
-  protected async onNotification(message: NotificationMessage): Promise<void> {
-    const objectResource = this.context.solidLdoDataset.getResource(
-      message.object,
-    );
-    switch (message.type) {
-      case "Update":
-      case "Add":
-        await objectResource.read();
-        return;
-      case "Delete":
-      case "Remove":
-        // Delete the resource without have to make an additional read request
-        updateDatasetOnSuccessfulDelete(
-          message.object,
-          this.context.solidLdoDataset,
-        );
-        objectResource.updateWithDeleteSuccess({
-          type: "deleteSuccess",
-          isError: false,
-          uri: message.object,
-          resourceExisted: true,
-        });
-        return;
+  protected async onNotification(
+    message: SolidNotificationMessage,
+  ): Promise<void> {
+    const objectResource = this.context.dataset.getResource(message.object);
+    // Do Nothing if the resource is invalid.
+    if (objectResource.type === "InvalidIdentifierResouce") return;
+    if (objectResource.type === "leaf") {
+      switch (message.type) {
+        case "Update":
+        case "Add":
+          await objectResource.read();
+          return;
+        case "Delete":
+        case "Remove":
+          // Delete the resource without have to make an additional read request
+          updateDatasetOnSuccessfulDelete(message.object, this.context.dataset);
+          objectResource.updateWithDeleteSuccess(
+            new DeleteSuccess(objectResource, true),
+          );
+          return;
+      }
     }
   }
 

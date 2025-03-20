@@ -6,7 +6,10 @@ import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
 import type { ConnectedContext } from "./ConnectedContext";
 
-type ReturnTypeFromArgs<Func, Arg> = Func extends (arg: Arg) => infer R
+type ReturnTypeFromArgs<Func, Arg> = Func extends (
+  arg: Arg,
+  context: any,
+) => infer R
   ? R
   : never;
 

@@ -2,10 +2,9 @@ import { ConnectedLdoDataset } from "@ldo/connected";
 import { solidConnectedPlugin } from "./SolidConnectedPlugin";
 import { createDatasetFactory } from "@ldo/dataset";
 import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
-import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
 
 const dataset = new ConnectedLdoDataset(
-  [solidConnectedPlugin, nextGraphConnectedPlugin],
+  [solidConnectedPlugin],
   createDatasetFactory(),
   createTransactionDatasetFactory(),
 );

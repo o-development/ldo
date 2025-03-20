@@ -30,7 +30,7 @@ export type ReadLeafResult =
   | BinaryReadSuccess
   | DataReadSuccess
   | AbsentReadSuccess<SolidLeaf>
-  | ReadResultError<SolidContainer>;
+  | ReadResultError<SolidLeaf>;
 
 /**
  * All possible return values for reading a container
