@@ -1,4 +1,3 @@
-import { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
 import { SubscriptionClient } from "@solid-notifications/subscription";
 import { WebSocket } from "ws";
 import {
@@ -6,14 +5,17 @@ import {
   DisconnectedNotAttemptingReconnectError,
   UnsupportedNotificationError,
 } from "./results/NotificationErrors";
-import type { NotificationMessage } from "./NotificationMessage";
-import type { Resource } from "../Resource";
-import type { SolidLdoDatasetContext } from "../../SolidLdoDatasetContext";
+import type { SolidNotificationMessage } from "./SolidNotificationMessage";
+import { UnexpectedResourceError, type ConnectedContext } from "@ldo/connected";
 import type {
   ChannelType,
   NotificationChannel,
 } from "@solid-notifications/types";
 import { SolidNotificationSubscription } from "./SolidNotificationSubscription";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+import type { SolidLeaf } from "../resources/SolidLeaf";
+import type { SolidContainer } from "../resources/SolidContainer";
+import { guaranteeFetch } from "../util/guaranteeFetch";
 
 const CHANNEL_TYPE =
   "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023";
@@ -33,9 +35,9 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
   private maxReconnectAttempts = 6;
 
   constructor(
-    resource: Resource,
-    parentSubscription: (message: NotificationMessage) => void,
-    context: SolidLdoDatasetContext,
+    resource: SolidLeaf | SolidContainer,
+    parentSubscription: (message: SolidNotificationMessage) => void,
+    context: ConnectedContext<SolidConnectedPlugin[]>,
     createWebsocket?: (address: string) => WebSocket,
   ) {
     super(resource, parentSubscription, context);
@@ -52,11 +54,11 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
         err.message.startsWith("Discovery did not succeed")
       ) {
         this.onNotificationError(
-          new UnsupportedNotificationError(this.resource.uri, err.message),
+          new UnsupportedNotificationError(this.resource, err.message),
         );
       } else {
         this.onNotificationError(
-          UnexpectedResourceError.fromThrown(this.resource.uri, err),
+          UnexpectedResourceError.fromThrown(this.resource, err),
         );
       }
       this.onClose();
@@ -64,7 +66,9 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
   }
 
   public async discoverNotificationChannel(): Promise<NotificationChannel> {
-    const client = new SubscriptionClient(this.context.fetch);
+    const client = new SubscriptionClient(
+      guaranteeFetch(this.context.solid.fetch),
+    );
     return await client.subscribe(
       this.resource.uri,
       CHANNEL_TYPE as ChannelType,
@@ -86,14 +90,14 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
     this.socket.onmessage = (message) => {
       const messageData = message.data.toString();
       // TODO uncompliant Pod error on misformatted message
-      this.onNotification(JSON.parse(messageData) as NotificationMessage);
+      this.onNotification(JSON.parse(messageData) as SolidNotificationMessage);
     };
 
     this.socket.onclose = this.onClose.bind(this);
 
     this.socket.onerror = (err) => {
       this.onNotificationError(
-        new UnexpectedResourceError(this.resource.uri, err.error),
+        new UnexpectedResourceError(this.resource, err.error),
       );
     };
     return;
@@ -109,14 +113,14 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
         }, this.reconnectInterval);
         this.onNotificationError(
           new DisconnectedAttemptingReconnectError(
-            this.resource.uri,
+            this.resource,
             `Attempting to reconnect to Websocket for ${this.resource.uri}.`,
           ),
         );
       } else {
         this.onNotificationError(
           new DisconnectedNotAttemptingReconnectError(
-            this.resource.uri,
+            this.resource,
             `Lost connection to websocket for ${this.resource.uri}.`,
           ),
         );

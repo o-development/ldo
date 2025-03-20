@@ -2,9 +2,6 @@ import type { LdoDataset } from "@ldo/ldo";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { Dataset } from "@rdfjs/types";
-import type { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
-import { ErrorResult } from "@ldo/connected";
-import { UnexpectedResourceError } from "@ldo/connected";
 import type { SolidContainerUri } from "../types";
 import { isSolidContainerUri } from "./isSolidUri";
 

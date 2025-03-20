@@ -125,7 +125,9 @@ export abstract class SolidNotificationSubscription {
    * @internal
    * onNotificationError
    */
-  protected onNotificationError(message: NotificationCallbackError): void {
+  protected onNotificationError(
+    message: NotificationCallbackError<SolidLeaf | SolidContainer>,
+  ): void {
     Object.values(this.subscriptions).forEach(({ onNotificationError }) => {
       onNotificationError?.(message);
     });

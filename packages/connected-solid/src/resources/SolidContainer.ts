@@ -38,6 +38,7 @@ import {
 } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidLeaf } from "./SolidLeaf";
+import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 
 /**
  * Represents the current status of a specific container on a Pod as known by
@@ -499,7 +500,9 @@ export class SolidContainer extends SolidResource {
         }),
       )
     ).flat();
-    const errors = results.filter((value) => value.isError);
+    const errors = results.filter(
+      (value): value is HttpErrorResultType<this> => value.isError,
+    );
     if (errors.length > 0) {
       return new AggregateError(errors);
     }

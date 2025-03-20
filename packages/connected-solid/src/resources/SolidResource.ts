@@ -135,7 +135,7 @@ export abstract class SolidResource
     super();
     this.context = context;
     this.notificationSubscription = new Websocket2023NotificationSubscription(
-      this,
+      this as unknown as SolidLeaf | SolidContainer,
       this.onNotification.bind(this),
       this.context,
     );
