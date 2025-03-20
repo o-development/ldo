@@ -1,22 +1,26 @@
-import type { GetWacUriSuccess } from "./results/GetWacUriSuccess";
-import type { HttpErrorResultType } from "../../requester/results/error/HttpErrorResult";
 import {
   HttpErrorResult,
   NotFoundHttpError,
-} from "../../requester/results/error/HttpErrorResult";
-import { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
-import type { BasicRequestOptions } from "../../requester/requests/requestOptions";
-import { NoncompliantPodError } from "../../requester/results/error/NoncompliantPodError";
+} from "../requester/results/error/HttpErrorResult";
+import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
+import { GetWacUriSuccess } from "./results/GetWacUriSuccess";
 import { parse as parseLinkHeader } from "http-link-header";
-import type { LeafUri } from "../../util/uriTypes";
+import { UnexpectedResourceError } from "@ldo/connected";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import type { SolidContainer } from "../resources/SolidContainer";
+import type { SolidLeaf } from "../resources/SolidLeaf";
+import type { BasicRequestOptions } from "../requester/requests/requestOptions";
+import { guaranteeFetch } from "../util/guaranteeFetch";
+import type { SolidLeafUri } from "../types";
 
-export type GetWacUriError =
-  | HttpErrorResultType
-  | NotFoundHttpError
-  | NoncompliantPodError
-  | UnexpectedResourceError;
-export type GetWacUriResult = GetWacUriSuccess | GetWacUriError;
+export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
+  | HttpErrorResultType<ResourceType>
+  | NotFoundHttpError<ResourceType>
+  | NoncompliantPodError<ResourceType>
+  | UnexpectedResourceError<ResourceType>;
+export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
+  | GetWacUriSuccess<ResourceType>
+  | GetWacUriError<ResourceType>;
 
 /**
  * Get the URI for the WAC rules of a specific resource
@@ -25,19 +29,19 @@ export type GetWacUriResult = GetWacUriSuccess | GetWacUriError;
  * @returns GetWacUriResult
  */
 export async function getWacUri(
-  resourceUri: string,
+  resource: SolidLeaf | SolidContainer,
   options?: BasicRequestOptions,
-): Promise<GetWacUriResult> {
+): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
-    const response = await fetch(resourceUri, {
+    const response = await fetch(resource.uri, {
       method: "head",
     });
-    const errorResult = HttpErrorResult.checkResponse(resourceUri, response);
+    const errorResult = HttpErrorResult.checkResponse(resource, response);
     if (errorResult) return errorResult;
     if (NotFoundHttpError.is(response)) {
       return new NotFoundHttpError(
-        resourceUri,
+        resource,
         response,
         "Could not get access control rules because the resource does not exist.",
       );
@@ -46,7 +50,7 @@ export async function getWacUri(
     const linkHeader = response.headers.get("link");
     if (!linkHeader) {
       return new NoncompliantPodError(
-        resourceUri,
+        resource,
         "No link header present in request.",
       );
     }
@@ -54,17 +58,13 @@ export async function getWacUri(
     const aclUris = parsedLinkHeader.get("rel", "acl");
     if (aclUris.length !== 1) {
       return new NoncompliantPodError(
-        resourceUri,
+        resource,
         `There must be one link with a rel="acl"`,
       );
     }
-    return {
-      type: "getWacUriSuccess",
-      isError: false,
-      uri: resourceUri,
-      wacUri: aclUris[0].uri as LeafUri,
-    };
+
+    return new GetWacUriSuccess(resource, aclUris[0].uri as SolidLeafUri);
   } catch (err: unknown) {
-    return UnexpectedResourceError.fromThrown(resourceUri, err);
+    return UnexpectedResourceError.fromThrown(resource, err);
   }
 }

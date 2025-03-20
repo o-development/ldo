@@ -2,10 +2,11 @@ import type { LdoDataset } from "@ldo/ldo";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import type { Dataset } from "@rdfjs/types";
-import type { ContainerUri } from "./uriTypes";
-import { isContainerUri } from "./uriTypes";
-import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
-import { UnexpectedResourceError } from "../requester/results/error/ErrorResult";
+import type { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import { ErrorResult } from "@ldo/connected";
+import { UnexpectedResourceError } from "@ldo/connected";
+import type { SolidContainerUri } from "../types";
+import { isSolidContainerUri } from "./isSolidUri";
 
 export const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
 export const rdfType = namedNode(
@@ -24,7 +25,7 @@ export const ldpBasicContainer = namedNode(
  * @param uri - the child URI
  * @returns A parent URI or undefined if not possible
  */
-export function getParentUri(uri: string): ContainerUri | undefined {
+export function getParentUri(uri: string): SolidContainerUri | undefined {
   const urlObject = new URL(uri);
   const pathItems = urlObject.pathname.split("/");
   if (
@@ -38,7 +39,7 @@ export function getParentUri(uri: string): ContainerUri | undefined {
   }
   pathItems.pop();
   urlObject.pathname = `${pathItems.join("/")}/`;
-  return urlObject.toString() as ContainerUri;
+  return urlObject.toString() as SolidContainerUri;
 }
 
 /**
@@ -93,7 +94,7 @@ export function addResourceRdfToContainer(
     const resourceNode = namedNode(resourceUri);
     dataset.add(createQuad(parentNode, ldpContains, resourceNode, parentNode));
     dataset.add(createQuad(resourceNode, rdfType, ldpResource, parentNode));
-    if (isContainerUri(resourceUri)) {
+    if (isSolidContainerUri(resourceUri)) {
       dataset.add(
         createQuad(resourceNode, rdfType, ldpBasicContainer, parentNode),
       );
@@ -115,10 +116,10 @@ export async function addRawTurtleToDataset(
   rawTurtle: string,
   dataset: Dataset,
   baseUri: string,
-): Promise<undefined | NoncompliantPodError> {
+): Promise<undefined | Error> {
   const rawTurtleResult = await rawTurtleToDataset(rawTurtle, baseUri);
-  if (rawTurtleResult.isError) return rawTurtleResult;
-  const loadedDataset = rawTurtleResult.dataset;
+  if (rawTurtleResult instanceof Error) return rawTurtleResult;
+  const loadedDataset = rawTurtleResult;
   const graphNode = namedNode(baseUri);
   // Destroy all triples that were once a part of this resouce
   dataset.deleteMatches(undefined, undefined, undefined, graphNode);
@@ -133,17 +134,16 @@ export async function addRawTurtleToDataset(
 export async function rawTurtleToDataset(
   rawTurtle: string,
   baseUri: string,
-): Promise<{ isError: false; dataset: LdoDataset } | NoncompliantPodError> {
+): Promise<LdoDataset | Error> {
   try {
     const loadedDataset = await parseRdf(rawTurtle, {
       baseIRI: baseUri,
     });
-    return { isError: false, dataset: loadedDataset };
+    return loadedDataset;
   } catch (err) {
-    const error = UnexpectedResourceError.fromThrown(baseUri, err);
-    return new NoncompliantPodError(
-      baseUri,
-      `Request returned noncompliant turtle: ${error.message}\n${rawTurtle}`,
+    const message = err instanceof Error ? err.message : "";
+    return new Error(
+      `Request returned noncompliant turtle: ${message}\n${rawTurtle}`,
     );
   }
 }

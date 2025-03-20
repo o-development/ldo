@@ -61,7 +61,7 @@ export class DataReadSuccess extends ReadSuccess<SolidLeaf> {
  * retrieved was a container resource.
  */
 export class ContainerReadSuccess extends ReadSuccess<SolidContainer> {
-  type: "containerReadSuccess";
+  type = "containerReadSuccess" as const;
   /**
    * True if this container is a root container
    */

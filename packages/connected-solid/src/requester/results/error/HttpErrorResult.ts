@@ -70,7 +70,7 @@ export abstract class HttpErrorResult<
   static checkResponse<ResourceType extends Resource>(
     resource: ResourceType,
     response: Response,
-  ) {
+  ): HttpErrorResultType<ResourceType> | undefined {
     if (ServerHttpError.is(response)) {
       return new ServerHttpError(resource, response);
     }

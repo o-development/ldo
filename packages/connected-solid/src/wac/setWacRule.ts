@@ -1,20 +1,27 @@
 import { createLdoDataset } from "@ldo/ldo";
-import type { BasicRequestOptions } from "../../requester/requests/requestOptions";
-import type { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
+import type { AccessModeList, WacRule } from "./WacRule";
+import { SetWacRuleSuccess } from "./results/SetWacRuleSuccess";
+import type { Authorization } from "../.ldo/wac.typings";
+import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
+import { v4 } from "uuid";
+import { guaranteeFetch } from "../util/guaranteeFetch";
+import type { SolidLeafUri } from "../types";
+import type { SolidLeaf } from "../resources/SolidLeaf";
+import type { SolidContainer } from "../resources/SolidContainer";
 import {
   HttpErrorResult,
   type HttpErrorResultType,
-} from "../../requester/results/error/HttpErrorResult";
-import { isContainerUri, type LeafUri } from "../../util/uriTypes";
-import type { AccessModeList, WacRule } from "./WacRule";
-import type { SetWacRuleSuccess } from "./results/SetWacRuleSuccess";
-import type { Authorization } from "../../.ldo/wac.typings";
-import { AuthorizationShapeType } from "../../.ldo/wac.shapeTypes";
-import { v4 } from "uuid";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
+} from "../requester/results/error/HttpErrorResult";
+import type { UnexpectedResourceError } from "@ldo/connected";
+import type { BasicRequestOptions } from "../requester/requests/requestOptions";
+import { isContainerUri } from "@ldo/solid";
 
-export type SetWacRuleError = HttpErrorResultType | UnexpectedResourceError;
-export type SetWacRuleResult = SetWacRuleSuccess | SetWacRuleError;
+export type SetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
+  | HttpErrorResultType<ResourceType>
+  | UnexpectedResourceError<ResourceType>;
+export type SetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
+  | SetWacRuleSuccess<ResourceType>
+  | SetWacRuleError<ResourceType>;
 
 /**
  * Given the URI of an ACL document and some WAC rules, set the WAC rules of
@@ -26,11 +33,29 @@ export type SetWacRuleResult = SetWacRuleSuccess | SetWacRuleError;
  * @returns SetWacRuleResult
  */
 export async function setWacRuleForAclUri(
-  aclUri: LeafUri,
+  aclUri: SolidLeafUri,
   newRule: WacRule,
-  accessTo: string,
+  resource: SolidContainer,
   options?: BasicRequestOptions,
-): Promise<SetWacRuleResult> {
+): Promise<SetWacRuleResult<SolidContainer>>;
+export async function setWacRuleForAclUri(
+  aclUri: SolidLeafUri,
+  newRule: WacRule,
+  resource: SolidLeaf,
+  options?: BasicRequestOptions,
+): Promise<SetWacRuleResult<SolidLeaf>>;
+export async function setWacRuleForAclUri(
+  aclUri: SolidLeafUri,
+  newRule: WacRule,
+  resource: SolidContainer | SolidLeaf,
+  options?: BasicRequestOptions,
+): Promise<SetWacRuleResult<SolidContainer | SolidLeaf>>;
+export async function setWacRuleForAclUri(
+  aclUri: SolidLeafUri,
+  newRule: WacRule,
+  resource: SolidContainer | SolidLeaf,
+  options?: BasicRequestOptions,
+): Promise<SetWacRuleResult<SolidContainer | SolidLeaf>> {
   const fetch = guaranteeFetch(options?.fetch);
   // The rule map keeps track of all the rules that are currently being used
   // so that similar rules can be grouped together
@@ -56,9 +81,9 @@ export async function setWacRuleForAclUri(
       if (accessModeList.write) authorization.mode?.add({ "@id": "Write" });
       if (accessModeList.append) authorization.mode?.add({ "@id": "Append" });
       if (accessModeList.control) authorization.mode?.add({ "@id": "Control" });
-      authorization.accessTo = { "@id": accessTo };
-      if (isContainerUri(accessTo)) {
-        authorization.default = { "@id": accessTo };
+      authorization.accessTo = { "@id": resource.uri };
+      if (isContainerUri(resource.uri)) {
+        authorization.default = { "@id": resource.uri };
       }
       ruleMap[accessModeListHash] = authorization;
     }
@@ -88,15 +113,10 @@ export async function setWacRuleForAclUri(
     },
     body: dataset.toString(),
   });
-  const errorResult = HttpErrorResult.checkResponse(aclUri, response);
+  const errorResult = HttpErrorResult.checkResponse(resource, response);
   if (errorResult) return errorResult;
 
-  return {
-    type: "setWacRuleSuccess",
-    uri: aclUri,
-    isError: false,
-    wacRule: newRule,
-  };
+  return new SetWacRuleSuccess(resource, newRule);
 }
 
 // Hashes the access mode list for use in the rule map

@@ -115,10 +115,15 @@ export async function readResource(
         );
       }
 
-      return new AbsentReadSuccess(resource, false);
+      return new AbsentReadSuccess(resource, false) as
+        | AbsentReadSuccess<SolidLeaf>
+        | AbsentReadSuccess<SolidContainer>;
     }
     const httpErrorResult = HttpErrorResult.checkResponse(resource, response);
-    if (httpErrorResult) return httpErrorResult;
+    if (httpErrorResult)
+      return httpErrorResult as
+        | HttpErrorResultType<SolidLeaf>
+        | HttpErrorResultType<SolidContainer>;
 
     // Add this resource to the container
     if (options?.dataset) {
@@ -130,7 +135,9 @@ export async function readResource(
       return new NoncompliantPodError(
         resource,
         "Resource requests must return a content-type header.",
-      );
+      ) as
+        | NoncompliantPodError<SolidContainer>
+        | NoncompliantPodError<SolidLeaf>;
     }
 
     if (contentType.startsWith("text/turtle")) {
@@ -142,7 +149,10 @@ export async function readResource(
           options.dataset,
           resource.uri,
         );
-        if (result) return result;
+        if (result)
+          return new NoncompliantPodError(resource, result.message) as
+            | NoncompliantPodError<SolidLeaf>
+            | NoncompliantPodError<SolidContainer>;
       }
       if (resource.type === "container") {
         const result = checkHeadersForRootContainer(resource, response.headers);
@@ -164,6 +174,8 @@ export async function readResource(
       );
     }
   } catch (err) {
-    return UnexpectedResourceError.fromThrown(resource, err);
+    return UnexpectedResourceError.fromThrown(resource, err) as
+      | UnexpectedResourceError<SolidLeaf>
+      | UnexpectedResourceError<SolidContainer>;
   }
 }

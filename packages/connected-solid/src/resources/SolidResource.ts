@@ -49,6 +49,8 @@ import { setWacRuleForAclUri } from "../wac/setWacRule";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { SolidNotificationMessage } from "../notifications/SolidNotificationMessage";
 import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
+import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess";
+import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -592,18 +594,14 @@ export abstract class SolidResource
    */
   protected async getWacUri(options?: {
     ignoreCache: boolean;
-  }): Promise<GetWacUriResult> {
+  }): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
+    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Get the wacUri if not already present
     if (!options?.ignoreCache && this.wacUri) {
-      return {
-        type: "getWacUriSuccess",
-        wacUri: this.wacUri,
-        isError: false,
-        uri: this.uri,
-      };
+      return new GetWacUriSuccess(thisAsLeafOrContainer, this.wacUri);
     }
 
-    const wacUriResult = await getWacUri(this.uri, {
+    const wacUriResult = await getWacUri(thisAsLeafOrContainer, {
       fetch: this.context.solid.fetch,
     });
     if (wacUriResult.isError) {
@@ -643,15 +641,14 @@ export abstract class SolidResource
    */
   async getWac(options?: {
     ignoreCache: boolean;
-  }): Promise<GetWacUriError | GetWacRuleResult> {
+  }): Promise<
+    | GetWacUriError<SolidContainer | SolidLeaf>
+    | GetWacRuleResult<SolidContainer | SolidLeaf>
+  > {
+    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Return the wac rule if it's already cached
     if (!options?.ignoreCache && this.wacRule) {
-      return {
-        type: "getWacRuleSuccess",
-        uri: this.uri,
-        isError: false,
-        wacRule: this.wacRule,
-      };
+      return new GetWacRuleSuccess(thisAsLeafOrContainer, this.wacRule);
     }
 
     // Get the wac uri
@@ -659,9 +656,13 @@ export abstract class SolidResource
     if (wacUriResult.isError) return wacUriResult;
 
     // Get the wac rule
-    const wacResult = await getWacRuleWithAclUri(wacUriResult.wacUri, {
-      fetch: this.context.solid.fetch,
-    });
+    const wacResult = await getWacRuleWithAclUri(
+      wacUriResult.wacUri,
+      thisAsLeafOrContainer,
+      {
+        fetch: this.context.solid.fetch,
+      },
+    );
     if (wacResult.isError) return wacResult;
     // If the wac rules was successfully found
     if (wacResult.type === "getWacRuleSuccess") {
@@ -674,7 +675,7 @@ export abstract class SolidResource
     if (parentResource?.isError) return parentResource;
     if (!parentResource) {
       return new NoncompliantPodError(
-        this,
+        thisAsLeafOrContainer,
         `Resource "${this.uri}" has no Effective ACL resource`,
       );
     }
@@ -714,14 +715,20 @@ export abstract class SolidResource
    * });
    * ```
    */
-  async setWac(wacRule: WacRule): Promise<GetWacUriError | SetWacRuleResult> {
+  async setWac(
+    wacRule: WacRule,
+  ): Promise<
+    | GetWacUriError<SolidLeaf | SolidContainer>
+    | SetWacRuleResult<SolidLeaf | SolidContainer>
+  > {
+    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     const wacUriResult = await this.getWacUri();
     if (wacUriResult.isError) return wacUriResult;
 
     const result = await setWacRuleForAclUri(
       wacUriResult.wacUri,
       wacRule,
-      this.uri,
+      thisAsLeafOrContainer,
       {
         fetch: this.context.solid.fetch,
       },

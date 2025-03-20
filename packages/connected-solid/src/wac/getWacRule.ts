@@ -1,24 +1,29 @@
-import type { GetWacRuleSuccess } from "./results/GetWacRuleSuccess";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
-import type { BasicRequestOptions } from "../../requester/requests/requestOptions";
-import type { HttpErrorResultType } from "../../requester/results/error/HttpErrorResult";
-import { HttpErrorResult } from "../../requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../../requester/results/error/NoncompliantPodError";
-import type { UnexpectedResourceError } from "../../requester/results/error/ErrorResult";
-import { rawTurtleToDataset } from "../../util/rdfUtils";
-import { AuthorizationShapeType } from "../../.ldo/wac.shapeTypes";
+import { GetWacRuleSuccess } from "./results/GetWacRuleSuccess";
+import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
 import type { AccessModeList, WacRule } from "./WacRule";
-import type { Authorization } from "../../.ldo/wac.typings";
-import type { WacRuleAbsent } from "./results/WacRuleAbsent";
+import type { Authorization } from "../.ldo/wac.typings";
+import { WacRuleAbsent } from "./results/WacRuleAbsent";
+import {
+  HttpErrorResult,
+  type HttpErrorResultType,
+} from "../requester/results/error/HttpErrorResult";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
+import type { UnexpectedResourceError } from "@ldo/connected";
+import type { SolidLeaf } from "../resources/SolidLeaf";
+import type { SolidContainer } from "../resources/SolidContainer";
+import { guaranteeFetch } from "../util/guaranteeFetch";
+import type { BasicRequestOptions } from "../requester/requests/requestOptions";
+import { rawTurtleToDataset } from "../util/rdfUtils";
 
-export type GetWacRuleError =
-  | HttpErrorResultType
-  | NoncompliantPodError
-  | UnexpectedResourceError;
-export type GetWacRuleResult =
-  | GetWacRuleSuccess
-  | GetWacRuleError
-  | WacRuleAbsent;
+export type GetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
+  | HttpErrorResultType<ResourceType>
+  | NoncompliantPodError<ResourceType>
+  | UnexpectedResourceError<ResourceType>;
+
+export type GetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
+  | GetWacRuleSuccess<ResourceType>
+  | GetWacRuleError<ResourceType>
+  | WacRuleAbsent<ResourceType>;
 
 /**
  * Given the URI of an ACL document, return the Web Access Control (WAC) rules
@@ -28,26 +33,39 @@ export type GetWacRuleResult =
  */
 export async function getWacRuleWithAclUri(
   aclUri: string,
+  resource: SolidContainer,
   options?: BasicRequestOptions,
-): Promise<GetWacRuleResult> {
+): Promise<GetWacRuleResult<SolidContainer>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf,
+  options?: BasicRequestOptions,
+): Promise<GetWacRuleResult<SolidLeaf>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf | SolidContainer,
+  options?: BasicRequestOptions,
+): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf | SolidContainer,
+  options?: BasicRequestOptions,
+): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>> {
   const fetch = guaranteeFetch(options?.fetch);
   const response = await fetch(aclUri);
-  const errorResult = HttpErrorResult.checkResponse(aclUri, response);
+  const errorResult = HttpErrorResult.checkResponse(resource, response);
   if (errorResult) return errorResult;
 
   if (response.status === 404) {
-    return {
-      type: "wacRuleAbsent",
-      uri: aclUri,
-      isError: false,
-    };
+    return new WacRuleAbsent(resource);
   }
 
   // Parse Turtle
   const rawTurtle = await response.text();
   const rawTurtleResult = await rawTurtleToDataset(rawTurtle, aclUri);
-  if (rawTurtleResult.isError) return rawTurtleResult;
-  const dataset = rawTurtleResult.dataset;
+  if (rawTurtleResult instanceof Error)
+    return new NoncompliantPodError(resource, rawTurtleResult.message);
+  const dataset = rawTurtleResult;
   const authorizations = dataset
     .usingType(AuthorizationShapeType)
     .matchSubject(
@@ -109,10 +127,5 @@ export async function getWacRuleWithAclUri(
     });
   });
 
-  return {
-    type: "getWacRuleSuccess",
-    uri: aclUri,
-    isError: false,
-    wacRule,
-  };
+  return new GetWacRuleSuccess(resource, wacRule);
 }

@@ -206,7 +206,10 @@ export async function createDataResource(
     if (overwrite) {
       const deleteResult = await deleteResource(resource, options);
       // Return if it wasn't deleted
-      if (deleteResult.isError) return deleteResult;
+      if (deleteResult.isError)
+        return deleteResult as
+          | DeleteResultError<SolidLeaf>
+          | DeleteResultError<SolidContainer>;
       didOverwrite = deleteResult.resourceExisted;
     } else {
       // Perform a read to check if it exists
@@ -232,13 +235,20 @@ export async function createDataResource(
     });
 
     const httpError = HttpErrorResult.checkResponse(resource, response);
-    if (httpError) return httpError;
+    if (httpError)
+      return httpError as
+        | HttpErrorResultType<SolidContainer>
+        | HttpErrorResultType<SolidLeaf>;
 
     if (options?.dataset) {
       addResourceRdfToContainer(resource.uri, options.dataset);
     }
-    return new CreateSuccess(resource, didOverwrite);
+    return new CreateSuccess(resource, didOverwrite) as
+      | CreateSuccess<SolidLeaf>
+      | CreateSuccess<SolidContainer>;
   } catch (err) {
-    return UnexpectedResourceError.fromThrown(resource, err);
+    return UnexpectedResourceError.fromThrown(resource, err) as
+      | UnexpectedResourceError<SolidContainer>
+      | UnexpectedResourceError<SolidLeaf>;
   }
 }

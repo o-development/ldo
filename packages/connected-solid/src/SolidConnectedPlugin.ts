@@ -27,12 +27,14 @@ export interface SolidConnectedPlugin
 export const solidConnectedPlugin: SolidConnectedPlugin = {
   name: "solid",
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore This functions when its user-facing
   getResource: function (
     uri: SolidLeafUri | SolidContainerUri,
     context: ConnectedContext<SolidConnectedPlugin[]>,
   ): SolidLeaf | SolidContainer {
     if (isSolidContainerUri(uri)) {
-      return new SolidContainer(uri, context.solid);
+      return new SolidContainer(uri, context);
     } else {
       return new SolidLeaf(uri, context);
     }
