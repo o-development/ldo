@@ -1,8 +1,12 @@
+export * from "./IConnectedLdoDataset";
 export * from "./ConnectedLdoDataset";
+export * from "./ConnectedLdoTransactionDataset";
 export * from "./ConnectedPlugin";
 export * from "./Resource";
 export * from "./InvalidIdentifierResource";
 export * from "./ConnectedContext";
+
+export * from "./util/splitChangesByGraph";
 
 export * from "./results/ConnectedResult";
 export * from "./results/ResourceResult";

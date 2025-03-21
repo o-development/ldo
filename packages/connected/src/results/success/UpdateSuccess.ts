@@ -1,4 +1,4 @@
-import { ResourceSuccess } from "@ldo/connected";
+import { ResourceSuccess, SuccessResult } from "@ldo/connected";
 import type { Resource } from "@ldo/connected";
 
 /**
@@ -14,9 +14,7 @@ export class UpdateSuccess<
  * Indicates that an update request to the default graph was successful. This
  * data was not written to a Pod. It was only written locally.
  */
-export class UpdateDefaultGraphSuccess<
-  ResourceType extends Resource,
-> extends ResourceSuccess<ResourceType> {
+export class UpdateDefaultGraphSuccess extends SuccessResult {
   type = "updateDefaultGraphSuccess" as const;
 }
 

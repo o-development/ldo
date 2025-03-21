@@ -21,7 +21,7 @@ import { getParentUri } from "../util/rdfUtils";
 import {
   isReadSuccess,
   type ReadSuccess,
-} from "../requester/results/success/ReadSuccess";
+} from "../requester/results/success/SolidReadSuccess";
 import type {
   ReadContainerResult,
   ReadLeafResult,

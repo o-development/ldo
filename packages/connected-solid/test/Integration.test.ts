@@ -1,18 +1,4 @@
 import type { App } from "@solid/community-server";
-import type {
-  Container,
-  ContainerUri,
-  Leaf,
-  LeafUri,
-  SolidLdoDataset,
-  UpdateResultError,
-} from "../src";
-import {
-  changeData,
-  commitData,
-  createSolidLdoDataset,
-  SolidLdoTransactionDataset,
-} from "../src";
 import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
@@ -21,20 +7,11 @@ import {
   defaultGraph,
 } from "@rdfjs/data-model";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
-import type { AggregateSuccess } from "../src/requester/results/success/SuccessResult";
 import type {
   IgnoredInvalidUpdateSuccess,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
 } from "../src/requester/results/success/UpdateSuccess";
-import type {
-  ResourceResult,
-  ResourceSuccess,
-} from "../src/resource/resourceResult/ResourceResult";
-import type {
-  AggregateError,
-  UnexpectedResourceError,
-} from "../src/requester/results/error/ErrorResult";
 import type { InvalidUriError } from "../src/requester/results/error/InvalidUriError";
 import { Buffer } from "buffer";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
@@ -44,27 +21,33 @@ import type {
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
-import type { GetWacRuleSuccess } from "../src/resource/wac/results/GetWacRuleSuccess";
-import type { WacRule } from "../src/resource/wac/WacRule";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { generateAuthFetch } from "./authFetch.helper";
 import { wait } from "./utils.helper";
 import fs from "fs/promises";
 import path from "path";
+import type {
+  SolidContainer,
+  SolidContainerUri,
+  SolidLeaf,
+  SolidLeafUri,
+} from "../src";
+import { ConnectedLdoDataset } from "@ldo/connected";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
-  `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as ContainerUri;
-const SAMPLE_DATA_URI = `${TEST_CONTAINER_URI}sample.ttl` as LeafUri;
+  `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as SolidContainerUri;
+const SAMPLE_DATA_URI = `${TEST_CONTAINER_URI}sample.ttl` as SolidLeafUri;
 const SAMPLE2_DATA_SLUG = "sample2.ttl";
-const SAMPLE2_DATA_URI = `${TEST_CONTAINER_URI}${SAMPLE2_DATA_SLUG}` as LeafUri;
-const SAMPLE_BINARY_URI = `${TEST_CONTAINER_URI}sample.txt` as LeafUri;
+const SAMPLE2_DATA_URI =
+  `${TEST_CONTAINER_URI}${SAMPLE2_DATA_SLUG}` as SolidLeafUri;
+const SAMPLE_BINARY_URI = `${TEST_CONTAINER_URI}sample.txt` as SolidLeafUri;
 const SAMPLE2_BINARY_SLUG = `sample2.txt`;
 const SAMPLE2_BINARY_URI =
-  `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as LeafUri;
+  `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as SolidLeafUri;
 const SAMPLE_CONTAINER_URI =
-  `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
-const SAMPLE_PROFILE_URI = `${TEST_CONTAINER_URI}profile.ttl` as LeafUri;
+  `${TEST_CONTAINER_URI}sample_container/` as SolidContainerUri;
+const SAMPLE_PROFILE_URI = `${TEST_CONTAINER_URI}profile.ttl` as SolidLeafUri;
 const SPIDER_MAN_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -113,7 +96,7 @@ const SAMPLE_PROFILE_TTL = `
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
-  loadingResource: Leaf | Container,
+  loadingResource: SolidLeaf | SolidContainer,
   loadingValues: Partial<{
     isLoading: boolean;
     isCreating: boolean;
@@ -1303,7 +1286,7 @@ describe("Integration", () => {
   it("allows a transaction on a transaction", () => {
     const transaction = solidLdoDataset.startTransaction();
     const transaction2 = transaction.startTransaction();
-    expect(transaction2).toBeInstanceOf(SolidLdoTransactionDataset);
+    expect(transaction2).toBeInstanceOf(ConnectedLdoDataset);
   });
 
   /**

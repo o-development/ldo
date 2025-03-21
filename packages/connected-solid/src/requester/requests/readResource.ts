@@ -11,9 +11,9 @@ import type { DatasetRequestOptions } from "./requestOptions";
 import {
   BinaryReadSuccess,
   DataReadSuccess,
-} from "../results/success/ReadSuccess";
-import { ContainerReadSuccess } from "../results/success/ReadSuccess";
-import { AbsentReadSuccess } from "../results/success/ReadSuccess";
+} from "../results/success/SolidReadSuccess";
+import { ContainerReadSuccess } from "../results/success/SolidReadSuccess";
+import { AbsentReadSuccess } from "../results/success/SolidReadSuccess";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { Resource } from "@ldo/connected";

@@ -44,10 +44,7 @@ export class InvalidIdentifierResource
   async readIfAbsent(): Promise<InvalidUriError<this>> {
     return this.status;
   }
-  async createAndOverwrite(): Promise<InvalidUriError<this>> {
-    return this.status;
-  }
-  async createIfAbsent(): Promise<InvalidUriError<this>> {
+  async update(): Promise<InvalidUriError<this>> {
     return this.status;
   }
   async subscribeToNotifications(_callbacks): Promise<string> {

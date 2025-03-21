@@ -19,8 +19,8 @@ import type {
   ReadResultError,
 } from "../requester/requests/readResource";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import type { AbsentReadSuccess } from "../requester/results/success/ReadSuccess";
-import type { ContainerReadSuccess } from "../requester/results/success/ReadSuccess";
+import type { AbsentReadSuccess } from "../requester/results/success/SolidReadSuccess";
+import type { ContainerReadSuccess } from "../requester/results/success/SolidReadSuccess";
 import { getParentUri, ldpContains } from "../util/rdfUtils";
 import { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 import type { SharedStatuses } from "./SolidResource";

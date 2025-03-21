@@ -1,7 +1,7 @@
-import { isLeafUri } from "../src";
+import { isSolidLeafUri } from "../src";
 
 describe("isLeafUri", () => {
   it("returns true if the given value is a leaf URI", () => {
-    expect(isLeafUri("https://example.com/index.ttl")).toBe(true);
+    expect(isSolidLeafUri("https://example.com/index.ttl")).toBe(true);
   });
 });

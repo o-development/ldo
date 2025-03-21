@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type TypedEmitter from "typed-emitter";
 import type { ConnectedResult } from "./results/ConnectedResult";
-import type { ResourceResult } from "./results/ResourceResult";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { UpdateSuccess } from "./results/success/UpdateSuccess";
+import type { ResourceError } from "./results/error/ErrorResult";
+import type { ReadSuccess } from "./results/success/ReadSuccess";
 
 export type ResourceEventEmitter = TypedEmitter<{
   update: () => void;
@@ -21,8 +24,11 @@ export interface Resource<UriType extends string = string>
   isPresent(): boolean | undefined;
   isAbsent(): boolean | undefined;
   isSubscribedToNotifications(): boolean;
-  read(): Promise<ResourceResult<any>>;
-  readIfAbsent(): Promise<ResourceResult<any>>;
+  read(): Promise<ReadSuccess<any> | ResourceError<any>>;
+  readIfAbsent(): Promise<ReadSuccess<any> | ResourceError<any>>;
+  update(
+    datasetChanges: DatasetChanges,
+  ): Promise<UpdateSuccess<any> | ResourceError<any>>;
   subscribeToNotifications(callbacks?: {
     onNotification: (message: any) => void;
     onNotificationError: (err: Error) => void;

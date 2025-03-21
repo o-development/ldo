@@ -5,17 +5,16 @@ import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
 import type { ConnectedContext } from "./ConnectedContext";
+import type {
+  IConnectedLdoDataset,
+  ReturnTypeFromArgs,
+} from "./IConnectedLdoDataset";
+import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 
-type ReturnTypeFromArgs<Func, Arg> = Func extends (
-  arg: Arg,
-  context: any,
-) => infer R
-  ? R
-  : never;
-
-export class ConnectedLdoDataset<
-  Plugins extends ConnectedPlugin<any, any, any, any>[],
-> extends LdoDataset {
+export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
+  extends LdoDataset
+  implements IConnectedLdoDataset<Plugins>
+{
   private plugins: Plugins;
   /**
    * @internal
@@ -100,8 +99,6 @@ export class ConnectedLdoDataset<
     Plugin extends Extract<Plugins[number], { name: Name }>,
   >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore I'm not sure why this doesn't work
     const newResourceResult = await validPlugin.createResource(this.context);
     if (newResourceResult.isError) return newResourceResult;
     this.resourceMap.set(newResourceResult.uri, newResourceResult);
@@ -115,5 +112,14 @@ export class ConnectedLdoDataset<
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.context[name] = context;
+  }
+
+  public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {
+    return new ConnectedLdoTransactionDataset(
+      this,
+      this.context,
+      this.datasetFactory,
+      this.transactionDatasetFactory,
+    );
   }
 }
