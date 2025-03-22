@@ -6,19 +6,19 @@ import {
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
-import type { ConnectedLdoDataset } from "./ConnectedLdoDataset";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { ConnectedContext } from "./ConnectedContext";
 import type { InvalidIdentifierResource } from "./InvalidIdentifierResource";
 import type { IConnectedLdoDataset } from "./IConnectedLdoDataset";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
-import type {
-  IgnoredInvalidUpdateSuccess,
-  UpdateSuccess,
-} from "./results/success/UpdateSuccess";
+import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess";
 import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess";
+import type { ErrorResult } from "./results/error/ErrorResult";
 import { AggregateError } from "./results/error/ErrorResult";
-import type { AggregateSuccess } from "./results/success/SuccessResult";
+import type {
+  AggregateSuccess,
+  SuccessResult,
+} from "./results/success/SuccessResult";
 
 /**
  * A SolidLdoTransactionDataset has all the functionality of a SolidLdoDataset
@@ -138,12 +138,16 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
 
   async commitChanges(): Promise<
     | AggregateSuccess<
-        | UpdateSuccess<Plugins[number]["types"]["resource"]>
+        | Extract<
+            Awaited<ReturnType<Plugins[number]["types"]["resource"]["update"]>>,
+            { isError: false }
+          >
         | UpdateDefaultGraphSuccess
+        | IgnoredInvalidUpdateSuccess<Plugins[number]["types"]["resource"]>
       >
     | AggregateError<
         Extract<
-          ReturnType<Plugins[number]["types"]["resource"]["update"]>,
+          Awaited<ReturnType<Plugins[number]["types"]["resource"]["update"]>>,
           { isError: true }
         >
       >
@@ -156,7 +160,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
       GraphNode,
       DatasetChanges<Quad>,
       (
-        | ReturnType<Plugins[number]["types"]["resource"]["update"]>
+        | Awaited<ReturnType<Plugins[number]["types"]["resource"]["update"]>>
         | IgnoredInvalidUpdateSuccess<any>
         | UpdateDefaultGraphSuccess
       ),
@@ -168,32 +172,33 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
             updateDatasetInBulk(this.parentDataset, datasetChanges);
             return [graph, datasetChanges, new UpdateDefaultGraphSuccess()];
           }
-          const resource = this.getResource(graph.value);
-          const updateResult = await resource.update(datasetChanges);
+          const resource = this.getResource(
+            graph.value,
+          ) as Plugins[number]["types"]["resource"];
+          const updateResult = (await resource.update(
+            datasetChanges,
+          )) as Awaited<
+            ReturnType<Plugins[number]["types"]["resource"]["update"]>
+          >;
           return [graph, datasetChanges, updateResult];
         },
       ),
     );
 
     // If one has errored, return error
-    const errors = results.filter((result) => result[2].isError);
+    const errors = (
+      results.map((result) => result[2]) as (SuccessResult | ErrorResult)[]
+    ).filter((result): result is ErrorResult => result.isError);
 
     if (errors.length > 0) {
-      return new AggregateError(
-        errors.map((result) => result[2] as UpdateResultError),
-      );
+      // HACK: Cast to Any
+      return new AggregateError(errors) as any;
     }
     return {
       isError: false,
       type: "aggregateSuccess",
-      results: results
-        .map((result) => result[2])
-        .filter(
-          (result): result is ResourceResult<UpdateSuccess, Leaf> =>
-            result.type === "updateSuccess" ||
-            result.type === "updateDefaultGraphSuccess" ||
-            result.type === "ignoredInvalidUpdateSuccess",
-        ),
+      // HACK: Cast to Any
+      results: results.map((result) => result[2]) as any,
     };
   }
 }

@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import EventEmitter from "events";
+import type { ResourceError } from "../src";
 import {
   Unfetched,
   type ConnectedResult,
   type Resource,
   type ResourceEventEmitter,
-  type ResourceResult,
 } from "../src";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { ReadSuccess } from "../src/results/success/ReadSuccess";
+import type { UpdateSuccess } from "../src/results/success/UpdateSuccess";
 
 export class MockResouce
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -44,10 +47,15 @@ export class MockResouce
   isSubscribedToNotifications(): boolean {
     throw new Error("Method not implemented.");
   }
-  read(): Promise<ResourceResult<any>> {
+  read(): Promise<ReadSuccess<any> | ResourceError<any>> {
     throw new Error("Method not implemented.");
   }
-  readIfAbsent(): Promise<ResourceResult<any>> {
+  readIfAbsent(): Promise<ReadSuccess<any> | ResourceError<any>> {
+    throw new Error("Method not implemented.");
+  }
+  update(
+    _datasetChanges: DatasetChanges,
+  ): Promise<UpdateSuccess<any> | ResourceError<any>> {
     throw new Error("Method not implemented.");
   }
   subscribeToNotifications(_callbacks?: {

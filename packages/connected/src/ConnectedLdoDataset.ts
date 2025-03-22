@@ -33,6 +33,8 @@ export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     super(datasetFactory, transactionDatasetFactory, initialDataset);
     this.plugins = plugins;
     this.resourceMap = new Map();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore this is a builder. It will eventually match
     this.context = {
       dataset: this,
     };
@@ -91,6 +93,7 @@ export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
       resource = plugin.getResource(uri, this.context);
       this.resourceMap.set(normalizedUri, resource);
     }
+    // HACK: cast to any
     return resource as any;
   }
 
@@ -99,10 +102,14 @@ export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     Plugin extends Extract<Plugins[number], { name: Name }>,
   >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore I'm not sure why this doesn't work
     const newResourceResult = await validPlugin.createResource(this.context);
-    if (newResourceResult.isError) return newResourceResult;
+    // HACK: cast to any
+    if (newResourceResult.isError) return newResourceResult as any;
     this.resourceMap.set(newResourceResult.uri, newResourceResult);
-    return newResourceResult;
+    // HACK: cast to any
+    return newResourceResult as any;
   }
 
   setContext<

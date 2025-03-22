@@ -10,9 +10,12 @@ export interface ConnectedPlugin<
   ContextType = any,
 > {
   name: Name;
-  getResource(uri: UriType, context: ConnectedContext<this[]>): ResourceType;
+  getResource(
+    uri: UriType,
+    context: ConnectedContext<ConnectedPlugin[]>,
+  ): ResourceType;
   createResource(
-    context: ConnectedContext<this[]>,
+    context: ConnectedContext<ConnectedPlugin[]>,
   ): Promise<ResourceType | ErrorResult>;
   isUriValid(uri: UriType): uri is UriType;
   normalizeUri?: (uri: UriType) => UriType;
