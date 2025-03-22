@@ -2,7 +2,10 @@
 import type TypedEmitter from "typed-emitter";
 import type { ConnectedResult } from "./results/ConnectedResult";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { UpdateSuccess } from "./results/success/UpdateSuccess";
+import type {
+  IgnoredInvalidUpdateSuccess,
+  UpdateSuccess,
+} from "./results/success/UpdateSuccess";
 import type { ResourceError } from "./results/error/ErrorResult";
 import type { ReadSuccess } from "./results/success/ReadSuccess";
 
@@ -25,10 +28,12 @@ export interface Resource<UriType extends string = string>
   isAbsent(): boolean | undefined;
   isSubscribedToNotifications(): boolean;
   read(): Promise<ReadSuccess<any> | ResourceError<any>>;
-  readIfAbsent(): Promise<ReadSuccess<any> | ResourceError<any>>;
+  readIfUnfetched(): Promise<ReadSuccess<any> | ResourceError<any>>;
   update(
     datasetChanges: DatasetChanges,
-  ): Promise<UpdateSuccess<any> | ResourceError<any>>;
+  ): Promise<
+    UpdateSuccess<any> | IgnoredInvalidUpdateSuccess<any> | ResourceError<any>
+  >;
   subscribeToNotifications(callbacks?: {
     onNotification: (message: any) => void;
     onNotificationError: (err: Error) => void;

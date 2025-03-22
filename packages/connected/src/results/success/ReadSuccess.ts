@@ -1,5 +1,5 @@
-import { ResourceSuccess } from "@ldo/connected";
-import type { Resource } from "@ldo/connected";
+import type { Resource } from "../../Resource";
+import { ResourceSuccess } from "./SuccessResult";
 
 /**
  * Indicates that the request to read a resource was a success

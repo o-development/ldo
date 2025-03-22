@@ -50,7 +50,7 @@ export class MockResouce
   read(): Promise<ReadSuccess<any> | ResourceError<any>> {
     throw new Error("Method not implemented.");
   }
-  readIfAbsent(): Promise<ReadSuccess<any> | ResourceError<any>> {
+  readIfUnfetched(): Promise<ReadSuccess<any> | ResourceError<any>> {
     throw new Error("Method not implemented.");
   }
   update(

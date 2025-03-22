@@ -12,12 +12,12 @@ export interface ConnectedPlugin<
   name: Name;
   getResource(
     uri: UriType,
-    context: ConnectedContext<ConnectedPlugin[]>,
+    context: ConnectedContext<ConnectedPlugin<any, any, any, any>[]>,
   ): ResourceType;
   createResource(
-    context: ConnectedContext<ConnectedPlugin[]>,
+    context: ConnectedContext<ConnectedPlugin<any, any, any, any>[]>,
   ): Promise<ResourceType | ErrorResult>;
-  isUriValid(uri: UriType): uri is UriType;
+  isUriValid(uri: string): uri is UriType;
   normalizeUri?: (uri: UriType) => UriType;
   initialContext: ContextType;
   // This object exists to transfer typescript types. It does not need to be

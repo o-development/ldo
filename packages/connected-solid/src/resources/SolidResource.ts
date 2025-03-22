@@ -1,9 +1,10 @@
 import type {
   ConnectedContext,
   ConnectedResult,
+  IgnoredInvalidUpdateSuccess,
+  ReadSuccess,
   Resource,
   ResourceEventEmitter,
-  ResourceResult,
   ResourceSuccess,
   Unfetched,
 } from "@ldo/connected";
@@ -18,10 +19,7 @@ import type {
 } from "../notifications/SolidNotificationSubscription";
 import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription";
 import { getParentUri } from "../util/rdfUtils";
-import {
-  isReadSuccess,
-  type ReadSuccess,
-} from "../requester/results/success/SolidReadSuccess";
+import { isReadSuccess } from "../requester/results/success/SolidReadSuccess";
 import type {
   ReadContainerResult,
   ReadLeafResult,
@@ -51,6 +49,8 @@ import type { SolidNotificationMessage } from "../notifications/SolidNotificatio
 import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
 import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess";
 import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
+import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { UpdateResult } from "../requester/requests/updateDataResource";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -139,10 +139,6 @@ export abstract class SolidResource
       this.onNotification.bind(this),
       this.context,
     );
-  }
-
-  readIfAbsent(): Promise<ResourceResult<this>> {
-    throw new Error("Method not implemented.");
   }
 
   /**
@@ -477,7 +473,7 @@ export abstract class SolidResource
     this.absent = false;
     this.didInitialFetch = true;
     if (isReadSuccess(result)) {
-      this.updateWithReadSuccess(result);
+      this.updateWithReadSuccess(result as ReadSuccess<this>);
     }
   }
 
@@ -546,6 +542,15 @@ export abstract class SolidResource
     this.emitThisAndParent();
     return result;
   }
+
+  /**
+   * UPDATE METHODS
+   */
+  abstract update(
+    datasetChanges: DatasetChanges,
+  ): Promise<
+    UpdateResult<SolidLeaf> | IgnoredInvalidUpdateSuccess<SolidContainer>
+  >;
 
   /**
    * ===========================================================================

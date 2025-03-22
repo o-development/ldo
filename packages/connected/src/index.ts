@@ -15,3 +15,5 @@ export * from "./results/error/InvalidUriError";
 export * from "./results/error/NotificationErrors";
 export * from "./results/success/SuccessResult";
 export * from "./results/success/Unfetched";
+export * from "./results/success/ReadSuccess";
+export * from "./results/success/UpdateSuccess";

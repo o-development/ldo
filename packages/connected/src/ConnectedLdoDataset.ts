@@ -11,7 +11,9 @@ import type {
 } from "./IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 
-export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
+export class ConnectedLdoDataset<
+    Plugins extends ConnectedPlugin<any, any, any, any>[],
+  >
   extends LdoDataset
   implements IConnectedLdoDataset<Plugins>
 {
@@ -89,7 +91,7 @@ export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     let resource = this.resourceMap.get(normalizedUri);
     if (!resource) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore I'm not sure why this doesn't work
+      // @ts-ignore I don't know why this doesn't work
       resource = plugin.getResource(uri, this.context);
       this.resourceMap.set(normalizedUri, resource);
     }
@@ -103,7 +105,7 @@ export class ConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore I'm not sure why this doesn't work
+    // @ts-ignore I don't know why this doesn't work
     const newResourceResult = await validPlugin.createResource(this.context);
     // HACK: cast to any
     if (newResourceResult.isError) return newResourceResult as any;

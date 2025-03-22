@@ -10,18 +10,19 @@ import type { DeleteResult } from "../requester/requests/deleteResource";
 import type { ReadLeafResult } from "../requester/requests/readResource";
 import type { UpdateResult } from "../requester/requests/updateDataResource";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import type { AbsentReadSuccess } from "../requester/results/success/SolidReadSuccess";
-import type {
-  BinaryReadSuccess,
-  DataReadSuccess,
-} from "../requester/results/success/SolidReadSuccess";
+import { DataReadSuccess } from "../requester/results/success/SolidReadSuccess";
+import { BinaryReadSuccess } from "../requester/results/success/SolidReadSuccess";
 import { getParentUri } from "../util/rdfUtils";
 import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
 import type { SharedStatuses } from "./SolidResource";
 import { SolidResource } from "./SolidResource";
 import type { SolidLeafUri } from "../types";
 import type { ResourceSuccess } from "@ldo/connected";
-import { Unfetched, type ConnectedContext } from "@ldo/connected";
+import {
+  AbsentReadSuccess,
+  Unfetched,
+  type ConnectedContext,
+} from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidContainer } from "./SolidContainer";
 
@@ -253,31 +254,16 @@ export class SolidLeaf extends SolidResource {
    */
   protected toReadResult(): ReadLeafResult {
     if (this.isAbsent()) {
-      return {
-        isError: false,
-        type: "absentReadSuccess",
-        uri: this.uri,
-        recalledFromMemory: true,
-        resource: this,
-      };
+      return new AbsentReadSuccess(this, true);
     } else if (this.isBinary()) {
-      return {
-        isError: false,
-        type: "binaryReadSuccess",
-        uri: this.uri,
-        recalledFromMemory: true,
-        blob: this.binaryData!.blob,
-        mimeType: this.binaryData!.mimeType,
-        resource: this,
-      };
+      return new BinaryReadSuccess(
+        this,
+        true,
+        this.binaryData!.blob,
+        this.binaryData!.mimeType,
+      );
     } else {
-      return {
-        isError: false,
-        type: "dataReadSuccess",
-        uri: this.uri,
-        recalledFromMemory: true,
-        resource: this,
-      };
+      return new DataReadSuccess(this, true);
     }
   }
 

@@ -5,12 +5,11 @@ import {
   getParentUri,
   getSlug,
 } from "../../util/rdfUtils";
-import type { Resource } from "@ldo/connected";
+import type { AbsentReadSuccess, Resource } from "@ldo/connected";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import { CreateSuccess } from "../results/success/CreateSuccess";
-import type { AbsentReadSuccess } from "../results/success/SolidReadSuccess";
 import type { DeleteResultError } from "./deleteResource";
 import { deleteResource } from "./deleteResource";
 import type {

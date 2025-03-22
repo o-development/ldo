@@ -13,11 +13,10 @@ import {
   DataReadSuccess,
 } from "../results/success/SolidReadSuccess";
 import { ContainerReadSuccess } from "../results/success/SolidReadSuccess";
-import { AbsentReadSuccess } from "../results/success/SolidReadSuccess";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { Resource } from "@ldo/connected";
-import { UnexpectedResourceError } from "@ldo/connected";
+import { UnexpectedResourceError, AbsentReadSuccess } from "@ldo/connected";
 import { checkHeadersForRootContainer } from "./checkRootContainer";
 import { namedNode } from "@rdfjs/data-model";
 import type { SolidLeaf } from "../../resources/SolidLeaf";

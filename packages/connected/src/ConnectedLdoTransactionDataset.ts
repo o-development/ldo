@@ -9,7 +9,10 @@ import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { ConnectedContext } from "./ConnectedContext";
 import type { InvalidIdentifierResource } from "./InvalidIdentifierResource";
-import type { IConnectedLdoDataset } from "./IConnectedLdoDataset";
+import type {
+  IConnectedLdoDataset,
+  ReturnTypeFromArgs,
+} from "./IConnectedLdoDataset";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess";
 import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess";
@@ -87,12 +90,10 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     UriType extends string,
   >(
     uri: UriType,
-    pluginName?: Name | undefined,
+    pluginName?: Name,
   ): UriType extends Plugin["types"]["uri"]
-    ? Plugin["getResource"] extends (arg: UriType, context: any) => infer R
-      ? R
-      : never
-    : InvalidIdentifierResource | ReturnType<Plugin["getResource"]> {
+    ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
+    : ReturnType<Plugin["getResource"]> | InvalidIdentifierResource {
     return this.context.dataset.getResource(uri, pluginName);
   }
 

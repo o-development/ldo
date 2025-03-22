@@ -44,9 +44,7 @@ export const solidConnectedPlugin: SolidConnectedPlugin = {
     throw new Error("Function not implemented.");
   },
 
-  isUriValid: function (
-    uri: SolidContainerUri | SolidLeafUri,
-  ): uri is SolidLeafUri | SolidContainerUri {
+  isUriValid: function (uri: string): uri is SolidLeafUri | SolidContainerUri {
     return isSolidUri(uri);
   },
 

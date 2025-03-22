@@ -41,7 +41,7 @@ export class InvalidIdentifierResource
   async read(): Promise<InvalidUriError<this>> {
     return this.status;
   }
-  async readIfAbsent(): Promise<InvalidUriError<this>> {
+  async readIfUnfetched(): Promise<InvalidUriError<this>> {
     return this.status;
   }
   async update(): Promise<InvalidUriError<this>> {

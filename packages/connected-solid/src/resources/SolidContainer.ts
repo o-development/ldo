@@ -19,7 +19,6 @@ import type {
   ReadResultError,
 } from "../requester/requests/readResource";
 import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import type { AbsentReadSuccess } from "../requester/results/success/SolidReadSuccess";
 import type { ContainerReadSuccess } from "../requester/results/success/SolidReadSuccess";
 import { getParentUri, ldpContains } from "../util/rdfUtils";
 import { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
@@ -30,7 +29,8 @@ import type {
   SolidContainerUri,
   SolidLeafSlug,
 } from "../types";
-import { AggregateSuccess } from "@ldo/connected";
+import type { AbsentReadSuccess } from "@ldo/connected";
+import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
   type ConnectedContext,
@@ -39,6 +39,7 @@ import {
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidLeaf } from "./SolidLeaf";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
+import type { DatasetChanges } from "@ldo/rdf-utils";
 
 /**
  * Represents the current status of a specific container on a Pod as known by
@@ -576,5 +577,14 @@ export class SolidContainer extends SolidResource {
       (await this.handleCreateIfAbsent()) as ContainerCreateIfAbsentResult;
     if (createResult.isError) return createResult;
     return { ...createResult, resource: this };
+  }
+
+  /**
+   * You cannot update a Container, so we return an IgnoredInvalidUpdateSuccess
+   */
+  async update(
+    _datasetChanges: DatasetChanges,
+  ): Promise<IgnoredInvalidUpdateSuccess<this>> {
+    return new IgnoredInvalidUpdateSuccess(this);
   }
 }
