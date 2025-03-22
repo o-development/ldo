@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { LdoDataset } from "@ldo/ldo";
+import type { LdoBase, ShapeType } from "@ldo/ldo";
+import { LdoDataset, startTransaction } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
@@ -10,6 +11,8 @@ import type {
   ReturnTypeFromArgs,
 } from "./IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
+import type { SubjectNode } from "@ldo/rdf-utils";
+import type { Resource } from "./Resource";
 
 export class ConnectedLdoDataset<
     Plugins extends ConnectedPlugin<any, any, any, any>[],
@@ -112,6 +115,29 @@ export class ConnectedLdoDataset<
     this.resourceMap.set(newResourceResult.uri, newResourceResult);
     // HACK: cast to any
     return newResourceResult as any;
+  }
+
+  /**
+   * Shorthand for solidLdoDataset
+   *   .usingType(shapeType)
+   *   .write(...resources.map((r) => r.uri))
+   *   .fromSubject(subject);
+   * @param shapeType - The shapetype to represent the data
+   * @param subject - A subject URI
+   * @param resources - The resources changes to should written to
+   */
+  createData<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+    subject: string | SubjectNode,
+    resource: Resource,
+    ...additionalResources: Resource[]
+  ): Type {
+    const resources = [resource, ...additionalResources];
+    const linkedDataObject = this.usingType(shapeType)
+      .write(...resources.map((r) => r.uri))
+      .fromSubject(subject);
+    startTransaction(linkedDataObject);
+    return linkedDataObject;
   }
 
   setContext<

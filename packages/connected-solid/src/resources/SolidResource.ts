@@ -383,7 +383,7 @@ export abstract class SolidResource
    * A helper method updates this resource's internal state upon read success
    * @param result - the result of the read success
    */
-  protected updateWithReadSuccess(result: ReadSuccess<this>) {
+  protected updateWithReadSuccess(result: ReadSuccess<Resource>) {
     this.absent = result.type === "absentReadSuccess";
     this.didInitialFetch = true;
   }
@@ -469,7 +469,7 @@ export abstract class SolidResource
    * A helper method updates this resource's internal state upon create success
    * @param _result - the result of the create success
    */
-  protected updateWithCreateSuccess(result: ResourceSuccess<this>) {
+  protected updateWithCreateSuccess(result: ResourceSuccess<Resource>) {
     this.absent = false;
     this.didInitialFetch = true;
     if (isReadSuccess(result)) {

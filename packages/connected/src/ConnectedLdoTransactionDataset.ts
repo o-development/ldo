@@ -137,7 +137,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     );
   }
 
-  async commitChanges(): Promise<
+  async commitToRemote(): Promise<
     | AggregateSuccess<
         | Extract<
             Awaited<ReturnType<Plugins[number]["types"]["resource"]["update"]>>,

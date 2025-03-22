@@ -22,7 +22,7 @@ export abstract class ResourceSuccess<
   /**
    * The resource that was successful
    */
-  resource: Resource;
+  resource: ResourceType;
 
   constructor(resource: ResourceType) {
     super();

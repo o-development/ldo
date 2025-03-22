@@ -1,6 +1,7 @@
 export * from "./types";
 export * from "./SolidConnectedPlugin";
 export * from "./createSolidLdoDataset";
+export * from "./getStorageFromWebId";
 
 export * from "./resources/SolidResource";
 export * from "./resources/SolidContainer";

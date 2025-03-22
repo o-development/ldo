@@ -4,10 +4,12 @@ import * as path from "path";
 import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
 import "jest-rdf";
+import type { SolidContainerUri } from "../src";
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
 export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "";
-export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
+export const ROOT_CONTAINER =
+  `${SERVER_DOMAIN}${ROOT_ROUTE}` as SolidContainerUri;
 export const WEB_ID =
   process.env.WEB_ID || `${SERVER_DOMAIN}example/profile/card#me`;
 

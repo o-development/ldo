@@ -29,7 +29,7 @@ import type {
   SolidContainerUri,
   SolidLeafSlug,
 } from "../types";
-import type { AbsentReadSuccess } from "@ldo/connected";
+import type { AbsentReadSuccess, ReadSuccess } from "@ldo/connected";
 import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
@@ -135,11 +135,11 @@ export class SolidContainer extends SolidResource {
    * @param result - the result of the read success
    */
   protected updateWithReadSuccess(
-    result: ContainerReadSuccess | AbsentReadSuccess<this>,
+    result: ReadSuccess<this> | ContainerReadSuccess,
   ): void {
     super.updateWithReadSuccess(result);
     if (result.type === "containerReadSuccess") {
-      this.rootContainer = result.isRootContainer;
+      this.rootContainer = (result as ContainerReadSuccess).isRootContainer;
     }
   }
 
