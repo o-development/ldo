@@ -61,11 +61,11 @@ export class SolidLeaf extends SolidResource {
    * The status of the last request made for this leaf
    */
   status:
-    | SharedStatuses<this>
+    | SharedStatuses<SolidLeaf>
     | ReadLeafResult
     | LeafCreateAndOverwriteResult
     | LeafCreateIfAbsentResult
-    | UpdateResult<this>;
+    | UpdateResult<SolidLeaf>;
 
   /**
    * @internal

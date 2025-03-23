@@ -38,13 +38,18 @@ export async function getStorageFromWebId(
   const webIdResource = dataset.getResource(webId) as SolidLeaf;
   const readResult = await webIdResource.readIfUnfetched();
   if (readResult.isError) return readResult;
-  const profile = this.usingType(ProfileWithStorageShapeType).fromSubject(
-    webId,
-  );
+  const profile = dataset
+    .usingType(ProfileWithStorageShapeType)
+    .fromSubject(webId);
   if (profile.storage && profile.storage.size > 0) {
-    const containers = profile.storage.map((storageNode) =>
-      this.getResource(storageNode["@id"] as SolidContainerUri),
-    );
+    const containers = profile.storage
+      .map((storageNode) =>
+        dataset.getResource(storageNode["@id"] as SolidContainerUri),
+      )
+      .filter(
+        (container): container is SolidContainer =>
+          container.type === "SolidContainer",
+      );
     return {
       type: "getStorageContainerFromWebIdSuccess",
       isError: false,
