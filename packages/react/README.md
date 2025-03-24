@@ -1,6 +1,6 @@
-# @ldo/solid-react
+# @ldo/react
 
-`@ldo/solid-react` provides tool and hooks for easily building Solid applications using react.
+`@ldo/react` provides tool and hooks for easily building Solid applications using react.
 
 ## Guide
 
@@ -17,7 +17,7 @@ npx run @ldo/cli init
 Now install the @ldo/solid library
 
 ```
-npm i @ldo/solid @ldo/solid-react
+npm i @ldo/solid @ldo/react
 ```
 
 <details>
@@ -28,13 +28,13 @@ Manual Installation
 If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
 
 ```
-npm i @ldo/ldo @ldo/solid @ldo/solid-react
+npm i @ldo/ldo @ldo/solid @ldo/react
 ```
 </details>
 
 ## Simple Example
 
-Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./.ldo/solidProfile.shapeTypess`.
+Below is a simple example of @ldo/react in a real use-case. Assume that a ShapeType was previously generated and placed at `./.ldo/solidProfile.shapeTypess`.
 
 
 ```typescript
@@ -45,7 +45,7 @@ import {
   useResource,
   useSolidAuth,
   useSubject,
-} from "@ldo/solid-react";
+} from "@ldo/react";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 import { changeData, commitData } from "@ldo/solid";
 
@@ -115,18 +115,18 @@ export default App;
 
 Providers
 
- - [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/solid-react/BrowserSolidLdoProvider/)
- - [SolidLdoProvider](https://ldo.js.org/latest/api/solid-react/SolidLdoProvider/)
+ - [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/react/BrowserSolidLdoProvider/)
+ - [SolidLdoProvider](https://ldo.js.org/latest/api/react/SolidLdoProvider/)
 
 Hooks
- - [useLdo](https://ldo.js.org/latest/api/solid-react/useLdo/)
- - [useResource](https://ldo.js.org/latest/api/solid-react/useResource/)
- - [useRootContainer](https://ldo.js.org/latest/api/solid-react/useRootContainer/)
- - [useSolidAuth](https://ldo.js.org/latest/api/solid-react/useSolidAuth/)
- - [useSubject](https://ldo.js.org/latest/api/solid-react/useSubject/)
- - [useMatchSubject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
+ - [useLdo](https://ldo.js.org/latest/api/react/useLdo/)
+ - [useResource](https://ldo.js.org/latest/api/react/useResource/)
+ - [useRootContainer](https://ldo.js.org/latest/api/react/useRootContainer/)
+ - [useSolidAuth](https://ldo.js.org/latest/api/react/useSolidAuth/)
+ - [useSubject](https://ldo.js.org/latest/api/react/useSubject/)
+ - [useMatchSubject](https://ldo.js.org/latest/api/react/useMatchSubject/)
+ - [useMatchObject](https://ldo.js.org/latest/api/react/useMatchSubject/)
+ - [useSubscribeToResource](https://ldo.js.org/latest/api/react/useMatchSubject/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
