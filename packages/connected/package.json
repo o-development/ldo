@@ -23,15 +23,10 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
-    "@inrupt/solid-client-authn-core": "^2.2.6",
-    "@ldo/cli": "^1.0.0-alpha.1",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
-    "@solid-notifications/types": "^0.1.2",
-    "@solid/community-server": "^7.1.3",
     "@types/jest": "^27.0.3",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.3.1",
     "jest-rdf": "^1.8.0",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.9.1",
@@ -42,11 +37,7 @@
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.1",
     "@ldo/ldo": "^1.0.0-alpha.1",
-    "@ldo/rdf-utils": "^1.0.0-alpha.1",
-    "@solid-notifications/subscription": "^0.1.2",
-    "cross-fetch": "^3.1.6",
-    "http-link-header": "^1.1.1",
-    "ws": "^8.18.0"
+    "@ldo/rdf-utils": "^1.0.0-alpha.1"
   },
   "files": [
     "dist",

@@ -163,7 +163,6 @@ describe("Integration", () => {
     // Start up the server
     app = await createApp();
     await app.start();
-
     authFetch = await generateAuthFetch();
   });
 

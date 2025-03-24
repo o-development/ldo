@@ -36,7 +36,7 @@ export function isSolidContainerUri(uri: string): uri is SolidContainerUri {
 export function isSolidLeafUri(uri: string): uri is SolidLeafUri {
   try {
     const url = new URL(uri);
-    return url.pathname.endsWith("/");
+    return !url.pathname.endsWith("/");
   } catch {
     return false;
   }
