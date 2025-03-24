@@ -78,7 +78,7 @@ export abstract class SolidResource
   /**
    * The type of resource (leaf or container)
    */
-  abstract readonly type: "leaf" | "container";
+  abstract readonly type: "SolidLeaf" | "SolidContainer";
 
   /**
    * The status of the last request made for this resource
@@ -801,7 +801,7 @@ export abstract class SolidResource
     const objectResource = this.context.dataset.getResource(message.object);
     // Do Nothing if the resource is invalid.
     if (objectResource.type === "InvalidIdentifierResouce") return;
-    if (objectResource.type === "leaf") {
+    if (objectResource.type === "SolidLeaf") {
       switch (message.type) {
         case "Update":
         case "Add":

@@ -153,7 +153,7 @@ export async function readResource(
             | NoncompliantPodError<SolidLeaf>
             | NoncompliantPodError<SolidContainer>;
       }
-      if (resource.type === "container") {
+      if (resource.type === "SolidContainer") {
         const result = checkHeadersForRootContainer(resource, response.headers);
         return new ContainerReadSuccess(
           resource,

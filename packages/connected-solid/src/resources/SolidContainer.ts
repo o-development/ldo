@@ -29,7 +29,7 @@ import type {
   SolidContainerUri,
   SolidLeafSlug,
 } from "../types";
-import type { AbsentReadSuccess, ReadSuccess } from "@ldo/connected";
+import type { ReadSuccess } from "@ldo/connected";
 import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
@@ -72,7 +72,7 @@ export class SolidContainer extends SolidResource {
   /**
    * Indicates that this resource is a container resource
    */
-  readonly type = "container" as const;
+  readonly type = "SolidContainer" as const;
 
   /**
    * Indicates that this resource is not an error

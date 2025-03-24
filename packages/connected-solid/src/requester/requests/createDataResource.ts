@@ -225,7 +225,7 @@ export async function createDataResource(
       "content-type": "text/turtle",
       slug: getSlug(resource.uri),
     };
-    if (resource.type === "container") {
+    if (resource.type === "SolidContainer") {
       headers.link = '<http://www.w3.org/ns/ldp#Container>; rel="type"';
     }
     const response = await fetch(parentUri, {

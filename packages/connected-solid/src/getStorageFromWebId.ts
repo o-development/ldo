@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "./types";
-import type { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
+import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
 import type { CheckRootResultError } from "./requester/requests/checkRootContainer";
 import type { ReadResultError } from "./requester/requests/readResource";
 import type { NoRootContainerError } from "./requester/results/error/NoRootContainerError";
@@ -42,26 +42,20 @@ export async function getStorageFromWebId(
     .usingType(ProfileWithStorageShapeType)
     .fromSubject(webId);
   if (profile.storage && profile.storage.size > 0) {
+    profile.storage.forEach((item) => console.log(item["@id"]));
     const containers = profile.storage
       .map((storageNode) =>
         dataset.getResource(storageNode["@id"] as SolidContainerUri),
       )
-      .filter(
-        (container): container is SolidContainer =>
-          container.type === "SolidContainer",
-      );
-    return {
-      type: "getStorageContainerFromWebIdSuccess",
-      isError: false,
-      storageContainers: containers,
-    };
+      .filter((container): container is SolidContainer => {
+        return container.type === "SolidContainer";
+      });
+    console.log(containers);
+
+    return new GetStorageContainerFromWebIdSuccess(containers);
   }
   const getContainerResult = await webIdResource.getRootContainer();
-  if (getContainerResult.type === "container")
-    return {
-      type: "getStorageContainerFromWebIdSuccess",
-      isError: false,
-      storageContainers: [getContainerResult],
-    };
+  if (getContainerResult.type === "SolidContainer")
+    return new GetStorageContainerFromWebIdSuccess([getContainerResult]);
   return getContainerResult;
 }

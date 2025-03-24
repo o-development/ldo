@@ -37,8 +37,13 @@ import type {
   UnexpectedResourceError,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
+  ConnectedLdoDataset,
 } from "@ldo/connected";
-import { changeData, commitData, ConnectedLdoDataset } from "@ldo/connected";
+import {
+  changeData,
+  commitData,
+  ConnectedLdoTransactionDataset,
+} from "@ldo/connected";
 import { getStorageFromWebId } from "../src/getStorageFromWebId";
 
 const TEST_CONTAINER_SLUG = "test_ldo/";
@@ -131,7 +136,7 @@ async function testRequestLoads<ReturnVal>(
     (async () => {
       Object.entries(allLoadingValues).forEach(([key, value]) => {
         if (
-          loadingResource.type === "container" &&
+          loadingResource.type === "SolidContainer" &&
           (key === "isUploading" || key === "isUpdating")
         ) {
           return;
@@ -602,8 +607,8 @@ describe("Integration", () => {
     it("Finds the root container", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
       const result = await resource.getRootContainer();
-      expect(result.type).toBe("container");
-      if (result.type !== "container") return;
+      expect(result.type).toBe("SolidContainer");
+      if (result.type !== "SolidContainer") return;
       expect(result.uri).toBe(ROOT_CONTAINER);
       expect(result.isRootContainer()).toBe(true);
     });
@@ -694,6 +699,7 @@ describe("Integration", () => {
         SAMPLE_PROFILE_URI,
         solidLdoDataset,
       );
+      console.log(result);
       expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
       const realResult = result as GetStorageContainerFromWebIdSuccess;
       expect(realResult.storageContainers.length).toBe(2);
@@ -1308,7 +1314,7 @@ describe("Integration", () => {
   it("allows a transaction on a transaction", () => {
     const transaction = solidLdoDataset.startTransaction();
     const transaction2 = transaction.startTransaction();
-    expect(transaction2).toBeInstanceOf(ConnectedLdoDataset);
+    expect(transaction2).toBeInstanceOf(ConnectedLdoTransactionDataset);
   });
 
   /**
@@ -1933,7 +1939,7 @@ describe("Integration", () => {
       expect(
         (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
       ).toBe(
-        `Response from card.acl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "BAD" on line 1.\nBAD TURTLE`,
+        `Response from http://localhost:3001/test_ldo/sample.ttl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "BAD" on line 1.\nBAD TURTLE`,
       );
     });
 

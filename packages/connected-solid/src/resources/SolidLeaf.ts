@@ -50,7 +50,7 @@ export class SolidLeaf extends SolidResource {
   /**
    * Indicates that this resource is a leaf resource
    */
-  readonly type = "leaf" as const;
+  readonly type = "SolidLeaf" as const;
 
   /**
    * Indicates that this resource is not an error
