@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid-react#readme",
   "devDependencies": {
+    "@inrupt/jest-jsdom-polyfills": "^3.2.6",
     "@ldo/rdf-utils": "^1.0.0-alpha.1",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
