@@ -1,15 +1,16 @@
-import type { LdoBase, ShapeType } from "@ldo/ldo";
+import {
+  changeData,
+  type ConnectedLdoDataset,
+  type ConnectedLdoTransactionDataset,
+  type ConnectedPlugin,
+} from "@ldo/connected";
+import { getDataset, type LdoBase, type ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type {
-  Resource,
-  SolidLdoDataset,
-  SolidLdoTransactionDataset,
-} from "@ldo/solid";
-import { changeData, commitData } from "@ldo/solid";
 
-export interface UseLdoMethods {
-  dataset: SolidLdoDataset;
-  getResource: SolidLdoDataset["getResource"];
+export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
+  dataset: ConnectedLdoDataset<Plugins>;
+  getResource: ConnectedLdoDataset<Plugins>["getResource"];
+  setContext: ConnectedLdoDataset<Plugins>["setContext"];
   getSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
@@ -17,26 +18,32 @@ export interface UseLdoMethods {
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-    resource: Resource,
-    ...additionalResources: Resource[]
+    resource: Plugins[number]["types"]["resource"],
+    ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type;
   changeData<Type extends LdoBase>(
     input: Type,
-    resource: Resource,
-    ...additionalResources: Resource[]
+    resource: Plugins[number]["types"]["resource"],
+    ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type;
   commitData(
     input: LdoBase,
-  ): ReturnType<SolidLdoTransactionDataset["commitToPod"]>;
+  ): ReturnType<ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]>;
 }
 
-export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
-  return {
-    dataset: dataset,
+export function createUseLdo<Plugins extends ConnectedPlugin[]>(
+  dataset: ConnectedLdoDataset<Plugins>,
+) {
+  return (): UseLdoMethods<Plugins> => ({
+    dataset,
     /**
      * Gets a resource
      */
     getResource: dataset.getResource.bind(dataset),
+    /**
+     * Set the context
+     */
+    setContext: dataset.setContext.bind(dataset),
     /**
      * Returns a Linked Data Object for a subject
      * @param shapeType The shape type for the data
@@ -59,8 +66,8 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
     createData<Type extends LdoBase>(
       shapeType: ShapeType<Type>,
       subject: string | SubjectNode,
-      resource: Resource,
-      ...additionalResources: Resource[]
+      resource: Plugins[number]["types"]["resource"],
+      ...additionalResources: Plugins[number]["types"]["resource"][]
     ): Type {
       return dataset.createData(
         shapeType,
@@ -79,6 +86,13 @@ export function createUseLdoMethods(dataset: SolidLdoDataset): UseLdoMethods {
      * Commits the transaction to the global dataset, syncing all subscribing
      * components and Solid Pods
      */
-    commitData: commitData,
-  };
+    commitData(
+      input: LdoBase,
+    ): ReturnType<ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]> {
+      const inputDataset = getDataset(
+        input,
+      ) as ConnectedLdoTransactionDataset<Plugins>;
+      return inputDataset.commitToRemote();
+    },
+  });
 }

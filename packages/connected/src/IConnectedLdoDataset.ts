@@ -10,6 +10,13 @@ export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   ? R
   : never;
 
+export type GetResourceReturnType<
+  Plugin extends ConnectedPlugin,
+  UriType extends string,
+> = UriType extends Plugin["types"]["uri"]
+  ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
+  : ReturnType<Plugin["getResource"]> | InvalidIdentifierResource;
+
 export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   extends LdoDataset {
   /**
@@ -36,9 +43,7 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   >(
     uri: UriType,
     pluginName?: Name,
-  ): UriType extends Plugin["types"]["uri"]
-    ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
-    : ReturnType<Plugin["getResource"]> | InvalidIdentifierResource;
+  ): GetResourceReturnType<Plugin, UriType>;
 
   createResource<
     Name extends Plugins[number]["name"],

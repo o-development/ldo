@@ -6,6 +6,7 @@ export * from "./Resource";
 export * from "./InvalidIdentifierResource";
 export * from "./ConnectedContext";
 export * from "./methods";
+export * from "./createConntectedLdoDataset";
 
 export * from "./util/splitChangesByGraph";
 

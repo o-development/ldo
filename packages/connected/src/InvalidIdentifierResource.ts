@@ -47,7 +47,10 @@ export class InvalidIdentifierResource
   async update(): Promise<InvalidUriError<this>> {
     return this.status;
   }
-  async subscribeToNotifications(_callbacks): Promise<string> {
+  async subscribeToNotifications(_callbacks?: {
+    onNotification: (message: unknown) => void;
+    onNotificationError: (err: Error) => void;
+  }): Promise<string> {
     throw new Error("Cannot subscribe to an invalid resource.");
   }
   async unsubscribeFromNotifications(_subscriptionId: string): Promise<void> {

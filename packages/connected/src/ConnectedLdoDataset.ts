@@ -7,12 +7,11 @@ import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
 import type { ConnectedContext } from "./ConnectedContext";
 import type {
+  GetResourceReturnType,
   IConnectedLdoDataset,
-  ReturnTypeFromArgs,
 } from "./IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { Resource } from "./Resource";
 
 export class ConnectedLdoDataset<
     Plugins extends ConnectedPlugin<any, any, any, any>[],
@@ -69,12 +68,7 @@ export class ConnectedLdoDataset<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
-  >(
-    uri: UriType,
-    pluginName?: Name,
-  ): UriType extends Plugin["types"]["uri"]
-    ? ReturnTypeFromArgs<Plugin["getResource"], UriType>
-    : ReturnType<Plugin["getResource"]> | InvalidIdentifierResource {
+  >(uri: UriType, pluginName?: Name): GetResourceReturnType<Plugin, UriType> {
     // Check for which plugins this uri is valid
     const validPlugins = this.plugins
       .filter((plugin) => plugin.isUriValid(uri))
@@ -129,8 +123,8 @@ export class ConnectedLdoDataset<
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-    resource: Resource,
-    ...additionalResources: Resource[]
+    resource: Plugins[number]["types"]["resource"],
+    ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type {
     const resources = [resource, ...additionalResources];
     const linkedDataObject = this.usingType(shapeType)

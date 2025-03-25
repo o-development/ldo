@@ -3,18 +3,16 @@ import {
   JsonldDatasetProxyBuilder,
 } from "@ldo/jsonld-dataset-proxy";
 import { LdoBuilder } from "@ldo/ldo";
-import type { LdoBase, ShapeType } from "@ldo/ldo";
+import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { TrackingProxyContext } from "./TrackingProxyContext";
 import { defaultGraph } from "@rdfjs/data-model";
-import { useLdo } from "../SolidLdoProvider";
 
 export function useTrackingProxy<Type extends LdoBase, ReturnType>(
   shapeType: ShapeType<Type>,
   createLdo: (builder: LdoBuilder<Type>) => ReturnType,
+  dataset: LdoDataset,
 ): ReturnType {
-  const { dataset } = useLdo();
-
   const [forceUpdateCounter, setForceUpdateCounter] = useState(0);
   const forceUpdate = useCallback(
     () => setForceUpdateCounter((val) => val + 1),
