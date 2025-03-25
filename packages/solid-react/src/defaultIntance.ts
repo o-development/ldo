@@ -1,6 +1,6 @@
 import { solidConnectedPlugin } from "@ldo/connected-solid";
 import { createLdoReactMethods } from "@ldo/react";
-import { createBrowserSolidLdoProvider } from "./BrowserSolidLdoProvider";
+import { createBrowserSolidReactMethods } from "./createBrowserSolidReactMethods";
 
 export const {
   dataset,
@@ -12,4 +12,5 @@ export const {
   useSubscribeToResource,
 } = createLdoReactMethods([solidConnectedPlugin]);
 
-export const BrowserSolidLdoProvider = createBrowserSolidLdoProvider(dataset);
+export const { BrowserSolidLdoProvider, useSolidAuth, useRootContainerFor } =
+  createBrowserSolidReactMethods(dataset);

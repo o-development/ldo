@@ -8,15 +8,17 @@ import {
   setUpServer,
 } from "./setUpServer";
 import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
-import { useResource } from "../src/useResource";
-import { useRootContainerFor } from "../src/useRootContainer";
-import { useLdo } from "../src/SolidLdoProvider";
+import {
+  useLdo,
+  useMatchObject,
+  useMatchSubject,
+  useResource,
+  useRootContainerFor,
+  useSubject,
+  useSubscribeToResource,
+} from "../src";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 import type { PostSh } from "./.ldo/post.typings";
-import { useSubject } from "../src/useSubject";
-import { useMatchSubject } from "../src/useMatchSubject";
-import { useMatchObject } from "../src/useMatchObject";
-import { useSubscribeToResource } from "../src/useSubscribeToResource";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);

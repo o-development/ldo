@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
 import type { LoginOptions, SessionInfo } from "./SolidAuthContext";
-import { SolidAuthContext } from "./SolidAuthContext";
+import { SolidAuthContext, useSolidAuth } from "./SolidAuthContext";
 import {
   getDefaultSession,
   handleIncomingRedirect,
@@ -9,13 +9,15 @@ import {
   logout as libraryLogout,
   fetch as libraryFetch,
 } from "@inrupt/solid-client-authn-browser";
-import type { ConnectedLdoDataset } from "@ldo/connected";
+import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "@ldo/connected-solid";
+import { createUseRootContainerFor } from "./useRootContainerFor";
+import { createUseResource } from "@ldo/react";
 
 const PRE_REDIRECT_URI = "PRE_REDIRECT_URI";
 
-export function createBrowserSolidLdoProvider(
-  dataset: ConnectedLdoDataset<(SolidConnectedPlugin | SolidConnectedPlugin)[]>,
+export function createBrowserSolidReactMethods(
+  dataset: ConnectedLdoDataset<(SolidConnectedPlugin | ConnectedPlugin)[]>,
 ) {
   dataset.setContext("solid", { fetch: libraryFetch });
 
@@ -113,5 +115,13 @@ export function createBrowserSolidLdoProvider(
       </SolidAuthContext.Provider>
     );
   };
-  return BrowserSolidLdoProvider;
+
+  return {
+    BrowserSolidLdoProvider,
+    useSolidAuth: useSolidAuth,
+    useRootContainerFor: createUseRootContainerFor(
+      dataset as ConnectedLdoDataset<SolidConnectedPlugin[]>,
+      createUseResource(dataset as ConnectedLdoDataset<ConnectedPlugin[]>),
+    ),
+  };
 }

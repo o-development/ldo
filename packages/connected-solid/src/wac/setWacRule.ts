@@ -14,7 +14,7 @@ import {
 } from "../requester/results/error/HttpErrorResult";
 import type { UnexpectedResourceError } from "@ldo/connected";
 import type { BasicRequestOptions } from "../requester/requests/requestOptions";
-import { isContainerUri } from "@ldo/solid";
+import { isSolidContainerUri } from "../util/isSolidUri";
 
 export type SetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
   | HttpErrorResultType<ResourceType>
@@ -82,7 +82,7 @@ export async function setWacRuleForAclUri(
       if (accessModeList.append) authorization.mode?.add({ "@id": "Append" });
       if (accessModeList.control) authorization.mode?.add({ "@id": "Control" });
       authorization.accessTo = { "@id": resource.uri };
-      if (isContainerUri(resource.uri)) {
+      if (isSolidContainerUri(resource.uri)) {
         authorization.default = { "@id": resource.uri };
       }
       ruleMap[accessModeListHash] = authorization;

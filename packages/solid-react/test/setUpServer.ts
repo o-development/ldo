@@ -1,4 +1,4 @@
-import type { ContainerUri, LeafUri } from "@ldo/solid";
+import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 import fetch from "cross-fetch";
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3002/";
@@ -7,17 +7,19 @@ export const ROOT_CONTAINER = `${SERVER_DOMAIN}${ROOT_ROUTE}`;
 export const WEB_ID = `${SERVER_DOMAIN}${ROOT_ROUTE}profile/card#me`;
 export const TEST_CONTAINER_SLUG = "test_ldo/";
 export const TEST_CONTAINER_URI =
-  `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as ContainerUri;
-export const SAMPLE_DATA_URI = `${TEST_CONTAINER_URI}sample.ttl` as LeafUri;
+  `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as SolidContainerUri;
+export const SAMPLE_DATA_URI =
+  `${TEST_CONTAINER_URI}sample.ttl` as SolidLeafUri;
 export const SAMPLE2_DATA_SLUG = "sample2.ttl";
 export const SAMPLE2_DATA_URI =
-  `${TEST_CONTAINER_URI}${SAMPLE2_DATA_SLUG}` as LeafUri;
-export const SAMPLE_BINARY_URI = `${TEST_CONTAINER_URI}sample.txt` as LeafUri;
+  `${TEST_CONTAINER_URI}${SAMPLE2_DATA_SLUG}` as SolidLeafUri;
+export const SAMPLE_BINARY_URI =
+  `${TEST_CONTAINER_URI}sample.txt` as SolidLeafUri;
 export const SAMPLE2_BINARY_SLUG = `sample2.txt`;
 export const SAMPLE2_BINARY_URI =
-  `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as LeafUri;
+  `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as SolidLeafUri;
 export const SAMPLE_CONTAINER_URI =
-  `${TEST_CONTAINER_URI}sample_container/` as ContainerUri;
+  `${TEST_CONTAINER_URI}sample_container/` as SolidContainerUri;
 export const EXAMPLE_POST_TTL = `@prefix schema: <http://schema.org/> .
 
 <#Post1>

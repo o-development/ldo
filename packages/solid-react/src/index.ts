@@ -1,7 +1,2 @@
-export * from "./BrowserSolidLdoProvider";
-export * from "./UnauthenticatedSolidLdoProvider";
-export * from "./SolidAuthContext";
+export * from "./createBrowserSolidReactMethods";
 export * from "./defaultIntance";
-
-// hooks
-export * from "./useRootContainer";
