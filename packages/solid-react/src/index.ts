@@ -1,12 +1,7 @@
 export * from "./BrowserSolidLdoProvider";
 export * from "./UnauthenticatedSolidLdoProvider";
 export * from "./SolidAuthContext";
-
-export { useLdo } from "./SolidLdoProvider";
+export * from "./defaultIntance";
 
 // hooks
-export * from "./useResource";
-export * from "./useSubject";
-export * from "./useMatchSubject";
-export * from "./useMatchObject";
 export * from "./useRootContainer";

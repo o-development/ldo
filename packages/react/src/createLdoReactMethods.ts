@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createUseLdo } from "./methods/useLdo";
 import {
   createConnectedLdoDataset,
@@ -9,9 +10,9 @@ import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
 import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
 
-export function createLdoReactMethods<Plugins extends ConnectedPlugin[]>(
-  plugins: Plugins,
-) {
+export function createLdoReactMethods<
+  Plugins extends ConnectedPlugin<any, any, any, any>[],
+>(plugins: Plugins) {
   const dataset = createConnectedLdoDataset(plugins);
   dataset.setMaxListeners(1000);
 

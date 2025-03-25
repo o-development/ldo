@@ -4,7 +4,6 @@ import type { FunctionComponent, PropsWithChildren } from "react";
 import type { LoginOptions, SessionInfo } from "./SolidAuthContext";
 import { SolidAuthContext } from "./SolidAuthContext";
 import libraryFetch from "cross-fetch";
-import { SolidLdoProvider } from "./SolidLdoProvider";
 
 const DUMMY_SESSION: SessionInfo = {
   isLoggedIn: false,
@@ -56,7 +55,7 @@ export const UnauthenticatedSolidLdoProvider: FunctionComponent<
 
   return (
     <SolidAuthContext.Provider value={solidAuthFunctions}>
-      <SolidLdoProvider>{children}</SolidLdoProvider>
+      {children}
     </SolidAuthContext.Provider>
   );
 };
