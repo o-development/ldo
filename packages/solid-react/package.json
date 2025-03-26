@@ -30,7 +30,7 @@
     "@ldo/rdf-utils": "^1.0.0-alpha.1",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
-    "jest-environment-jsdom": "^27.0.0",
+    "jest-environment-jsdom": "^29.7.0",
     "start-server-and-test": "^2.0.3",
     "ts-node": "^10.9.2"
   },

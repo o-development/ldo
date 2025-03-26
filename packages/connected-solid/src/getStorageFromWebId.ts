@@ -42,7 +42,6 @@ export async function getStorageFromWebId(
     .usingType(ProfileWithStorageShapeType)
     .fromSubject(webId);
   if (profile.storage && profile.storage.size > 0) {
-    profile.storage.forEach((item) => console.log(item["@id"]));
     const containers = profile.storage
       .map((storageNode) =>
         dataset.getResource(storageNode["@id"] as SolidContainerUri),
@@ -50,7 +49,6 @@ export async function getStorageFromWebId(
       .filter((container): container is SolidContainer => {
         return container.type === "SolidContainer";
       });
-    console.log(containers);
 
     return new GetStorageContainerFromWebIdSuccess(containers);
   }

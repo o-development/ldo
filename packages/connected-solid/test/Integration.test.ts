@@ -374,7 +374,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnexpectedHttpError on a strange number error is returned", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 3942 }));
+      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 399 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -699,7 +699,6 @@ describe("Integration", () => {
         SAMPLE_PROFILE_URI,
         solidLdoDataset,
       );
-      console.log(result);
       expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
       const realResult = result as GetStorageContainerFromWebIdSuccess;
       expect(realResult.storageContainers.length).toBe(2);
