@@ -19,9 +19,22 @@ import {
 } from "../src";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 import type { PostSh } from "./.ldo/post.typings";
+import { debug } from "jest-preview";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
+
+const oldFetch = global.fetch;
+global.fetch = async (
+  input: string | Request | URL,
+  init?: RequestInit | undefined,
+): Promise<Response> => {
+  console.log("-------");
+  console.log(input, init);
+  const response = await oldFetch(input, init);
+  console.log(response.status);
+  return response;
+};
 
 describe("Integration Tests", () => {
   setUpServer();
@@ -44,6 +57,7 @@ describe("Integration Tests", () => {
         </UnauthenticatedSolidLdoProvider>,
       );
       await screen.findByText("Loading");
+      debug();
       const resourceStatus = await screen.findByRole("status");
       expect(resourceStatus.innerHTML).toBe("dataReadSuccess");
     });

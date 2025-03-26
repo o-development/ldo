@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "watch": "tsc --watch",
+    "watch": "tsc --project tsconfig.build.json --watch",
     "test": "npm run test:integration",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
