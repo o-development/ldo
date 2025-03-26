@@ -25,11 +25,8 @@
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/dataset": "^1.1.0",
     "@rdfjs/types": "^1.0.1",
-    "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
     "@types/rdfjs__dataset": "^1.0.4",
-    "jest": "^27.4.5",
-    "ts-jest": "^27.1.2",
     "ts-node": "^9.1.1"
   },
   "dependencies": {

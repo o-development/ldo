@@ -25,10 +25,8 @@
   "devDependencies": {
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
-    "@types/jest": "^27.0.3",
     "cross-env": "^7.0.3",
     "jest-rdf": "^1.8.0",
-    "ts-jest": "^27.1.2",
     "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
     "typedoc": "^0.25.4",

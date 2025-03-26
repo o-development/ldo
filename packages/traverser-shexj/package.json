@@ -19,11 +19,6 @@
     "url": "https://github.com/o-development/ldobjects/issues"
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/traverser-shexj#readme",
-  "devDependencies": {
-    "@types/jest": "^27.0.3",
-    "jest": "^27.4.5",
-    "ts-jest": "^27.1.2"
-  },
   "files": [
     "dist",
     "src"

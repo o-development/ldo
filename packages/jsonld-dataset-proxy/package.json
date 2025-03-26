@@ -24,14 +24,11 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/jsonld-dataset-proxy#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",
-    "@types/jest": "^27.0.3",
     "@types/jsonld": "^1.5.6",
     "@types/n3": "^1.10.4",
     "@types/rdfjs__dataset": "^1.0.5",
     "@types/shexj": "2.1.4",
-    "jest": "^27.4.5",
     "shex-test": "^0.5.5",
-    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
     "tsc-watch": "^6.0.0"
   },
