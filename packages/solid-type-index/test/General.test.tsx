@@ -1,4 +1,3 @@
-import { createSolidLdoDataset } from "@ldo/solid";
 import {
   MY_BOOKMARKS_1_URI,
   MY_BOOKMARKS_2_URI,
@@ -19,6 +18,7 @@ import {
 import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes";
 import { namedNode } from "@rdfjs/dataset";
 import { INSTANCE } from "../src/constants";
+import { createSolidLdoDataset } from "@ldo/connected-solid";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
