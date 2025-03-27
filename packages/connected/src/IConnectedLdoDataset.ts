@@ -52,6 +52,10 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     name: Name,
   ): Promise<ReturnType<Plugin["createResource"]>>;
 
+  forgetResource(uri: string): boolean;
+
+  forgetAllResources(): void;
+
   setContext<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,

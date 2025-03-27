@@ -105,6 +105,13 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     this.context.dataset.setContext(name, context);
   }
 
+  forgetResource(uri: string): boolean {
+    return this.context.dataset.forgetResource(uri);
+  }
+  forgetAllResources(): void {
+    this.context.dataset.forgetAllResources();
+  }
+
   /**
    * Retireves a representation (either a LeafResource or a ContainerResource)
    * of a Solid Resource at the given URI. This resource represents the

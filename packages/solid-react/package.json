@@ -26,13 +26,18 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid-react#readme",
   "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@inrupt/jest-jsdom-polyfills": "^3.2.6",
     "@ldo/rdf-utils": "^1.0.0-alpha.1",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
+    "babel-jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "start-server-and-test": "^2.0.3",
-    "ts-node": "^10.9.2"
+    "ts-jest": "^29.3.0",
+    "ts-node": "^10.9.2",
+    "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",

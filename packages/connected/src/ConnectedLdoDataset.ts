@@ -47,6 +47,26 @@ export class ConnectedLdoDataset<
     );
   }
 
+  private getValidPlugin(
+    uri: string,
+    pluginName?: string,
+  ): Plugins[number] | undefined {
+    // Check for which plugins this uri is valid
+    const validPlugins = this.plugins
+      .filter((plugin) => plugin.isUriValid(uri))
+      .filter((plugin) => (pluginName ? pluginName === plugin.name : true));
+    if (validPlugins.length === 0) {
+      return undefined;
+    } else if (validPlugins.length > 1) {
+      // TODO: LDO is currently not architected to have an ID valid in multiple
+      // protocols. This will need to be refactored if this is ever the case.
+      throw new Error(
+        "LDO Connect does not currently support two plugins with overlappng uris",
+      );
+    }
+    return validPlugins[0];
+  }
+
   /**
    * Retireves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
@@ -69,20 +89,8 @@ export class ConnectedLdoDataset<
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(uri: UriType, pluginName?: Name): GetResourceReturnType<Plugin, UriType> {
-    // Check for which plugins this uri is valid
-    const validPlugins = this.plugins
-      .filter((plugin) => plugin.isUriValid(uri))
-      .filter((plugin) => (pluginName ? pluginName === plugin.name : true));
-    if (validPlugins.length === 0) {
-      return new InvalidIdentifierResource(uri) as any;
-    } else if (validPlugins.length > 1) {
-      // TODO: LDO is currently not architected to have an ID valid in multiple
-      // protocols. This will need to be refactored if this is ever the case.
-      throw new Error(
-        "LDO Connect does not currently support two plugins with overlappng uris",
-      );
-    }
-    const plugin = validPlugins[0];
+    const plugin = this.getValidPlugin(uri, pluginName);
+    if (!plugin) return new InvalidIdentifierResource(uri) as any;
     const normalizedUri = plugin.normalizeUri?.(uri) ?? uri;
 
     let resource = this.resourceMap.get(normalizedUri);
@@ -109,6 +117,16 @@ export class ConnectedLdoDataset<
     this.resourceMap.set(newResourceResult.uri, newResourceResult);
     // HACK: cast to any
     return newResourceResult as any;
+  }
+
+  forgetResource(uri: string): boolean {
+    const plugin = this.getValidPlugin(uri);
+    const normalizedUri = plugin?.normalizeUri?.(uri) ?? uri;
+    return this.resourceMap.delete(normalizedUri);
+  }
+
+  forgetAllResources(): void {
+    this.resourceMap.clear();
   }
 
   /**

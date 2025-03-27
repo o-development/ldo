@@ -9,6 +9,7 @@ import {
 } from "./setUpServer";
 import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
 import {
+  dataset,
   useLdo,
   useMatchObject,
   useMatchSubject,
@@ -23,20 +24,13 @@ import type { PostSh } from "./.ldo/post.typings";
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
 
-const oldFetch = global.fetch;
-global.fetch = async (
-  input: string | Request | URL,
-  init?: RequestInit | undefined,
-): Promise<Response> => {
-  console.log("-------");
-  console.log(input, init);
-  const response = await oldFetch(input, init);
-  console.log(response.status);
-  return response;
-};
-
 describe("Integration Tests", () => {
   setUpServer();
+
+  afterEach(() => {
+    dataset.forgetAllResources();
+    dataset.deleteMatches(undefined, undefined, undefined, undefined);
+  });
 
   /**
    * ===========================================================================
@@ -56,7 +50,6 @@ describe("Integration Tests", () => {
         </UnauthenticatedSolidLdoProvider>,
       );
       await screen.findByText("Loading");
-      debug();
       const resourceStatus = await screen.findByRole("status");
       expect(resourceStatus.innerHTML).toBe("dataReadSuccess");
     });

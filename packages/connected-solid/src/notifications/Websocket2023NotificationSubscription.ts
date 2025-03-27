@@ -93,7 +93,9 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
       this.onNotification(JSON.parse(messageData) as SolidNotificationMessage);
     };
 
-    this.socket.onclose = this.onClose.bind(this);
+    this.socket.onclose = () => {
+      this.onClose();
+    };
 
     this.socket.onerror = (err) => {
       this.onNotificationError(
@@ -129,10 +131,12 @@ export class Websocket2023NotificationSubscription extends SolidNotificationSubs
   }
 
   protected async close(): Promise<void> {
-    this.socket?.terminate();
+    this.socket?.close();
   }
 }
 
-function createWebsocketDefault(address: string) {
-  return new WebSocket(address);
+function createWebsocketDefault(address: string): WebSocket {
+  const WebSocketImpl =
+    typeof window !== "undefined" ? window.WebSocket : WebSocket;
+  return new WebSocketImpl(address) as WebSocket;
 }
