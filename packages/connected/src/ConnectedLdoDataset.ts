@@ -13,19 +13,55 @@ import type {
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
 
+/**
+ * A ConnectedLdoDataset has all the functionality of a LdoDataset with the
+ * added functionality of keeping track of fetched remote Resources.
+ *
+ * It is recommended to use the { @link createConnectedLdoDataset } to
+ * initialize this class.
+ *
+ * @example
+ * ```typescript
+ * import { createConnectedLdoDataset } from "@ldo/connected";
+ * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ *
+ * // ...
+ *
+ * const connectedLdoDataset = createConnectedLdoDataset();
+ *
+ * const profileDocument = connectedLdoDataset
+ *   .getResource("https://example.com/profile");
+ * await profileDocument.read();
+ *
+ * const profile = connectedLdoDataset
+ *   .using(ProfileShapeType)
+ *   .fromSubject("https://example.com/profile#me");
+ * ```
+ */
 export class ConnectedLdoDataset<
     Plugins extends ConnectedPlugin<any, any, any, any>[],
   >
   extends LdoDataset
   implements IConnectedLdoDataset<Plugins>
 {
+  /**
+   * @internal
+   *
+   * A list of plugins used by this dataset
+   */
   private plugins: Plugins;
   /**
    * @internal
    *
-   * A mapping between a resource URI and a Solid resource
+   * A mapping between a resource URI and a resource
    */
   protected resourceMap: Map<string, Plugins[number]["types"]["resource"]>;
+
+  /**
+   * @internal
+   *
+   * Context for each plugin (usually utilities for authentication)
+   */
   protected context: ConnectedContext<Plugins>;
 
   constructor(
@@ -47,6 +83,11 @@ export class ConnectedLdoDataset<
     );
   }
 
+  /**
+   * @internal
+   *
+   * A helper function to return a plugin based in the plugin name and uri.
+   */
   private getValidPlugin(
     uri: string,
     pluginName?: string,
@@ -80,7 +121,7 @@ export class ConnectedLdoDataset<
    *
    * @example
    * ```typescript
-   * const profileDocument = solidLdoDataset
+   * const profileDocument = connectedLdoDataset
    *   .getResource("https://example.com/profile");
    * ```
    */
@@ -128,7 +169,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Shorthand for solidLdoDataset
+   * Shorthand for connectedLdoDataset
    *   .usingType(shapeType)
    *   .write(...resources.map((r) => r.uri))
    *   .fromSubject(subject);

@@ -41,11 +41,12 @@ export const nextgGraphConnectedPlugin: NextGraphConnectedPlugin = {
       "Graph",
       // NIKO: Can this always be "data:graph"?
       "data:graph",
-      // NIKO: What are the options here again?
+      // NIKO: What are the options here again? "private" "protected" "public"
       "protected",
-      // NIKO: What is this? Should it be changed?
+      // NIKO: What is this? Should it be changed? lookup what the default store
+      // is
       "B381BvfdAFYPBkdhDrsqnMMg5pnJMWJgJbZobZErXZMA",
-      // NIKO: Can this always be "store"?
+      // NIKO: Can this always be "store"? yes
       "store",
     );
     return new NextGraphResource(nuri, context);

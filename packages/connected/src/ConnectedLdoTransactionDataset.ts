@@ -23,8 +23,9 @@ import type {
 } from "./results/success/SuccessResult";
 
 /**
- * A SolidLdoTransactionDataset has all the functionality of a SolidLdoDataset
- * and represents a transaction to the parent SolidLdoDataset.
+ * A ConnectedLdoTransactionDataset has all the functionality of a
+ * ConnectedLdoDataset and represents a transaction to the parent
+ * ConnectedLdoDataset.
  *
  * It is recommended to use the `startTransaction` method on a SolidLdoDataset
  * to initialize this class
