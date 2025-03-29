@@ -4,15 +4,15 @@ import type { Resource } from "./Resource";
 import type { ErrorResult } from "./results/error/ErrorResult";
 
 export interface ConnectedPlugin<
-  Name extends string = string,
-  UriType extends string = string,
-  ResourceType extends Resource<UriType> = Resource<UriType>,
+  Name extends string = any,
+  UriType extends string = any,
+  ResourceType extends Resource<UriType> = any,
   ContextType = any,
 > {
   name: Name;
-  getResource(uri: UriType, context: ConnectedContext<any[]>): ResourceType;
+  getResource(uri: UriType, context: ConnectedContext<this[]>): ResourceType;
   createResource(
-    context: ConnectedContext<any[]>,
+    context: ConnectedContext<this[]>,
   ): Promise<ResourceType | ErrorResult>;
   isUriValid(uri: string): uri is UriType;
   normalizeUri?: (uri: UriType) => UriType;

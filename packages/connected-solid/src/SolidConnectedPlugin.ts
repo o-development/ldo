@@ -24,21 +24,29 @@ export interface SolidConnectedPlugin
   createResource(context: ConnectedContext<this[]>): Promise<SolidLeaf>;
 }
 
+function getResource(
+  uri: SolidLeafUri,
+  context: ConnectedContext<SolidConnectedPlugin[]>,
+): SolidLeaf;
+function getResource(
+  uri: SolidContainerUri,
+  context: ConnectedContext<SolidConnectedPlugin[]>,
+): SolidContainer;
+function getResource(
+  uri: SolidLeafUri | SolidContainerUri,
+  context: ConnectedContext<SolidConnectedPlugin[]>,
+): SolidLeaf | SolidContainer {
+  if (isSolidContainerUri(uri)) {
+    return new SolidContainer(uri, context);
+  } else {
+    return new SolidLeaf(uri, context);
+  }
+}
+
 export const solidConnectedPlugin: SolidConnectedPlugin = {
   name: "solid",
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore This functions when its user-facing
-  getResource: function (
-    uri: SolidLeafUri | SolidContainerUri,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
-  ): SolidLeaf | SolidContainer {
-    if (isSolidContainerUri(uri)) {
-      return new SolidContainer(uri, context);
-    } else {
-      return new SolidLeaf(uri, context);
-    }
-  },
+  getResource,
 
   createResource: function (): Promise<SolidLeaf> {
     throw new Error("Function not implemented.");
