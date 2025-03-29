@@ -50,6 +50,7 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     Plugin extends Extract<Plugins[number], { name: Name }>,
   >(
     name: Name,
+    createResourceOptions?: Plugin["types"]["createResourceOptions"],
   ): Promise<ReturnType<Plugin["createResource"]>>;
 
   forgetResource(uri: string): boolean;

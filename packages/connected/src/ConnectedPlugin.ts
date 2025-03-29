@@ -8,11 +8,13 @@ export interface ConnectedPlugin<
   UriType extends string = any,
   ResourceType extends Resource<UriType> = any,
   ContextType = any,
+  CreateResourceOptions = any,
 > {
   name: Name;
   getResource(uri: UriType, context: ConnectedContext<this[]>): ResourceType;
   createResource(
     context: ConnectedContext<this[]>,
+    createResourceOptions?: CreateResourceOptions,
   ): Promise<ResourceType | ErrorResult>;
   isUriValid(uri: string): uri is UriType;
   normalizeUri?: (uri: UriType) => UriType;
@@ -23,5 +25,6 @@ export interface ConnectedPlugin<
     uri: UriType;
     context: ContextType;
     resource: ResourceType;
+    createResourceOptions: CreateResourceOptions;
   };
 }

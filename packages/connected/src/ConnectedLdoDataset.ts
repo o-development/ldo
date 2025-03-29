@@ -146,11 +146,17 @@ export class ConnectedLdoDataset<
   async createResource<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
-  >(name: Name): Promise<ReturnType<Plugin["createResource"]>> {
+  >(
+    name: Name,
+    createResourceOptions?: Plugin["types"]["createResourceOptions"],
+  ): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore I have no idea why this doesn't work
-    const newResourceResult = await validPlugin.createResource(this.context);
+    const newResourceResult = await validPlugin.createResource(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore I have no idea why this doesn't work
+      this.context,
+      createResourceOptions,
+    );
     // HACK: cast to any
     if (newResourceResult.isError) return newResourceResult as any;
     this.resourceMap.set(newResourceResult.uri, newResourceResult);

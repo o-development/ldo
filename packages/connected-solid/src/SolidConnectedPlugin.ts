@@ -12,7 +12,8 @@ export interface SolidConnectedPlugin
     "solid",
     SolidUri,
     SolidLeaf | SolidContainer,
-    SolidConnectedContext
+    SolidConnectedContext,
+    undefined
   > {
   name: "solid";
   getResource:

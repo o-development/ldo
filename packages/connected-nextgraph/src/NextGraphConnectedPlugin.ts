@@ -7,12 +7,19 @@ import { isNextGraphUri } from "./util/isNextGraphUri";
 export interface NextGraphConnectedContext {
   sessionId?: string;
 }
+
+export interface NextGraphCreateResourceOptions {
+  storeType?: "public" | "protected" | "private";
+  storeRepo?: string;
+}
+
 export interface NextGraphConnectedPlugin
   extends ConnectedPlugin<
     "nextgraph",
     NextGraphUri,
     NextGraphResource,
-    NextGraphConnectedContext
+    NextGraphConnectedContext,
+    NextGraphCreateResourceOptions
   > {
   name: "nextgraph";
   getResource: (
@@ -35,18 +42,18 @@ export const nextgGraphConnectedPlugin: NextGraphConnectedPlugin = {
 
   createResource: async function (
     context: ConnectedContext<NextGraphConnectedPlugin[]>,
+    options?: NextGraphCreateResourceOptions,
   ): Promise<NextGraphResource> {
+    const storeType = options?.storeType ?? "protected";
+    // TODO: determine the name of the store repo from the session id.
+    const storeRepo = options?.storeRepo ?? "";
+
     const nuri: NextGraphUri = await ng.doc_create(
       context.nextgraph.sessionId,
       "Graph",
-      // NIKO: Can this always be "data:graph"?
       "data:graph",
-      // NIKO: What are the options here again? "private" "protected" "public"
-      "protected",
-      // NIKO: What is this? Should it be changed? lookup what the default store
-      // is
-      "B381BvfdAFYPBkdhDrsqnMMg5pnJMWJgJbZobZErXZMA",
-      // NIKO: Can this always be "store"? yes
+      storeType,
+      storeRepo,
       "store",
     );
     return new NextGraphResource(nuri, context);
