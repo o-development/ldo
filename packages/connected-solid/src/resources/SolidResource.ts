@@ -6,6 +6,7 @@ import type {
   Resource,
   ResourceEventEmitter,
   ResourceSuccess,
+  SubscriptionCallbacks,
   Unfetched,
 } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "../types";
@@ -13,10 +14,7 @@ import EventEmitter from "events";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { BatchedRequester } from "../requester/BatchedRequester";
 import type { WacRule } from "../wac/WacRule";
-import type {
-  SolidNotificationSubscription,
-  SubscriptionCallbacks,
-} from "../notifications/SolidNotificationSubscription";
+import type { SolidNotificationSubscription } from "../notifications/SolidNotificationSubscription";
 import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription";
 import { getParentUri } from "../util/rdfUtils";
 import { isReadSuccess } from "../requester/results/success/SolidReadSuccess";
@@ -784,7 +782,7 @@ export abstract class SolidResource
    * // ... From there you can wait for a file to be changed on the Pod.
    */
   async subscribeToNotifications(
-    callbacks?: SubscriptionCallbacks,
+    callbacks?: SubscriptionCallbacks<SolidNotificationMessage>,
   ): Promise<string> {
     return await this.notificationSubscription.subscribeToNotifications(
       callbacks,

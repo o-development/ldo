@@ -1,6 +1,7 @@
 import type {
   ConnectedContext,
   ReadSuccess,
+  SubscriptionCallbacks,
   UpdateSuccess,
 } from "@ldo/connected";
 import {
@@ -14,6 +15,7 @@ import EventEmitter from "events";
 import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin";
 import ng from "nextgraph";
 import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { NextGraphNotificationMessage } from "../notifications/NextGraphNotificationMessage";
 
 export class NextGraphResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -77,11 +79,13 @@ export class NextGraphResource
     throw new Error("Method Not Implemented");
   }
 
-  protected async onNotification(message: unknown) {
+  protected async onNotification(_message: unknown) {
     // TODO
   }
 
-  subscribeToNotifications(callbacks?: SubscriptionCallbacks): Promise<string> {
+  subscribeToNotifications(
+    _callbacks?: SubscriptionCallbacks<NextGraphNotificationMessage>,
+  ): Promise<string> {
     throw new Error("Method not implemented.");
   }
 

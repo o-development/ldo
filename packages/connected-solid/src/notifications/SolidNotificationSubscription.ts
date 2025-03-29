@@ -1,16 +1,10 @@
-import type { ConnectedContext } from "@ldo/connected";
+import type { ConnectedContext, SubscriptionCallbacks } from "@ldo/connected";
 import type { NotificationCallbackError } from "./results/NotificationErrors";
 import { v4 } from "uuid";
 import type { SolidContainer } from "../resources/SolidContainer";
 import type { SolidLeaf } from "../resources/SolidLeaf";
 import type { SolidNotificationMessage } from "./SolidNotificationMessage";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
-
-export interface SubscriptionCallbacks {
-  onNotification?: (message: SolidNotificationMessage) => void;
-  // TODO: make notification errors more specific
-  onNotificationError?: (error: Error) => void;
-}
 
 /**
  * @internal
@@ -20,7 +14,10 @@ export abstract class SolidNotificationSubscription {
   protected resource: SolidContainer | SolidLeaf;
   protected parentSubscription: (message: SolidNotificationMessage) => void;
   protected context: ConnectedContext<SolidConnectedPlugin[]>;
-  protected subscriptions: Record<string, SubscriptionCallbacks> = {};
+  protected subscriptions: Record<
+    string,
+    SubscriptionCallbacks<SolidNotificationMessage>
+  > = {};
   private isOpen: boolean = false;
 
   constructor(
@@ -48,7 +45,7 @@ export abstract class SolidNotificationSubscription {
    * subscribeToNotifications
    */
   async subscribeToNotifications(
-    subscriptionCallbacks?: SubscriptionCallbacks,
+    subscriptionCallbacks?: SubscriptionCallbacks<SolidNotificationMessage>,
   ): Promise<string> {
     const subscriptionId = v4();
     this.subscriptions[subscriptionId] = subscriptionCallbacks ?? {};
