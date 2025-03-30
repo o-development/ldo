@@ -6,11 +6,14 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "watch": "tsc --watch",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
+    "test": "npm run test:integration",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "docs": "typedoc --plugin typedoc-plugin-markdown"
+    "docs": "typedoc --plugin typedoc-plugin-markdown",
+    "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
+    "start-integration-test": "jest --coverage",
+    "test:integration": "start-server-and-test start-test-server http://localhost:14400 start-integration-test",
+    "posttest": "node cleanup.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "jest-rdf": "^1.8.0",
+    "start-server-and-test": "^2.0.11",
     "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
     "typedoc": "^0.25.4",
