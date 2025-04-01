@@ -74,70 +74,16 @@ export type CreateErrors<ResourceType extends Resource> =
   | UnexpectedResourceError<ResourceType>;
 
 /**
+ * @internal
  * Creates a data resource (RDF resource) at the provided URI. This resource
  * could also be a container.
  *
- * @param uri - The URI of the resource
+ * @param resource - The resource
  * @param overwrite - If true, the request will overwrite any previous resource
  * at this URI.
  * @param options - Options to provide a fetch function and a local dataset to
  * update.
  * @returns One of many create results depending on the input
- *
- * @example
- * `createDataResource` can be used to create containers.
- *
- * ```typescript
- * import { createDataResource } from "@ldo/solid";
- * import { fetch } from "@inrupt/solid-client-autn-js";
- *
- * const result = await createDataResource(
- *   "https://example.com/container/",
- *   true,
- *   { fetch },
- * );
- * if (!result.isError) {
- *   // Do something
- * }
- * ```
- *
- * @example
- * `createDataResource` can also create a blank data resource at the provided
- * URI.
- *
- * ```typescript
- * import { createDataResource } from "@ldo/solid";
- * import { fetch } from "@inrupt/solid-client-autn-js";
- *
- * const result = await createDataResource(
- *   "https://example.com/container/someResource.ttl",
- *   true,
- *   { fetch },
- * );
- * if (!result.isError) {
- *   // Do something
- * }
- * ```
- *
- * @example
- * Any local RDFJS dataset passed to the `options` field will be updated with
- * any new RDF data from the create process.
- *
- * ```typescript
- * import { createDataResource } from "@ldo/solid";
- * import { createDataset } from "@ldo/dataset"
- * import { fetch } from "@inrupt/solid-client-autn-js";
- *
- * const localDataset = createDataset();
- * const result = await createDataResource(
- *   "https://example.com/container/someResource.ttl",
- *   true,
- *   { fetch, dataset: localDataset },
- * );
- * if (!result.isError) {
- *   // Do something
- * }
- * ```
  */
 export function createDataResource(
   resource: SolidLeaf,

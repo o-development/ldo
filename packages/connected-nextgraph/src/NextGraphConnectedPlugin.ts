@@ -29,7 +29,7 @@ export interface NextGraphConnectedPlugin
   createResource(context: ConnectedContext<this[]>): Promise<NextGraphResource>;
 }
 
-export const nextgGraphConnectedPlugin: NextGraphConnectedPlugin = {
+export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
   name: "nextgraph",
 
   getResource: function (

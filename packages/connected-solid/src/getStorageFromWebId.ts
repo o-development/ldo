@@ -16,6 +16,8 @@ import { ProfileWithStorageShapeType } from "./.ldo/solid.shapeTypes";
  * @returns A list of storages if successful, an error if not
  * @example
  * ```typescript
+ * import { getStorageFromWebId } from "@ldo/connected-solid";
+ *
  * const result = await getStorageFromWebId(
  *   solidLdoDataset,
  *   "https://example.com/profile/card#me"

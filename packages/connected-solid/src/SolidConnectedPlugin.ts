@@ -4,6 +4,9 @@ import { SolidLeaf } from "./resources/SolidLeaf";
 import { SolidContainer } from "./resources/SolidContainer";
 import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
 
+/**
+ * The Type of the SolidConnectedContext
+ */
 export interface SolidConnectedContext {
   fetch?: typeof fetch;
 }
@@ -44,6 +47,20 @@ function getResource(
   }
 }
 
+/**
+ * This plugin can be given to a ConnectedDataset to let it connect to Solid
+ * servers.
+ *
+ * @example
+ * ```
+ * import { createConnectedLdoDataset } from "@ldo/connected";
+ * import { solidConnectedPlugin } from "@ldo/connected-solid";
+ *
+ * const solidConnectedDataset = createConnectedLdoDataset([
+ *   solidConnectedPlugin
+ * ]);
+ * ```
+ */
 export const solidConnectedPlugin: SolidConnectedPlugin = {
   name: "solid",
 

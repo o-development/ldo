@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * @internal
+ * A data structure that represents a possible process and how to handle it.
+ */
 export interface WaitingProcess<Args extends any[], Return> {
   name: string;
   args: Args;

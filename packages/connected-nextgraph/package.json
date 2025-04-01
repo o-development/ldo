@@ -12,7 +12,7 @@
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
     "start-integration-test": "jest --coverage",
-    "test:integration": "start-server-and-test start-test-server http://localhost:14400 start-integration-test",
+    "test:integration": "start-server-and-test start-test-server http-get://localhost:14400 start-integration-test",
     "posttest": "node cleanup.js"
   },
   "repository": {
@@ -48,7 +48,7 @@
     "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
-    "nextgraph": "^0.1.1-alpha.3",
+    "nextgraph": "^0.1.1-alpha.4",
     "ws": "^8.18.0"
   },
   "files": [

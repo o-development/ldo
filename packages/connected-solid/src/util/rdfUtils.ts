@@ -128,6 +128,13 @@ export async function addRawTurtleToDataset(
   );
 }
 
+/**
+ * @internal
+ * Creates a dataset from raw turtle string
+ * @param rawTurtle - the Raw turtle string
+ * @param baseUri - A base url for relative uris
+ * @returns LdoDataset or Error
+ */
 export async function rawTurtleToDataset(
   rawTurtle: string,
   baseUri: string,

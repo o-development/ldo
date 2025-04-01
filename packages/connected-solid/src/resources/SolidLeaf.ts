@@ -369,6 +369,9 @@ export class SolidLeaf extends SolidResource {
     return this.handleDelete();
   }
 
+  /**
+   * @internal
+   */
   protected async handleDelete(): Promise<DeleteResult<this>> {
     return super.handleDelete() as Promise<DeleteResult<this>>;
   }

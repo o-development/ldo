@@ -49,37 +49,13 @@ export type ReadResultError<ResourceType extends Resource> =
   | UnexpectedResourceError<ResourceType>;
 
 /**
+ * @internal
  * Reads resource at a provided URI and returns the result
  *
  * @param uri - The URI of the resource
  * @param options - Options to provide a fetch function and a local dataset to
  * update.
  * @returns ReadResult
- *
- * @example
- * ```typescript
- * import { deleteResource } from "@ldo/solid";
- * import { createDataset } from "@ldo/dataset"
- * import { fetch } from "@inrupt/solid-client-autn-js";
- *
- * const dataset = createDataset();
- * const result = await readResource(
- *   "https://example.com/container/someResource.ttl",
- *   { fetch, dataset },
- * );
- * if (!result.isError) {
- *   if (result.type === "absentReadSuccess") {
- *     // There was no problem reading the resource, but it doesn't exist
- *   } else if (result.type === "dataReadSuccess") {
- *     // The resource was read and it is an RDF resource. The dataset provided
- *     // dataset will also be loaded with the data from the resource
- *   } else if (result.type === "binaryReadSuccess") {
- *     // The resource is a binary
- *     console.log(result.blob);
- *     console.log(result.mimeType);
- *   }
- * }
- * ```
  */
 export async function readResource(
   resource: SolidLeaf,

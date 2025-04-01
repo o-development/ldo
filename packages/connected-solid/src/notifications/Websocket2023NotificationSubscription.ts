@@ -20,6 +20,10 @@ import { guaranteeFetch } from "../util/guaranteeFetch";
 const CHANNEL_TYPE =
   "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023";
 
+/**
+ * @internal
+ * An implementation of the Websocket2023 notifiction spec
+ */
 export class Websocket2023NotificationSubscription extends SolidNotificationSubscription {
   private socket: WebSocket | undefined;
   private createWebsocket: (address: string) => WebSocket;
