@@ -2,6 +2,12 @@ import { createNewSetProxy, type SetProxy } from "@ldo/jsonld-dataset-proxy";
 import type { TrackingProxyContext } from "./TrackingProxyContext";
 import type { QuadMatch } from "@ldo/rdf-utils";
 
+/**
+ * @internal
+ *
+ * Creates a tracking proxy, a proxy that tracks the fields that have been
+ * accessed.
+ */
 export function createTrackingSetProxy(
   proxyContext: TrackingProxyContext,
   quadMatch: QuadMatch,

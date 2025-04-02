@@ -1,9 +1,17 @@
 import { useEffect, useRef } from "react";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
+/**
+ * @internal
+ *
+ * Creates a useSubscribeToResource function.
+ */
 export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
 ) {
+  /**
+   * Starts a subscription to a resource.
+   */
   return function useSubscribeToResource(...uris: string[]): void {
     const currentlySubscribed = useRef<Record<string, string>>({});
     useEffect(() => {

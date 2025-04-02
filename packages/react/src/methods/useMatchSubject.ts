@@ -5,9 +5,18 @@ import { useCallback } from "react";
 import { useTrackingProxy } from "../util/useTrackingProxy";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
+/**
+ * @internal
+ *
+ * Creates a useMatchSubject function.
+ */
 export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
 ) {
+  /**
+   * Returns an array of matching linked data objects. Triggers a rerender if
+   * the data is updated.
+   */
   return function useMatchSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     predicate?: QuadMatch[1] | string,

@@ -32,9 +32,17 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
   ): GetResourceReturnType<Plugin, UriType> | undefined;
 };
 
+/**
+ * @internal
+ *
+ * Creates a useResource function.
+ */
 export function createUseResource<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
 ): useResourceType<Plugins> {
+  /**
+   * Returns a resource and triggers a rerender if that resource is updated.
+   */
   return function useResource<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,

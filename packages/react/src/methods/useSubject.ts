@@ -22,9 +22,18 @@ export type useSubjectType = {
   ): Type | undefined;
 };
 
+/**
+ * @internal
+ *
+ * Creates a useSubject function.
+ */
 export function createUseSubject<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
 ): useSubjectType {
+  /**
+   * Returns a Linked Data Object based on the provided subject. Triggers a
+   * rerender if the data is udpated.
+   */
   return function useSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject?: string | SubjectNode,

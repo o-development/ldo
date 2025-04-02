@@ -7,6 +7,12 @@ import type { BlankNode, NamedNode } from "@rdfjs/types";
 import type { TrackingProxyContext } from "./TrackingProxyContext";
 import { namedNode } from "@rdfjs/data-model";
 
+/**
+ * @internal
+ *
+ * Creates a tracking proxy for a single value, a proxy that tracks the fields
+ * that have been accessed.
+ */
 export function createTrackingSubjectProxy(
   proxyContext: TrackingProxyContext,
   node: NamedNode | BlankNode,

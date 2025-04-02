@@ -8,6 +8,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { TrackingProxyContext } from "./TrackingProxyContext";
 import { defaultGraph } from "@rdfjs/data-model";
 
+/**
+ * @internal
+ *
+ * A hook for tracking proxies
+ */
 export function useTrackingProxy<Type extends LdoBase, ReturnType>(
   shapeType: ShapeType<Type>,
   createLdo: (builder: LdoBuilder<Type>) => ReturnType,
