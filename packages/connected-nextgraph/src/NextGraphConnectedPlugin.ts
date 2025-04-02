@@ -3,9 +3,13 @@ import type { NextGraphUri } from "./types";
 import { NextGraphResource } from "./resources/NextGraphResource";
 import ng from "nextgraph";
 import { isNextGraphUri } from "./util/isNextGraphUri";
+import { NoNextGraphStoreError } from "./results/NoNextGraphStoreError";
 
 export interface NextGraphConnectedContext {
   sessionId?: string;
+  protectedStoreId?: string;
+  privateStoreId?: string;
+  publicStoreId?: string;
 }
 
 export interface NextGraphCreateResourceOptions {
@@ -26,7 +30,9 @@ export interface NextGraphConnectedPlugin
     uri: NextGraphUri,
     context: ConnectedContext<this[]>,
   ) => NextGraphResource;
-  createResource(context: ConnectedContext<this[]>): Promise<NextGraphResource>;
+  createResource(
+    context: ConnectedContext<this[]>,
+  ): Promise<NextGraphResource | NoNextGraphStoreError>;
 }
 
 export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
@@ -36,17 +42,26 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
     uri: NextGraphUri,
     context: ConnectedContext<NextGraphConnectedPlugin[]>,
   ): NextGraphResource {
-    // NIKO: Do I need to split into "base?" Remind me again of why I need base?
     return new NextGraphResource(uri, context);
   },
 
   createResource: async function (
     context: ConnectedContext<NextGraphConnectedPlugin[]>,
     options?: NextGraphCreateResourceOptions,
-  ): Promise<NextGraphResource> {
+  ): Promise<NextGraphResource | NoNextGraphStoreError> {
     const storeType = options?.storeType ?? "protected";
-    // TODO: determine the name of the store repo from the session id.
-    const storeRepo = options?.storeRepo ?? "";
+    const storeRepo =
+      options?.storeRepo ??
+      (storeType === "protected"
+        ? context.nextgraph.protectedStoreId
+        : storeType === "public"
+        ? context.nextgraph.publicStoreId
+        : storeType === "private"
+        ? context.nextgraph.privateStoreId
+        : undefined);
+    if (!storeRepo) {
+      return new NoNextGraphStoreError();
+    }
 
     const nuri: NextGraphUri = await ng.doc_create(
       context.nextgraph.sessionId,
@@ -56,7 +71,9 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
       storeRepo,
       "store",
     );
-    return new NextGraphResource(nuri, context);
+    const newResource = new NextGraphResource(nuri, context);
+    await newResource.read();
+    return newResource;
   },
 
   isUriValid: function (uri: string): uri is NextGraphUri {

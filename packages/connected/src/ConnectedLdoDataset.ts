@@ -182,7 +182,9 @@ export class ConnectedLdoDataset<
     pluginName: Name,
     createResourceOptions?: Plugin["types"]["createResourceOptions"],
   ): Promise<ReturnType<Plugin["createResource"]>> {
-    const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
+    const validPlugin = this.plugins.find(
+      (plugin) => pluginName === plugin.name,
+    )!;
     const newResourceResult = await validPlugin.createResource(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore I have no idea why this doesn't work
@@ -272,7 +274,7 @@ export class ConnectedLdoDataset<
   >(pluginName: Name, context: Plugin["types"]["context"]) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this.context[name] = context;
+    this.context[pluginName] = { ...this.context[pluginName], ...context };
   }
 
   public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {
