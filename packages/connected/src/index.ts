@@ -12,7 +12,6 @@ export * from "./SubscriptionCallbacks";
 export * from "./util/splitChangesByGraph";
 
 export * from "./results/ConnectedResult";
-export * from "./results/ResourceResult";
 export * from "./results/error/ErrorResult";
 export * from "./results/error/InvalidUriError";
 export * from "./results/error/NotificationErrors";

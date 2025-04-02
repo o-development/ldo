@@ -21,14 +21,14 @@ import type { AggregateError, ErrorResult } from "./results/error/ErrorResult";
  *
  * @example
  * ```typescript
- * import { changeData } from "@ldo/solid";
+ * import { changeData } from "@ldo/connected";
  *
  * // ...
  *
- * const profile = solidLdoDataset
+ * const profile = connectedLdoDataset
  *   .using(ProfileShapeType)
  *   .fromSubject("https://example.com/profile#me");
- * const resource = solidLdoDataset.getResource("https://example.com/profile");
+ * const resource = connectedLdoDataset.getResource("https://example.com/profile");
  *
  * const cProfile = changeData(profile, resource);
  * cProfile.name = "My New Name";
@@ -53,20 +53,20 @@ export function changeData<Type extends LdoBase>(
 
 /**
  * Commits the transaction to the global dataset, syncing all subscribing
- * components and Solid Pods
+ * components and connected Pods
  *
  * @param input - A transactable linked data object
  *
  * @example
  * ```typescript
- * import { changeData } from "@ldo/solid";
+ * import { changeData } from "@ldo/connected";
  *
  * // ...
  *
- * const profile = solidLdoDataset
+ * const profile = connectedLdoDataset
  *   .using(ProfileShapeType)
  *   .fromSubject("https://example.com/profile#me");
- * const resource = solidLdoDataset.getResource("https://example.com/profile");
+ * const resource = connectedLdoDataset.getResource("https://example.com/profile");
  *
  * const cProfile = changeData(profile, resource);
  * cProfile.name = "My New Name";

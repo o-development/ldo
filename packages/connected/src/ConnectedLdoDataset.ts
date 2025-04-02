@@ -25,9 +25,17 @@ import type { SubjectNode } from "@ldo/rdf-utils";
  * import { createConnectedLdoDataset } from "@ldo/connected";
  * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
  *
+ * // At least one plugin needs to be provided to a ConnectedLdoDataset. In this
+ * // example we'll use both the Solid and NextGraph plugins.
+ * import { solidConnectedPlugin } from "@ldo/connected-solid";
+ * import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
+ *
  * // ...
  *
- * const connectedLdoDataset = createConnectedLdoDataset();
+ * const connectedLdoDataset = createConnectedLdoDataset([
+ *   solidConnectedPlugin,
+ *   nextGraphConnectedPlugin
+ * ]);
  *
  * const profileDocument = connectedLdoDataset
  *   .getResource("https://example.com/profile");
@@ -64,6 +72,15 @@ export class ConnectedLdoDataset<
    */
   protected context: ConnectedContext<Plugins>;
 
+  /**
+   * It is recommended to use the `createConnectedLdoDataset` function to
+   * instantiate a ConnectedLdoDataset.
+   *
+   * @param plugins An array of plugins for each platform to connect to
+   * @param datasetFactory Creates Datasets
+   * @param transactionDatasetFactory Creates Transaction Datasets
+   * @param initialDataset Initial quads
+   */
   constructor(
     plugins: Plugins,
     datasetFactory: DatasetFactory<Quad, Quad>,
@@ -143,11 +160,26 @@ export class ConnectedLdoDataset<
     return resource as any;
   }
 
+  /**
+   * Generates a random uri and creates a resource.
+   *
+   * @param pluginName - A string name for the platform you'd like to create
+   * the resource on.
+   * @param createResourceOptions - Some set of options specific to the plugin
+   * you've selected.
+   * @returns A created resource or an error
+   *
+   * @example
+   * ```typescript
+   * const profileDocument = await connectedLdoDataset
+   *   .createResource("solid");
+   * ```
+   */
   async createResource<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
   >(
-    name: Name,
+    pluginName: Name,
     createResourceOptions?: Plugin["types"]["createResourceOptions"],
   ): Promise<ReturnType<Plugin["createResource"]>> {
     const validPlugin = this.plugins.find((plugin) => name === plugin.name)!;
@@ -164,12 +196,30 @@ export class ConnectedLdoDataset<
     return newResourceResult as any;
   }
 
+  /**
+   * Removes a resource from local memory
+   * @param uri - the URI of the resource to remove
+   * @returns true if the resource was present before removal
+   *
+   * @example
+   * ```typescript
+   * connectedLdoDataset.forgetResource("https://example.com/resource.ttl");
+   * ```
+   */
   forgetResource(uri: string): boolean {
     const plugin = this.getValidPlugin(uri);
     const normalizedUri = plugin?.normalizeUri?.(uri) ?? uri;
     return this.resourceMap.delete(normalizedUri);
   }
 
+  /**
+   * Removes all resources from memory
+   *
+   * @example
+   * ```typescript
+   * connectedLdoDataset.forgetAllResources();
+   * ```
+   */
   forgetAllResources(): void {
     this.resourceMap.clear();
   }
@@ -182,6 +232,19 @@ export class ConnectedLdoDataset<
    * @param shapeType - The shapetype to represent the data
    * @param subject - A subject URI
    * @param resources - The resources changes to should written to
+   *
+   * @example
+   * ```typescript
+   * import { ProfielShapeType } from "./.ldo/foafProfile.shapeType.ts"
+   *
+   * const resource = connectedLdoDataset
+   *   .getResource("https://example.com/profile");
+   * const profile = connectedLdoDataset.createData(
+   *   ProfileShapeType,
+   *   "https://example.com/profile#me",
+   *   resource
+   * );
+   * ```
    */
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
@@ -197,10 +260,16 @@ export class ConnectedLdoDataset<
     return linkedDataObject;
   }
 
+  /**
+   * Sets conetext for a specific plugin
+   *
+   * @param pluginName - the name of the plugin
+   * @param context - the context for this specific plugin
+   */
   setContext<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
-  >(name: Name, context: Plugin["types"]["context"]) {
+  >(pluginName: Name, context: Plugin["types"]["context"]) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.context[name] = context;

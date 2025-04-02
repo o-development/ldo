@@ -32,24 +32,30 @@ import type {
  *
  * @example
  * ```typescript
- * import { createSolidLdoDataset } from "@ldo/solid";
+ * import { createConnectedLdoDataset } from "@ldo/connected";
  * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ * import { solidConnectedPlugin } from "connected-solid";
  *
  * // ...
  *
- * const solidLdoDataset = createSolidLdoDataset();
+ * const connectedLdoDataset = createConnectedLdoDataset([
+ *   solidConnectedPlugin
+ * ]);
  *
- * const profileDocument = solidLdoDataset
+ * const profileDocument = connectedLdoDataset
  *   .getResource("https://example.com/profile");
  * await profileDocument.read();
  *
- * const transaction = solidLdoDataset.startTransaction();
+ * const transaction = connectedLdoDataset.startTransaction();
  *
  * const profile = transaction
  *   .using(ProfileShapeType)
  *   .fromSubject("https://example.com/profile#me");
  * profile.name = "Some Name";
- * await transaction.commitToPod();
+ * const result = await transaction.commitToRemote();
+ * if (result.isError) {
+ *   // handle error
+ * }
  * ```
  */
 export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
@@ -113,23 +119,6 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     this.context.dataset.forgetAllResources();
   }
 
-  /**
-   * Retireves a representation (either a LeafResource or a ContainerResource)
-   * of a Solid Resource at the given URI. This resource represents the
-   * current state of the resource: whether it is currently fetched or in the
-   * process of fetching as well as some information about it.
-   *
-   * @param uri - the URI of the resource
-   * @param options - Special options for getting the resource
-   *
-   * @returns a Leaf or Container Resource
-   *
-   * @example
-   * ```typescript
-   * const profileDocument = solidLdoDataset
-   *   .getResource("https://example.com/profile");
-   * ```
-   */
   public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {
     return new ConnectedLdoTransactionDataset(
       this,
@@ -139,6 +128,38 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     );
   }
 
+  /**
+   * Commits all changes made in this transaction to the remote connected
+   * platforms as well as the parent dataset.
+   *
+   * @returns A success or failure
+   *
+   * @example
+   * ```typescript
+   * import { createConnectedLdoDataset } from "@ldo/connected";
+   * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+   * import { solidConnectedPlugin } from "connected-solid";
+   *
+   * // ...
+   *
+   * const connectedLdoDataset = createConnectedLdoDataset([solidConnectedPlugin]);
+   *
+   * const profileDocument = connectedLdoDataset
+   *   .getResource("https://example.com/profile");
+   * await profileDocument.read();
+   *
+   * const transaction = connectedLdoDataset.startTransaction();
+   *
+   * const profile = transaction
+   *   .using(ProfileShapeType)
+   *   .fromSubject("https://example.com/profile#me");
+   * profile.name = "Some Name";
+   * const result = await transaction.commitToRemote();
+   * if (result.isError) {
+   *   // handle error
+   * }
+   * ```
+   */
   async commitToRemote(): Promise<
     | AggregateSuccess<
         | Extract<
