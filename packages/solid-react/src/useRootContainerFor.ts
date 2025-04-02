@@ -8,10 +8,18 @@ import type {
 } from "@ldo/connected-solid";
 import type { UseResourceOptions, createUseResource } from "@ldo/react";
 
+/**
+ * @internal
+ *
+ * Creates a useRootContainerFor function
+ */
 export function createUseRootContainerFor(
   dataset: ConnectedLdoDataset<SolidConnectedPlugin[]>,
   useResource: ReturnType<typeof createUseResource<ConnectedPlugin[]>>,
 ) {
+  /**
+   * Gets the root container for a specific URI
+   */
   return function useRootContainerFor(
     uri?: SolidContainerUri | SolidLeafUri,
     options?: UseResourceOptions<"solid">,

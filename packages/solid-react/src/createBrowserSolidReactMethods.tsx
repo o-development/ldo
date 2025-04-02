@@ -16,6 +16,11 @@ import { createUseResource } from "@ldo/react";
 
 const PRE_REDIRECT_URI = "PRE_REDIRECT_URI";
 
+/**
+ * Creates special react methods specific to the Solid
+ * @param dataset the connectedLdoDataset with a SolidConnectedPlugin
+ * @returns { BrowserSolidLdoProvider, useSolidAuth, useRootContainerFor }
+ */
 export function createBrowserSolidReactMethods(
   dataset: ConnectedLdoDataset<(SolidConnectedPlugin | ConnectedPlugin)[]>,
 ) {

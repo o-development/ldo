@@ -7,6 +7,9 @@ import { createContext, useContext } from "react";
 export type SessionInfo = ISessionInfo;
 export type LoginOptions = ILoginInputOptions;
 
+/**
+ * Functions for authenticating with Solid
+ */
 export interface SolidAuthFunctions {
   login: (issuer: string, loginOptions?: LoginOptions) => Promise<void>;
   logout: () => Promise<void>;

@@ -14,9 +14,11 @@ describe("NextGraph Plugin", () => {
     const [walletBinary, mnemonic] = await ng.gen_wallet_for_test(
       "lL2mo9Jtgz8yWN5PSaEMMftDGXyKJNbv9atQOygmeTcA",
     );
+    console.log("read wallet file");
+    const wallet = await ng.wallet_read_file(walletBinary);
     console.log("open wallet");
     const openedWallet = await ng.wallet_open_with_mnemonic_words(
-      walletBinary,
+      wallet,
       mnemonic,
       [1, 2, 1, 2],
     );

@@ -5,8 +5,8 @@ import type { QuadMatch } from "@ldo/rdf-utils";
 /**
  * @internal
  *
- * Creates a tracking proxy, a proxy that tracks the fields that have been
- * accessed.
+ * Creates a tracking proxy for a set, a proxy that tracks the fields that have
+ * been accessed.
  */
 export function createTrackingSetProxy(
   proxyContext: TrackingProxyContext,

@@ -13,6 +13,9 @@ const DUMMY_SESSION: SessionInfo = {
   expirationDate: undefined,
 };
 
+/**
+ * A provider for interacting with Solid Pods without authenticating
+ */
 export const UnauthenticatedSolidLdoProvider: FunctionComponent<
   PropsWithChildren
 > = ({ children }) => {
