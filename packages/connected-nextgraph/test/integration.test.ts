@@ -9,7 +9,7 @@ import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode } from "@rdfjs/data-model";
 import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess";
-import { rm, mkdir, cp, readdir } from "fs/promises";
+import { rm, cp } from "fs/promises";
 import path from "path";
 
 const SAMPLE_TTL = `@base <http://example.org/> .
@@ -79,7 +79,7 @@ describe("NextGraph Plugin", () => {
     });
   });
 
-  describe("readResource", () => {
+  describe("read and subscribe", () => {
     let populatedResourceUri: NextGraphUri;
     beforeEach(async () => {
       const resource = (await nextgraphLdoDataset.createResource(
@@ -138,6 +138,23 @@ describe("NextGraph Plugin", () => {
       const result = result2 as NextGraphReadSuccess;
       expect(result.type).toBe("nextGraphReadSuccess");
       expect(result.recalledFromMemory).toBe(true);
+    });
+
+    it("Subscribes to a resource", async () => {
+      const resource = nextgraphLdoDataset.getResource(populatedResourceUri);
+      await resource.subscribeToNotifications();
+      // Wait for subscription
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      expect(nextgraphLdoDataset.size).toBe(7);
+      expect(
+        nextgraphLdoDataset.match(
+          namedNode("http://example.org/#spiderman"),
+          namedNode("http://www.perceive.net/schemas/relationship/enemyOf"),
+          namedNode("http://example.org/#green-goblin"),
+          namedNode(resource.uri),
+        ).size,
+      ).toBe(1);
+      await resource.unsubscribeFromAllNotifications();
     });
   });
 });
