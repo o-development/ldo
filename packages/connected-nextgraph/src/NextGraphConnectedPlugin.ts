@@ -67,9 +67,9 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
       context.nextgraph.sessionId,
       "Graph",
       "data:graph",
+      "store",
       storeType,
       storeRepo,
-      "store",
     );
     const newResource = new NextGraphResource(nuri, context);
     await newResource.read();
