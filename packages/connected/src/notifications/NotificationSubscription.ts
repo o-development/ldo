@@ -1,29 +1,30 @@
-import type { ConnectedContext, SubscriptionCallbacks } from "@ldo/connected";
-import type { NotificationCallbackError } from "./results/NotificationErrors";
 import { v4 } from "uuid";
-import type { SolidContainer } from "../resources/SolidContainer";
-import type { SolidLeaf } from "../resources/SolidLeaf";
-import type { SolidNotificationMessage } from "./SolidNotificationMessage";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+import type { ConnectedPlugin } from "../ConnectedPlugin";
+import type { ConnectedContext } from "../ConnectedContext";
+import type { SubscriptionCallbacks } from "../SubscriptionCallbacks";
+import type { NotificationCallbackError } from "../results/error/NotificationErrors";
 
 /**
  * @internal
  * Abstract class for notification subscription methods.
  */
-export abstract class SolidNotificationSubscription {
-  protected resource: SolidContainer | SolidLeaf;
-  protected parentSubscription: (message: SolidNotificationMessage) => void;
-  protected context: ConnectedContext<SolidConnectedPlugin[]>;
+export abstract class NotificationSubscription<
+  Plugin extends ConnectedPlugin,
+  NotificationMessage,
+> {
+  protected resource: Plugin["types"]["resource"];
+  protected parentSubscription: (message: NotificationMessage) => void;
+  protected context: ConnectedContext<Plugin[]>;
   protected subscriptions: Record<
     string,
-    SubscriptionCallbacks<SolidNotificationMessage>
+    SubscriptionCallbacks<NotificationMessage>
   > = {};
   private isOpen: boolean = false;
 
   constructor(
-    resource: SolidContainer | SolidLeaf,
-    parentSubscription: (message: SolidNotificationMessage) => void,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    resource: Plugin["types"]["resource"],
+    parentSubscription: (message: NotificationMessage) => void,
+    context: ConnectedContext<Plugin[]>,
   ) {
     this.resource = resource;
     this.parentSubscription = parentSubscription;
@@ -45,7 +46,7 @@ export abstract class SolidNotificationSubscription {
    * subscribeToNotifications
    */
   async subscribeToNotifications(
-    subscriptionCallbacks?: SubscriptionCallbacks<SolidNotificationMessage>,
+    subscriptionCallbacks?: SubscriptionCallbacks<NotificationMessage>,
   ): Promise<string> {
     const subscriptionId = v4();
     this.subscriptions[subscriptionId] = subscriptionCallbacks ?? {};
@@ -111,7 +112,7 @@ export abstract class SolidNotificationSubscription {
    * @internal
    * onNotification
    */
-  protected onNotification(message: SolidNotificationMessage): void {
+  protected onNotification(message: NotificationMessage): void {
     this.parentSubscription(message);
     Object.values(this.subscriptions).forEach(({ onNotification }) => {
       onNotification?.(message);
@@ -123,7 +124,7 @@ export abstract class SolidNotificationSubscription {
    * onNotificationError
    */
   protected onNotificationError(
-    message: NotificationCallbackError<SolidLeaf | SolidContainer>,
+    message: NotificationCallbackError<Plugin["types"]["resource"]>,
   ): void {
     Object.values(this.subscriptions).forEach(({ onNotificationError }) => {
       onNotificationError?.(message);

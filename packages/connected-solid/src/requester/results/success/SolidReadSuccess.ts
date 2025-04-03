@@ -1,10 +1,7 @@
-import {
-  ReadSuccess,
-  type Resource,
-  type ResourceResult,
-} from "@ldo/connected";
+import { ReadSuccess, type Resource } from "@ldo/connected";
 import type { SolidLeaf } from "../../../resources/SolidLeaf";
 import type { SolidContainer } from "../../../resources/SolidContainer";
+import type { ResourceResult } from "packages/connected/dist/results/ResourceResult";
 
 /**
  * Indicates that the read request was successful and that the resource

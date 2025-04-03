@@ -11,7 +11,7 @@ import type {
   ChannelType,
   NotificationChannel,
 } from "@solid-notifications/types";
-import { SolidNotificationSubscription } from "./SolidNotificationSubscription";
+import { NotificationSubscription } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidLeaf } from "../resources/SolidLeaf";
 import type { SolidContainer } from "../resources/SolidContainer";
@@ -24,7 +24,10 @@ const CHANNEL_TYPE =
  * @internal
  * An implementation of the Websocket2023 notifiction spec
  */
-export class Websocket2023NotificationSubscription extends SolidNotificationSubscription {
+export class Websocket2023NotificationSubscription extends NotificationSubscription<
+  SolidConnectedPlugin,
+  SolidNotificationMessage
+> {
   private socket: WebSocket | undefined;
   private createWebsocket: (address: string) => WebSocket;
 

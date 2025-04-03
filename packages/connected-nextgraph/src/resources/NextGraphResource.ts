@@ -1,4 +1,8 @@
-import type { ConnectedContext, SubscriptionCallbacks } from "@ldo/connected";
+import type {
+  ConnectedContext,
+  NotificationSubscription,
+  SubscriptionCallbacks,
+} from "@ldo/connected";
 import { UnexpectedResourceError, UpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
@@ -15,6 +19,7 @@ import type { NextGraphNotificationMessage } from "../notifications/NextGraphNot
 import type { Quad } from "@rdfjs/types";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import { NextGraphReadSuccess } from "../results/NextGraphReadSuccess";
+import { NextGraphNotificationSubscription } from "../notifications/NextGraphNotificationSubscription";
 
 export class NextGraphResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -30,6 +35,15 @@ export class NextGraphResource
   private loading: boolean = false;
   private present: boolean | undefined = undefined;
 
+  /**
+   * @internal
+   * Handles notification subscriptions
+   */
+  protected notificationSubscription: NotificationSubscription<
+    NextGraphConnectedPlugin,
+    NextGraphNotificationMessage
+  >;
+
   constructor(
     uri: NextGraphUri,
     context: ConnectedContext<NextGraphConnectedPlugin[]>,
@@ -38,6 +52,11 @@ export class NextGraphResource
     this.uri = uri;
     this.status = new Unfetched(this);
     this.context = context;
+    this.notificationSubscription = new NextGraphNotificationSubscription(
+      this,
+      this.onNotification.bind(this),
+      this.context,
+    );
   }
 
   isLoading(): boolean {
@@ -65,7 +84,7 @@ export class NextGraphResource
   }
 
   isSubscribedToNotifications(): boolean {
-    throw new Error("Method not implemented.");
+    return this.notificationSubscription.isSubscribedToNotifications();
   }
 
   private handleThrownError(
@@ -168,21 +187,53 @@ export class NextGraphResource
     }
   }
 
-  protected async onNotification(_message: unknown) {
-    // TODO
+  protected async onNotification(response: NextGraphNotificationMessage) {
+    if (response.V0.State?.graph) {
+      const json_str = new TextDecoder().decode(
+        response.V0.State.graph.triples,
+      );
+      const triples = JSON.parse(json_str);
+
+      for (const triple of triples) {
+        // deal with each triple
+        console.log("STATE", triple);
+      }
+    } else if (response.V0.Patch?.graph) {
+      const inserts_json_str = new TextDecoder().decode(
+        response.V0.Patch.graph.inserts,
+      );
+      const inserts = JSON.parse(inserts_json_str);
+      const removes_json_str = new TextDecoder().decode(
+        response.V0.Patch.graph.removes,
+      );
+      const removes = JSON.parse(removes_json_str);
+
+      for (const insert of inserts) {
+        // deal with each insert
+        console.log("INSERT", insert);
+      }
+      for (const remove of removes) {
+        // deal with each remove
+        console.log("REMOVE", remove);
+      }
+    }
   }
 
-  subscribeToNotifications(
-    _callbacks?: SubscriptionCallbacks<NextGraphNotificationMessage>,
+  async subscribeToNotifications(
+    callbacks?: SubscriptionCallbacks<NextGraphNotificationMessage>,
   ): Promise<string> {
-    throw new Error("Method not implemented.");
+    return await this.notificationSubscription.subscribeToNotifications(
+      callbacks,
+    );
   }
 
-  unsubscribeFromNotifications(_subscriptionId: string): Promise<void> {
-    throw new Error("Method not implemented.");
+  unsubscribeFromNotifications(subscriptionId: string): Promise<void> {
+    return this.notificationSubscription.unsubscribeFromNotification(
+      subscriptionId,
+    );
   }
 
   unsubscribeFromAllNotifications(): Promise<void> {
-    throw new Error("Method not implemented.");
+    return this.notificationSubscription.unsubscribeFromAllNotifications();
   }
 }

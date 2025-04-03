@@ -9,6 +9,8 @@ import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode } from "@rdfjs/data-model";
 import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess";
+import { rm, mkdir, cp, readdir } from "fs/promises";
+import path from "path";
 
 const SAMPLE_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -55,6 +57,15 @@ describe("NextGraph Plugin", () => {
       publicStoreId,
       privateStoreId,
     });
+  });
+
+  afterAll(async () => {
+    const dataDir = path.resolve(__dirname, "./nextgraph-data");
+    const backupDir = path.resolve(__dirname, "./nextgraph-data-backup");
+    // Remove the existing data directory
+    await rm(dataDir, { recursive: true, force: true });
+    // Copy the entire backup directory to data directory
+    await cp(backupDir, dataDir, { recursive: true });
   });
 
   describe("createResource", () => {
@@ -130,5 +141,3 @@ describe("NextGraph Plugin", () => {
     });
   });
 });
-
-// Errors if it doesn't exist and an update is attempted

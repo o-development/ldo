@@ -46,6 +46,5 @@ export * from "./wac/results/SetWacRuleSuccess";
 export * from "./wac/results/WacRuleAbsent";
 
 export * from "./notifications/SolidNotificationMessage";
-export * from "./notifications/SolidNotificationSubscription";
 export * from "./notifications/Websocket2023NotificationSubscription";
 export * from "./notifications/results/NotificationErrors";

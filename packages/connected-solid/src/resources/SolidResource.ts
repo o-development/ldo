@@ -14,7 +14,7 @@ import EventEmitter from "events";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { BatchedRequester } from "../requester/BatchedRequester";
 import type { WacRule } from "../wac/WacRule";
-import type { SolidNotificationSubscription } from "../notifications/SolidNotificationSubscription";
+import type { NotificationSubscription } from "@ldo/connected";
 import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription";
 import { getParentUri } from "../util/rdfUtils";
 import { isReadSuccess } from "../requester/results/success/SolidReadSuccess";
@@ -119,7 +119,10 @@ export abstract class SolidResource
    * @internal
    * Handles notification subscriptions
    */
-  protected notificationSubscription: SolidNotificationSubscription;
+  protected notificationSubscription: NotificationSubscription<
+    SolidConnectedPlugin,
+    SolidNotificationMessage
+  >;
 
   /**
    * Indicates that resources are not errors
