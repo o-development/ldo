@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "A library for connecting LDO to resources outside the LDO environment",
   "main": "dist/index.js",
   "scripts": {
@@ -33,9 +33,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.1",
-    "@ldo/ldo": "^1.0.0-alpha.1",
-    "@ldo/rdf-utils": "^1.0.0-alpha.1"
+    "@ldo/dataset": "^1.0.0-alpha.2",
+    "@ldo/ldo": "^1.0.0-alpha.2",
+    "@ldo/rdf-utils": "^1.0.0-alpha.2"
   },
   "files": [
     "dist",
