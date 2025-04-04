@@ -231,18 +231,18 @@ main();
 
 ConnectedLdoDataset
 
-- [createConnectedLdoDataset](https://ldo.js.org/latest/api/connected/functions/createConnectedLdoDataset.md)
-- [ConnectedLdoDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoDataset.md)
-- [ConnectedLdoTransactionDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoTransactionDataset.md)
-- [IConnectedLdoDataset](https://ldo.js.org/latest/api/connected/interfaces/IConnectedLdoDataset.md)
+- [createConnectedLdoDataset](https://ldo.js.org/latest/api/connected/functions/createConnectedLdoDataset/)
+- [ConnectedLdoDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoDataset/)
+- [ConnectedLdoTransactionDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoTransactionDataset/)
+- [IConnectedLdoDataset](https://ldo.js.org/latest/api/connected/interfaces/IConnectedLdoDataset/)
 
 ConnectedPlugins
 
-- [ConnectedPlugin](https://ldo.js.org/latest/api/connected/interfaces/ConnectedPlugin.md)
+- [ConnectedPlugin](https://ldo.js.org/latest/api/connected/interfaces/ConnectedPlugin/)
 
 Resources (Manage batching requests)
 
-- [Resource](https://ldo.js.org/latest/api/connected/interfaces/Resource.md)
+- [Resource](https://ldo.js.org/latest/api/connected/interfaces/Resource/)
 
 Data Functions
 
@@ -251,25 +251,25 @@ Data Functions
 
 SuccessResult
 
-- [SuccessResult](https://ldo.js.org/latest/api/connected/classes/SuccessResult.md)
-- [AbsentReadSuccess](https://ldo.js.org/latest/api/connected/classes/AbsentReadSuccess.md)
-- [AggregateSuccess](https://ldo.js.org/latest/api/connected/classes/AggregateSuccess.md)
-- [IgnoredInvalidUpdateSuccess](https://ldo.js.org/latest/api/connected/classes/IgnoredInvalidUpdateSuccess.md)
-- [ReadSuccess](https://ldo.js.org/latest/api/connected/classes/ReadSuccess.md)
-- [ResourceSuccess](https://ldo.js.org/latest/api/connected/classes/ResourceSuccess.md)
-- [Unfetched](https://ldo.js.org/latest/api/connected/classes/Unfetched.md)
-- [UpdateDefaultGraphSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateDefaultGraphSuccess.md)
-- [UpdateSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateSuccess.md)å
+- [SuccessResult](https://ldo.js.org/latest/api/connected/classes/SuccessResult/)
+- [AbsentReadSuccess](https://ldo.js.org/latest/api/connected/classes/AbsentReadSuccess/)
+- [AggregateSuccess](https://ldo.js.org/latest/api/connected/classes/AggregateSuccess/)
+- [IgnoredInvalidUpdateSuccess](https://ldo.js.org/latest/api/connected/classes/IgnoredInvalidUpdateSuccess/)
+- [ReadSuccess](https://ldo.js.org/latest/api/connected/classes/ReadSuccess/)
+- [ResourceSuccess](https://ldo.js.org/latest/api/connected/classes/ResourceSuccess/)
+- [Unfetched](https://ldo.js.org/latest/api/connected/classes/Unfetched/)
+- [UpdateDefaultGraphSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateDefaultGraphSuccess/)
+- [UpdateSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateSuccess/)å
 
 ErrorResult
 
-- [ErrorResult](https://ldo.js.org/latest/api/connected/classes/ErrorResult.md)
-- [AggregateError](https://ldo.js.org/latest/api/connected/classes/AggregateError.md)
-- [DisconnectedAttemptingReconnectError](https://ldo.js.org/latest/api/connected/classes/DisconnectedAttemptingReconnectError.md)
-- [InvalidUriError](https://ldo.js.org/latest/api/connected/classes/InvalidUriError.md)
-- [ResourceError](https://ldo.js.org/latest/api/connected/classes/ResourceError.md)
-- [UnexpectedResourceError](https://ldo.js.org/latest/api/connected/classes/UnexpectedResourceError.md)
-- [UnsupportedNotificationError](https://ldo.js.org/latest/api/connected/classes/UnsupportedNotificationError.md)
+- [ErrorResult](https://ldo.js.org/latest/api/connected/classes/ErrorResult/)
+- [AggregateError](https://ldo.js.org/latest/api/connected/classes/AggregateError/)
+- [DisconnectedAttemptingReconnectError](https://ldo.js.org/latest/api/connected/classes/DisconnectedAttemptingReconnectError/)
+- [InvalidUriError](https://ldo.js.org/latest/api/connected/classes/InvalidUriError/)
+- [ResourceError](https://ldo.js.org/latest/api/connected/classes/ResourceError/)
+- [UnexpectedResourceError](https://ldo.js.org/latest/api/connected/classes/UnexpectedResourceError/)
+- [UnsupportedNotificationError](https://ldo.js.org/latest/api/connected/classes/UnsupportedNotificationError/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

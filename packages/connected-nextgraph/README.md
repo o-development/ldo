@@ -30,9 +30,9 @@ import ng from "nextgraph";
 
 // Open your nextgraph wallet
 const openedWallet = await ng.wallet_open_with_mnemonic_words(
-  wallet.wallet,
+  walletBinary,
   mnemonic,
-  [1, 2, 1, 2]
+  [1, 2, 3, 4]
 );
 
 // Start a session
@@ -118,28 +118,28 @@ await resource.update({
 
 SolidLdoDataset
 
- - [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
- - [SolidLdoDataset](https://ldo.js.org/latest/api/solid/classes/SolidLdoDataset/)
+ - [createSolidLdoDataset](https://ldo.js.org/latest/api/connected/functions/createSolidLdoDataset/)
+ - [SolidLdoDataset](https://ldo.js.org/latest/api/connected/classes/SolidLdoDataset/)
 
 Resources (Manage batching requests)
 
- - [LeafUri](https://ldo.js.org/latest/api/solid/types/LeafUri/)
- - [ContainerUri](https://ldo.js.org/latest/api/solid/types/ContainerUri/)
- - [Leaf](https://ldo.js.org/latest/api/solid/classes/Leaf/)
- - [Container](https://ldo.js.org/latest/api/solid/classes/Container/)
+ - [LeafUri](https://ldo.js.org/latest/api/connected/types/LeafUri/)
+ - [ContainerUri](https://ldo.js.org/latest/api/connected/types/ContainerUri/)
+ - [Leaf](https://ldo.js.org/latest/api/connected/classes/Leaf/)
+ - [Container](https://ldo.js.org/latest/api/connected/classes/Container/)
 
 Standalone Functions
 
- - [checkRootContainter](https://ldo.js.org/latest/api/solid/functions/checkRootContainer/)
- - [createDataResource](https://ldo.js.org/latest/api/solid/functions/createDataResource/)
- - [deleteResource](https://ldo.js.org/latest/api/solid/functions/deleteResource/)
- - [readResource](https://ldo.js.org/latest/api/solid/functions/readResource/)
- - [updateResource](https://ldo.js.org/latest/api/solid/functions/updateResource/)
- - [uploadResource](https://ldo.js.org/latest/api/solid/functions/uploadResource/)
+ - [checkRootContainter](https://ldo.js.org/latest/api/connected/functions/checkRootContainer/)
+ - [createDataResource](https://ldo.js.org/latest/api/connected/functions/createDataResource/)
+ - [deleteResource](https://ldo.js.org/latest/api/connected/functions/deleteResource/)
+ - [readResource](https://ldo.js.org/latest/api/connected/functions/readResource/)
+ - [updateResource](https://ldo.js.org/latest/api/connected/functions/updateResource/)
+ - [uploadResource](https://ldo.js.org/latest/api/connected/functions/uploadResource/)
 
 Data Functions
- - [changeData](https://ldo.js.org/latest/api/solid/functions/changeData/)
- - [commitData](https://ldo.js.org/latest/api/solid/functions/commitData/)
+ - [changeData](https://ldo.js.org/latest/api/connected/functions/changeData/)
+ - [commitData](https://ldo.js.org/latest/api/connected/functions/commitData/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

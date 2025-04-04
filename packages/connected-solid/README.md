@@ -1,4 +1,4 @@
-# @ldo/solid
+# @ldo/connected-solid
 
 @ldo/solid is a client that implements the Solid specification with the use of Linked Data Objects.
 
@@ -10,10 +10,10 @@ cd my_project/
 npx run @ldo/cli init
 ```
 
-Now install the @ldo/solid library
+Now install the @ldo/connected-solid library
 
 ```
-npm i @ldo/solid
+npm i @ldo/connected-solid
 ```
 
 <details>
@@ -33,7 +33,8 @@ npm i @ldo/ldo @ldo/solid
 Below is a simple example of @ldo/solid. Assume that a ShapeType was previously generated and placed at `./.ldo/foafProfile.shapeTypes`. Also assume we have a shape type for social media at `./.ldo/socialMediaPost.shapeTypes`
 
 ```typescript
-import { changeData, commitData, createSolidLdoDataset } from "@ldo/solid";
+import { changeData, commitData } from "@ldo/connected";
+import { createSolidLdoDataset } from "@ldo/solid";
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
 import { SocialMediaPostShapeType } from "./.ldo/socialMediaPost.shapeTypes";
@@ -53,7 +54,8 @@ async function main() {
   // SolidLdoDataset. You can think of this dataset as a local store for all the
   // information in the Solidverse. Don't forget to pass the authenticated fetch
   // function to do your queries!
-  const solidLdoDataset = createSolidLdoDataset({ fetch });
+  const solidLdoDataset = createSolidLdoDataset();
+  solidLdoDataset.setContext({ fetch });
 
   // We'll start with getting a representation of our WebId's resource
   const webIdResource = solidLdoDataset.getResource(webIdUri);
@@ -206,27 +208,15 @@ main();
 SolidLdoDataset
 
  - [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
- - [SolidLdoDataset](https://ldo.js.org/latest/api/solid/classes/SolidLdoDataset/)
 
 Resources (Manage batching requests)
 
- - [LeafUri](https://ldo.js.org/latest/api/solid/types/LeafUri/)
- - [ContainerUri](https://ldo.js.org/latest/api/solid/types/ContainerUri/)
- - [Leaf](https://ldo.js.org/latest/api/solid/classes/Leaf/)
- - [Container](https://ldo.js.org/latest/api/solid/classes/Container/)
+ - [SolidResource](https://ldo.js.org/latest/api/classes/SolidResource/)
+ - [SolidLeafUri](https://ldo.js.org/latest/api/solid/types/SolidLeafUri/)
+ - [SolidContainerUri](https://ldo.js.org/latest/api/solid/types/SolidContainerUri/)
+ - [SolidLeaf](https://ldo.js.org/latest/api/solid/classes/SolidLeaf/)
+ - [SolidContainer](https://ldo.js.org/latest/api/solid/classes/SolidContainer/)
 
-Standalone Functions
-
- - [checkRootContainter](https://ldo.js.org/latest/api/solid/functions/checkRootContainer/)
- - [createDataResource](https://ldo.js.org/latest/api/solid/functions/createDataResource/)
- - [deleteResource](https://ldo.js.org/latest/api/solid/functions/deleteResource/)
- - [readResource](https://ldo.js.org/latest/api/solid/functions/readResource/)
- - [updateResource](https://ldo.js.org/latest/api/solid/functions/updateResource/)
- - [uploadResource](https://ldo.js.org/latest/api/solid/functions/uploadResource/)
-
-Data Functions
- - [changeData](https://ldo.js.org/latest/api/solid/functions/changeData/)
- - [commitData](https://ldo.js.org/latest/api/solid/functions/commitData/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
