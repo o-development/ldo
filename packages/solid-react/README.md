@@ -115,18 +115,18 @@ export default App;
 
 Providers
 
- - [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/solid-react/BrowserSolidLdoProvider/)
- - [SolidLdoProvider](https://ldo.js.org/latest/api/solid-react/SolidLdoProvider/)
+ - [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/react/BrowserSolidLdoProvider/)
+ - [SolidLdoProvider](https://ldo.js.org/latest/api/react/SolidLdoProvider/)
 
 Hooks
- - [useLdo](https://ldo.js.org/latest/api/solid-react/useLdo/)
- - [useResource](https://ldo.js.org/latest/api/solid-react/useResource/)
- - [useRootContainer](https://ldo.js.org/latest/api/solid-react/useRootContainer/)
- - [useSolidAuth](https://ldo.js.org/latest/api/solid-react/useSolidAuth/)
- - [useSubject](https://ldo.js.org/latest/api/solid-react/useSubject/)
- - [useMatchSubject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
+ - [useLdo](https://ldo.js.org/latest/api/react/useLdo/)
+ - [useResource](https://ldo.js.org/latest/api/react/useResource/)
+ - [useRootContainer](https://ldo.js.org/latest/api/react/useRootContainer/)
+ - [useSolidAuth](https://ldo.js.org/latest/api/react/useSolidAuth/)
+ - [useSubject](https://ldo.js.org/latest/api/react/useSubject/)
+ - [useMatchSubject](https://ldo.js.org/latest/api/react/useMatchSubject/)
+ - [useMatchObject](https://ldo.js.org/latest/api/react/useMatchSubject/)
+ - [useSubscribeToResource](https://ldo.js.org/latest/api/react/useMatchSubject/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

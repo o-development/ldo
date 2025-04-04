@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v4 } from "uuid";
 import {
   TypeIndexDocumentShapeType,
@@ -9,10 +10,15 @@ import { namedNode, quad } from "@rdfjs/data-model";
 import type { TypeRegistration } from "./.ldo/typeIndex.typings";
 import { getProfile } from "./getTypeIndex";
 import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
-import type { Container } from "@ldo/solid";
-import type { ISolidLdoDataset } from "@ldo/solid";
 import type { NamedNode } from "@rdfjs/types";
 import { set } from "@ldo/ldo";
+import type {
+  SolidConnectedPlugin,
+  SolidContainer,
+  SolidContainerUri,
+  SolidLeafUri,
+} from "@ldo/connected-solid";
+import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
 /**
  * =============================================================================
@@ -26,7 +32,9 @@ export async function initTypeIndex(
   const { dataset } = guaranteeOptions(options);
   const profile = await getProfile(webId, options);
   if (!profile.privateTypeIndex?.size || !profile.publicTypeIndex?.size) {
-    const profileFolder = await dataset.getResource(webId).getParentContainer();
+    const profileFolder = await dataset
+      .getResource(webId as SolidLeafUri | SolidContainerUri)
+      .getParentContainer();
     if (profileFolder?.isError) throw profileFolder;
     if (!profileFolder)
       throw new Error("No folder to save the type indexes to.");
@@ -47,8 +55,10 @@ export async function initTypeIndex(
  */
 export async function createIndex(
   webId,
-  profileFolder: Container,
-  dataset: ISolidLdoDataset,
+  profileFolder: SolidContainer,
+  dataset: ConnectedLdoDataset<
+    (SolidConnectedPlugin | ConnectedPlugin<any, any, any, any>)[]
+  >,
   isPrivate: boolean,
 ) {
   // Create a private type index
@@ -91,7 +101,7 @@ export async function createIndex(
     .fromSubject(indexResource.uri);
 
   cTypeIndex.type = set({ "@id": "ListedDocument" }, { "@id": "TypeIndex" });
-  const commitResult = await transaction.commitToPod();
+  const commitResult = await transaction.commitToRemote();
   if (commitResult.isError) throw commitResult;
 }
 

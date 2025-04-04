@@ -1,4 +1,3 @@
-import type { LeafUri } from "@ldo/solid";
 import { useTypeIndexProfile } from "./useTypeIndexProfile";
 import { useEffect, useMemo, useState } from "react";
 import { useSubscribeToUris } from "./util/useSubscribeToUris";
@@ -9,6 +8,7 @@ import {
   getInstanceUris,
   getTypeIndexesUrisFromProfile,
 } from "../getTypeIndex";
+import type { SolidLeafUri } from "@ldo/connected-solid";
 
 /**
  * Provides the LeafUris of everything in a type node for a specific class uri
@@ -16,7 +16,7 @@ import {
  * @param classUri - the class uri
  * @returns - URIs of all resources registered with this node
  */
-export function useInstanceUris(classUri: string): LeafUri[] {
+export function useInstanceUris(classUri: string): SolidLeafUri[] {
   const { dataset } = useLdo();
   const profile = useTypeIndexProfile();
 
@@ -27,7 +27,7 @@ export function useInstanceUris(classUri: string): LeafUri[] {
 
   useSubscribeToUris(typeIndexUris);
 
-  const [leafUris, setLeafUris] = useState<LeafUri[]>([]);
+  const [leafUris, setLeafUris] = useState<SolidLeafUri[]>([]);
 
   const typeRegistrations = useMatchSubject(
     TypeRegistrationShapeType,

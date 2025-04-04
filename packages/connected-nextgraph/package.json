@@ -1,0 +1,60 @@
+{
+  "name": "@ldo/connected-nextgraph",
+  "version": "1.0.0-alpha.2",
+  "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "watch": "tsc --watch",
+    "test": "npm run test:integration",
+    "prepublishOnly": "npm run test && npm run build",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "docs": "typedoc --plugin typedoc-plugin-markdown",
+    "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
+    "start-integration-test": "jest --coverage",
+    "test:integration": "start-server-and-test start-test-server http-get://localhost:14400 start-integration-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/ldobjects.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/ldobjects/issues"
+  },
+  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
+  "devDependencies": {
+    "@inrupt/solid-client-authn-core": "^2.2.6",
+    "@ldo/cli": "^1.0.0-alpha.2",
+    "@rdfjs/data-model": "^1.2.0",
+    "@rdfjs/types": "^1.0.1",
+    "@solid-notifications/types": "^0.1.2",
+    "@solid/community-server": "^7.1.3",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "jest-rdf": "^1.8.0",
+    "start-server-and-test": "^2.0.11",
+    "ts-node": "^10.9.1",
+    "typed-emitter": "^2.1.0",
+    "typedoc": "^0.25.4",
+    "typedoc-plugin-markdown": "^3.17.1"
+  },
+  "dependencies": {
+    "@ldo/dataset": "^1.0.0-alpha.2",
+    "@ldo/ldo": "^1.0.0-alpha.2",
+    "@ldo/rdf-utils": "^1.0.0-alpha.2",
+    "@solid-notifications/subscription": "^0.1.2",
+    "cross-fetch": "^3.1.6",
+    "http-link-header": "^1.1.1",
+    "nextgraph": "^0.1.1-alpha.7",
+    "ws": "^8.18.0"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,14 +1,19 @@
-import { createSolidLdoDataset } from "@ldo/solid";
-import type { ISolidLdoDataset } from "@ldo/solid";
-import { guaranteeFetch } from "@ldo/solid/dist/util/guaranteeFetch";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ConnectedLdoDataset, IConnectedLdoDataset } from "@ldo/connected";
+import type { SolidConnectedPlugin } from "@ldo/connected-solid";
+import { createSolidLdoDataset, guaranteeFetch } from "@ldo/connected-solid";
 
 export interface Options {
-  solidLdoDataset?: ISolidLdoDataset;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore I'm honestly just tired of dealing with this at this point
+  solidLdoDataset?: IConnectedLdoDataset<SolidConnectedPlugin[]>;
   fetch?: typeof fetch;
 }
 
 export function guaranteeOptions(options?: Options) {
   const fetch = guaranteeFetch(options?.fetch);
-  const dataset = options?.solidLdoDataset ?? createSolidLdoDataset({ fetch });
+  const dataset = (options?.solidLdoDataset ??
+    createSolidLdoDataset()) as ConnectedLdoDataset<SolidConnectedPlugin[]>;
+  dataset.setContext("solid", { fetch });
   return { fetch, dataset };
 }

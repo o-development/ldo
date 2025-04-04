@@ -1,6 +1,6 @@
 {
   "name": "@ldo/rdf-utils",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Some RDF Utilities to support LDO librariers",
   "main": "dist/index.js",
   "scripts": {
@@ -23,8 +23,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/rdf-utils#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.0.1",
-    "@types/jsonld": "^1.5.9",
-    "ts-jest": "^27.1.2"
+    "@types/jsonld": "^1.5.9"
   },
   "dependencies": {
     "@rdfjs/data-model": "^1.2.0",

@@ -15,6 +15,7 @@ The LDO monorepo contains the following
  - [@ldo/schema-converter-shex](./packages/schema-converter-shex/)
  - [@ldo/solid](./packages/solid/)
  - [@ldo/solid-react](./packages/solid-react/)
+ - [@ldo/solid-type-index](./packages/solid-type-index/)
  - [@ldo/subscribable-dataset](./packages/subscribable-dataset/)
  - [@ldo/traverser-shexj](./packages/traverser-shexj/)
  - [@ldo/type-traverser](./packages/type-traverser/)

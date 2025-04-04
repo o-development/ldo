@@ -1,4 +1,3 @@
-import type { ContainerUri, LeafUri } from "@ldo/solid";
 import type { TypeRegistration } from "./.ldo/typeIndex.typings";
 import type { TypeIndexProfile } from "./.ldo/profile.typings";
 import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
@@ -7,6 +6,7 @@ import { RDF_TYPE, TYPE_REGISTRATION } from "./constants";
 import type { Options } from "./util/Options";
 import { guaranteeOptions } from "./util/Options";
 import type { LdSet } from "@ldo/ldo";
+import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 
 export async function getTypeRegistrations(
   webId: string,
@@ -48,13 +48,13 @@ export async function getProfile(
 
 export function getTypeIndexesUrisFromProfile(
   profile: TypeIndexProfile,
-): LeafUri[] {
-  const uris: LeafUri[] = [];
+): SolidLeafUri[] {
+  const uris: SolidLeafUri[] = [];
   profile.privateTypeIndex?.forEach((indexNode) => {
-    uris.push(indexNode["@id"] as LeafUri);
+    uris.push(indexNode["@id"] as SolidLeafUri);
   });
   profile.publicTypeIndex?.forEach((indexNode) => {
-    uris.push(indexNode["@id"] as LeafUri);
+    uris.push(indexNode["@id"] as SolidLeafUri);
   });
   return uris;
 }
@@ -63,26 +63,26 @@ export async function getInstanceUris(
   classUri: string,
   typeRegistrations: TypeRegistration[],
   options?: Options,
-): Promise<LeafUri[]> {
+): Promise<SolidLeafUri[]> {
   const { dataset } = guaranteeOptions(options);
 
-  const leafUris = new Set<LeafUri>();
+  const leafUris = new Set<SolidLeafUri>();
   await Promise.all(
     typeRegistrations.map(async (registration) => {
       if (registration.forClass["@id"] === classUri) {
         // Individual registrations
         registration.instance?.forEach((instance) =>
-          leafUris.add(instance["@id"] as LeafUri),
+          leafUris.add(instance["@id"] as SolidLeafUri),
         );
         // Container registrations
         await Promise.all(
           registration.instanceContainer?.map(async (instanceContainer) => {
             const containerResource = dataset.getResource(
-              instanceContainer["@id"] as ContainerUri,
+              instanceContainer["@id"] as SolidContainerUri,
             );
             await containerResource.readIfUnfetched();
             containerResource.children().forEach((child) => {
-              if (child.type === "leaf") leafUris.add(child.uri);
+              if (child.type === "SolidLeaf") leafUris.add(child.uri);
             });
           }) ?? [],
         );

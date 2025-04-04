@@ -1,2 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "@inrupt/jest-jsdom-polyfills";
-globalThis.fetch = async () => new Response();
+
+jest.mock("undici", () => {
+  return {
+    fetch: global.fetch,
+  };
+});

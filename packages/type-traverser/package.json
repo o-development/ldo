@@ -1,6 +1,6 @@
 {
   "name": "@ldo/type-traverser",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "An organized way to traverse over objects using typescript",
   "main": "dist/index.js",
   "scripts": {
@@ -21,10 +21,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/type=traverser#readme",
   "devDependencies": {
-    "@types/jest": "^27.4.0",
     "@types/uuid": "^8.3.4",
-    "jest": "^27.4.7",
-    "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0"
   },
   "dependencies": {
