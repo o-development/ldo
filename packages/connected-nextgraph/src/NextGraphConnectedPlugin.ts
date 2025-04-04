@@ -3,7 +3,6 @@ import type { NextGraphUri } from "./types";
 import { NextGraphResource } from "./resources/NextGraphResource";
 import ng from "nextgraph";
 import { isNextGraphUri } from "./util/isNextGraphUri";
-import { NoNextGraphStoreError } from "./results/NoNextGraphStoreError";
 
 export interface NextGraphConnectedContext {
   sessionId?: string;
@@ -13,7 +12,7 @@ export interface NextGraphConnectedContext {
 }
 
 export interface NextGraphCreateResourceOptions {
-  storeType?: "public" | "protected" | "private";
+  storeType?: "public" | "protected" | "private" | "group" | "dialog";
   storeRepo?: string;
 }
 
@@ -30,9 +29,7 @@ export interface NextGraphConnectedPlugin
     uri: NextGraphUri,
     context: ConnectedContext<this[]>,
   ) => NextGraphResource;
-  createResource(
-    context: ConnectedContext<this[]>,
-  ): Promise<NextGraphResource | NoNextGraphStoreError>;
+  createResource(context: ConnectedContext<this[]>): Promise<NextGraphResource>;
 }
 
 export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
@@ -48,8 +45,8 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
   createResource: async function (
     context: ConnectedContext<NextGraphConnectedPlugin[]>,
     options?: NextGraphCreateResourceOptions,
-  ): Promise<NextGraphResource | NoNextGraphStoreError> {
-    const storeType = options?.storeType ?? "protected";
+  ): Promise<NextGraphResource> {
+    const storeType = options?.storeType;
     const storeRepo =
       options?.storeRepo ??
       (storeType === "protected"
@@ -59,9 +56,6 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
         : storeType === "private"
         ? context.nextgraph.privateStoreId
         : undefined);
-    if (!storeRepo) {
-      return new NoNextGraphStoreError();
-    }
 
     const nuri: NextGraphUri = await ng.doc_create(
       context.nextgraph.sessionId,

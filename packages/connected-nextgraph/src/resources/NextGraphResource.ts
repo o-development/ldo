@@ -123,15 +123,25 @@ export class NextGraphResource
       this.loading = true;
       this.emit("update");
 
-      // Get the data
-      const sparqlResult = await ng.sparql_query(
-        this.context.nextgraph.sessionId,
-        `CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <${this.uri}> { ?s ?p ?o } }`,
-        undefined,
-        this.uri,
-      );
-      // Update the dataset
-      this.overwriteQuads(sparqlResult);
+      // Fetch the data once using subscribe
+      await new Promise<void>(async (resolve, reject) => {
+        let unsub: () => void;
+        try {
+          unsub = await ng.doc_subscribe(
+            this.uri,
+            this.context.nextgraph.sessionId,
+            async (response: NextGraphNotificationMessage) => {
+              if (response.V0.State) {
+                unsub();
+                await this.onNotification(response);
+                resolve();
+              }
+            },
+          );
+        } catch (err) {
+          reject(err);
+        }
+      });
 
       // Update statuses
       const result = new NextGraphReadSuccess(this, false);
@@ -214,7 +224,11 @@ export class NextGraphResource
   }
 
   protected async onNotification(response: NextGraphNotificationMessage) {
-    if (response.V0.State?.graph) {
+    if (response.V0.State) {
+      if (!response.V0.State.graph) {
+        this.overwriteQuads([]);
+        return;
+      }
       const json_str = new TextDecoder().decode(
         response.V0.State.graph.triples,
       );
