@@ -1,6 +1,6 @@
-# @ldo/solid
+# @ldo/connected
 
-@ldo/solid is a client that implements the Solid specification with the use of Linked Data Objects.
+@ldo/connected provides tools for LDO to connect to a remote datasource. It requires plugins for that datasource.
 
 ## Installation
 
@@ -13,7 +13,13 @@ npx run @ldo/cli init
 Now install the @ldo/solid library
 
 ```
-npm i @ldo/solid
+npm i @ldo/connected
+```
+
+You may also install a connected plugin, for example `@ldo/connected-solid` and `@ldo/connected-nextgraph`.
+
+```
+npm i @ldo/connected-nextgraph
 ```
 
 <details>
@@ -33,53 +39,84 @@ npm i @ldo/ldo @ldo/solid
 Below is a simple example of @ldo/solid. Assume that a ShapeType was previously generated and placed at `./.ldo/foafProfile.shapeTypes`. Also assume we have a shape type for social media at `./.ldo/socialMediaPost.shapeTypes`
 
 ```typescript
-import { changeData, commitData, createSolidLdoDataset } from "@ldo/solid";
-import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
+import {
+  changeData,
+  commitData,
+  createConnectedLdoDataset
+} from "@ldo/connected";
+import { solidConnectedPlugin } from "@ldo/connected-solid";
+import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
+
+
+// Shape Types
 import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
 import { SocialMediaPostShapeType } from "./.ldo/socialMediaPost.shapeTypes";
+
+// These are tools for Solid and NextGraph outside of the LDO ecosystem
+import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
+import ng from "nextgraph";
 
 async function main() {
   /**
    * ===========================================================================
-   * READING DATA FROM A POD
+   * SETTING UP A CONNECTED LDO DATASTORE WITH 2 PLUGINS
+   * ===========================================================================
+   */
+  const connectedLdoDataset = createConnectedLdoDataset([
+    solidConncetedPlugin,
+    nextGraphConnectedPlugin
+  ]);
+  // Set context to be able to make authenticated requests
+  connectedLdoDataset.setContext("solid", { fetch });
+  const session = await ng.session_in_memory_start(
+    openedWallet.V0.wallet_id,
+    openedWallet.V0.personal_site
+  );
+  connectedLdoDataset.setContext("nextGraph", { sessionId: session.sessionId });
+
+  /**
+   * ===========================================================================
+   * READING DATA FROM REMOTE
    * ===========================================================================
    */
 
-  // Before we begin using @ldo/solid. Let's get the WebId of the current user
-  const webIdUri = getDefaultSession().info.webId;
-  if (!webIdUri) throw new Error("User is not logged in");
+  // We can get a Solid resource by including a Solid-Compatible URL
+  const solidResource = solidLdoDataset.getResource(
+    "https://pod.example.com/profile.ttl"
+  );
+  // Similarly, we can get a NextGraph resource by including a
+  // NextGraph-Compatible URL
+  const nextGraphResource = solidLdoDataset.getResource(
+    "did:ng:o:W6GCQRfQkNTLtSS_2-QhKPJPkhEtLVh-B5lzpWMjGNEA:v:h8ViqyhCYMS2I6IKwPrY6UZi4ougUm1gpM4QnxlmNMQA"
+  );
+  // Optionally, you can provide the name of the specific plugin you want to use
+  const anotherSolidResource = solidLdoDataset.getResource("", "solid");
 
-  // Now let's proceed with @ldo/solid. Our first step is setting up a
-  // SolidLdoDataset. You can think of this dataset as a local store for all the
-  // information in the Solidverse. Don't forget to pass the authenticated fetch
-  // function to do your queries!
-  const solidLdoDataset = createSolidLdoDataset({ fetch });
-
-  // We'll start with getting a representation of our WebId's resource
-  const webIdResource = solidLdoDataset.getResource(webIdUri);
 
   // This resource is currently unfetched
-  console.log(webIdResource.isUnfetched()); // Logs true
+  console.log(solidResource.isUnfetched()); // Logs true
+  console.log(nextGraphResource.isUnfetched()); // Logs true
 
   // So let's fetch it! Running the `read` command will make a request to get
   // the WebId.
-  const readResult = await webIdResource.read();
+  const solidReadResult = await solidResource.read();
+  const ngReadResult = await nextGraphREsource.read();
 
-  // @ldo/solid will never throw an error. Instead, it will return errors. This
-  // design decision was made to force you to handle any errors. It may seem a
-  // bit annoying at first, but it will result in more resiliant code. You can
-  // easily follow intellisense tooltips to see what kinds of errors each action
-  // can throw.
-  if (readResult.isError) {
-    switch (readResult.type) {
+  // @ldo/connected will never throw an error. Instead, it will return errors.
+  // This design decision was made to force you to handle any errors. It may
+  // seem a bit annoying at first, but it will result in more resiliant code.
+  // You can easily follow intellisense tooltips to see what kinds of errors
+  // each action can throw.
+  if (solidReadResult.isError) {
+    switch (solidReadResult.type) {
       case "serverError":
-        console.error("The solid server had an error:", readResult.message);
+        console.error("The solid server had an error:", solidReadResult.message);
         return;
       case "noncompliantPodError":
         console.error("The Pod responded in a way not compliant with the spec");
         return;
       default:
-        console.error("Some other error was detected:", readResult.message);
+        console.error("Some other error was detected:", solidReadResult.message);
     }
   }
 
@@ -87,9 +124,9 @@ async function main() {
   // the solidLdoDataset. You can access them using Linked Data Objects. In
   // the following example we're using a Profile Linked Data Object that was
   // generated with the init step.
-  const profile = solidLdoDataset
+  const profile = connectedLdoDataset
     .usingType(FoafProfileShapeType)
-    .fromSubject(webIdUri);
+    .fromSubject("https://pod.example.com/profile#me");
 
   // Now you can read "profile" like any JSON.
   console.log(profile.name);
@@ -106,7 +143,7 @@ async function main() {
   // changes to be applied (in this case, just the webIdResource). This gives
   // us a new variable (conventionally named with a c for "changed") that we can
   // write changes to.
-  const cProfile = changeData(profile, webIdResource);
+  const cProfile = changeData(profile, solidResource);
 
   // We can make changes just like it's regular JSON
   cProfile.name = "Captain Cool Dude";
@@ -123,28 +160,17 @@ async function main() {
    * ===========================================================================
    */
 
-  // Let's create some social media posts to be stored on the Solid Pod!
-  // Our first step is going to be finding where to place these posts. In the
-  // future, there will be advanced ways to determine the location of resources
-  // but for now, let's throw it in the root folder.
+  // Let's create some social media posts to be stored on the Solid Pod and in
+  // NextGraph! We can create new resources using the "createResource" method.
+  const newSolidResource = await connectedLdoDataset.createResource("solid");
+  const newNgResource = await connectedLdoDataset.createResource("nextGraph");
 
-  // But, first, let's find out where the root folder is. We can take our WebId
-  // resource and call `getRootContainer`. Let's assume the root container has
-  // a URI "https://example.com/"
-  const rootContainer = await webIdResource.getRootContainer();
-  if (rootContainer.isError) throw rootContainer;
-
-  // Now, let's create a container for our posts
+  // For Solid, you can also create resources at a predefined location
+  const postContainer = connectedLdoDataset
+    .getResource("https://pod.example.com/socialPosts/");
   const createPostContainerResult =
-    await rootContainer.createChildIfAbsent("social-posts/");
+    await solidSocialPostsContainer.createIfAbsent();
   if (createPostContainerResult.isError) throw createPostContainerResult;
-
-  // Most results store the affected resource in the "resource" field. This
-  // container has the URI "https://example.com/social-posts/"
-  const postContainer = createPostContainerResult.resource;
-
-  // Now that we have our container, let's make a Post resource! This is a data
-  // resource, which means we can put raw Solid Data (RDF) into it.
   const postResourceResult =
     await postContainer.createChildAndOverwrite("post1.ttl");
   if (postResourceResult.isError) throw postResourceResult;
@@ -203,30 +229,47 @@ main();
 
 ## API Details
 
-SolidLdoDataset
+ConnectedLdoDataset
 
- - [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
- - [SolidLdoDataset](https://ldo.js.org/latest/api/solid/classes/SolidLdoDataset/)
+- [createConnectedLdoDataset](https://ldo.js.org/latest/api/connected/functions/createConnectedLdoDataset.md)
+- [ConnectedLdoDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoDataset.md)
+- [ConnectedLdoTransactionDataset](https://ldo.js.org/latest/api/connected/classes/ConnectedLdoTransactionDataset.md)
+- [IConnectedLdoDataset](https://ldo.js.org/latest/api/connected/interfaces/IConnectedLdoDataset.md)
+
+ConnectedPlugins
+
+- [ConnectedPlugin](https://ldo.js.org/latest/api/connected/interfaces/ConnectedPlugin.md)
 
 Resources (Manage batching requests)
 
- - [LeafUri](https://ldo.js.org/latest/api/solid/types/LeafUri/)
- - [ContainerUri](https://ldo.js.org/latest/api/solid/types/ContainerUri/)
- - [Leaf](https://ldo.js.org/latest/api/solid/classes/Leaf/)
- - [Container](https://ldo.js.org/latest/api/solid/classes/Container/)
-
-Standalone Functions
-
- - [checkRootContainter](https://ldo.js.org/latest/api/solid/functions/checkRootContainer/)
- - [createDataResource](https://ldo.js.org/latest/api/solid/functions/createDataResource/)
- - [deleteResource](https://ldo.js.org/latest/api/solid/functions/deleteResource/)
- - [readResource](https://ldo.js.org/latest/api/solid/functions/readResource/)
- - [updateResource](https://ldo.js.org/latest/api/solid/functions/updateResource/)
- - [uploadResource](https://ldo.js.org/latest/api/solid/functions/uploadResource/)
+- [Resource](https://ldo.js.org/latest/api/connected/interfaces/Resource.md)
 
 Data Functions
- - [changeData](https://ldo.js.org/latest/api/solid/functions/changeData/)
- - [commitData](https://ldo.js.org/latest/api/solid/functions/commitData/)
+
+- [changeData](https://ldo.js.org/latest/api/connected/functions/changeData/)
+- [commitData](https://ldo.js.org/latest/api/connected/functions/commitData/)
+
+SuccessResult
+
+- [SuccessResult](https://ldo.js.org/latest/api/connected/classes/SuccessResult.md)
+- [AbsentReadSuccess](https://ldo.js.org/latest/api/connected/classes/AbsentReadSuccess.md)
+- [AggregateSuccess](https://ldo.js.org/latest/api/connected/classes/AggregateSuccess.md)
+- [IgnoredInvalidUpdateSuccess](https://ldo.js.org/latest/api/connected/classes/IgnoredInvalidUpdateSuccess.md)
+- [ReadSuccess](https://ldo.js.org/latest/api/connected/classes/ReadSuccess.md)
+- [ResourceSuccess](https://ldo.js.org/latest/api/connected/classes/ResourceSuccess.md)
+- [Unfetched](https://ldo.js.org/latest/api/connected/classes/Unfetched.md)
+- [UpdateDefaultGraphSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateDefaultGraphSuccess.md)
+- [UpdateSuccess](https://ldo.js.org/latest/api/connected/classes/UpdateSuccess.md)å
+
+ErrorResult
+
+- [ErrorResult](https://ldo.js.org/latest/api/connected/classes/ErrorResult.md)
+- [AggregateError](https://ldo.js.org/latest/api/connected/classes/AggregateError.md)
+- [DisconnectedAttemptingReconnectError](https://ldo.js.org/latest/api/connected/classes/DisconnectedAttemptingReconnectError.md)
+- [InvalidUriError](https://ldo.js.org/latest/api/connected/classes/InvalidUriError.md)
+- [ResourceError](https://ldo.js.org/latest/api/connected/classes/ResourceError.md)
+- [UnexpectedResourceError](https://ldo.js.org/latest/api/connected/classes/UnexpectedResourceError.md)
+- [UnsupportedNotificationError](https://ldo.js.org/latest/api/connected/classes/UnsupportedNotificationError.md)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

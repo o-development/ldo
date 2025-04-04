@@ -1,7 +1,7 @@
+import type { ConnectedResult } from "@ldo/connected";
 import { ReadSuccess, type Resource } from "@ldo/connected";
 import type { SolidLeaf } from "../../../resources/SolidLeaf";
 import type { SolidContainer } from "../../../resources/SolidContainer";
-import type { ResourceResult } from "packages/connected/dist/results/ResourceResult";
 
 /**
  * Indicates that the read request was successful and that the resource
@@ -66,7 +66,7 @@ export class ContainerReadSuccess extends ReadSuccess<SolidContainer> {
  * @returns true if the result is a ReadSuccessResult result
  */
 export function isReadSuccess<ResourceType extends Resource>(
-  result: ResourceResult<Resource>,
+  result: ConnectedResult,
 ): result is ReadSuccess<ResourceType> {
   return (
     result.type === "binaryReadSuccess" ||

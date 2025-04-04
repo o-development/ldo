@@ -21,7 +21,7 @@ import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 import { NextGraphReadSuccess } from "../results/NextGraphReadSuccess";
 import { NextGraphNotificationSubscription } from "../notifications/NextGraphNotificationSubscription";
 import { parseRdf } from "@ldo/ldo";
-import type { LdoDataset } from "packages/ldo/dist/LdoDataset";
+import type { LdoDataset } from "@ldo/ldo";
 import { createDataset } from "@ldo/dataset";
 
 export class NextGraphResource

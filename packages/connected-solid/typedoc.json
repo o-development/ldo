@@ -4,4 +4,5 @@
   "allReflectionsHaveOwnDocument": true,
   "hideInPageTOC": true,
   "hideBreadcrumbs": true,
+  "excludeExternals": true,
 }
