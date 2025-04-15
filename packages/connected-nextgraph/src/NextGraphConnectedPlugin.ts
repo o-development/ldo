@@ -1,10 +1,12 @@
 import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
 import type { NextGraphUri } from "./types";
 import { NextGraphResource } from "./resources/NextGraphResource";
-import ng from "nextgraph";
 import { isNextGraphUri } from "./util/isNextGraphUri";
 
 export interface NextGraphConnectedContext {
+  // NG does not have a type definition
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ng?: any;
   sessionId?: string;
   protectedStoreId?: string;
   privateStoreId?: string;
@@ -57,7 +59,7 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
         ? context.nextgraph.privateStoreId
         : undefined);
 
-    const nuri: NextGraphUri = await ng.doc_create(
+    const nuri: NextGraphUri = await context.nextgraph.ng.doc_create(
       context.nextgraph.sessionId,
       "Graph",
       "data:graph",

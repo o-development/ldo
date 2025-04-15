@@ -34,6 +34,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "jest-rdf": "^1.8.0",
+    "nextgraph": "^0.1.1-alpha.7",
     "start-server-and-test": "^2.0.11",
     "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
@@ -47,7 +48,6 @@
     "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
-    "nextgraph": "^0.1.1-alpha.7",
     "ws": "^8.18.0"
   },
   "files": [

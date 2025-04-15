@@ -13,7 +13,6 @@ import {
 import type { NextGraphUri } from "../types";
 import EventEmitter from "events";
 import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin";
-import ng from "nextgraph";
 import { changesToSparqlUpdate, type DatasetChanges } from "@ldo/rdf-utils";
 import type { NextGraphNotificationMessage } from "../notifications/NextGraphNotificationMessage";
 import type { Dataset, Quad } from "@rdfjs/types";
@@ -127,7 +126,7 @@ export class NextGraphResource
       await new Promise<void>(async (resolve, reject) => {
         let unsub: () => void;
         try {
-          unsub = await ng.doc_subscribe(
+          unsub = await this.context.nextgraph.ng.doc_subscribe(
             this.uri,
             this.context.nextgraph.sessionId,
             async (response: NextGraphNotificationMessage) => {
@@ -188,7 +187,7 @@ export class NextGraphResource
 
     try {
       // Perform Update with remote
-      await ng.sparql_update(
+      await this.context.nextgraph.ng.sparql_update(
         this.context.nextgraph.sessionId,
         await changesToSparqlUpdate(datasetChanges),
         this.uri,
