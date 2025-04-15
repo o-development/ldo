@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LdoDataset } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
-import type { InvalidIdentifierResource } from "./InvalidIdentifierResource";
+import type { InvalidIdentifierResource } from "../InvalidIdentifierResource";
 
 export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   arg: Arg,

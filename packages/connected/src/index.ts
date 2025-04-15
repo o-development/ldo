@@ -1,13 +1,13 @@
-export * from "./IConnectedLdoDataset";
+export * from "./types/IConnectedLdoDataset";
 export * from "./ConnectedLdoDataset";
 export * from "./ConnectedLdoTransactionDataset";
-export * from "./ConnectedPlugin";
+export * from "./types/ConnectedPlugin";
 export * from "./Resource";
 export * from "./InvalidIdentifierResource";
-export * from "./ConnectedContext";
+export * from "./types/ConnectedContext";
 export * from "./methods";
 export * from "./createConntectedLdoDataset";
-export * from "./SubscriptionCallbacks";
+export * from "./notifications/SubscriptionCallbacks";
 
 export * from "./util/splitChangesByGraph";
 

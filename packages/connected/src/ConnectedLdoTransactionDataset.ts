@@ -6,12 +6,12 @@ import {
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { ConnectedContext } from "./ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./IConnectedLdoDataset";
+} from "./types/IConnectedLdoDataset";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess";
 import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess";

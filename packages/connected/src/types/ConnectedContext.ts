@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedLdoDataset } from "./ConnectedLdoDataset";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 
 /**
  * Each Plugin comes with a context. This is the aggregate of all those contexts

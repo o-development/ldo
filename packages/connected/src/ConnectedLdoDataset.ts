@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoDataset, startTransaction } from "@ldo/ldo";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
-import type { ConnectedContext } from "./ConnectedContext";
+import type { ConnectedContext } from "./types/ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./IConnectedLdoDataset";
+} from "./types/IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
 
