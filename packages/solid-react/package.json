@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "^2.0.0",
+    "@ldo/react": "^1.0.0-alpha.3",
     "@ldo/connected": "^1.0.0-alpha.3",
     "@ldo/connected-solid": "^1.0.0-alpha.3",
     "@rdfjs/data-model": "^1.2.0",
