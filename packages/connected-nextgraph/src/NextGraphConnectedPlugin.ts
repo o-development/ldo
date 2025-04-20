@@ -16,6 +16,7 @@ export interface NextGraphConnectedContext {
 export interface NextGraphCreateResourceOptions {
   storeType?: "public" | "protected" | "private" | "group" | "dialog";
   storeRepo?: string;
+  primaryClass?: string;
 }
 
 export interface NextGraphConnectedPlugin
@@ -58,11 +59,12 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
         : storeType === "private"
         ? context.nextgraph.privateStoreId
         : undefined);
+    const primaryClass = options?.primaryClass ?? "data:graph";
 
     const nuri: NextGraphUri = await context.nextgraph.ng.doc_create(
       context.nextgraph.sessionId,
       "Graph",
-      "data:graph",
+      primaryClass,
       "store",
       storeType,
       storeRepo,
