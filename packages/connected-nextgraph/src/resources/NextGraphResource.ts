@@ -215,7 +215,14 @@ export class NextGraphResource
       )
     ).reduce((agg, ldoDataset) => {
       ldoDataset.forEach((quad) => {
-        agg.add(quad);
+        agg.add(
+          createQuad(
+            quad.subject,
+            quad.predicate,
+            quad.object,
+            namedNode(this.uri),
+          ),
+        );
       });
       return agg;
     }, createDataset());
