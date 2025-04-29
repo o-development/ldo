@@ -5,8 +5,7 @@
 
 import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
 import { ProfileShapeType } from "packages/ldo/test/profileData";
-import { SolidProfileShape } from "packages/ldo/test/profileData";
-import { PostShShapeType } from "packages/solid-react/test/.ldo/post.shapeTypes";
+import type { SolidProfileShape } from "packages/ldo/test/profileData";
 
 /**
  * Link Query Input
@@ -15,13 +14,13 @@ export type LQInputObject<Type> = Partial<{
   [key in keyof Type]: LQInput<Type[key]>;
 }>;
 
-export type LQInputSubArray<Type> = Type extends object
+export type LQInputSubSet<Type> = Type extends object
   ? LQInputObject<Type>
   : true;
 
-export type LQInput<Type> = Type extends LdSet<infer ArraySubType>
-  ? LQInputSubArray<ArraySubType>
-  : LQInputSubArray<Type>;
+export type LQInput<Type> = Type extends LdSet<infer SetSubType>
+  ? LQInputSubSet<SetSubType>
+  : LQInputSubSet<Type>;
 
 /**
  * Link Query Input Default
@@ -43,31 +42,26 @@ export type LQReturnObject<Type, Input extends LQInputObject<Type>> = {
     ? never
     : key]: Input[key] extends LQInput<Type[key]>
     ? undefined extends Type[key]
-      ? LQReturnRecursive<Type[key], Input[key]> | undefined
-      : LQReturnRecursive<Type[key], Input[key]>
+      ? LQReturn<Type[key], Input[key]> | undefined
+      : LQReturn<Type[key], Input[key]>
     : never;
 };
 
-export type LQReturnSubArray<Type, Input> = Input extends LQInputSubArray<Input>
-  ? Type extends object
+export type LQReturnSubSet<Type, Input> = Input extends LQInputSubSet<Type>
+  ? Input extends LQInputObject<Type>
     ? LQReturnObject<Type, Input>
     : Type
   : never;
 
-export type LQReturnRecursive<
+export type LQReturn<
   Type,
   Input extends LQInput<Type>,
-> = NonNullable<Type> extends LdSet<infer ArraySubType>
-  ? LdSet<LQReturnSubArray<ArraySubType, Input>>
-  : LQReturnSubArray<Type, Input>;
-
-export type LQReturn<Type, Input extends LQInput<Type>> = LQReturnRecursive<
-  Type,
-  Input
->;
+> = NonNullable<Type> extends LdSet<infer SetSubType>
+  ? LdSet<LQReturnSubSet<SetSubType, Input>>
+  : LQReturnSubSet<Type, Input>;
 
 type ExpandDeep<T> = T extends LdSet<infer U>
-  ? LdSet<ExpandDeep<U>> // recursively expand arrays
+  ? LdSet<ExpandDeep<U>> // recursively expand sets
   : T extends object
   ? { [K in keyof T]: ExpandDeep<T[K]> } // recursively expand objects
   : T; // base case (primitive types)
@@ -79,10 +73,9 @@ function sampleFunction<Type extends LdoBase, Input extends LQInput<Type>>(
   throw new Error("NotImplemented");
 }
 
-type other = ExpandDeep<LQInput<SolidProfileShape>>;
-
 const value = sampleFunction(ProfileShapeType, {
   hasTelephone: { type: { "@id": true }, value: true },
+  name: true,
 });
 
 value;
