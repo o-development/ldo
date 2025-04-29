@@ -9,7 +9,6 @@ export class NextGraphNotificationSubscription extends NotificationSubscription<
   private unsub: (() => void) | undefined;
 
   protected async open(): Promise<void> {
-    console.log("THIS WAS OPENED AND IT SHOULDNT BE");
     this.unsub = await this.context.nextgraph.ng.doc_subscribe(
       this.resource.uri,
       this.context.nextgraph.sessionId,
