@@ -52,6 +52,7 @@ describe("NextGraph Plugin", () => {
     // Get SessionId for that wallet
     nextgraphLdoDataset = createNextGraphLdoDataset();
     nextgraphLdoDataset.setContext("nextgraph", {
+      ng,
       sessionId,
       protectedStoreId,
       publicStoreId,

@@ -1,10 +1,12 @@
 import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
 import type { NextGraphUri } from "./types";
 import { NextGraphResource } from "./resources/NextGraphResource";
-import ng from "nextgraph";
 import { isNextGraphUri } from "./util/isNextGraphUri";
 
 export interface NextGraphConnectedContext {
+  // NG does not have a type definition
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ng?: any;
   sessionId?: string;
   protectedStoreId?: string;
   privateStoreId?: string;
@@ -14,6 +16,7 @@ export interface NextGraphConnectedContext {
 export interface NextGraphCreateResourceOptions {
   storeType?: "public" | "protected" | "private" | "group" | "dialog";
   storeRepo?: string;
+  primaryClass?: string;
 }
 
 export interface NextGraphConnectedPlugin
@@ -56,11 +59,12 @@ export const nextGraphConnectedPlugin: NextGraphConnectedPlugin = {
         : storeType === "private"
         ? context.nextgraph.privateStoreId
         : undefined);
+    const primaryClass = options?.primaryClass ?? "data:graph";
 
-    const nuri: NextGraphUri = await ng.doc_create(
+    const nuri: NextGraphUri = await context.nextgraph.ng.doc_create(
       context.nextgraph.sessionId,
       "Graph",
-      "data:graph",
+      primaryClass,
       "store",
       storeType,
       storeRepo,
