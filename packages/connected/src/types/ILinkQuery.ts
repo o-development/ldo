@@ -3,9 +3,7 @@
 // If I ever want to implement a global query interface, this is a good place
 // to start.
 
-import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
-import { ProfileShapeType } from "packages/ldo/test/profileData";
-import type { SolidProfileShape } from "packages/ldo/test/profileData";
+import type { LdoBase, LdSet } from "@ldo/ldo";
 
 /**
  * Link Query Input
@@ -60,22 +58,18 @@ export type LQReturn<
   ? LdSet<LQReturnSubSet<SetSubType, Input>>
   : LQReturnSubSet<Type, Input>;
 
-type ExpandDeep<T> = T extends LdSet<infer U>
+export type ExpandDeep<T> = T extends LdSet<infer U>
   ? LdSet<ExpandDeep<U>> // recursively expand sets
   : T extends object
   ? { [K in keyof T]: ExpandDeep<T[K]> } // recursively expand objects
   : T; // base case (primitive types)
 
-function sampleFunction<Type extends LdoBase, Input extends LQInput<Type>>(
-  _shapeType: ShapeType<Type>,
-  _input: Input,
-): ExpandDeep<LQReturn<Type, Input>> {
-  throw new Error("NotImplemented");
+/**
+ * ILinkQuery: Manages resources in a link query
+ */
+export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
+  run(): Promise<ExpandDeep<LQReturn<Type, Input>>>;
+  subscribe(): Promise<void>;
+  unsubscribe(): void;
+  fromSubject(): ExpandDeep<LQReturn<Type, Input>>;
 }
-
-const value = sampleFunction(ProfileShapeType, {
-  hasTelephone: { type: { "@id": true }, value: true },
-  name: true,
-});
-
-value;

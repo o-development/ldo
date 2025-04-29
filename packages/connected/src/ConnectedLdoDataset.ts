@@ -12,6 +12,8 @@ import type {
 } from "./types/IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
+import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**
  * A ConnectedLdoDataset has all the functionality of a LdoDataset with the
@@ -275,6 +277,13 @@ export class ConnectedLdoDataset<
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.context[pluginName] = { ...this.context[pluginName], ...context };
+  }
+
+  public usingType<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+  ): ConnectedLdoBuilder<Type, Plugins> {
+    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
+    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
   }
 
   public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {

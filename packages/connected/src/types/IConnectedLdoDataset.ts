@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LdoDataset } from "@ldo/ldo";
+import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { InvalidIdentifierResource } from "../InvalidIdentifierResource";
+import type { IConnectedLdoBuilder } from "./IConnectedLdoBuilder";
 
 export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   arg: Arg,
@@ -136,4 +137,8 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     name: Name,
     context: Plugin["types"]["context"],
   );
+
+  usingType<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+  ): IConnectedLdoBuilder<Type, Plugins>;
 }

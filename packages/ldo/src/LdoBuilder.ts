@@ -31,8 +31,8 @@ export class LdoBuilder<Type extends LdoBase> {
   /**
    * @internal
    */
-  private jsonldDatasetProxyBuilder: JsonldDatasetProxyBuilder;
-  private shapeType: ShapeType<Type>;
+  protected jsonldDatasetProxyBuilder: JsonldDatasetProxyBuilder;
+  protected shapeType: ShapeType<Type>;
 
   /**
    * Initializes the LdoBuilder

@@ -2,7 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@ldo/*": ["packages/*/src"]
+      "@ldo/*": [
+        "packages/*/src"
+      ]
     },
     "allowJs": true
   }
