@@ -1,4 +1,5 @@
 export * from "./types/IConnectedLdoDataset";
+export * from "./ConnectedLdoBuilder";
 export * from "./ConnectedLdoDataset";
 export * from "./ConnectedLdoTransactionDataset";
 export * from "./types/ConnectedPlugin";
@@ -21,3 +22,6 @@ export * from "./results/success/ReadSuccess";
 export * from "./results/success/UpdateSuccess";
 
 export * from "./notifications/NotificationSubscription";
+
+export * from "./linkTraversal/ResourceLinkQuery";
+export * from "./linkTraversal/exploreLinks";

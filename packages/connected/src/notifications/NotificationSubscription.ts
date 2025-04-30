@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
 import type { ConnectedPlugin } from "../types/ConnectedPlugin";
-import type { ConnectedContext } from "../ConnectedContext";
+import type { ConnectedContext } from "../types/ConnectedContext";
 import type { SubscriptionCallbacks } from "./SubscriptionCallbacks";
 import type { NotificationCallbackError } from "../results/error/NotificationErrors";
 

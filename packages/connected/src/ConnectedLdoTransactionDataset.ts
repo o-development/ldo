@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoTransactionDataset } from "@ldo/ldo";
 import type { DatasetFactory, Quad } from "@rdfjs/types";
 import {
@@ -7,7 +8,7 @@ import {
 } from "@ldo/subscribable-dataset";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
 import type { ConnectedPlugin } from "./types/ConnectedPlugin";
-import type { ConnectedContext } from "./ConnectedContext";
+import type { ConnectedContext } from "./types/ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
@@ -21,6 +22,8 @@ import type {
   AggregateSuccess,
   SuccessResult,
 } from "./results/success/SuccessResult";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
+import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**
  * A ConnectedLdoTransactionDataset has all the functionality of a
@@ -224,5 +227,12 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
       // HACK: Cast to Any
       results: results.map((result) => result[2]) as any,
     };
+  }
+
+  public usingType<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+  ): ConnectedLdoBuilder<Type, Plugins> {
+    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
+    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
   }
 }
