@@ -5,7 +5,7 @@ import {
   UnexpectedResourceError,
 } from "../src/results/error/ErrorResult";
 import { InvalidUriError } from "../src/results/error/InvalidUriError";
-import { MockResouce } from "./MockResource";
+import { MockResouce } from "./mocks/MockResource";
 
 const mockResource = new MockResouce("https://example.com/");
 
