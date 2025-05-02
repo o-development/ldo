@@ -18,13 +18,11 @@ export function setupServer(
       Promise<Response>,
       [input: RequestInfo | URL, init?: RequestInit | undefined]
     >;
+    authFetch: typeof fetch;
     rootUri: string;
-    rootContainer: string;
   } = {
-    rootUri: `https://localhost:${port}`,
-    rootContainer: `https://localhost:${port}/example/`,
+    rootUri: `http://localhost:${port}/`,
   } as any;
-  let authFetch: typeof fetch;
 
   let previousJestId: string | undefined;
   let previousNodeEnv: string | undefined;
@@ -37,7 +35,7 @@ export function setupServer(
     // Start up the server
     data.app = await createApp(port, customConfigPath);
     await data.app.start();
-    authFetch = await generateAuthFetch(port);
+    data.authFetch = await generateAuthFetch(port);
   });
 
   afterAll(async () => {
@@ -49,13 +47,13 @@ export function setupServer(
   });
 
   beforeEach(async () => {
-    data.fetchMock = jest.fn(authFetch);
+    data.fetchMock = jest.fn(data.authFetch);
     // Create a new document called sample.ttl
-    await initResources(data.rootUri, resourceInfo, authFetch);
+    await initResources(data.rootUri, resourceInfo, data.authFetch);
   });
 
   afterEach(async () => {
-    await cleanResources(data.rootUri, resourceInfo, authFetch);
+    await cleanResources(data.rootUri, resourceInfo, data.authFetch);
   });
 
   return data;

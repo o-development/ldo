@@ -3,7 +3,7 @@ export type ResourceInfo = ContainerInfo | LeafInfo;
 interface ContainerInfo {
   slug: string;
   isContainer: true;
-  shouldNotInit: boolean;
+  shouldNotInit?: boolean;
   contains: (ContainerInfo | LeafInfo)[];
 }
 
@@ -39,11 +39,10 @@ export async function initResources(
       ),
     );
   } else {
-    authFetch(rootUri, {
-      method: "POST",
+    await authFetch(`${rootUri}${resourceInfo.slug}`, {
+      method: "PUT",
       headers: {
         "content-type": resourceInfo.mimeType,
-        slug: resourceInfo.slug,
       },
       body: resourceInfo.data,
     });

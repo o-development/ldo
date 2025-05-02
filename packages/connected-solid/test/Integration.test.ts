@@ -1,5 +1,3 @@
-import type { App } from "@solid/community-server";
-import { ROOT_CONTAINER, WEB_ID, createApp } from "./solidServer.helper";
 import {
   namedNode,
   quad as createQuad,
@@ -16,9 +14,7 @@ import type {
 } from "../src/requester/results/error/HttpErrorResult";
 import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
-import { generateAuthFetch } from "./authFetch.helper";
 import { wait } from "./utils.helper";
-import fs from "fs/promises";
 import path from "path";
 import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src";
 import {
@@ -45,7 +41,11 @@ import {
   ConnectedLdoTransactionDataset,
 } from "@ldo/connected";
 import { getStorageFromWebId } from "../src/getStorageFromWebId";
+import type { ResourceInfo } from "@ldo/test-solid-server";
+import { createApp, setupServer } from "@ldo/test-solid-server";
 
+const ROOT_CONTAINER = "http://localhost:3001/";
+const WEB_ID = "http://localhost:3001/example/profile/card#me";
 const TEST_CONTAINER_SLUG = "test_ldo/";
 const TEST_CONTAINER_URI =
   `${ROOT_CONTAINER}${TEST_CONTAINER_SLUG}` as SolidContainerUri;
@@ -93,7 +93,7 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
-const TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
+const _TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
 const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://www.w3.org/ns/auth/acl#Authorization>;
 <http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
 <http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
@@ -105,6 +105,57 @@ const SAMPLE_PROFILE_TTL = `
 
 <${SAMPLE_PROFILE_URI}> pim:storage <https://example.com/A/>, <https://example.com/B/> .
 `;
+
+const resourceInfo: ResourceInfo = {
+  slug: TEST_CONTAINER_SLUG,
+  isContainer: true,
+  contains: [
+    {
+      slug: ".acl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      data: TEST_CONTAINER_ACL,
+    },
+    {
+      slug: "sample.ttl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      data: SPIDER_MAN_TTL,
+    },
+    {
+      slug: "sample.txt",
+      isContainer: false,
+      mimeType: "text/plain",
+      data: "some text.",
+    },
+    {
+      slug: "profile.ttl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      data: SAMPLE_PROFILE_TTL,
+    },
+    {
+      slug: "sample_container/",
+      isContainer: true,
+      shouldNotInit: true,
+      contains: [],
+    },
+    {
+      slug: SAMPLE2_DATA_SLUG,
+      isContainer: false,
+      shouldNotInit: true,
+      mimeType: "text/turtle",
+      data: "",
+    },
+    {
+      slug: SAMPLE2_BINARY_SLUG,
+      isContainer: false,
+      shouldNotInit: true,
+      mimeType: "text/plain",
+      data: "",
+    },
+  ],
+};
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
@@ -149,98 +200,13 @@ async function testRequestLoads<ReturnVal>(
 }
 
 describe("Integration", () => {
-  let app: App;
-  let authFetch: typeof fetch;
-  let fetchMock: jest.Mock<
-    Promise<Response>,
-    [input: RequestInfo | URL, init?: RequestInit | undefined]
-  >;
   let solidLdoDataset: ConnectedLdoDataset<SolidConnectedPlugin[]>;
 
-  let previousJestId: string | undefined;
-  let previousNodeEnv: string | undefined;
-  beforeAll(async () => {
-    // Remove Jest ID so that community solid server doesn't use the Jest Import
-    previousJestId = process.env.JEST_WORKER_ID;
-    previousNodeEnv = process.env.NODE_ENV;
-    delete process.env.JEST_WORKER_ID;
-    process.env.NODE_ENV = "other_test";
-    // Start up the server
-    app = await createApp();
-    await app.start();
-    authFetch = await generateAuthFetch();
-  });
-
-  afterAll(async () => {
-    app.stop();
-    process.env.JEST_WORKER_ID = previousJestId;
-    process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, "./data");
-    await fs.rm(testDataPath, { recursive: true, force: true });
-  });
+  const s = setupServer(3001, resourceInfo);
 
   beforeEach(async () => {
-    fetchMock = jest.fn(authFetch);
     solidLdoDataset = createSolidLdoDataset();
-    solidLdoDataset.setContext("solid", { fetch: fetchMock });
-    // Create a new document called sample.ttl
-    await authFetch(ROOT_CONTAINER, {
-      method: "POST",
-      headers: {
-        link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
-        slug: TEST_CONTAINER_SLUG,
-      },
-    });
-    await authFetch(TEST_CONTAINER_ACL_URI, {
-      method: "PUT",
-      headers: {
-        "content-type": "text/turtle",
-      },
-      body: TEST_CONTAINER_ACL,
-    });
-    await Promise.all([
-      authFetch(TEST_CONTAINER_URI, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "sample.ttl" },
-        body: SPIDER_MAN_TTL,
-      }),
-      authFetch(TEST_CONTAINER_URI, {
-        method: "POST",
-        headers: { "content-type": "text/plain", slug: "sample.txt" },
-        body: "some text.",
-      }),
-      authFetch(TEST_CONTAINER_URI, {
-        method: "POST",
-        headers: { "content-type": "text/turtle", slug: "profile.ttl" },
-        body: SAMPLE_PROFILE_TTL,
-      }),
-    ]);
-  });
-
-  afterEach(async () => {
-    await Promise.all([
-      authFetch(SAMPLE_DATA_URI, {
-        method: "DELETE",
-      }),
-      authFetch(SAMPLE2_DATA_URI, {
-        method: "DELETE",
-      }),
-      authFetch(SAMPLE_BINARY_URI, {
-        method: "DELETE",
-      }),
-      authFetch(SAMPLE2_BINARY_URI, {
-        method: "DELETE",
-      }),
-      authFetch(SAMPLE_PROFILE_URI, {
-        method: "DELETE",
-      }),
-      authFetch(SAMPLE_CONTAINER_URI, {
-        method: "DELETE",
-      }),
-    ]);
-    await authFetch(TEST_CONTAINER_URI, {
-      method: "DELETE",
-    });
+    solidLdoDataset.setContext("solid", { fetch: s.fetchMock });
   });
 
   /**
@@ -338,7 +304,7 @@ describe("Integration", () => {
     });
 
     it("Returns an ServerError when an 500 error is returned", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -350,7 +316,7 @@ describe("Integration", () => {
     });
 
     it("Returns an Unauthorized error if a 403 error is returned", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 403 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 403 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -362,7 +328,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnauthenticatedError on an 401 error is returned", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 401 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 401 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -374,7 +340,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnexpectedHttpError on a strange number error is returned", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 399 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 399 }));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -386,7 +352,7 @@ describe("Integration", () => {
     });
 
     it("Returns a NoncompliantPod error when no content type is returned", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(undefined, { status: 200, headers: {} }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
@@ -404,7 +370,7 @@ describe("Integration", () => {
     });
 
     it("Returns a NoncompliantPod error if invalid turtle is provided", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("Error", {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
@@ -425,7 +391,7 @@ describe("Integration", () => {
     });
 
     it("Parses Turtle even when the content type contains parameters", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(SPIDER_MAN_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle;charset=utf-8" }),
@@ -443,7 +409,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
-      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
         isLoading: true,
@@ -457,7 +423,7 @@ describe("Integration", () => {
     });
 
     it("Does not return an error if there is no link header for a container request", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
@@ -489,7 +455,7 @@ describe("Integration", () => {
         resource.read(),
       ]);
 
-      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(s.fetchMock).toHaveBeenCalledTimes(1);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
     });
@@ -502,7 +468,7 @@ describe("Integration", () => {
         resource.read(),
       ]);
 
-      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(s.fetchMock).toHaveBeenCalledTimes(3);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
     });
@@ -551,9 +517,9 @@ describe("Integration", () => {
     it("returns a cached existing container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
-      fetchMock.mockClear();
+      s.fetchMock.mockClear();
       const result = await resource.readIfUnfetched();
-      expect(fetchMock).not.toHaveBeenCalled();
+      expect(s.fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("containerReadSuccess");
       expect(resource.children().length).toBe(3);
     });
@@ -561,7 +527,7 @@ describe("Integration", () => {
     it("returns a cached existing data leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.read();
-      fetchMock.mockClear();
+      s.fetchMock.mockClear();
       const result = await resource.readIfUnfetched();
       expect(result.type).toBe("dataReadSuccess");
       expect(
@@ -576,7 +542,7 @@ describe("Integration", () => {
     it("returns a cached existing binary leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
       await resource.read();
-      fetchMock.mockClear();
+      s.fetchMock.mockClear();
       const result = await resource.readIfUnfetched();
       expect(result.type).toBe("binaryReadSuccess");
     });
@@ -584,18 +550,18 @@ describe("Integration", () => {
     it("returns a cached absent container", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
       await resource.read();
-      fetchMock.mockClear();
+      s.fetchMock.mockClear();
       const result = await resource.readIfUnfetched();
-      expect(fetchMock).not.toHaveBeenCalled();
+      expect(s.fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("absentReadSuccess");
     });
 
     it("returns a cached absent leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       await resource.read();
-      fetchMock.mockClear();
+      s.fetchMock.mockClear();
       const result = await resource.readIfUnfetched();
-      expect(fetchMock).not.toHaveBeenCalled();
+      expect(s.fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("absentReadSuccess");
     });
   });
@@ -614,19 +580,19 @@ describe("Integration", () => {
     });
 
     it("Returns an error if there is no root container", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
         }),
       );
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
         }),
       );
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
@@ -641,7 +607,7 @@ describe("Integration", () => {
     });
 
     it("An error to be returned if a common http error is encountered", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -653,7 +619,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
-      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       const result = await resource.getRootContainer();
       expect(result.isError).toBe(true);
@@ -663,7 +629,7 @@ describe("Integration", () => {
     });
 
     it("returns a NonCompliantPodError when there is no root", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({
@@ -711,7 +677,7 @@ describe("Integration", () => {
     });
 
     it("Passes any errors returned from the read method", async () => {
-      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const result = await getStorageFromWebId(
         SAMPLE_DATA_URI,
         solidLdoDataset,
@@ -720,8 +686,8 @@ describe("Integration", () => {
     });
 
     it("Passes any errors returned from the getRootContainer method", async () => {
-      fetchMock.mockResolvedValueOnce(new Response(""));
-      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      s.fetchMock.mockResolvedValueOnce(new Response(""));
+      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const result = await getStorageFromWebId(
         SAMPLE_DATA_URI,
         solidLdoDataset,
@@ -828,7 +794,7 @@ describe("Integration", () => {
 
     it("returns and error if creating a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -840,7 +806,7 @@ describe("Integration", () => {
 
     it("returns a delete error if delete failed", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -852,10 +818,10 @@ describe("Integration", () => {
 
     it("returns an error if the create fetch fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockImplementationOnce(async (...args) => {
-        return authFetch(...args);
+      s.fetchMock.mockImplementationOnce(async (...args) => {
+        return s.authFetch(...args);
       });
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -867,10 +833,10 @@ describe("Integration", () => {
 
     it("returns an unexpected error if some unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockImplementationOnce(async (...args) => {
-        return authFetch(...args);
+      s.fetchMock.mockImplementationOnce(async (...args) => {
+        return s.authFetch(...args);
       });
-      fetchMock.mockImplementationOnce(async () => {
+      s.fetchMock.mockImplementationOnce(async () => {
         throw new Error("Some Unknown");
       });
       const result = await resource.createAndOverwrite();
@@ -889,7 +855,7 @@ describe("Integration", () => {
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
       // 1 for read, 1 for delete in createAndOverwrite, 1 for create
-      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(s.fetchMock).toHaveBeenCalledTimes(3);
     });
 
     it("batches the create request while waiting on a similar request", async () => {
@@ -902,7 +868,7 @@ describe("Integration", () => {
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
       // 1 for delete in createAndOverwrite, 1 for create
-      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -999,7 +965,7 @@ describe("Integration", () => {
 
     it("returns an error if creating a container", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_CONTAINER_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(SAMPLE_CONTAINER_URI, {
           status: 500,
         }),
@@ -1011,7 +977,7 @@ describe("Integration", () => {
 
     it("returns an error if creating a leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(SAMPLE2_DATA_URI, {
           status: 500,
         }),
@@ -1028,7 +994,7 @@ describe("Integration", () => {
   describe("deleteResource", () => {
     it("returns an unexpected http error if an unexpected value is returned", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 214,
         }),
@@ -1040,7 +1006,7 @@ describe("Integration", () => {
 
     it("returns an unexpected resource error if an unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockImplementationOnce(async () => {
+      s.fetchMock.mockImplementationOnce(async () => {
         throw new Error("Some unknwon");
       });
       const result = await resource.delete();
@@ -1056,7 +1022,7 @@ describe("Integration", () => {
 
     it("returns an error on container read when deleting a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockImplementation(async (input, init) => {
+      s.fetchMock.mockImplementation(async (input, init) => {
         if (
           (init?.method === "get" || !init?.method) &&
           input === TEST_CONTAINER_URI
@@ -1065,7 +1031,7 @@ describe("Integration", () => {
             status: 500,
           });
         }
-        return authFetch(input, init);
+        return s.authFetch(input, init);
       });
       const result = await resource.delete();
       expect(result.isError).toBe(true);
@@ -1082,13 +1048,13 @@ describe("Integration", () => {
 
     it("returns an error on child delete when deleting a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockImplementation(async (input, init) => {
+      s.fetchMock.mockImplementation(async (input, init) => {
         if (init?.method === "delete" && input === SAMPLE_DATA_URI) {
           return new Response(SAMPLE_DATA_URI, {
             status: 500,
           });
         }
-        return authFetch(input, init);
+        return s.authFetch(input, init);
       });
       const result = await resource.delete();
       expect(result.isError).toBe(true);
@@ -1105,13 +1071,13 @@ describe("Integration", () => {
 
     it("returns an error on container delete when deleting a container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockImplementation(async (input, init) => {
+      s.fetchMock.mockImplementation(async (input, init) => {
         if (init?.method === "delete" && input === TEST_CONTAINER_URI) {
           return new Response(SAMPLE_DATA_URI, {
             status: 500,
           });
         }
-        return authFetch(input, init);
+        return s.authFetch(input, init);
       });
       const result = await resource.delete();
       expect(result.isError).toBe(true);
@@ -1184,7 +1150,7 @@ describe("Integration", () => {
     });
 
     it("handles an HTTP error", async () => {
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
 
       const transaction = solidLdoDataset.startTransaction();
       transaction.add(normanQuad);
@@ -1202,7 +1168,7 @@ describe("Integration", () => {
     });
 
     it("handles an unknown request", async () => {
-      fetchMock.mockImplementationOnce(() => {
+      s.fetchMock.mockImplementationOnce(() => {
         throw new Error("Some Error");
       });
       const transaction = solidLdoDataset.startTransaction();
@@ -1286,7 +1252,7 @@ describe("Integration", () => {
       ]);
       expect(updateResult1.type).toBe("aggregateSuccess");
       expect(updateResult2.type).toBe("aggregateSuccess");
-      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
       expect(
         solidLdoDataset.has(
           createQuad(
@@ -1394,7 +1360,7 @@ describe("Integration", () => {
 
     it("returns a delete error if delete failed", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -1409,10 +1375,10 @@ describe("Integration", () => {
 
     it("returns an error if the create fetch fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      fetchMock.mockImplementationOnce(async (...args) => {
-        return authFetch(...args);
+      s.fetchMock.mockImplementationOnce(async (...args) => {
+        return s.authFetch(...args);
       });
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
         }),
@@ -1427,10 +1393,10 @@ describe("Integration", () => {
 
     it("returns an unexpected error if some unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      fetchMock.mockImplementationOnce(async (...args) => {
-        return authFetch(...args);
+      s.fetchMock.mockImplementationOnce(async (...args) => {
+        return s.authFetch(...args);
       });
-      fetchMock.mockImplementationOnce(async () => {
+      s.fetchMock.mockImplementationOnce(async () => {
         throw new Error("Some Unknown");
       });
       const result = await resource.uploadAndOverwrite(
@@ -1458,7 +1424,7 @@ describe("Integration", () => {
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
       // 1 for read, 1 for delete in createAndOverwrite, 1 for create
-      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(s.fetchMock).toHaveBeenCalledTimes(3);
       expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
 
@@ -1478,7 +1444,7 @@ describe("Integration", () => {
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
       // 1 for delete in createAndOverwrite, 1 for create
-      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
       expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
   });
@@ -1552,7 +1518,7 @@ describe("Integration", () => {
 
     it("returns an error if an error is encountered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(SAMPLE2_BINARY_URI, {
           status: 500,
         }),
@@ -1596,7 +1562,7 @@ describe("Integration", () => {
     });
 
     it("handles an error when committing data", async () => {
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response(SAMPLE_DATA_URI, {
           status: 500,
         }),
@@ -1847,7 +1813,7 @@ describe("Integration", () => {
 
     it("returns an error when an error is encountered fetching the aclUri", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
@@ -1862,7 +1828,7 @@ describe("Integration", () => {
 
     it("returns a non-compliant error if a response is returned without a link header", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("Error", {
           status: 200,
         }),
@@ -1879,7 +1845,7 @@ describe("Integration", () => {
 
     it("returns a non-compliant error if a response is returned without an ACL link", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("Error", {
           status: 200,
           headers: { link: `<card.meta>; rel="describedBy"` },
@@ -1896,7 +1862,7 @@ describe("Integration", () => {
     });
 
     it("Returns an UnexpectedResourceError if an unknown error is triggered while getting the wac URI", async () => {
-      fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const result = await resource.getWac();
       expect(result.isError).toBe(true);
@@ -1907,13 +1873,13 @@ describe("Integration", () => {
 
     it("Returns an error if the request to get the ACL fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
         }),
       );
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
@@ -1923,13 +1889,13 @@ describe("Integration", () => {
 
     it("Returns an error if the request to the ACL resource returns invalid turtle", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
         }),
       );
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("BAD TURTLE", { status: 200 }),
       );
       const wacResult = await resource.getWac();
@@ -1944,14 +1910,14 @@ describe("Integration", () => {
 
     it("Returns an error if there was a problem getting the parent resource", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
         }),
       );
-      fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
-      fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
@@ -1959,13 +1925,13 @@ describe("Integration", () => {
 
     it("returns a NonCompliantPodError when this is the root resource and it doesn't have an ACL", async () => {
       const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
         }),
       );
-      fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
@@ -2039,7 +2005,7 @@ describe("Integration", () => {
 
     it("returns an error when an error is encountered fetching the aclUri", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
       const wacResult = await resource.setWac(newRules);
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
@@ -2047,13 +2013,13 @@ describe("Integration", () => {
 
     it("Returns an error when the request to write the access rules throws an error", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      fetchMock.mockResolvedValueOnce(
+      s.fetchMock.mockResolvedValueOnce(
         new Response("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
         }),
       );
-      fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
+      s.fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
       const wacResult = await resource.setWac(newRules);
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("serverError");
@@ -2083,7 +2049,7 @@ describe("Integration", () => {
 
       expect(resource.isSubscribedToNotifications()).toBe(true);
 
-      await authFetch(SAMPLE_DATA_URI, {
+      await s.authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
         body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Peter Parker" . }',
         headers: {
@@ -2105,7 +2071,7 @@ describe("Integration", () => {
       spidermanCallback.mockClear();
       await resource.unsubscribeFromNotifications(subscriptionId);
       expect(resource.isSubscribedToNotifications()).toBe(false);
-      await authFetch(SAMPLE_DATA_URI, {
+      await s.authFetch(SAMPLE_DATA_URI, {
         method: "PATCH",
         body: 'INSERT DATA { <http://example.org/#spiderman> <http://xmlns.com/foaf/0.1/name> "Miles Morales" . }',
         headers: {
@@ -2143,7 +2109,7 @@ describe("Integration", () => {
 
       await resource.subscribeToNotifications();
 
-      await authFetch(SAMPLE_DATA_URI, {
+      await s.authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
       });
       await wait(1000);
@@ -2177,7 +2143,7 @@ describe("Integration", () => {
 
       await testContainer.subscribeToNotifications();
 
-      await authFetch(SAMPLE_DATA_URI, {
+      await s.authFetch(SAMPLE_DATA_URI, {
         method: "DELETE",
       });
       await wait(1000);
@@ -2211,7 +2177,7 @@ describe("Integration", () => {
 
       await testContainer.subscribeToNotifications();
 
-      await authFetch(TEST_CONTAINER_URI, {
+      await s.authFetch(TEST_CONTAINER_URI, {
         method: "POST",
         headers: { "content-type": "text/turtle", slug: "sample2.ttl" },
         body: SPIDER_MAN_TTL,
@@ -2234,18 +2200,19 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 
-      await app.stop();
+      await s.app.stop();
       await resource.subscribeToNotifications({ onNotificationError: onError });
       expect(onError).toHaveBeenCalledTimes(2);
-      await app.start();
+      await s.app.start();
     });
 
     it("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 
-      await app.stop();
+      await s.app.stop();
       const disabledWebsocketsApp = await createApp(
+        3001,
         path.join(__dirname, "./configs/server-config-without-websocket.json"),
       );
       await disabledWebsocketsApp.start();
@@ -2254,15 +2221,16 @@ describe("Integration", () => {
       expect(onError).toHaveBeenCalledTimes(2);
 
       await disabledWebsocketsApp.stop();
-      await app.start();
+      await s.app.start();
     });
 
     it("attempts to reconnect multiple times before giving up.", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 
-      await app.stop();
+      await s.app.stop();
       const disabledWebsocketsApp = await createApp(
+        3001,
         path.join(__dirname, "./configs/server-config-without-websocket.json"),
       );
       await disabledWebsocketsApp.start();
@@ -2282,7 +2250,7 @@ describe("Integration", () => {
       );
 
       await disabledWebsocketsApp.stop();
-      await app.start();
+      await s.app.start();
     });
 
     it("causes no problems when unsubscribing when not subscribed", async () => {

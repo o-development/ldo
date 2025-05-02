@@ -1,11 +1,12 @@
 {
   "name": "@ldo/test-solid-server",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.8",
   "description": "A solid server to be used in jest tests",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsc --project tsconfig.build.json && npm run copy-configs",
     "prepublishOnly": "npm run build",
+    "copy-configs": "cp -r src/configs dist/configs",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
