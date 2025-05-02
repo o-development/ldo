@@ -11,7 +11,7 @@ import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { ReadSuccess } from "../../src/results/success/ReadSuccess";
 import type { UpdateSuccess } from "../../src/results/success/UpdateSuccess";
 
-export class MockResouce
+export class MockResource
   extends (EventEmitter as new () => ResourceEventEmitter)
   implements Resource
 {
@@ -26,48 +26,34 @@ export class MockResouce
     this.status = new Unfetched(this);
   }
 
-  isLoading(): boolean {
-    throw new Error("Method not implemented.");
-  }
-  isFetched(): boolean {
-    throw new Error("Method not implemented.");
-  }
-  isUnfetched(): boolean {
-    throw new Error("Method not implemented.");
-  }
-  isDoingInitialFetch(): boolean {
-    throw new Error("Method not implemented.");
-  }
-  isPresent(): boolean | undefined {
-    throw new Error("Method not implemented.");
-  }
-  isAbsent(): boolean | undefined {
-    throw new Error("Method not implemented.");
-  }
-  isSubscribedToNotifications(): boolean {
-    throw new Error("Method not implemented.");
-  }
-  read(): Promise<ReadSuccess<any> | ResourceError<any>> {
-    throw new Error("Method not implemented.");
-  }
-  readIfUnfetched(): Promise<ReadSuccess<any> | ResourceError<any>> {
-    throw new Error("Method not implemented.");
-  }
-  update(
-    _datasetChanges: DatasetChanges,
-  ): Promise<UpdateSuccess<any> | ResourceError<any>> {
-    throw new Error("Method not implemented.");
-  }
-  subscribeToNotifications(_callbacks?: {
-    onNotification: (message: any) => void;
-    onNotificationError: (err: Error) => void;
-  }): Promise<string> {
-    throw new Error("Method not implemented.");
-  }
-  unsubscribeFromNotifications(_subscriptionId: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  unsubscribeFromAllNotifications(): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
+  isLoading = jest.fn<boolean, []>();
+  isFetched = jest.fn<boolean, []>();
+  isUnfetched = jest.fn<boolean, []>();
+  isDoingInitialFetch = jest.fn<boolean, []>();
+  isPresent = jest.fn<boolean | undefined, []>();
+  isAbsent = jest.fn<boolean | undefined, []>();
+  isSubscribedToNotifications = jest.fn<boolean, []>();
+
+  read = jest.fn<Promise<ReadSuccess<any> | ResourceError<any>>, []>();
+  readIfUnfetched = jest.fn<
+    Promise<ReadSuccess<any> | ResourceError<any>>,
+    []
+  >();
+  update = jest.fn<
+    Promise<UpdateSuccess<any> | ResourceError<any>>,
+    [DatasetChanges]
+  >();
+
+  subscribeToNotifications = jest.fn<
+    Promise<string>,
+    [
+      {
+        onNotification: (message: any) => void;
+        onNotificationError: (err: Error) => void;
+      }?,
+    ]
+  >();
+
+  unsubscribeFromNotifications = jest.fn<Promise<void>, [string]>();
+  unsubscribeFromAllNotifications = jest.fn<Promise<void>, []>();
 }

@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
+    "@ldo/connected-solid": "^1.0.0-alpha.3",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "cross-env": "^7.0.3",

@@ -5,9 +5,9 @@ import {
   UnexpectedResourceError,
 } from "../src/results/error/ErrorResult";
 import { InvalidUriError } from "../src/results/error/InvalidUriError";
-import { MockResouce } from "./mocks/MockResource";
+import { MockResource } from "./mocks/MockResource";
 
-const mockResource = new MockResouce("https://example.com/");
+const mockResource = new MockResource("https://example.com/");
 
 describe("ErrorResult", () => {
   describe("fromThrown", () => {
@@ -38,7 +38,7 @@ describe("ErrorResult", () => {
   });
 
   describe("default messages", () => {
-    class ConcreteResourceError extends ResourceError<MockResouce> {
+    class ConcreteResourceError extends ResourceError<MockResource> {
       readonly type = "concreteResourceError" as const;
     }
     class ConcreteErrorResult extends ErrorResult {
