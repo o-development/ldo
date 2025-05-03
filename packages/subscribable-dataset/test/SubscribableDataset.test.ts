@@ -62,7 +62,7 @@ describe("SubscribableDataset", () => {
     expect(callbackFunc).toBeCalledTimes(1);
     expect(callbackFunc.mock.calls[0][0].added.size).toBe(1);
     expect(callbackFunc.mock.calls[0][0].added.has(tomColorQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1]).toEqual([
+    expect(callbackFunc.mock.calls[0][2]).toEqual([
       namedNode("http://example.org/cartoons#Tom"),
       null,
       null,
@@ -80,7 +80,7 @@ describe("SubscribableDataset", () => {
     expect(callbackFunc).toBeCalledTimes(1);
     expect(callbackFunc.mock.calls[0][0].removed.size).toBe(1);
     expect(callbackFunc.mock.calls[0][0].removed.has(tomTypeQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1]).toEqual([
+    expect(callbackFunc.mock.calls[0][2]).toEqual([
       namedNode("http://example.org/cartoons#Tom"),
       null,
       null,
@@ -99,7 +99,7 @@ describe("SubscribableDataset", () => {
     expect(callbackFunc.mock.calls[0][0].added.size).toBe(2);
     expect(callbackFunc.mock.calls[0][0].added.has(lickyNameQuad)).toBe(true);
     expect(callbackFunc.mock.calls[0][0].added.has(lickyTypeQuad)).toBe(true);
-    expect(callbackFunc.mock.calls[0][1]).toEqual([
+    expect(callbackFunc.mock.calls[0][2]).toEqual([
       namedNode("http://example.org/cartoons#Licky"),
       null,
       null,
@@ -123,7 +123,7 @@ describe("SubscribableDataset", () => {
       ),
     ).toBe(true);
     expect(callbackFuncLicky.mock.calls[0][0].removed).toBe(undefined);
-    expect(callbackFuncLicky.mock.calls[0][1]).toEqual([
+    expect(callbackFuncLicky.mock.calls[0][2]).toEqual([
       namedNode("http://example.org/cartoons#Licky"),
       null,
       null,
@@ -147,7 +147,7 @@ describe("SubscribableDataset", () => {
       ),
     ).toBe(true);
     expect(callbackFuncTom.mock.calls[0][0].added).toBe(undefined);
-    expect(callbackFuncTom.mock.calls[0][1]).toEqual([
+    expect(callbackFuncTom.mock.calls[0][2]).toEqual([
       namedNode("http://example.org/cartoons#Tom"),
       null,
       null,

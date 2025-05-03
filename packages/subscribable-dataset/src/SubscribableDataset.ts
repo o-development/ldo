@@ -16,6 +16,7 @@ import type {
   ITransactionDatasetFactory,
 } from "./types";
 import { ExtendedDataset } from "@ldo/dataset";
+import { v4 } from "uuid";
 
 /**
  * A wrapper for a dataset that allows subscriptions to be made on nodes to
@@ -239,12 +240,14 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     populateMatchingDatasetChanges("added");
     populateMatchingDatasetChanges("removed");
 
+    const transactionId = v4();
     // Alert all listeners
     Object.entries(matchingDatasetChanges).forEach(
       ([quadMatchString, info]) => {
         this.eventEmitter.emit(
           quadMatchString,
           info.changes,
+          transactionId,
           info.triggerQuadMatch,
         );
       },

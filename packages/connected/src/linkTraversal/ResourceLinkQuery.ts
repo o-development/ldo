@@ -10,6 +10,9 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 import { exploreLinks } from "./exploreLinks";
 import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
 import type { IConnectedLdoBuilder } from "../types/IConnectedLdoBuilder";
+import { v4 } from "uuid";
+import type { nodeEventListener } from "@ldo/subscribable-dataset";
+import type { Quad } from "@rdfjs/types";
 
 export class ResourceLinkQuery<
   Type extends LdoBase,
@@ -22,6 +25,7 @@ export class ResourceLinkQuery<
   // uri -> unsubscribeId
   protected resourceUnsubscribeIds: Record<string, string> = {};
   protected thisUnsubscribeIds: Set<string> = new Set();
+  protected previousTransactionId: string = "INIT";
 
   constructor(
     protected parentDataset: IConnectedLdoDataset<Plugins>,
@@ -47,15 +51,39 @@ export class ResourceLinkQuery<
   }
 
   async subscribe(): Promise<string> {
-    await exploreLinks(
-      this.parentDataset,
-      this.shapeType,
-      this.startingResource,
-      this.startingSubject,
-      this.linkQueryInput,
-      {},
-    );
-    return "string";
+    const subscriptionId = v4();
+    const onDataChanged: nodeEventListener<Quad> = async (
+      _changes,
+      transactionId: string,
+      _triggering,
+    ) => {
+      console.log(
+        `Transaction ID: ${transactionId}\ntriggering: [${_triggering[0]
+          ?.value}, ${_triggering[1]?.value}, ${_triggering[2]
+          ?.value}, ${_triggering[3]
+          ?.value}]\nadded: ${_changes.added?.toString()}\nremoved:${_changes.removed?.toString()}`,
+      );
+      // Set a transaction Id, so that we only trigger one re-render
+      if (transactionId === this.previousTransactionId) return;
+      this.previousTransactionId = transactionId;
+      // Remove previous registration
+      this.parentDataset.removeListenerFromAllEvents(onDataChanged);
+
+      // Explore the links, with a subscription to re-explore the links if any
+      // covered information changes
+      await exploreLinks(
+        this.parentDataset,
+        this.shapeType,
+        this.startingResource,
+        this.startingSubject,
+        this.linkQueryInput,
+        {
+          onCoveredDataChanged: onDataChanged,
+        },
+      );
+    };
+    await onDataChanged({}, "BEGIN_SUB", [null, null, null, null]);
+    return subscriptionId;
   }
 
   private async fullUnsubscribe(): Promise<void> {

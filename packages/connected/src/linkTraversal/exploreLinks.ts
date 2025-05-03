@@ -5,11 +5,14 @@ import type { LQInput } from "../types/ILinkQuery";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
 import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
 import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy";
+import type { nodeEventListener } from "@ldo/subscribable-dataset";
+import type { Quad } from "@rdfjs/types";
 
 interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
   onResourceEncountered?: (
     resource: Plugins[number]["types"]["resource"],
   ) => void;
+  onCoveredDataChanged?: nodeEventListener<Quad>;
   shouldRefreshResources?: boolean;
 }
 
@@ -30,15 +33,17 @@ export async function exploreLinks<
     : await startingResource.readIfUnfetched();
   if (readResult.isError) return;
 
-  const trackingProxyBuilder = createTrackingProxyBuilder(
-    dataset,
-    shapeType,
-    (changes) =>
-      console.log(
-        `Got Update \nadded: ${changes.added?.toString()}\nremoved: ${changes.removed?.toString()}`,
-      ),
-  );
-  const ldObject = trackingProxyBuilder.fromSubject(startingSubject);
+  if (options?.onResourceEncountered)
+    options?.onResourceEncountered(startingResource);
+
+  const proxyBuilder = options?.onCoveredDataChanged
+    ? createTrackingProxyBuilder(
+        dataset,
+        shapeType,
+        options?.onCoveredDataChanged,
+      )
+    : dataset.usingType(shapeType);
+  const ldObject = proxyBuilder.fromSubject(startingSubject);
 
   const fetchedDuringThisExploration = new Set<string>([startingResource.uri]);
 
@@ -77,6 +82,8 @@ export async function exploreLinksRecursive<
     if (readResult.isError) {
       return;
     }
+    if (options?.onResourceEncountered)
+      options.onResourceEncountered(resourceToFetch);
     fetchedDuringThisExploration.add(resourceToFetch.uri);
   }
   // Recurse through the other elemenets

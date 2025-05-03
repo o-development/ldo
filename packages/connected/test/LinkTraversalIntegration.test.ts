@@ -14,6 +14,7 @@ import {
   THIRD_PROFILE_URI,
 } from "./LinkTraversalData";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { wait } from "./util/wait";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -50,7 +51,61 @@ describe("Link Traversal", () => {
     expect(data.knows?.toArray()[0].name).toBe("Other User");
   });
 
-  it("handles subscriptions if data changes", async () => {
+  it("handles subscriptions if data changes locally", async () => {
+    const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
+    await solidLdoDataset
+      .usingType(SolidProfileShapeShapeType)
+      .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
+        name: true,
+        knows: {
+          name: true,
+        },
+      })
+      .subscribe();
+
+    // Should have regular information
+    let mainProfile = solidLdoDataset
+      .usingType(SolidProfileShapeShapeType)
+      .fromSubject(MAIN_PROFILE_SUBJECT);
+    let resourceUris = solidLdoDataset
+      .getResources()
+      .map((resource) => resource.uri);
+    expect(resourceUris.length).toBe(3);
+    expect(resourceUris).toContain(MAIN_PROFILE_URI);
+    expect(resourceUris).toContain(OTHER_PROFILE_URI);
+    expect(mainProfile.name).toBe("Main User");
+    expect(mainProfile.knows?.size).toBe(1);
+    expect(mainProfile.knows?.toArray()[0].name).toBe("Other User");
+
+    // Update to include a new document
+    const cMainProfile = changeData(mainProfile, mainProfileResource);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    cMainProfile.knows?.add({ "@id": THIRD_PROFILE_SUBJECT });
+    await commitData(cMainProfile);
+
+    // Wait for 200ms to allow the other file to be fetched
+    await wait(200);
+
+    // After the data is committed, the third profile should be present
+    mainProfile = solidLdoDataset
+      .usingType(SolidProfileShapeShapeType)
+      .fromSubject(MAIN_PROFILE_SUBJECT);
+    resourceUris = solidLdoDataset
+      .getResources()
+      .map((resource) => resource.uri);
+    expect(resourceUris.length).toBe(4);
+    expect(resourceUris).toContain(MAIN_PROFILE_URI);
+    expect(resourceUris).toContain(OTHER_PROFILE_URI);
+    expect(resourceUris).toContain(THIRD_PROFILE_URI);
+    expect(mainProfile.name).toBe("Main User");
+    expect(mainProfile.knows?.size).toBe(2);
+    const knowNames = mainProfile.knows?.map((knowsPerson) => knowsPerson.name);
+    expect(knowNames).toContain("Other User");
+    expect(knowNames).toContain("Third User");
+  });
+
+  it("handles subscriptions if data changes on the Pod", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
     await solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
@@ -84,6 +139,9 @@ describe("Link Traversal", () => {
     // @ts-ignore
     cMainProfile.knows?.add({ "@id": THIRD_PROFILE_SUBJECT });
     await commitData(cMainProfile);
+
+    // Wait for 200ms to allow the other file to be fetched
+    await wait(200);
 
     // After the data is committed, the third profile should be present
     mainProfile = solidLdoDataset

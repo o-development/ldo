@@ -5,7 +5,7 @@ export const MAIN_PROFILE_URI = `${BASE_CONTAINER}mainProfile.ttl`;
 export const MAIN_PROFILE_SUBJECT = `${MAIN_PROFILE_URI}#me`;
 export const OTHER_PROFILE_URI = `${BASE_CONTAINER}otherProfile.ttl`;
 export const OTHER_PROFILE_SUBJECT = `${OTHER_PROFILE_URI}#me`;
-export const THIRD_PROFILE_URI = `${BASE_CONTAINER}otherProfile.ttl`;
+export const THIRD_PROFILE_URI = `${BASE_CONTAINER}thirdProfile.ttl`;
 export const THIRD_PROFILE_SUBJECT = `${THIRD_PROFILE_URI}#me`;
 
 export const linkTraversalData: ResourceInfo = {
