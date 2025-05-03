@@ -50,7 +50,7 @@ export const linkTraversalData: ResourceInfo = {
 
         :me a foaf:Person ;
             foaf:name "Third User" ;
-            foaf:mbox <mailto:other@example.org> ;
+            foaf:mbox <mailto:third@example.org> ;
             foaf:knows <http://localhost:3005/test-container/mainProfile.ttl#me> .
       `,
     },

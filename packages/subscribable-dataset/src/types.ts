@@ -6,6 +6,7 @@ import type { Dataset, BaseQuad, DatasetFactory } from "@rdfjs/types";
  */
 export type nodeEventListener<InAndOutQuad extends BaseQuad = BaseQuad> = (
   changes: DatasetChanges<InAndOutQuad>,
+  triggeringQuadMatch: QuadMatch,
 ) => void;
 
 /**

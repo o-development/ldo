@@ -76,6 +76,8 @@ describe("Link Traversal", () => {
     expect(mainProfile.knows?.size).toBe(1);
     expect(mainProfile.knows?.toArray()[0].name).toBe("Other User");
 
+    console.log("==================");
+
     // Update to include a new document
     const cMainProfile = changeData(mainProfile, mainProfileResource);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

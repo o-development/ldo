@@ -46,8 +46,16 @@ export class ResourceLinkQuery<
     return this.fromSubject();
   }
 
-  subscribe(): Promise<string> {
-    throw new Error("Method not implemented.");
+  async subscribe(): Promise<string> {
+    await exploreLinks(
+      this.parentDataset,
+      this.shapeType,
+      this.startingResource,
+      this.startingSubject,
+      this.linkQueryInput,
+      {},
+    );
+    return "string";
   }
 
   private async fullUnsubscribe(): Promise<void> {

@@ -175,7 +175,10 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     // A mapping of serialized QuadMatches to the changed quads
     const matchingDatasetChanges: Record<
       string,
-      DatasetChanges<InAndOutQuad>
+      {
+        changes: DatasetChanges<InAndOutQuad>;
+        triggerQuadMatch: QuadMatch;
+      }
     > = {};
 
     // Population MatchingDatasetChanges
@@ -217,13 +220,18 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
           if (this.eventEmitter.listenerCount(eventName) > 0) {
             // Set matchingDatasetChanges to include data to emit
             if (!matchingDatasetChanges[eventName]) {
-              matchingDatasetChanges[eventName] = {};
+              matchingDatasetChanges[eventName] = {
+                triggerQuadMatch: quadMatch,
+                changes: {},
+              };
             }
-            if (!matchingDatasetChanges[eventName][changeType]) {
-              matchingDatasetChanges[eventName][changeType] =
+            if (!matchingDatasetChanges[eventName].changes[changeType]) {
+              matchingDatasetChanges[eventName].changes[changeType] =
                 this.datasetFactory.dataset();
             }
-            matchingDatasetChanges[eventName][changeType]?.add(changedQuad);
+            matchingDatasetChanges[eventName].changes[changeType]?.add(
+              changedQuad,
+            );
           }
         });
       });
@@ -233,8 +241,12 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
 
     // Alert all listeners
     Object.entries(matchingDatasetChanges).forEach(
-      ([quadMatchString, changes]) => {
-        this.eventEmitter.emit(quadMatchString, changes);
+      ([quadMatchString, info]) => {
+        this.eventEmitter.emit(
+          quadMatchString,
+          info.changes,
+          info.triggerQuadMatch,
+        );
       },
     );
   }

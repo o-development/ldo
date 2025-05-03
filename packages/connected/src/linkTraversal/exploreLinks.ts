@@ -4,6 +4,7 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 import type { LQInput } from "../types/ILinkQuery";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
 import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
+import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy";
 
 interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
   onResourceEncountered?: (
@@ -29,7 +30,15 @@ export async function exploreLinks<
     : await startingResource.readIfUnfetched();
   if (readResult.isError) return;
 
-  const ldObject = dataset.usingType(shapeType).fromSubject(startingSubject);
+  const trackingProxyBuilder = createTrackingProxyBuilder(
+    dataset,
+    shapeType,
+    (changes) =>
+      console.log(
+        `Got Update \nadded: ${changes.added?.toString()}\nremoved: ${changes.removed?.toString()}`,
+      ),
+  );
+  const ldObject = trackingProxyBuilder.fromSubject(startingSubject);
 
   const fetchedDuringThisExploration = new Set<string>([startingResource.uri]);
 
