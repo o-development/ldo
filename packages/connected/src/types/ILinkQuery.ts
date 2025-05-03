@@ -3,8 +3,9 @@
 // If I ever want to implement a global query interface, this is a good place
 // to start.
 
-import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
-import { ProfileShapeType } from "packages/ldo/test/profileData";
+import type { LdoBase, LdSet } from "@ldo/ldo";
+// import { SolidProfileShapeShapeType } from "../../test/.ldo/solidProfile.shapeTypes";
+// import type { SolidProfileShape } from "../../test/.ldo/solidProfile.typings";
 
 /**
  * Link Query Input
@@ -12,7 +13,7 @@ import { ProfileShapeType } from "packages/ldo/test/profileData";
 export type LQInput<Type> = LQInputObject<Type>;
 
 export type LQInputObject<Type> = Partial<{
-  [key in keyof Type]: LQInputFlattenSet<Type[key]>;
+  [key in Exclude<keyof Type, "@context">]: LQInputFlattenSet<Type[key]>;
 }>;
 
 export type LQInputSubSet<Type> = Type extends object
@@ -45,7 +46,10 @@ export type LQReturn<Type, Input extends LQInput<Type>> = LQReturnObject<
 >;
 
 export type LQReturnObject<Type, Input extends LQInputObject<Type>> = {
-  [key in keyof Required<Type> as undefined extends Input[key]
+  [key in Exclude<
+    keyof Required<Type>,
+    "@context"
+  > as undefined extends Input[key]
     ? never
     : key]: Input[key] extends LQInputFlattenSet<Type[key]>
     ? undefined extends Type[key]
@@ -56,7 +60,9 @@ export type LQReturnObject<Type, Input extends LQInputObject<Type>> = {
 
 export type LQReturnSubSet<Type, Input> = Input extends LQInputSubSet<Type>
   ? Input extends LQInputObject<Type>
-    ? LQReturnObject<Type, Input>
+    ? Input extends true
+      ? Type
+      : LQReturnObject<Type, Input>
     : Type
   : never;
 
@@ -89,20 +95,31 @@ export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
   fromSubject(): ExpandDeep<LQReturn<Type, Input>>;
 }
 
-// TODO: Remove test functions
 // function test<Type extends LdoBase, Input extends LQInput<Type>>(
-//   _shapeType: ShapeType<Type>,
-//   _input: Input,
+//   shapeType: ShapeType<Type>,
+//   input: Input,
 // ): ExpandDeep<LQReturn<Type, Input>> {
-//   throw new Error("Not Implemeneted");
+//   throw new Error("Not Implemented");
 // }
-// const result = test(ProfileShapeType, {
-//   fn: true,
+
+// type TestLQInput = {
+//   name: true;
+//   knows: {
+//     name: true;
+//   };
+// };
+
+// type testReturn = LQReturn<SolidProfileShape, TestLQInput>;
+
+// type test2 = LQReturnSubSet<string | undefined, true>;
+
+// type lqInputObject = LQInputObject<string | undefined>;
+
+// type meh = TestLQInput extends true ? true : false;
+
+// const thing = test(SolidProfileShapeShapeType, {
 //   name: true,
-//   hasTelephone: {
-//     type: {
-//       "@id": true,
-//     },
-//     value: true,
+//   knows: {
+//     name: true,
 //   },
 // });

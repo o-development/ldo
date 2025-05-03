@@ -80,6 +80,33 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   ): GetResourceReturnType<Plugin, UriType>;
 
   /**
+   * Retireves a representation of all Resources referenced by this dataset
+   * This does not necessarily mean that it's been fetched (use the
+   * `getFetchedResources` method for that). It simply means that at one point
+   * it was referenced.
+   *
+   * @returns a Resource array
+   *
+   * @example
+   * ```typescript
+   * const allResources = connectedLdoDataset.getResources();
+   * ```
+   */
+  getResources(): Plugins[number]["types"]["resource"][];
+
+  /**
+   * Retireves a representation of all Resources that have been fetched.
+   *
+   * @returns a Resource array
+   *
+   * @example
+   * ```typescript
+   * const allResources = connectedLdoDataset.getFetchedResources();
+   * ```
+   */
+  getFetchedResources(): Plugins[number]["types"]["resource"][];
+
+  /**
    * Generates a random uri and creates a resource.
    *
    * @param pluginName - A string name for the platform you'd like to create

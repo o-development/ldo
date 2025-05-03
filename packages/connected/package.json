@@ -6,11 +6,12 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "watch": "tsc --watch",
-    "test": "jest --coverage",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "docs": "typedoc --plugin typedoc-plugin-markdown"
+    "docs": "typedoc --plugin typedoc-plugin-markdown",
+    "build:ldo": "ldo build --input test/.shapes --output test/.ldo"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@ldo/connected-solid": "^1.0.0-alpha.3",
+    "@ldo/test-solid-server": "^1.0.0-alpha.8",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "cross-env": "^7.0.3",

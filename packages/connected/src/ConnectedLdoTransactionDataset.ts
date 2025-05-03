@@ -101,6 +101,14 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     return this.context.dataset.getResource(uri, pluginName);
   }
 
+  getResources(): Plugins[number]["types"]["resource"][] {
+    return this.context.dataset.getResources();
+  }
+
+  getFetchedResources(): Plugins[number]["types"]["resource"][] {
+    return this.context.dataset.getFetchedResources();
+  }
+
   createResource<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,

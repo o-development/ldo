@@ -81,7 +81,7 @@ async function getAccessToken(
       secret,
     )}`;
     // This URL can be found by looking at the "token_endpoint" field at
-    // http://localhost:3001/.well-known/openid-configuration
+    // http://localhost:PORT/.well-known/openid-configuration
     // if your server is hosted at http://localhost:3000/.
     const tokenUrl = `http://localhost:${port}/.oidc/token`;
     const response = await fetch(tokenUrl, {
