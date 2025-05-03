@@ -5,6 +5,8 @@ export const MAIN_PROFILE_URI = `${BASE_CONTAINER}mainProfile.ttl`;
 export const MAIN_PROFILE_SUBJECT = `${MAIN_PROFILE_URI}#me`;
 export const OTHER_PROFILE_URI = `${BASE_CONTAINER}otherProfile.ttl`;
 export const OTHER_PROFILE_SUBJECT = `${OTHER_PROFILE_URI}#me`;
+export const THIRD_PROFILE_URI = `${BASE_CONTAINER}otherProfile.ttl`;
+export const THIRD_PROFILE_SUBJECT = `${THIRD_PROFILE_URI}#me`;
 
 export const linkTraversalData: ResourceInfo = {
   slug: "test-container/",
@@ -13,7 +15,7 @@ export const linkTraversalData: ResourceInfo = {
     {
       slug: "mainProfile.ttl",
       isContainer: false,
-      mimeType: "text/ttl",
+      mimeType: "text/turtle",
       data: `
         @prefix foaf: <http://xmlns.com/foaf/0.1/> .
         @prefix : <#> .
@@ -27,13 +29,27 @@ export const linkTraversalData: ResourceInfo = {
     {
       slug: "otherProfile.ttl",
       isContainer: false,
-      mimeType: "text/ttl",
+      mimeType: "text/turtle",
       data: `
         @prefix foaf: <http://xmlns.com/foaf/0.1/> .
         @prefix : <#> .
 
         :me a foaf:Person ;
             foaf:name "Other User" ;
+            foaf:mbox <mailto:other@example.org> ;
+            foaf:knows <http://localhost:3005/test-container/mainProfile.ttl#me> .
+      `,
+    },
+    {
+      slug: "thirdProfile.ttl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      data: `
+        @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+        @prefix : <#> .
+
+        :me a foaf:Person ;
+            foaf:name "Third User" ;
             foaf:mbox <mailto:other@example.org> ;
             foaf:knows <http://localhost:3005/test-container/mainProfile.ttl#me> .
       `,

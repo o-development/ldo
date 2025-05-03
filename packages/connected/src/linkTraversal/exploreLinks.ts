@@ -90,14 +90,15 @@ export async function exploreLinksRecursive<
               );
             }),
           );
+        } else {
+          await exploreLinksRecursive(
+            dataset,
+            ldObject[queryKey],
+            queryValue,
+            fetchedDuringThisExploration,
+            options,
+          );
         }
-        await exploreLinksRecursive(
-          dataset,
-          ldObject[queryKey],
-          queryValue,
-          fetchedDuringThisExploration,
-          options,
-        );
       }
     }),
   );

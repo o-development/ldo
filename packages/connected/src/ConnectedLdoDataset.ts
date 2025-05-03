@@ -153,10 +153,6 @@ export class ConnectedLdoDataset<
     if (!plugin) return new InvalidIdentifierResource(uri) as any;
     const normalizedUri = plugin.normalizeUri?.(uri) ?? uri;
 
-    console.log("plugin", plugin);
-    console.log("func", plugin.normalizeUri);
-    console.log(normalizedUri);
-
     let resource = this.resourceMap.get(normalizedUri);
     if (!resource) {
       resource = plugin.getResource(uri, this.context);
@@ -167,8 +163,6 @@ export class ConnectedLdoDataset<
   }
 
   getResources(): GetResourceReturnType<Plugins[number], string>[] {
-    console.log("IM IN HERE");
-    console.log(this.resourceMap);
     return Array.from(this.resourceMap.values());
   }
 
