@@ -6,7 +6,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "removeComments": true,
+    "removeComments": false,
     "lib": ["ES2021"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
