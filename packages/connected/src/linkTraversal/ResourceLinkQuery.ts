@@ -22,10 +22,12 @@ export class ResourceLinkQuery<
 {
   protected trackedResources: Set<Plugins[number]["types"]["resource"]> =
     new Set();
-  // uri -> unsubscribeId
-  protected resourceUnsubscribeIds: Record<string, string> = {};
-  protected thisUnsubscribeIds: Set<string> = new Set();
   protected previousTransactionId: string = "INIT";
+
+  // Resource Subscriptions uri -> unsubscribeId
+  protected activeResourceSubscriptions: Record<string, string> = {};
+  // Unsubscribe IDs for this ResourceLinkQuery
+  protected thisUnsubscribeIds = new Set<string>();
 
   constructor(
     protected parentDataset: IConnectedLdoDataset<Plugins>,
@@ -71,6 +73,9 @@ export class ResourceLinkQuery<
 
       // Explore the links, with a subscription to re-explore the links if any
       // covered information changes
+      const resourcesCurrentlySubscribedTo = new Set(
+        Object.keys(this.activeResourceSubscriptions),
+      );
       await exploreLinks(
         this.parentDataset,
         this.shapeType,
@@ -79,15 +84,44 @@ export class ResourceLinkQuery<
         this.linkQueryInput,
         {
           onCoveredDataChanged: onDataChanged,
+          onResourceEncountered: async (resource) => {
+            // No need to do anything if we're already subscribed
+            if (resourcesCurrentlySubscribedTo.has(resource.uri)) {
+              console.log(`No need to subscirbe to ${resource.uri}`);
+              resourcesCurrentlySubscribedTo.delete(resource.uri);
+              return;
+            }
+            // Otherwise begin the subscription
+            console.log(`Subscirbing to ${resource.uri}`);
+            const unsubscribeId = await resource.subscribeToNotifications();
+            this.activeResourceSubscriptions[resource.uri] = unsubscribeId;
+          },
         },
+      );
+      // Clean up unused subscriptions
+      await Promise.all(
+        Array.from(resourcesCurrentlySubscribedTo).map(async (uri) =>
+          this.unsubscribeFromResource(uri),
+        ),
       );
     };
     await onDataChanged({}, "BEGIN_SUB", [null, null, null, null]);
     return subscriptionId;
   }
 
+  private async unsubscribeFromResource(uri) {
+    const resource = this.parentDataset.getResource(uri);
+    const unsubscribeId = this.activeResourceSubscriptions[uri];
+    delete this.activeResourceSubscriptions[uri];
+    await resource.unsubscribeFromNotifications(unsubscribeId);
+  }
+
   private async fullUnsubscribe(): Promise<void> {
-    // TODO
+    await Promise.all(
+      Object.keys(this.activeResourceSubscriptions).map(async (uri) =>
+        this.unsubscribeFromResource(uri),
+      ),
+    );
   }
 
   async unsubscribe(unsubscribeId: string): Promise<void> {
@@ -104,7 +138,7 @@ export class ResourceLinkQuery<
   }
 
   getSubscribedResources(): Plugins[number]["types"]["resource"][] {
-    return Object.keys(this.resourceUnsubscribeIds).map((uri) =>
+    return Object.keys(this.activeResourceSubscriptions).map((uri) =>
       this.parentDataset.getResource(uri),
     );
   }

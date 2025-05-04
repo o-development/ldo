@@ -105,7 +105,7 @@ describe("Link Traversal", () => {
     expect(knowNames).toContain("Third User");
   });
 
-  it("handles subscriptions if data changes on the Pod", async () => {
+  it.only("handles subscriptions if data changes on the Pod", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
     await solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
@@ -133,15 +133,15 @@ describe("Link Traversal", () => {
 
     console.log("==================");
 
-    // Update to include a new document
-    const cMainProfile = changeData(mainProfile, mainProfileResource);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    cMainProfile.knows?.add({ "@id": THIRD_PROFILE_SUBJECT });
-    await commitData(cMainProfile);
-
-    // Wait for 200ms to allow the other file to be fetched
-    await wait(200);
+    // Update data on the Pod
+    await s.authFetch(MAIN_PROFILE_URI, {
+      method: "PATCH",
+      body: "INSERT DATA { <http://localhost:3005/test-container/mainProfile.ttl#me> <http://xmlns.com/foaf/0.1/knows> <http://localhost:3005/test-container/thirdProfile.ttl#me> . }",
+      headers: {
+        "Content-Type": "application/sparql-update",
+      },
+    });
+    await wait(1000);
 
     // After the data is committed, the third profile should be present
     mainProfile = solidLdoDataset

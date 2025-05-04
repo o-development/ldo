@@ -11,7 +11,7 @@ import type { Quad } from "@rdfjs/types";
 interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
   onResourceEncountered?: (
     resource: Plugins[number]["types"]["resource"],
-  ) => void;
+  ) => Promise<void>;
   onCoveredDataChanged?: nodeEventListener<Quad>;
   shouldRefreshResources?: boolean;
 }
@@ -34,7 +34,7 @@ export async function exploreLinks<
   if (readResult.isError) return;
 
   if (options?.onResourceEncountered)
-    options?.onResourceEncountered(startingResource);
+    await options?.onResourceEncountered(startingResource);
 
   const proxyBuilder = options?.onCoveredDataChanged
     ? createTrackingProxyBuilder(
