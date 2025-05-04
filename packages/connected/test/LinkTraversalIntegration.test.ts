@@ -15,7 +15,6 @@ import {
 } from "./LinkTraversalData";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 import { wait } from "./util/wait";
-import { inspect } from "util";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -54,15 +53,15 @@ describe("Link Traversal", () => {
 
   it("handles subscriptions if data changes locally", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
-    await solidLdoDataset
+    const linkQuery = solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
         name: true,
         knows: {
           name: true,
         },
-      })
-      .subscribe();
+      });
+    await linkQuery.subscribe();
 
     // Should have regular information
     let mainProfile = solidLdoDataset
@@ -104,6 +103,8 @@ describe("Link Traversal", () => {
     const knowNames = mainProfile.knows?.map((knowsPerson) => knowsPerson.name);
     expect(knowNames).toContain("Other User");
     expect(knowNames).toContain("Third User");
+
+    // Unsubscribe
   });
 
   it.only("handles subscriptions if data changes on the Pod", async () => {
@@ -136,6 +137,7 @@ describe("Link Traversal", () => {
     let subscribedResources = linkQuery
       .getSubscribedResources()
       .map((resource) => resource.uri);
+    console.log("Subscribed to resources 1", subscribedResources);
     expect(subscribedResources.length).toBe(2);
     expect(subscribedResources).toContain(MAIN_PROFILE_URI);
     expect(subscribedResources).toContain(OTHER_PROFILE_URI);
@@ -201,5 +203,21 @@ describe("Link Traversal", () => {
       .map((resource) => resource.uri);
     console.log("Subscribed Resources", subscribedResources);
     expect(subscribedResources.length).toBe(0);
+
+    console.log("TIME FOR SOME ADDITIONAL TESTS =============================");
+
+    // Check that all resources are unsubscribed from notifications
+    const resources = solidLdoDataset.getResources();
+    resources.forEach((resource) => {
+      expect(resource.isSubscribedToNotifications()).toBe(false);
+    });
+
+    const cMainProfile = changeData(mainProfile, mainProfileResource);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    cMainProfile.knows?.add({
+      "@id": "http://localhost:3005/test-container/fifthProfile.ttl#me",
+    });
+    await commitData(cMainProfile);
   });
 });
