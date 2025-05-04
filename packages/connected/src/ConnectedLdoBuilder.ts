@@ -3,7 +3,7 @@ import { LdoBuilder } from "@ldo/ldo";
 import type { IConnectedLdoBuilder } from "./types/IConnectedLdoBuilder";
 import type { JsonldDatasetProxyBuilder } from "@ldo/jsonld-dataset-proxy";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { LQInput, ILinkQuery } from "./types/ILinkQuery";
+import type { LQInput } from "./types/ILinkQuery";
 import { ResourceLinkQuery } from "./linkTraversal/ResourceLinkQuery";
 import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { IConnectedLdoDataset } from "./types/IConnectedLdoDataset";
@@ -30,7 +30,7 @@ export class ConnectedLdoBuilder<
     startingResource: Plugins[number]["types"]["resource"],
     startingSubject: SubjectNode | string,
     linkQueryInput: Input,
-  ): ILinkQuery<Type, Input> {
+  ): ResourceLinkQuery<Type, Input, Plugins> {
     return new ResourceLinkQuery(
       this.parentDataset,
       this.shapeType,

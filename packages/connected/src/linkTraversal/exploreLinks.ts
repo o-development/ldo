@@ -45,14 +45,16 @@ export async function exploreLinks<
     : dataset.usingType(shapeType);
   const ldObject = proxyBuilder.fromSubject(startingSubject);
 
-  const fetchedDuringThisExploration = new Set<string>([startingResource.uri]);
+  const encounteredDuringThisExploration = new Set<string>([
+    startingResource.uri,
+  ]);
 
   // Recursively explore the rest
   await exploreLinksRecursive(
     dataset,
     ldObject,
     queryInput,
-    fetchedDuringThisExploration,
+    encounteredDuringThisExploration,
     options,
   );
 }
@@ -64,17 +66,17 @@ export async function exploreLinksRecursive<
   dataset: IConnectedLdoDataset<Plugins>,
   ldObject: Type,
   queryInput: LQInput<Type>,
-  fetchedDuringThisExploration: Set<string>,
+  encounteredDuringThisExploration: Set<string>,
   options?: ExploreLinksOptions<Plugins>,
 ): Promise<void> {
   const shouldFetch = shouldFetchResource(
     dataset,
     ldObject,
     queryInput,
-    fetchedDuringThisExploration,
+    encounteredDuringThisExploration,
   );
+  const resourceToFetch = dataset.getResource(ldObject["@id"]);
   if (shouldFetch) {
-    const resourceToFetch = dataset.getResource(ldObject["@id"]);
     const readResult = options?.shouldRefreshResources
       ? await resourceToFetch.read()
       : await resourceToFetch.readIfUnfetched();
@@ -82,9 +84,11 @@ export async function exploreLinksRecursive<
     if (readResult.isError) {
       return;
     }
+  }
+  if (!encounteredDuringThisExploration.has(resourceToFetch.uri)) {
+    encounteredDuringThisExploration.add(resourceToFetch.uri);
     if (options?.onResourceEncountered)
-      options.onResourceEncountered(resourceToFetch);
-    fetchedDuringThisExploration.add(resourceToFetch.uri);
+      await options.onResourceEncountered(resourceToFetch);
   }
   // Recurse through the other elemenets
   await Promise.all(
@@ -101,7 +105,7 @@ export async function exploreLinksRecursive<
                 dataset,
                 item,
                 queryValue,
-                fetchedDuringThisExploration,
+                encounteredDuringThisExploration,
                 options,
               );
             }),
@@ -111,7 +115,7 @@ export async function exploreLinksRecursive<
             dataset,
             ldObject[queryKey],
             queryValue,
-            fetchedDuringThisExploration,
+            encounteredDuringThisExploration,
             options,
           );
         }
@@ -130,14 +134,14 @@ export function shouldFetchResource<
   dataset: IConnectedLdoDataset<Plugins>,
   ldObject: Type,
   queryInput: LQInput<Type>,
-  fetchedDuringThisExploration: Set<string>,
+  encounteredDuringThisExploration: Set<string>,
 ): boolean {
   const linkedResourceUri: string | undefined = ldObject["@id"];
   // If it's a blank node, no need to fetch
   if (!linkedResourceUri) return false;
   const linkedResource = dataset.getResource(linkedResourceUri);
   // If we've already explored the resource in this exporation, do not fetch
-  if (fetchedDuringThisExploration.has(linkedResource.uri)) return false;
+  if (encounteredDuringThisExploration.has(linkedResource.uri)) return false;
 
   return Object.entries(queryInput).some(([queryKey, queryValue]) => {
     // If value is undefined then no need to fetch

@@ -15,6 +15,7 @@ import {
 } from "./LinkTraversalData";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 import { wait } from "./util/wait";
+import { inspect } from "util";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -107,15 +108,16 @@ describe("Link Traversal", () => {
 
   it.only("handles subscriptions if data changes on the Pod", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
-    await solidLdoDataset
+    const linkQuery = solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
         name: true,
         knows: {
           name: true,
         },
-      })
-      .subscribe();
+      });
+
+    const unsubscribeId = await linkQuery.subscribe();
 
     // Should have regular information
     let mainProfile = solidLdoDataset
@@ -130,6 +132,13 @@ describe("Link Traversal", () => {
     expect(mainProfile.name).toBe("Main User");
     expect(mainProfile.knows?.size).toBe(1);
     expect(mainProfile.knows?.toArray()[0].name).toBe("Other User");
+
+    let subscribedResources = linkQuery
+      .getSubscribedResources()
+      .map((resource) => resource.uri);
+    expect(subscribedResources.length).toBe(2);
+    expect(subscribedResources).toContain(MAIN_PROFILE_URI);
+    expect(subscribedResources).toContain(OTHER_PROFILE_URI);
 
     console.log("==================");
 
@@ -159,5 +168,38 @@ describe("Link Traversal", () => {
     const knowNames = mainProfile.knows?.map((knowsPerson) => knowsPerson.name);
     expect(knowNames).toContain("Other User");
     expect(knowNames).toContain("Third User");
+
+    subscribedResources = linkQuery
+      .getSubscribedResources()
+      .map((resource) => resource.uri);
+    console.log("Subscribed Resources", subscribedResources);
+    expect(subscribedResources.length).toBe(3);
+    expect(subscribedResources).toContain(MAIN_PROFILE_URI);
+    expect(subscribedResources).toContain(OTHER_PROFILE_URI);
+    expect(subscribedResources).toContain(THIRD_PROFILE_URI);
+
+    // Unsubscribe
+    await linkQuery.unsubscribe(unsubscribeId);
+
+    await wait(200);
+
+    s.fetchMock.mockClear();
+
+    // Does not update when unsubscribed
+    await s.authFetch(MAIN_PROFILE_URI, {
+      method: "PATCH",
+      body: "INSERT DATA { <http://localhost:3005/test-container/mainProfile.ttl#me> <http://xmlns.com/foaf/0.1/knows> <http://localhost:3005/test-container/fourthProfile.ttl#me> . }",
+      headers: {
+        "Content-Type": "application/sparql-update",
+      },
+    });
+    await wait(1000);
+
+    expect(s.fetchMock).not.toHaveBeenCalled();
+    subscribedResources = linkQuery
+      .getSubscribedResources()
+      .map((resource) => resource.uri);
+    console.log("Subscribed Resources", subscribedResources);
+    expect(subscribedResources.length).toBe(0);
   });
 });

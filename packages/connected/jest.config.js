@@ -5,6 +5,6 @@ module.exports = {
   rootDir: "./",
   transform: {
     "^.+\\.(ts|tsx)?$": "ts-jest",
-    "^.+\\.(js|jsx)$": "babel-jest",
   },
+  coveragePathIgnorePatterns: ["/node_modules/", "/dist/"],
 };
