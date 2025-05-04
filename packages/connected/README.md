@@ -63,7 +63,7 @@ async function main() {
    * ===========================================================================
    */
   const connectedLdoDataset = createConnectedLdoDataset([
-    solidConncetedPlugin,
+    solidConnectedPlugin,
     nextGraphConnectedPlugin
   ]);
   // Set context to be able to make authenticated requests
