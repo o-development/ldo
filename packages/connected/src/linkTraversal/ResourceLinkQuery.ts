@@ -180,6 +180,11 @@ export class ResourceLinkQuery<
     }
   }
 
+  async unsubscribeAll() {
+    this.thisUnsubscribeIds.clear();
+    await this.fullUnsubscribe();
+  }
+
   fromSubject(): ExpandDeep<LQReturn<Type, QueryInput>> {
     return this.ldoBuilder.fromSubject(
       this.startingSubject,

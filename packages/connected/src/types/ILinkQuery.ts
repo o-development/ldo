@@ -91,7 +91,8 @@ export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
     options?: LinkQueryRunOptions,
   ): Promise<ExpandDeep<LQReturn<Type, Input>>>;
   subscribe(): Promise<string>;
-  unsubscribe(subscriptionId: string): void;
+  unsubscribe(subscriptionId: string): Promise<void>;
+  unsubscribeAll(): Promise<void>;
   fromSubject(): ExpandDeep<LQReturn<Type, Input>>;
 }
 

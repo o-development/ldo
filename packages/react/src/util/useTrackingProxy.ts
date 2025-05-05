@@ -1,12 +1,7 @@
-import {
-  ContextUtil,
-  JsonldDatasetProxyBuilder,
-} from "@ldo/jsonld-dataset-proxy";
-import { LdoBuilder } from "@ldo/ldo";
+import type { LdoBuilder } from "@ldo/ldo";
 import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { TrackingProxyContext } from "./TrackingProxyContext";
-import { defaultGraph } from "@rdfjs/data-model";
+import { createTrackingProxyBuilder } from "@ldo/connected";
 
 /**
  * @internal
@@ -28,22 +23,7 @@ export function useTrackingProxy<Type extends LdoBase, ReturnType>(
   const linkedDataObject = useMemo(() => {
     // Remove all current subscriptions
     dataset.removeListenerFromAllEvents(forceUpdate);
-
-    // Rebuild the LdoBuilder from scratch to inject TrackingProxyContext
-    const contextUtil = new ContextUtil(shapeType.context);
-    const proxyContext = new TrackingProxyContext(
-      {
-        dataset,
-        contextUtil,
-        writeGraphs: [defaultGraph()],
-        languageOrdering: ["none", "en", "other"],
-      },
-      forceUpdate,
-    );
-    const builder = new LdoBuilder(
-      new JsonldDatasetProxyBuilder(proxyContext),
-      shapeType,
-    );
+    const builder = createTrackingProxyBuilder(dataset, shapeType, forceUpdate);
     return createLdo(builder);
   }, [shapeType, dataset, forceUpdateCounter, forceUpdate, createLdo]);
 
