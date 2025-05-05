@@ -13,6 +13,7 @@ export const {
   useResource,
   useSubject,
   useSubscribeToResource,
+  useLinkQuery,
 } = createLdoReactMethods([solidConnectedPlugin]);
 
 export const { BrowserSolidLdoProvider, useSolidAuth, useRootContainerFor } =
