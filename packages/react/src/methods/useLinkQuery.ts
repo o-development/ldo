@@ -49,6 +49,10 @@ export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
         .startLinkQuery(resource, startingSubject, linkQuery);
 
       linkQueryRef.current.subscribe().then(() => setIsLoading(false));
+
+      return () => {
+        linkQueryRef.current?.unsubscribeAll();
+      };
     }, [shapeType, startingResource, startingSubject, linkQuery]);
 
     const fromSubject = useCallback(
