@@ -714,11 +714,6 @@ describe("Integration Tests", () => {
 
       let profileNameElement = await screen.findByRole("profile-name");
 
-      const resource = dataset.getResource(MAIN_PROFILE_URI);
-      console.log(resource.status);
-      const resource2 = dataset.getResource(OTHER_PROFILE_URI);
-      console.log(resource2.status);
-
       expect(profileNameElement.textContent).toBe("Main User");
 
       let list = await screen.findByRole("list");

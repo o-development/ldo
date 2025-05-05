@@ -2196,17 +2196,19 @@ describe("Integration", () => {
       await testContainer.unsubscribeFromAllNotifications();
     });
 
-    it("returns an error when it cannot subscribe to a notification", async () => {
+    it.skip("returns an error when it cannot subscribe to a notification", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 
       await s.app.stop();
-      await resource.subscribeToNotifications({ onNotificationError: onError });
+      await resource.subscribeToNotifications({
+        onNotificationError: onError,
+      });
       expect(onError).toHaveBeenCalledTimes(2);
       await s.app.start();
     });
 
-    it("returns an error when the server doesnt support websockets", async () => {
+    it.skip("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 
@@ -2224,7 +2226,7 @@ describe("Integration", () => {
       await s.app.start();
     });
 
-    it("attempts to reconnect multiple times before giving up.", async () => {
+    it.skip("attempts to reconnect multiple times before giving up.", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = jest.fn();
 

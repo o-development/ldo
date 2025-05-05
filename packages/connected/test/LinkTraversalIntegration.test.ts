@@ -137,12 +137,9 @@ describe("Link Traversal", () => {
     let subscribedResources = linkQuery
       .getSubscribedResources()
       .map((resource) => resource.uri);
-    console.log("Subscribed to resources 1", subscribedResources);
     expect(subscribedResources.length).toBe(2);
     expect(subscribedResources).toContain(MAIN_PROFILE_URI);
     expect(subscribedResources).toContain(OTHER_PROFILE_URI);
-
-    console.log("==================");
 
     // Update data on the Pod
     await s.authFetch(MAIN_PROFILE_URI, {
@@ -174,7 +171,6 @@ describe("Link Traversal", () => {
     subscribedResources = linkQuery
       .getSubscribedResources()
       .map((resource) => resource.uri);
-    console.log("Subscribed Resources", subscribedResources);
     expect(subscribedResources.length).toBe(3);
     expect(subscribedResources).toContain(MAIN_PROFILE_URI);
     expect(subscribedResources).toContain(OTHER_PROFILE_URI);
@@ -201,10 +197,7 @@ describe("Link Traversal", () => {
     subscribedResources = linkQuery
       .getSubscribedResources()
       .map((resource) => resource.uri);
-    console.log("Subscribed Resources", subscribedResources);
     expect(subscribedResources.length).toBe(0);
-
-    console.log("TIME FOR SOME ADDITIONAL TESTS =============================");
 
     // Check that all resources are unsubscribed from notifications
     const resources = solidLdoDataset.getResources();

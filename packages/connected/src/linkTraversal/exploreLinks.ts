@@ -28,12 +28,10 @@ export async function exploreLinks<
   options?: ExploreLinksOptions<Plugins>,
 ): Promise<void> {
   // Do an initial check of the resources.
-  console.log("Performing read for", startingResource.uri);
   const readResult = options?.shouldRefreshResources
     ? await startingResource.read()
     : await startingResource.readIfUnfetched();
   if (readResult.isError) return;
-  console.log("Completed read for", startingResource.uri);
 
   if (options?.onResourceEncountered)
     await options?.onResourceEncountered(startingResource);
@@ -79,7 +77,6 @@ export async function exploreLinksRecursive<
   );
   const resourceToFetch = dataset.getResource(ldObject["@id"]);
   if (shouldFetch) {
-    console.log("Performing Read for", resourceToFetch.uri);
     const readResult = options?.shouldRefreshResources
       ? await resourceToFetch.read()
       : await resourceToFetch.readIfUnfetched();
@@ -87,7 +84,6 @@ export async function exploreLinksRecursive<
     if (readResult.isError) {
       return;
     }
-    console.log("Completed Read for", resourceToFetch.uri);
   }
   if (!encounteredDuringThisExploration.has(resourceToFetch.uri)) {
     encounteredDuringThisExploration.add(resourceToFetch.uri);

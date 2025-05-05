@@ -70,12 +70,6 @@ export class ResourceLinkQuery<
       transactionId: string,
       _triggering,
     ) => {
-      console.log(
-        `Transaction ID: ${transactionId}\ntriggering: [${_triggering[0]
-          ?.value}, ${_triggering[1]?.value}, ${_triggering[2]
-          ?.value}, ${_triggering[3]
-          ?.value}]\nadded: ${_changes.added?.toString()}\nremoved:${_changes.removed?.toString()}`,
-      );
       // Set a transaction Id, so that we only trigger one re-render
       if (transactionId === this.previousTransactionId) return;
       this.previousTransactionId = transactionId;
@@ -93,34 +87,26 @@ export class ResourceLinkQuery<
         ? {
             onCoveredDataChanged: this.curOnDataChanged,
             onResourceEncountered: async (resource) => {
-              console.log(`RESOURCE ENCOUNTERED! ${resource.uri}`);
               // Wait for the the in progress registration to complete. Once it
               // is complete, you're subscribed, so we can remove this from the
               // resources to unsubscribe from.
               if (this.resourcesWithSubscriptionInProgress[resource.uri]) {
-                console.log(
-                  "Waiting on the subscription to finish.",
-                  resource.uri,
-                );
                 await this.resourcesWithSubscriptionInProgress[resource.uri];
                 resourcesToUnsubscribeFrom.delete(resource.uri);
                 return;
               }
               // No need to do anything if we're already subscribed
               if (resourcesToUnsubscribeFrom.has(resource.uri)) {
-                console.log(`No need to subscirbe to ${resource.uri}`);
                 resourcesToUnsubscribeFrom.delete(resource.uri);
                 return;
               }
               // Otherwise begin the subscription
-              console.log(`Subscirbing to ${resource.uri}`);
               let resolve;
               this.resourcesWithSubscriptionInProgress[resource.uri] =
                 new Promise<void>((res) => {
                   resolve = res;
                 });
               const unsubscribeId = await resource.subscribeToNotifications();
-              console.log(`Add to active subscriptions ${resource.uri}`);
               this.activeResourceSubscriptions[resource.uri] = unsubscribeId;
               // Unsubscribe in case unsubscribe call came in mid subscription
               if (!this.curOnDataChanged) {
@@ -141,7 +127,6 @@ export class ResourceLinkQuery<
         exploreOptions,
       );
       // Clean up unused subscriptions
-      console.log("Cleaning these up", resourcesToUnsubscribeFrom);
       await Promise.all(
         Array.from(resourcesToUnsubscribeFrom).map(async (uri) =>
           this.unsubscribeFromResource(uri),
@@ -153,7 +138,6 @@ export class ResourceLinkQuery<
   }
 
   private async unsubscribeFromResource(uri) {
-    console.log(`Unsubscribing from ${uri}`);
     const resource = this.parentDataset.getResource(uri);
     const unsubscribeId = this.activeResourceSubscriptions[uri];
     delete this.activeResourceSubscriptions[uri];
@@ -161,7 +145,6 @@ export class ResourceLinkQuery<
   }
 
   private async fullUnsubscribe(): Promise<void> {
-    console.log("Full Unsubscribing");
     if (this.curOnDataChanged) {
       this.parentDataset.removeListenerFromAllEvents(this.curOnDataChanged);
       this.curOnDataChanged = undefined;
