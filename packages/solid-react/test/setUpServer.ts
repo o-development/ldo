@@ -20,6 +20,20 @@ export const SAMPLE2_BINARY_URI =
   `${TEST_CONTAINER_URI}${SAMPLE2_BINARY_SLUG}` as SolidLeafUri;
 export const SAMPLE_CONTAINER_URI =
   `${TEST_CONTAINER_URI}sample_container/` as SolidContainerUri;
+export const LINK_QUERY_CONTAINER = `${ROOT_CONTAINER}link-query/`;
+export const MAIN_PROFILE_URI =
+  `${LINK_QUERY_CONTAINER}main-profile.ttl` as SolidContainerUri;
+export const MAIN_PROFILE_SUBJECT =
+  `${MAIN_PROFILE_URI}#me` as SolidContainerUri;
+export const OTHER_PROFILE_URI =
+  `${LINK_QUERY_CONTAINER}other-profile.ttl` as SolidContainerUri;
+export const OTHER_PROFILE_SUBJECT =
+  `${OTHER_PROFILE_URI}#me` as SolidContainerUri;
+export const THIRD_PROFILE_URI =
+  `${LINK_QUERY_CONTAINER}third-profile.ttl` as SolidContainerUri;
+export const THIRD_PROFILE_SUBJECT =
+  `${THIRD_PROFILE_URI}#me` as SolidContainerUri;
+
 export const EXAMPLE_POST_TTL = `@prefix schema: <http://schema.org/> .
 
 <#Post1>

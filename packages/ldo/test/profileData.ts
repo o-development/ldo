@@ -974,7 +974,6 @@ export interface RSAPublicKeyShape {
 
 export interface SolidProfileShape {
   "@id"?: string;
-  "@context"?: ContextDefinition;
   /**
    * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)
    */

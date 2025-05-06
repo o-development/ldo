@@ -9,6 +9,7 @@ import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
 import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
+import { createUseLinkQuery } from "./methods/useLinkQuery";
 
 /**
  * A function that creates all common react functions given specific plugin.
@@ -29,6 +30,7 @@ import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
  *  useResource,
  *  useSubject,
  *  useSubscribeToResource,
+ *  useLinkQuery,
  * } = createLdoReactMethods([
  *   solidConnectedPlugin,
  *   nextGraphConnectedPlugin
@@ -70,5 +72,6 @@ export function createLdoReactMethods<
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
     useSubscribeToResource: createUseSubscribeToResource(dataset),
+    useLinkQuery: createUseLinkQuery(dataset),
   };
 }

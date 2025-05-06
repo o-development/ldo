@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedContext } from "./ConnectedContext";
-import type { Resource } from "./Resource";
-import type { ErrorResult } from "./results/error/ErrorResult";
+import type { Resource } from "../Resource";
+import type { ErrorResult } from "../results/error/ErrorResult";
 
 /**
  * A ConnectedPlugin can be passed to a ConnectedDataset to allow it to connect

@@ -4,19 +4,14 @@ import * as path from "path";
 import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
 import "jest-rdf";
-import type { SolidContainerUri } from "../src";
-
-export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3001/";
-export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "";
-export const ROOT_CONTAINER =
-  `${SERVER_DOMAIN}${ROOT_ROUTE}` as SolidContainerUri;
-export const WEB_ID =
-  process.env.WEB_ID || `${SERVER_DOMAIN}example/profile/card#me`;
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
 
-export async function createApp(customConfigPath?: string): Promise<App> {
+export async function createApp(
+  port: number,
+  customConfigPath?: string,
+): Promise<App> {
   if (process.env.SERVER) {
     return {
       start: () => {},
@@ -33,7 +28,7 @@ export async function createApp(customConfigPath?: string): Promise<App> {
     config: customConfigPath ?? resolveModulePath("config/file-root.json"),
     variableBindings: {},
     shorthand: {
-      port: 3_001,
+      port: port,
       loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
       rootFilePath: path.join(__dirname, "./data"),

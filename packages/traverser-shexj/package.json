@@ -1,6 +1,6 @@
 {
   "name": "@ldo/traverser-shexj",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.9",
   "description": "A type-traverser for ShexJ",
   "main": "dist/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "src"
   ],
   "dependencies": {
-    "@ldo/type-traverser": "^1.0.0-alpha.3"
+    "@ldo/type-traverser": "^1.0.0-alpha.9"
   },
   "publishConfig": {
     "access": "public"

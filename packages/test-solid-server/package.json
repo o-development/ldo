@@ -1,0 +1,34 @@
+{
+  "name": "@ldo/test-solid-server",
+  "version": "1.0.0-alpha.9",
+  "description": "A solid server to be used in jest tests",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json && npm run copy-configs",
+    "prepublishOnly": "npm run build",
+    "copy-configs": "cp -r src/configs dist/configs",
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o-development/ldo.git"
+  },
+  "author": "Jackson Morgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/o-development/ldo/issues"
+  },
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
+  "dependencies": {
+    "@inrupt/solid-client-authn-core": "^2.2.6",
+    "@solid/community-server": "^7.1.3",
+    "cross-env": "^7.0.3"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

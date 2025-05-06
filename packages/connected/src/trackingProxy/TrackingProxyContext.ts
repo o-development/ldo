@@ -5,7 +5,10 @@ import type {
 } from "@ldo/jsonld-dataset-proxy";
 import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
 import type { QuadMatch } from "@ldo/rdf-utils";
-import type { SubscribableDataset } from "@ldo/subscribable-dataset";
+import type {
+  nodeEventListener,
+  SubscribableDataset,
+} from "@ldo/subscribable-dataset";
 import type { BlankNode, NamedNode, Quad } from "@rdfjs/types";
 import { createTrackingSubjectProxy } from "./TrackingSubjectProxy";
 import { createTrackingSetProxy } from "./TrackingSetProxy";
@@ -20,15 +23,23 @@ export interface TrackingProxyContextOptions extends ProxyContextOptions {
 
 /**
  * @internal
+ * A listener that gets triggered whenever there's an update
+ */
+
+/**
+ * @internal
  * This proxy exists to ensure react components rerender at the right time. It
  * keeps track of every key accessed in a Linked Data Object and only when the
  * dataset is updated with that key does it rerender the react component.
  */
 export class TrackingProxyContext extends ProxyContext {
-  private listener: () => void;
+  private listener: nodeEventListener<Quad>;
   private subscribableDataset: SubscribableDataset<Quad>;
 
-  constructor(options: TrackingProxyContextOptions, listener: () => void) {
+  constructor(
+    options: TrackingProxyContextOptions,
+    listener: nodeEventListener<Quad>,
+  ) {
     super(options);
     this.subscribableDataset = options.dataset;
     this.listener = listener;

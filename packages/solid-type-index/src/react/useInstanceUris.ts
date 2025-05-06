@@ -37,6 +37,8 @@ export function useInstanceUris(classUri: string): SolidLeafUri[] {
 
   useEffect(() => {
     getInstanceUris(classUri, typeRegistrations.toArray(), {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore TODO: come back and see if we can fix this
       solidLdoDataset: dataset,
     }).then(setLeafUris);
   }, [typeRegistrations]);

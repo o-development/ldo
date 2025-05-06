@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoTransactionDataset } from "@ldo/ldo";
 import type { DatasetFactory, Quad } from "@rdfjs/types";
 import {
@@ -6,12 +7,12 @@ import {
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
-import type { ConnectedContext } from "./ConnectedContext";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
+import type { ConnectedContext } from "./types/ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./IConnectedLdoDataset";
+} from "./types/IConnectedLdoDataset";
 import { splitChangesByGraph } from "./util/splitChangesByGraph";
 import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess";
 import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess";
@@ -21,6 +22,8 @@ import type {
   AggregateSuccess,
   SuccessResult,
 } from "./results/success/SuccessResult";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
+import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**
  * A ConnectedLdoTransactionDataset has all the functionality of a
@@ -96,6 +99,14 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     UriType extends string,
   >(uri: UriType, pluginName?: Name): GetResourceReturnType<Plugin, UriType> {
     return this.context.dataset.getResource(uri, pluginName);
+  }
+
+  getResources(): Plugins[number]["types"]["resource"][] {
+    return this.context.dataset.getResources();
+  }
+
+  getFetchedResources(): Plugins[number]["types"]["resource"][] {
+    return this.context.dataset.getFetchedResources();
   }
 
   createResource<
@@ -224,5 +235,12 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
       // HACK: Cast to Any
       results: results.map((result) => result[2]) as any,
     };
+  }
+
+  public usingType<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+  ): ConnectedLdoBuilder<Type, Plugins> {
+    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
+    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
   }
 }

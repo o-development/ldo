@@ -4,8 +4,6 @@ import type { SolidConnectedPlugin } from "@ldo/connected-solid";
 import { createSolidLdoDataset, guaranteeFetch } from "@ldo/connected-solid";
 
 export interface Options {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore I'm honestly just tired of dealing with this at this point
   solidLdoDataset?: IConnectedLdoDataset<SolidConnectedPlugin[]>;
   fetch?: typeof fetch;
 }

@@ -7,14 +7,14 @@ import {
 import fetch from "cross-fetch";
 
 const config = {
-  podName: process.env.USER_NAME || "example",
-  email: process.env.EMAIL || "hello@example.com",
-  password: process.env.PASSWORD || "abc123",
+  podName: "example",
+  email: "hello@example.com",
+  password: "abc123",
 };
 
-async function getAuthorization(): Promise<string> {
+async function getAuthorization(port: number): Promise<string> {
   // First we request the account API controls to find out where we can log in
-  const indexResponse = await fetch("http://localhost:3001/.account/");
+  const indexResponse = await fetch(`http://localhost:${port}/.account/`);
   const { controls } = await indexResponse.json();
 
   // And then we log in to the account API
@@ -32,11 +32,12 @@ async function getAuthorization(): Promise<string> {
 }
 
 async function getSecret(
+  port: number,
   authorization: string,
 ): Promise<{ id: string; secret: string; resource: string }> {
   // Now that we are logged in, we need to request the updated controls from the server.
   // These will now have more values than in the previous example.
-  const indexResponse = await fetch("http://localhost:3001/.account/", {
+  const indexResponse = await fetch(`http://localhost:${port}/.account/`, {
     headers: { authorization: `CSS-Account-Token ${authorization}` },
   });
   const { controls } = await indexResponse.json();
@@ -53,7 +54,7 @@ async function getSecret(
     // Only WebIDs linked to your account can be used.
     body: JSON.stringify({
       name: "my-token",
-      webId: `http://localhost:3001/${config.podName}/profile/card#me`,
+      webId: `http://localhost:${port}/${config.podName}/profile/card#me`,
     }),
   });
 
@@ -65,6 +66,7 @@ async function getSecret(
 }
 
 async function getAccessToken(
+  port: number,
   id: string,
   secret: string,
 ): Promise<{ accessToken: string; dpopKey: KeyPair }> {
@@ -79,9 +81,9 @@ async function getAccessToken(
       secret,
     )}`;
     // This URL can be found by looking at the "token_endpoint" field at
-    // http://localhost:3001/.well-known/openid-configuration
+    // http://localhost:PORT/.well-known/openid-configuration
     // if your server is hosted at http://localhost:3000/.
-    const tokenUrl = "http://localhost:3001/.oidc/token";
+    const tokenUrl = `http://localhost:${port}/.oidc/token`;
     const response = await fetch(tokenUrl, {
       method: "POST",
       headers: {
@@ -104,9 +106,9 @@ async function getAccessToken(
   }
 }
 
-export async function generateAuthFetch() {
-  const authorization = await getAuthorization();
-  const { id, secret } = await getSecret(authorization);
-  const { accessToken, dpopKey } = await getAccessToken(id, secret);
+export async function generateAuthFetch(port: number) {
+  const authorization = await getAuthorization(port);
+  const { id, secret } = await getSecret(port, authorization);
+  const { accessToken, dpopKey } = await getAccessToken(port, id, secret);
   return await buildAuthenticatedFetch(accessToken, { dpopKey });
 }

@@ -2,10 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import type { FunctionComponent } from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
+  MAIN_PROFILE_SUBJECT,
+  MAIN_PROFILE_URI,
+  OTHER_PROFILE_URI,
   SAMPLE_BINARY_URI,
   SAMPLE_DATA_URI,
   SERVER_DOMAIN,
   setUpServer,
+  THIRD_PROFILE_SUBJECT,
 } from "./setUpServer";
 import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
 import {
@@ -17,9 +21,13 @@ import {
   useRootContainerFor,
   useSubject,
   useSubscribeToResource,
+  useLinkQuery,
 } from "../src";
 import { PostShShapeType } from "./.ldo/post.shapeTypes";
 import type { PostSh } from "./.ldo/post.typings";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { changeData, commitData } from "@ldo/connected";
+import type { SolidProfileShape } from "./.ldo/solidProfile.typings";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);
@@ -646,6 +654,88 @@ describe("Integration Tests", () => {
       expect(resource1PUpdatedAgain.innerHTML).toBe("false");
       const resource2PUpdatedAgain = await screen.findByRole("resource2");
       expect(resource2PUpdatedAgain.innerHTML).toBe("true");
+
+      unmount();
+    });
+  });
+
+  /**
+   * ===========================================================================
+   * useLinkQuery
+   * ===========================================================================
+   */
+  describe("useLinkQuery", () => {
+    const linkQuery = {
+      name: true,
+      knows: {
+        name: true,
+      },
+    } as const;
+
+    it("Fetches a resource using useLinkQuery", async () => {
+      const UseLinkQueryTest: FunctionComponent = () => {
+        const profile = useLinkQuery(
+          SolidProfileShapeShapeType,
+          MAIN_PROFILE_URI,
+          MAIN_PROFILE_SUBJECT,
+          linkQuery,
+        );
+        const addProfile = useCallback(async () => {
+          const cProfile = changeData(
+            profile as SolidProfileShape,
+            dataset.getResource(MAIN_PROFILE_URI),
+          );
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          cProfile.knows?.add({ "@id": THIRD_PROFILE_SUBJECT });
+          await commitData(cProfile);
+        }, [profile]);
+        if (!profile) return <p>Loading</p>;
+        return (
+          <div>
+            <p role="profile-name">{profile.name}</p>
+            <ul role="list">
+              {profile.knows?.map((nestedProfile) => (
+                <li key={nestedProfile["@id"]}>{nestedProfile.name}</li>
+              ))}
+            </ul>
+            <button role="add-profile" onClick={addProfile}>
+              Add Profile
+            </button>
+          </div>
+        );
+      };
+      const { unmount } = render(
+        <UnauthenticatedSolidLdoProvider>
+          <UseLinkQueryTest />
+        </UnauthenticatedSolidLdoProvider>,
+      );
+      await screen.findByText("Loading");
+
+      let profileNameElement = await screen.findByRole("profile-name");
+
+      expect(profileNameElement.textContent).toBe("Main User");
+
+      let list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("Other User");
+      expect(list.children.length).toBe(1);
+
+      // Click button to add a publisher
+      await fireEvent.click(screen.getByText("Add Profile"));
+
+      // Give some time for notifications to propogate
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      });
+
+      profileNameElement = await screen.findByRole("profile-name");
+      expect(profileNameElement.textContent).toBe("Main User");
+
+      list = await screen.findByRole("list");
+      expect(list.children[0].innerHTML).toBe("Other User");
+      expect(list.children[1].innerHTML).toBe("Third User");
+
+      expect(list.children.length).toBe(2);
 
       unmount();
     });

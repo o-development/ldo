@@ -16,6 +16,7 @@ import type {
   ITransactionDatasetFactory,
 } from "./types";
 import { ExtendedDataset } from "@ldo/dataset";
+import { v4 } from "uuid";
 
 /**
  * A wrapper for a dataset that allows subscriptions to be made on nodes to
@@ -175,7 +176,10 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     // A mapping of serialized QuadMatches to the changed quads
     const matchingDatasetChanges: Record<
       string,
-      DatasetChanges<InAndOutQuad>
+      {
+        changes: DatasetChanges<InAndOutQuad>;
+        triggerQuadMatch: QuadMatch;
+      }
     > = {};
 
     // Population MatchingDatasetChanges
@@ -217,13 +221,18 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
           if (this.eventEmitter.listenerCount(eventName) > 0) {
             // Set matchingDatasetChanges to include data to emit
             if (!matchingDatasetChanges[eventName]) {
-              matchingDatasetChanges[eventName] = {};
+              matchingDatasetChanges[eventName] = {
+                triggerQuadMatch: quadMatch,
+                changes: {},
+              };
             }
-            if (!matchingDatasetChanges[eventName][changeType]) {
-              matchingDatasetChanges[eventName][changeType] =
+            if (!matchingDatasetChanges[eventName].changes[changeType]) {
+              matchingDatasetChanges[eventName].changes[changeType] =
                 this.datasetFactory.dataset();
             }
-            matchingDatasetChanges[eventName][changeType]?.add(changedQuad);
+            matchingDatasetChanges[eventName].changes[changeType]?.add(
+              changedQuad,
+            );
           }
         });
       });
@@ -231,10 +240,16 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     populateMatchingDatasetChanges("added");
     populateMatchingDatasetChanges("removed");
 
+    const transactionId = v4();
     // Alert all listeners
     Object.entries(matchingDatasetChanges).forEach(
-      ([quadMatchString, changes]) => {
-        this.eventEmitter.emit(quadMatchString, changes);
+      ([quadMatchString, info]) => {
+        this.eventEmitter.emit(
+          quadMatchString,
+          info.changes,
+          transactionId,
+          info.triggerQuadMatch,
+        );
       },
     );
   }

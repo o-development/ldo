@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoDataset, startTransaction } from "@ldo/ldo";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
 import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
-import type { ConnectedContext } from "./ConnectedContext";
+import type { ConnectedContext } from "./types/ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./IConnectedLdoDataset";
+} from "./types/IConnectedLdoDataset";
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
+import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**
  * A ConnectedLdoDataset has all the functionality of a LdoDataset with the
@@ -160,6 +162,14 @@ export class ConnectedLdoDataset<
     return resource as any;
   }
 
+  getResources(): GetResourceReturnType<Plugins[number], string>[] {
+    return Array.from(this.resourceMap.values());
+  }
+
+  getFetchedResources(): GetResourceReturnType<Plugins[number], string>[] {
+    return this.getResources().filter((resource) => resource.isFetched());
+  }
+
   /**
    * Generates a random uri and creates a resource.
    *
@@ -275,6 +285,13 @@ export class ConnectedLdoDataset<
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.context[pluginName] = { ...this.context[pluginName], ...context };
+  }
+
+  public usingType<Type extends LdoBase>(
+    shapeType: ShapeType<Type>,
+  ): ConnectedLdoBuilder<Type, Plugins> {
+    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
+    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
   }
 
   public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {

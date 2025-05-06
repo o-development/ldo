@@ -127,6 +127,7 @@ Hooks
  - [useMatchSubject](https://ldo.js.org/latest/api/react/useMatchSubject/)
  - [useMatchObject](https://ldo.js.org/latest/api/react/useMatchSubject/)
  - [useSubscribeToResource](https://ldo.js.org/latest/api/react/useMatchSubject/)
+ - [useLinkQuery](https://ldo.js.org/latest/api/react/useLinkQuery/)
 
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).

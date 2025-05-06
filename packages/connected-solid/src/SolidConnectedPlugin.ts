@@ -80,4 +80,11 @@ export const solidConnectedPlugin: SolidConnectedPlugin = {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore "Types" only exists for the typing system
   types: {},
+
+  normalizeUri(uri: SolidUri): SolidUri {
+    const url = new URL(uri);
+    url.hash = "";
+    url.search = "";
+    return url.toString() as SolidUri;
+  },
 };
