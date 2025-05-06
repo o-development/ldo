@@ -8,6 +8,9 @@ import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 
+/**
+ * @internal
+ */
 interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
   onResourceEncountered?: (
     resource: Plugins[number]["types"]["resource"],
@@ -16,6 +19,9 @@ interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
   shouldRefreshResources?: boolean;
 }
 
+/**
+ * @internal
+ */
 export async function exploreLinks<
   Type extends LdoBase,
   Plugins extends ConnectedPlugin[],

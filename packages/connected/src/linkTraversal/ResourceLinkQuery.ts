@@ -14,6 +14,33 @@ import { v4 } from "uuid";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 
+/**
+ * Represents a query over multiple datasources and constituting muliple
+ * resources.
+ *
+ * @example
+ * ```typescript
+ * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+ *
+ * // Create a link query
+ * const linkQuery = ldoDataset
+ *   .usingType(ProfileShapeType)
+ *   .startLinkQuery(
+ *     "http://example.com/profile/card",
+ *     "http://example.com/profile/card#me",
+ *     {
+ *       name: true,
+ *         knows: {
+ *           name: true,
+ *         },
+ *       },
+ *     }
+ *   );
+ * // Susbscribe to this link query, automaticically updating the dataset when
+ * // something from the link query is changed.
+ * await linkQuery.subscribe();
+ * ```
+ */
 export class ResourceLinkQuery<
   Type extends LdoBase,
   QueryInput extends LQInput<Type>,
@@ -34,6 +61,15 @@ export class ResourceLinkQuery<
     Promise<void> | undefined
   > = {};
 
+  /**
+   * @internal
+   * @param parentDataset The dataset for which this link query is a part
+   * @param shapeType A ShapeType for the link query to follow
+   * @param ldoBuilder An LdoBuilder associated with the dataset
+   * @param startingResource The resource to explore first in the link query
+   * @param startingSubject The starting point of the link query
+   * @param linkQueryInput A definition of the link query
+   */
   constructor(
     protected parentDataset: IConnectedLdoDataset<Plugins>,
     protected shapeType: ShapeType<Type>,
@@ -43,6 +79,39 @@ export class ResourceLinkQuery<
     protected linkQueryInput: QueryInput,
   ) {}
 
+  /**
+   * Runs this link query, returning the result
+   * @param options Options for how to run the link query
+   * @returns A subset of the ShapeType as defined by the LinkQuery
+   *
+   * @example
+   * ```
+   * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+   *
+   * // Create a link query
+   * const linkQuery = ldoDataset
+   *   .usingType(ProfileShapeType)
+   *   .startLinkQuery(
+   *     "http://example.com/profile/card",
+   *     "http://example.com/profile/card#me",
+   *     {
+   *       name: true,
+   *         knows: {
+   *           name: true,
+   *         },
+   *       },
+   *     }
+   *   );
+   * // Susbscribe to this link query, automaticically updating the dataset when
+   * // something from the link query is changed.
+   * const result = await linkQuery.read();
+   * console.log(result.name);
+   * result.knows.forEach((person) => console.log(person.name));
+   * // The following will type-error. Despite "phone" existing on a Profile,
+   * // it was not covered by the link query.
+   * console.log(result.phone);
+   * ```
+   */
   async run(options?: {
     reload?: boolean;
   }): Promise<ExpandDeep<LQReturn<Type, QueryInput>>> {
@@ -57,6 +126,42 @@ export class ResourceLinkQuery<
     return this.fromSubject();
   }
 
+  /**
+   * Subscribes to the data defined by the link query, updating the dataset if
+   * any changes are made.
+   * @returns An unsubscribeId
+   *
+   * @example
+   * ```
+   * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+   *
+   * // Create a link query
+   * const linkQuery = ldoDataset
+   *   .usingType(ProfileShapeType)
+   *   .startLinkQuery(
+   *     "http://example.com/profile/card",
+   *     "http://example.com/profile/card#me",
+   *     {
+   *       name: true,
+   *         knows: {
+   *           name: true,
+   *         },
+   *       },
+   *     }
+   *   );
+   * // Susbscribe to this link query, automaticically updating the dataset when
+   * // something from the link query is changed.
+   * const unsubscribeId = await linkQuery.subscribe();
+   *
+   * // Now, let's imagine the following triple was added to
+   * "http://example.com/profile/card":
+   * <http://example.com/profile/card#me> <http://xmlns.com/foaf/0.1/knows> <http://example2.com/profile/card#me>
+   * Because you're subscribed, the dataset will automatically be updated.
+   *
+   * // End subscription
+   * linkQuery.unsubscribe(unsubscribeId);
+   * ```
+   */
   async subscribe(): Promise<string> {
     const subscriptionId = v4();
     this.thisUnsubscribeIds.add(subscriptionId);
