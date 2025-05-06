@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-solid",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.9",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "main": "dist/index.js",
   "scripts": {
@@ -25,8 +25,8 @@
   "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^2.2.6",
-    "@ldo/cli": "^1.0.0-alpha.3",
-    "@ldo/test-solid-server": "^1.0.0-alpha.8",
+    "@ldo/cli": "^1.0.0-alpha.9",
+    "@ldo/test-solid-server": "^1.0.0-alpha.9",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/types": "^0.1.2",
@@ -39,9 +39,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.3",
-    "@ldo/ldo": "^1.0.0-alpha.3",
-    "@ldo/rdf-utils": "^1.0.0-alpha.3",
+    "@ldo/dataset": "^1.0.0-alpha.9",
+    "@ldo/ldo": "^1.0.0-alpha.9",
+    "@ldo/rdf-utils": "^1.0.0-alpha.9",
     "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
