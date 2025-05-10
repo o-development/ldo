@@ -3,14 +3,19 @@
   "version": "1.0.0-alpha.9",
   "description": "A Svelte library for LDO.",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "src/index.ts",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "watch": "tsc --project tsconfig.build.json --watch",
-    "test": "jest --coverage",
+    "dev": "vite --config vite.config.example.ts",
+    "build": "rimraf dist && vite build",
+    "build:example": "vite build --config vite.config.example.ts example",
+    "test": "jest",
     "test:watch": "jest --watch",
-    "prepublishOnly": "npm run test && npm run build",
-    "build:ldo": "ldo build --input src/shapes --output src/ldo",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint . --ext .js,.ts,.svelte --fix --no-error-on-unmatched-pattern",
+    "format": "prettier --write .",
+    "prepublishOnly": "npm run test && npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,7 +28,27 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/svelte#readme",
   "devDependencies": {
-    "ts-node": "^10.9.2"
+    "@sveltejs/vite-plugin-svelte": "^2.5.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.7",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/jest": "^29.5.14",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rimraf": "^5.0.10",
+    "svelte": "^3.59.2",
+    "svelte-jester": "^5.0.0",
+    "svelte-preprocess": "^5.1.4",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.3"
+  },
+  "peerDependencies": {
+    "svelte": "^3.50.0"
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.9",
