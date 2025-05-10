@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/ldobjects.git"
+    "url": "git+https://github.com/o-development/ldo.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/ldobjects/issues"
+    "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/cli#readme",
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/cli#readme",
   "devDependencies": {
     "@ldo/cli": "^0.0.1-alpha.28",
     "@types/child-process-promise": "^2.2.2",

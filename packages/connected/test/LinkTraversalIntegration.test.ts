@@ -32,6 +32,7 @@ describe("Link Traversal", () => {
 
   it("does a simple run to traverse data", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
+
     const data = await solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
@@ -41,6 +42,7 @@ describe("Link Traversal", () => {
         },
       })
       .run();
+
     const resourceUris = solidLdoDataset
       .getResources()
       .map((resource) => resource.uri);

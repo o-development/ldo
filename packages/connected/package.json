@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/ldobjects.git"
+    "url": "git+https://github.com/o-development/ldo.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/ldobjects/issues"
+    "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/solid#readme",
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
     "@ldo/connected-solid": "^1.0.0-alpha.9",
     "@ldo/test-solid-server": "^1.0.0-alpha.9",

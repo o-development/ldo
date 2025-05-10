@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/ldobjects.git"
+    "url": "git+https://github.com/o-development/ldo.git"
   },
   "author": "Jackson Morgan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/ldobjects/issues"
+    "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/jsonld-dataset-proxy#readme",
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/jsonld-dataset-proxy#readme",
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",
     "@types/jsonld": "^1.5.6",

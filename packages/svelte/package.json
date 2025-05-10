@@ -1,14 +1,15 @@
 {
-  "name": "@ldo/rdf-utils",
+  "name": "@ldo/svelte",
   "version": "1.0.0-alpha.9",
-  "description": "Some RDF Utilities to support LDO librariers",
+  "description": "A Svelte library for LDO.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "watch": "tsc --watch",
+    "watch": "tsc --project tsconfig.build.json --watch",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
+    "build:ldo": "ldo build --input src/shapes --output src/ldo",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
@@ -20,15 +21,17 @@
   "bugs": {
     "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldo/tree/main/packages/rdf-utils#readme",
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/svelte#readme",
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
-    "@types/jsonld": "^1.5.9"
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@rdfjs/data-model": "^1.2.0",
-    "n3": "^1.17.1",
-    "rdf-string": "^1.6.3"
+    "@ldo/connected": "^1.0.0-alpha.9",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.9",
+    "@ldo/ldo": "^1.0.0-alpha.9",
+    "@ldo/rdf-utils": "^1.0.0-alpha.9",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.9",
+    "@rdfjs/data-model": "^1.2.0"
   },
   "files": [
     "dist",
@@ -37,5 +40,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
+  "gitHead": "0287cd6371f06630763568dec5e41653f7b8583e"
 }
