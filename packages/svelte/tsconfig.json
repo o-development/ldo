@@ -1,0 +1,58 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "$lib": [
+        "src"
+      ],
+      "$lib/*": [
+        "src/*"
+      ],
+      // Add this path alias for your library:
+      "@ldo/svelte": [
+        "src/index.ts"
+      ], // Points to your library's main entry point for types
+      "@ldo/svelte/*": [
+        "src/*"
+      ] // Allows importing submodules like '@ldo/svelte/store' if you structure that way
+    },
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": true,
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "types": [
+      "jest",
+      "@testing-library/jest-dom",
+      "@types/node",
+      "svelte" // Added "svelte" to ensure Svelte's global types are picked up
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts", // Make sure to include your new env.d.ts
+    "src/**/*.svelte",
+    "tests/**/*.ts",
+    "tests/**/*.svelte",
+    "example/src/**/*.ts", // Include example app's TS files
+    "example/src/**/*.svelte", // Include example app's Svelte files
+    "vite.config.ts",
+    "vite.config.example.ts",
+    "jest.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dist-example"
+  ]
+}
