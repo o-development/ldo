@@ -6,6 +6,10 @@ import type { ResourceInfo } from "./resourceUtils";
 import { cleanResources, initResources } from "./resourceUtils";
 import { generateAuthFetch } from "./authFetch";
 import fs from "fs/promises";
+import "jest-rdf";
+
+// Use an increased timeout, since the CSS server takes too much setup time.
+jest.setTimeout(40_000);
 
 export function setupServer(
   port: number,

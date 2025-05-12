@@ -4,7 +4,6 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
   MAIN_PROFILE_SUBJECT,
   MAIN_PROFILE_URI,
-  OTHER_PROFILE_URI,
   SAMPLE_BINARY_URI,
   SAMPLE_DATA_URI,
   SERVER_DOMAIN,
