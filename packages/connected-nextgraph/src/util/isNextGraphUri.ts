@@ -1,4 +1,4 @@
-import type { NextGraphUri } from "../types";
+import type { NextGraphUri } from "../types.js";
 
 /**
  * Checks if a provided string is a leaf URI

@@ -1,4 +1,4 @@
-import type { TestData } from "./testData";
+import type { TestData } from "./testData.js";
 
 /**
  * Reduced Profile

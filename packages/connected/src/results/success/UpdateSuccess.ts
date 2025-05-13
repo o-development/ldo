@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource";
-import { ResourceSuccess, SuccessResult } from "./SuccessResult";
+import type { Resource } from "../../Resource.js";
+import { ResourceSuccess, SuccessResult } from "./SuccessResult.js";
 
 /**
  * Indicates that an update request to a resource was successful

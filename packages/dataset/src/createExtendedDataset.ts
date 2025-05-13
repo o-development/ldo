@@ -4,9 +4,9 @@ import type {
   DatasetCore,
   Quad,
 } from "@rdfjs/types";
-import ExtendedDatasetFactory from "./ExtendedDatasetFactory";
+import ExtendedDatasetFactory from "./ExtendedDatasetFactory.js";
 import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
-import type ExtendedDataset from "./ExtendedDataset";
+import type ExtendedDataset from "./ExtendedDataset.js";
 
 /**
  * Creates a dataset factory that generates ExtendedDatasets

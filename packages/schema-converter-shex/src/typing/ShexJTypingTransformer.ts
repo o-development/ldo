@@ -1,10 +1,10 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
 import * as dom from "dts-dom";
 import type { Annotation } from "shexj";
-import { nameFromObject } from "../context/JsonLdContextBuilder";
-import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
-import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
-import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers";
+import { nameFromObject } from "../context/JsonLdContextBuilder.js";
+import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration.js";
+import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint.js";
+import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers.js";
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string, rdfType?: string) => string;

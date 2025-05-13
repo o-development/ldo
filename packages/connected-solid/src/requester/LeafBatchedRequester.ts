@@ -1,18 +1,18 @@
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import { mergeDatasetChanges } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
-import { BatchedRequester } from "./BatchedRequester";
+import { BatchedRequester } from "./BatchedRequester.js";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "./requests/createDataResource";
-import type { ReadLeafResult } from "./requests/readResource";
-import type { UpdateResult } from "./requests/updateDataResource";
-import { updateDataResource } from "./requests/updateDataResource";
-import { uploadResource } from "./requests/uploadResource";
-import type { SolidLeaf } from "../resources/SolidLeaf";
+} from "./requests/createDataResource.js";
+import type { ReadLeafResult } from "./requests/readResource.js";
+import type { UpdateResult } from "./requests/updateDataResource.js";
+import { updateDataResource } from "./requests/updateDataResource.js";
+import { uploadResource } from "./requests/uploadResource.js";
+import type { SolidLeaf } from "../resources/SolidLeaf.js";
 import type { ConnectedContext } from "@ldo/connected";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
 
 export const UPDATE_KEY = "update";
 export const UPLOAD_KEY = "upload";

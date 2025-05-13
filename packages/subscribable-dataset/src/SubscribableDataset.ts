@@ -14,7 +14,7 @@ import type {
   ISubscribableDataset,
   ITransactionDataset,
   ITransactionDatasetFactory,
-} from "./types";
+} from "./types.js";
 import { ExtendedDataset } from "@ldo/dataset";
 import { v4 } from "uuid";
 

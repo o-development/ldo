@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { App } from "@solid/community-server";
-import { createApp } from "./createServer";
+import { createApp } from "./createServer.js";
 import path from "path";
-import type { ResourceInfo } from "./resourceUtils";
-import { cleanResources, initResources } from "./resourceUtils";
-import { generateAuthFetch } from "./authFetch";
+import type { ResourceInfo } from "./resourceUtils.js";
+import { cleanResources, initResources } from "./resourceUtils.js";
+import { generateAuthFetch } from "./authFetch.js";
 import fs from "fs/promises";
 import "jest-rdf";
 

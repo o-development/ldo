@@ -5,12 +5,12 @@ import type {
   GraphNode,
 } from "@ldo/rdf-utils";
 import type { Dataset, Quad } from "@rdfjs/types";
-import type { RawValue } from "../util/RawObject";
-import { SetProxy } from "./SetProxy";
-import type { ProxyContext } from "../ProxyContext";
-import { getNodeFromRawValue } from "../util/getNodeFromRaw";
-import { _isSubjectOriented } from "../types";
-import { filterQuadsByLanguageOrdering } from "../language/languageUtils";
+import type { RawValue } from "../util/RawObject.js";
+import { SetProxy } from "./SetProxy.js";
+import type { ProxyContext } from "../ProxyContext.js";
+import { getNodeFromRawValue } from "../util/getNodeFromRaw.js";
+import { _isSubjectOriented } from "../types.js";
+import { filterQuadsByLanguageOrdering } from "../language/languageUtils.js";
 
 export type WildcardObjectSetProxyQuadMatch = [
   SubjectNode | undefined | null,

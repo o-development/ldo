@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserDefinition } from "../..";
-import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes";
-import type { TraverserTypes } from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../InstanceGraph";
-import type { InstanceNodeFor } from "./createInstanceNodeFor";
+import type { TraverserDefinition } from "../...js";
+import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes.js";
+import type { TraverserTypes } from "../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../InstanceGraph.js";
+import type { InstanceNodeFor } from "./createInstanceNodeFor.js";
 
 export abstract class InstanceNode<
   Types extends TraverserTypes<any>,

@@ -3,7 +3,7 @@ import type { ShapeType } from "@ldo/ldo";
 import type { LdoBuilder } from "@ldo/ldo";
 import type { LdoBase } from "@ldo/ldo";
 
-import { useTrackingProxy } from "../util/useTrackingProxy";
+import { useTrackingProxy } from "../util/useTrackingProxy.js";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { Readable } from "svelte/store";
 

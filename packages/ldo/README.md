@@ -40,7 +40,7 @@ import {
   toTurtle,
   set,
 } from "@ldo/ldo";
-import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
 
 async function run() {
   const rawTurtle = `

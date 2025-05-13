@@ -1,6 +1,6 @@
-import type { RawValue } from "../util/RawObject";
-import { BasicLdSet } from "./ldSet/BasicLdSet";
-import type { LdSet } from "./ldSet/LdSet";
+import type { RawValue } from "../util/RawObject.js";
+import { BasicLdSet } from "./ldSet/BasicLdSet.js";
+import type { LdSet } from "./ldSet/LdSet.js";
 
 /**
  * Creates an LdSet used by LDO as a list of items.

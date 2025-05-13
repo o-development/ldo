@@ -9,8 +9,8 @@ import {
   SERVER_DOMAIN,
   setUpServer,
   THIRD_PROFILE_SUBJECT,
-} from "./setUpServer";
-import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
+} from "./setUpServer.js";
+import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider.js";
 import {
   dataset,
   useLdo,
@@ -21,12 +21,12 @@ import {
   useSubject,
   useSubscribeToResource,
   useLinkQuery,
-} from "../src";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
-import type { PostSh } from "./.ldo/post.typings";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+} from "../src.js";
+import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
+import type { PostSh } from "./.ldo/post.typings.js";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/connected";
-import type { SolidProfileShape } from "./.ldo/solidProfile.typings";
+import type { SolidProfileShape } from "./.ldo/solidProfile.typings.js";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 jest.setTimeout(40_000);

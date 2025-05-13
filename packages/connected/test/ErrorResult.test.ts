@@ -3,9 +3,9 @@ import {
   ErrorResult,
   ResourceError,
   UnexpectedResourceError,
-} from "../src/results/error/ErrorResult";
-import { InvalidUriError } from "../src/results/error/InvalidUriError";
-import { MockResource } from "./mocks/MockResource";
+} from "../src/results/error/ErrorResult.js";
+import { InvalidUriError } from "../src/results/error/InvalidUriError.js";
+import { MockResource } from "./mocks/MockResource.js";
 
 const mockResource = new MockResource("https://example.com/");
 

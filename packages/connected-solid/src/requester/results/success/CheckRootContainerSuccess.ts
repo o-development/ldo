@@ -1,4 +1,4 @@
-import type { SolidContainer } from "../../../resources/SolidContainer";
+import type { SolidContainer } from "../../../resources/SolidContainer.js";
 import { ResourceSuccess, SuccessResult } from "@ldo/connected";
 
 /**

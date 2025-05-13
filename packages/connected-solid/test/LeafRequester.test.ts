@@ -1,8 +1,8 @@
 // import type { App } from "@solid/community-server";
-// import { getAuthenticatedFetch, ROOT_COONTAINER } from "./solidServer.helper";
-// import type { SolidLdoDataset } from "../src/SolidLdoDataset";
-// import { createSolidLdoDataset } from "../src/createSolidLdoDataset";
-// import { LeafRequester } from "../src/requester/LeafRequester";
+// import { getAuthenticatedFetch, ROOT_COONTAINER } from "./solidServer.helper.js";
+// import type { SolidLdoDataset } from "../src/SolidLdoDataset.js";
+// import { createSolidLdoDataset } from "../src/createSolidLdoDataset.js";
+// import { LeafRequester } from "../src/requester/LeafRequester.js";
 // import { namedNode, quad as createQuad } from "@rdfjs/data-model";
 
 describe("Leaf Requester", () => {

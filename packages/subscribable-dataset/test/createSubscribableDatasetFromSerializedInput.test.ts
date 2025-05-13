@@ -1,4 +1,4 @@
-import { serializedToSubscribableDataset } from "../src";
+import { serializedToSubscribableDataset } from "../src.js";
 import { turtleData, jsonLdData } from "@ldo/dataset/test/sampleData";
 
 describe("createExtendedDatasetFromSerializedInput", () => {

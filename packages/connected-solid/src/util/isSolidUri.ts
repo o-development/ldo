@@ -1,4 +1,4 @@
-import type { SolidContainerUri, SolidLeafUri, SolidUri } from "../types";
+import type { SolidContainerUri, SolidLeafUri, SolidUri } from "../types.js";
 
 /**
  * Checks if a provided string is a leaf URI

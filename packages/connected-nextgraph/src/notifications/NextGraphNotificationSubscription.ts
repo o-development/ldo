@@ -1,6 +1,6 @@
 import { NotificationSubscription } from "@ldo/connected";
-import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin";
-import type { NextGraphNotificationMessage } from "./NextGraphNotificationMessage";
+import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin.js";
+import type { NextGraphNotificationMessage } from "./NextGraphNotificationMessage.js";
 
 export class NextGraphNotificationSubscription extends NotificationSubscription<
   NextGraphConnectedPlugin,

@@ -4,9 +4,9 @@ import type {
   JsonldDatasetProxyBuilder,
   LdSet,
 } from "@ldo/jsonld-dataset-proxy";
-import type { ShapeType } from "./ShapeType";
-import type { LdoBase } from "./util";
-import { normalizeNodeName, normalizeNodeNames } from "./util";
+import type { ShapeType } from "./ShapeType.js";
+import type { LdoBase } from "./util.js";
+import { normalizeNodeName, normalizeNodeNames } from "./util.js";
 
 /**
  * An LdoBuilder contains utility methods for building a Linked Data Object for a certain type.
@@ -18,7 +18,7 @@ import { normalizeNodeName, normalizeNodeNames } from "./util";
  * @example
  * ```typescript
  * import { LdoDataset, createLdoDatasetFactory } from "@ldo/ldo";
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
  *
  * const ldoDataset = createLdoDataset();
  * const ldoBuilder = ldoDataset.usingType(FoafProfileShapeType);

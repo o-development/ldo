@@ -1,5 +1,5 @@
 import { blankNode, defaultGraph, literal, namedNode } from "@rdfjs/data-model";
-import { nodeToString } from "../src";
+import { nodeToString } from "../src.js";
 
 describe("nodeToString", () => {
   it("returns all the correct values for nodeToString", () => {

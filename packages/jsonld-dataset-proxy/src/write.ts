@@ -1,6 +1,6 @@
 import type { GraphNode } from "@ldo/rdf-utils";
-import type { InteractOptions } from "./util/createInteractOptions";
-import { createInteractOptions } from "./util/createInteractOptions";
+import type { InteractOptions } from "./util/createInteractOptions.js";
+import { createInteractOptions } from "./util/createInteractOptions.js";
 
 /**
  * Set the graphs that should be written to

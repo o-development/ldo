@@ -5,7 +5,7 @@ import {
   serializedToDataset,
   ExtendedDataset,
   ExtendedDatasetFactory,
-} from "../src";
+} from "../src.js";
 
 describe("Exports", () => {
   it("Has all exports", () => {

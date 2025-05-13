@@ -1,7 +1,7 @@
 import { ShapeType } from "@ldo/ldo";
-import { postSchema } from "./post.schema";
-import { postContext } from "./post.context";
-import { PostSh } from "./post.typings";
+import { postSchema } from "./post.schema.js";
+import { postContext } from "./post.context.js";
+import { PostSh } from "./post.typings.js";
 
 /**
  * =============================================================================

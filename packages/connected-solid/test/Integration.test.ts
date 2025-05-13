@@ -4,19 +4,19 @@ import {
   literal,
   defaultGraph,
 } from "@rdfjs/data-model";
-import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
+import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess.js";
 import { Buffer } from "buffer";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
 import type {
   ServerHttpError,
   UnauthenticatedHttpError,
   UnexpectedHttpError,
-} from "../src/requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
-import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
-import { wait } from "./utils.helper";
+} from "../src/requester/results/error/HttpErrorResult.js";
+import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError.js";
+import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess.js";
+import { wait } from "./utils.helper.js";
 import path from "path";
-import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src";
+import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src.js";
 import {
   createSolidLdoDataset,
   type SolidConnectedPlugin,
@@ -24,7 +24,7 @@ import {
   type SolidContainerUri,
   type SolidLeaf,
   type SolidLeafUri,
-} from "../src";
+} from "../src.js";
 import type {
   AggregateError,
   AggregateSuccess,
@@ -40,7 +40,7 @@ import {
   commitData,
   ConnectedLdoTransactionDataset,
 } from "@ldo/connected";
-import { getStorageFromWebId } from "../src/getStorageFromWebId";
+import { getStorageFromWebId } from "../src/getStorageFromWebId.js";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 

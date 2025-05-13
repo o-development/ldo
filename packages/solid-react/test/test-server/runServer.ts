@@ -1,4 +1,4 @@
-import { createApp } from "./solidServer.helper";
+import { createApp } from "./solidServer.helper.js";
 
 async function run() {
   const app = await createApp();

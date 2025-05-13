@@ -1,4 +1,4 @@
-import type { ValidateTraverserTypes } from "../../../src";
+import type { ValidateTraverserTypes } from "../../../src.js";
 
 /**
  * Original Type Definition

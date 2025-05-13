@@ -1,17 +1,17 @@
 import { namedNode } from "@rdfjs/data-model";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
-import { deleteResourceRdfFromContainer } from "../../util/rdfUtils";
+import { guaranteeFetch } from "../../util/guaranteeFetch.js";
+import { deleteResourceRdfFromContainer } from "../../util/rdfUtils.js";
 import type { Resource } from "@ldo/connected";
 import { UnexpectedResourceError } from "@ldo/connected";
-import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
-import { UnexpectedHttpError } from "../results/error/HttpErrorResult";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import { DeleteSuccess } from "../results/success/DeleteSuccess";
-import type { DatasetRequestOptions } from "./requestOptions";
+import type { HttpErrorResultType } from "../results/error/HttpErrorResult.js";
+import { UnexpectedHttpError } from "../results/error/HttpErrorResult.js";
+import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
+import { DeleteSuccess } from "../results/success/DeleteSuccess.js";
+import type { DatasetRequestOptions } from "./requestOptions.js";
 import type { IBulkEditableDataset } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
-import type { SolidContainer } from "../../resources/SolidContainer";
-import type { SolidLeaf } from "../../resources/SolidLeaf";
+import type { SolidContainer } from "../../resources/SolidContainer.js";
+import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 
 /**
  * All possible return values for deleteResource

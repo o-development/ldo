@@ -3,19 +3,19 @@ import {
   type ObjectNode,
   type PredicateNode,
 } from "@ldo/rdf-utils";
-import type { RawObject } from "../util/RawObject";
-import { addObjectToDataset } from "../util/addObjectToDataset";
-import type { ProxyContext } from "../ProxyContext";
-import { WildcardSubjectSetProxy } from "./WildcardSubjectSetProxy";
-import { _getUnderlyingNode } from "../types";
+import type { RawObject } from "../util/RawObject.js";
+import { addObjectToDataset } from "../util/addObjectToDataset.js";
+import type { ProxyContext } from "../ProxyContext.js";
+import { WildcardSubjectSetProxy } from "./WildcardSubjectSetProxy.js";
+import { _getUnderlyingNode } from "../types.js";
 import { defaultGraph, quad } from "@rdfjs/data-model";
 import {
   createTransactionDatasetFactory,
   TransactionDataset,
 } from "@ldo/subscribable-dataset";
 import { createDatasetFactory } from "@ldo/dataset";
-import { getNodeFromRawObject } from "../util/getNodeFromRaw";
-import { nodeToString } from "../util/NodeSet";
+import { getNodeFromRawObject } from "../util/getNodeFromRaw.js";
+import { nodeToString } from "../util/NodeSet.js";
 
 export type SubjectSetProxyQuadMatch = [
   undefined | null,

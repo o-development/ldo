@@ -4,18 +4,18 @@ import {
   DisconnectedAttemptingReconnectError,
   DisconnectedNotAttemptingReconnectError,
   UnsupportedNotificationError,
-} from "./results/NotificationErrors";
-import type { SolidNotificationMessage } from "./SolidNotificationMessage";
+} from "./results/NotificationErrors.js";
+import type { SolidNotificationMessage } from "./SolidNotificationMessage.js";
 import { UnexpectedResourceError, type ConnectedContext } from "@ldo/connected";
 import type {
   ChannelType,
   NotificationChannel,
 } from "@solid-notifications/types";
 import { NotificationSubscription } from "@ldo/connected";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
-import type { SolidLeaf } from "../resources/SolidLeaf";
-import type { SolidContainer } from "../resources/SolidContainer";
-import { guaranteeFetch } from "../util/guaranteeFetch";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
+import type { SolidLeaf } from "../resources/SolidLeaf.js";
+import type { SolidContainer } from "../resources/SolidContainer.js";
+import { guaranteeFetch } from "../util/guaranteeFetch.js";
 
 const CHANNEL_TYPE =
   "http://www.w3.org/ns/solid/notifications#WebSocketChannel2023";

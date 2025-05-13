@@ -4,7 +4,7 @@ import {
 } from "@ldo/jsonld-dataset-proxy";
 import { LdoBuilder } from "@ldo/ldo";
 import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
-import { TrackingProxyContext } from "./TrackingProxyContext";
+import { TrackingProxyContext } from "./TrackingProxyContext.js";
 import { defaultGraph } from "@rdfjs/data-model";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";

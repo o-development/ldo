@@ -1,3 +1,3 @@
-import { shexjToTyping } from "./typing/shexjToTyping";
+import { shexjToTyping } from "./typing/shexjToTyping.js";
 
 export default shexjToTyping;

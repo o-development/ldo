@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MultiMap } from "../transformer/transformerSubTraversers/util/MultiMap";
-import type { TraverserTypes } from "../traverser/TraverserTypes";
+import { MultiMap } from "../transformer/transformerSubTraversers/util/MultiMap.js";
+import type { TraverserTypes } from "../traverser/TraverserTypes.js";
 import {
   createInstanceNodeFor,
   type InstanceNodeFor,
-} from "./nodes/createInstanceNodeFor";
-import type { TraverserDefinitions } from "../traverser/TraverserDefinition";
+} from "./nodes/createInstanceNodeFor.js";
+import type { TraverserDefinitions } from "../traverser/TraverserDefinition.js";
 
 export class InstanceGraph<Types extends TraverserTypes<any>> {
   protected objectMap: MultiMap<

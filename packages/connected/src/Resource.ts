@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type TypedEmitter from "typed-emitter";
-import type { ConnectedResult } from "./results/ConnectedResult";
+import type { ConnectedResult } from "./results/ConnectedResult.js";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type {
   IgnoredInvalidUpdateSuccess,
   UpdateSuccess,
-} from "./results/success/UpdateSuccess";
-import type { ResourceError } from "./results/error/ErrorResult";
-import type { ReadSuccess } from "./results/success/ReadSuccess";
+} from "./results/success/UpdateSuccess.js";
+import type { ResourceError } from "./results/error/ErrorResult.js";
+import type { ReadSuccess } from "./results/success/ReadSuccess.js";
 
 export type ResourceEventEmitter = TypedEmitter<{
   update: () => void;

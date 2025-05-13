@@ -1,7 +1,7 @@
-import { createDataset } from "../src";
+import { createDataset } from "../src.js";
 // Required for advanced features:
 import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
-import { ExtendedDatasetFactory } from "../src";
+import { ExtendedDatasetFactory } from "../src.js";
 import { quad, namedNode, literal } from "@rdfjs/data-model";
 import type {
   Dataset,

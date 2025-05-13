@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes, UnionType } from "../../traverser/TraverserTypes";
-import type { InstanceNodeFor } from "./createInstanceNodeFor";
-import { InstanceNode } from "./InstanceNode";
+import type { TraverserTypes, UnionType } from "../../traverser/TraverserTypes.js";
+import type { InstanceNodeFor } from "./createInstanceNodeFor.js";
+import { InstanceNode } from "./InstanceNode.js";
 
 export class UnionInstanceNode<
   Types extends TraverserTypes<any>,

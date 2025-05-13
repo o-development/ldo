@@ -1,5 +1,5 @@
 import { namedNode } from "@rdfjs/data-model";
-import jsonldDatasetProxy, { BasicLdSet, _getUnderlyingNode } from "../src";
+import jsonldDatasetProxy, { BasicLdSet, _getUnderlyingNode } from "../src.js";
 import { createDataset } from "@ldo/dataset";
 
 describe("BasicLdSet", () => {

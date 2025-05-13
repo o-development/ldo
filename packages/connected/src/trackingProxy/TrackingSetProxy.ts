@@ -1,5 +1,5 @@
 import { createNewSetProxy, type SetProxy } from "@ldo/jsonld-dataset-proxy";
-import type { TrackingProxyContext } from "./TrackingProxyContext";
+import type { TrackingProxyContext } from "./TrackingProxyContext.js";
 import type { QuadMatch } from "@ldo/rdf-utils";
 
 /**

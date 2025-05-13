@@ -7,22 +7,22 @@ import {
   type ITransactionDatasetFactory,
 } from "@ldo/subscribable-dataset";
 import type { DatasetChanges, GraphNode } from "@ldo/rdf-utils";
-import type { ConnectedPlugin } from "./types/ConnectedPlugin";
-import type { ConnectedContext } from "./types/ConnectedContext";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin.js";
+import type { ConnectedContext } from "./types/ConnectedContext.js";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./types/IConnectedLdoDataset";
-import { splitChangesByGraph } from "./util/splitChangesByGraph";
-import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess";
-import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess";
-import type { ErrorResult } from "./results/error/ErrorResult";
-import { AggregateError } from "./results/error/ErrorResult";
+} from "./types/IConnectedLdoDataset.js";
+import { splitChangesByGraph } from "./util/splitChangesByGraph.js";
+import type { IgnoredInvalidUpdateSuccess } from "./results/success/UpdateSuccess.js";
+import { UpdateDefaultGraphSuccess } from "./results/success/UpdateSuccess.js";
+import type { ErrorResult } from "./results/error/ErrorResult.js";
+import { AggregateError } from "./results/error/ErrorResult.js";
 import type {
   AggregateSuccess,
   SuccessResult,
-} from "./results/success/SuccessResult";
-import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
+} from "./results/success/SuccessResult.js";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder.js";
 import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**

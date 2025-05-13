@@ -1,11 +1,11 @@
-import type { ObjectLike } from "../types";
+import type { ObjectLike } from "../types.js";
 import {
   _getUnderlyingDataset,
   _getUnderlyingNode,
   _proxyContext,
   _writeGraphs,
-} from "../types";
-import type { SubjectProxy } from "./SubjectProxy";
+} from "../types.js";
+import type { SubjectProxy } from "./SubjectProxy.js";
 
 export function isSubjectProxy(
   someObject?: unknown,

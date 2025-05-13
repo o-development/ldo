@@ -1,5 +1,5 @@
-import { createLdoDataset } from "../src/createLdoDataset";
-import { ProfileShapeType } from "./profileData";
+import { createLdoDataset } from "../src/createLdoDataset.js";
+import { ProfileShapeType } from "./profileData.js";
 
 describe("TransactionLdoDataset", () => {
   it("Uses transactions with an LdoBuilder", () => {

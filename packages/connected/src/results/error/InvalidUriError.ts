@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource";
-import { ResourceError } from "./ErrorResult";
+import type { Resource } from "../../Resource.js";
+import { ResourceError } from "./ErrorResult.js";
 
 /**
  * An InvalidUriError is returned when a URI was provided that is not a valid

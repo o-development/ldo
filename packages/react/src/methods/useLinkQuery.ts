@@ -9,7 +9,7 @@ import type {
 import type { LdoBase, LdoBuilder, ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTrackingProxy } from "../util/useTrackingProxy";
+import { useTrackingProxy } from "../util/useTrackingProxy.js";
 
 /**
  * @internal

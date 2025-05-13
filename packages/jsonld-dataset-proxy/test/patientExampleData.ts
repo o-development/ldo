@@ -1,7 +1,7 @@
 import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
-import type { LdoJsonldContext } from "../src/LdoJsonldContext";
-import type { LdSet } from "../src";
+import type { LdoJsonldContext } from "../src/LdoJsonldContext.js";
+import type { LdSet } from "../src.js";
 
 export interface ObservationShape {
   "@id"?: string;

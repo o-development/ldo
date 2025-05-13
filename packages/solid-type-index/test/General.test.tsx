@@ -8,16 +8,16 @@ import {
   setupFullTypeIndex,
   setUpServer,
   WEB_ID,
-} from "./setUpServer";
-import { getInstanceUris, getTypeRegistrations } from "../src/getTypeIndex";
+} from "./setUpServer.js";
+import { getInstanceUris, getTypeRegistrations } from "../src/getTypeIndex.js";
 import {
   addRegistration,
   initTypeIndex,
   removeRegistration,
-} from "../src/setTypeIndex";
-import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes";
+} from "../src/setTypeIndex.js";
+import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes.js";
 import { namedNode } from "@rdfjs/dataset";
-import { INSTANCE } from "../src/constants";
+import { INSTANCE } from "../src/constants.js";
 import { createSolidLdoDataset } from "@ldo/connected-solid";
 
 // Use an increased timeout, since the CSS server takes too much setup time.

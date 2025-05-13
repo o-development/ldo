@@ -4,7 +4,7 @@ import type { LdoBuilder } from "@ldo/ldo";
 import type { LdoBase } from "@ldo/ldo";
 import { useCallback } from "react";
 
-import { useTrackingProxy } from "../util/useTrackingProxy";
+import { useTrackingProxy } from "../util/useTrackingProxy.js";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
 export type useSubjectType = {

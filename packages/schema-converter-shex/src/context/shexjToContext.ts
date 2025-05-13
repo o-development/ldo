@@ -1,7 +1,7 @@
 import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
-import { JsonLdContextBuilder } from "./JsonLdContextBuilder";
-import { ShexJNameVisitor } from "./ShexJContextVisitor";
+import { JsonLdContextBuilder } from "./JsonLdContextBuilder.js";
+import { ShexJNameVisitor } from "./ShexJContextVisitor.js";
 import { jsonld2graphobject } from "jsonld2graphobject";
 
 export async function shexjToContext(

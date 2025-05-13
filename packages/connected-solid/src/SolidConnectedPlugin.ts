@@ -1,8 +1,8 @@
 import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
-import type { SolidContainerUri, SolidLeafUri, SolidUri } from "./types";
-import { SolidLeaf } from "./resources/SolidLeaf";
-import { SolidContainer } from "./resources/SolidContainer";
-import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
+import type { SolidContainerUri, SolidLeafUri, SolidUri } from "./types.js";
+import { SolidLeaf } from "./resources/SolidLeaf.js";
+import { SolidContainer } from "./resources/SolidContainer.js";
+import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri.js";
 
 /**
  * The Type of the SolidConnectedContext

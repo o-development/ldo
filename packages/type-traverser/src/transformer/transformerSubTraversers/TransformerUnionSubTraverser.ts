@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes } from "../../";
-import type { UnionInstanceNode } from "../../instanceGraph/nodes/UnionInstanceNode";
+import type { TraverserTypes } from "../../.js";
+import type { UnionInstanceNode } from "../../instanceGraph/nodes/UnionInstanceNode.js";
 import type {
   TransformerReturnTypes,
   UnionReturnType,
-} from "../TransformerReturnTypes";
-import type { UnionTransformerDefinition } from "../Transformers";
-import type { UnionTraverserDefinition } from "../../traverser/TraverserDefinition";
-import type { UnionType } from "../../traverser/TraverserTypes";
-import { transformerParentSubTraverser } from "./TransformerParentSubTraverser";
-import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
+} from "../TransformerReturnTypes.js";
+import type { UnionTransformerDefinition } from "../Transformers.js";
+import type { UnionTraverserDefinition } from "../../traverser/TraverserDefinition.js";
+import type { UnionType } from "../../traverser/TraverserTypes.js";
+import { transformerParentSubTraverser } from "./TransformerParentSubTraverser.js";
+import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes.js";
 
 export async function transformerUnionSubTraverser<
   Types extends TraverserTypes<any>,

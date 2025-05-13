@@ -1,11 +1,11 @@
 import type { Quad } from "@rdfjs/types";
 import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 import { SubscribableDataset } from "@ldo/subscribable-dataset";
-import { LdoBuilder } from "./LdoBuilder";
-import type { ShapeType } from "./ShapeType";
-import type { LdoBase } from "./index";
-import { LdoTransactionDataset } from "./LdoTransactionDataset";
-import type { ILdoDataset } from "./types";
+import { LdoBuilder } from "./LdoBuilder.js";
+import type { ShapeType } from "./ShapeType.js";
+import type { LdoBase } from "./index.js";
+import { LdoTransactionDataset } from "./LdoTransactionDataset.js";
+import type { ILdoDataset } from "./types.js";
 
 /**
  * @category Getting an LdoDataset
@@ -17,7 +17,7 @@ import type { ILdoDataset } from "./types";
  * @example
  * ```typescript
  * import { LdoDataset, createLdoDatasetFactory } from "@ldo/ldo";
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
  *
  * const ldoDatasetFactory = createLdoDatasetFactory();
  * const ldoDataset = new LdoDataset();

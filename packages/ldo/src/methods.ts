@@ -11,12 +11,12 @@ import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 import type { WriterOptions } from "@ldo/rdf-utils";
 import type { Dataset, Quad } from "@rdfjs/types";
 import { changesToSparqlUpdate, datasetToString } from "@ldo/rdf-utils";
-import type { LdoBase } from "./util";
+import type { LdoBase } from "./util.js";
 import {
   canDatasetStartTransaction,
   getTransactionalDatasetFromLdo,
   normalizeNodeNames,
-} from "./util";
+} from "./util.js";
 
 import {
   graphOf as graphOfImport,

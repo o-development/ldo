@@ -1,7 +1,7 @@
 import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
-import type { NextGraphUri } from "./types";
-import { NextGraphResource } from "./resources/NextGraphResource";
-import { isNextGraphUri } from "./util/isNextGraphUri";
+import type { NextGraphUri } from "./types.js";
+import { NextGraphResource } from "./resources/NextGraphResource.js";
+import { isNextGraphUri } from "./util/isNextGraphUri.js";
 
 export interface NextGraphConnectedContext {
   // NG does not have a type definition

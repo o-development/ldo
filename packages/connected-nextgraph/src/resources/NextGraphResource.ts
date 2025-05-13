@@ -10,15 +10,15 @@ import {
   type Resource,
   type ResourceEventEmitter,
 } from "@ldo/connected";
-import type { NextGraphUri } from "../types";
+import type { NextGraphUri } from "../types.js";
 import EventEmitter from "events";
-import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin";
+import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin.js";
 import { changesToSparqlUpdate, type DatasetChanges } from "@ldo/rdf-utils";
-import type { NextGraphNotificationMessage } from "../notifications/NextGraphNotificationMessage";
+import type { NextGraphNotificationMessage } from "../notifications/NextGraphNotificationMessage.js";
 import type { Dataset, Quad } from "@rdfjs/types";
 import { namedNode, quad as createQuad } from "@rdfjs/data-model";
-import { NextGraphReadSuccess } from "../results/NextGraphReadSuccess";
-import { NextGraphNotificationSubscription } from "../notifications/NextGraphNotificationSubscription";
+import { NextGraphReadSuccess } from "../results/NextGraphReadSuccess.js";
+import { NextGraphNotificationSubscription } from "../notifications/NextGraphNotificationSubscription.js";
 import { parseRdf } from "@ldo/ldo";
 import type { LdoDataset } from "@ldo/ldo";
 import { createDataset } from "@ldo/dataset";

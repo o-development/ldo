@@ -1,6 +1,6 @@
 import { createDatasetFactory } from "@ldo/dataset";
-import { ConnectedLdoDataset } from "./ConnectedLdoDataset";
-import type { ConnectedPlugin } from "./types/ConnectedPlugin";
+import { ConnectedLdoDataset } from "./ConnectedLdoDataset.js";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin.js";
 import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
 
 /**

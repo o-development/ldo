@@ -4,7 +4,7 @@ import type {
   Dataset,
   DatasetCoreFactory,
 } from "@rdfjs/types";
-import ExtendedDataset from "./ExtendedDataset";
+import ExtendedDataset from "./ExtendedDataset.js";
 
 /**
  * A DatasetFactory that creates an ExtendedDataset given a DatasetCoreFactory.

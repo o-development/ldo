@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes } from "../../";
+import type { TraverserTypes } from "../../.js";
 import type {
   InterfaceReturnType,
   TransformerReturnTypes,
-} from "../TransformerReturnTypes";
-import type { InterfaceTransformerDefinition } from "../Transformers";
-import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition";
-import type { InterfaceType } from "../../traverser/TraverserTypes";
-import { transformerParentSubTraverser } from "./TransformerParentSubTraverser";
-import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
-import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode";
+} from "../TransformerReturnTypes.js";
+import type { InterfaceTransformerDefinition } from "../Transformers.js";
+import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition.js";
+import type { InterfaceType } from "../../traverser/TraverserTypes.js";
+import { transformerParentSubTraverser } from "./TransformerParentSubTraverser.js";
+import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes.js";
+import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode.js";
 
 export async function transformerInterfaceSubTraverser<
   Types extends TraverserTypes<any>,

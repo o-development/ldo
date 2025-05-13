@@ -1,6 +1,6 @@
 import { solidConnectedPlugin } from "@ldo/connected-solid";
 import { createLdoReactMethods } from "@ldo/react";
-import { createBrowserSolidReactMethods } from "./createBrowserSolidReactMethods";
+import { createBrowserSolidReactMethods } from "./createBrowserSolidReactMethods.js";
 
 /**
  * Default exports for just Solid methods

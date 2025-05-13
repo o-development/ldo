@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource";
-import { ResourceSuccess } from "./SuccessResult";
+import type { Resource } from "../../Resource.js";
+import { ResourceSuccess } from "./SuccessResult.js";
 
 /**
  * Indicates that the request to read a resource was a success

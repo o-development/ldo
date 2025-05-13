@@ -164,8 +164,8 @@ library.
 
 ```typescript
 import { FunctionComponent } from "react";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
-import { useResource, useSubject } from "./reactMethods";
+import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
+import { useResource, useSubject } from "./reactMethods.js";
 
 export const UseSubjectTest: FunctionComponent = () => {
   useResource("did:ng:SOME_URI");

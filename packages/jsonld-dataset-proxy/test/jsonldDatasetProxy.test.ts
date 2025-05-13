@@ -1,5 +1,5 @@
 import { createDataset, serializedToDataset } from "@ldo/dataset";
-import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src";
+import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src.js";
 import {
   graphOf,
   jsonldDatasetProxy,
@@ -14,8 +14,8 @@ import {
   _writeGraphs,
   set,
   SetProxy,
-} from "../src";
-import type { ObservationShape, PatientShape } from "./patientExampleData";
+} from "../src.js";
+import type { ObservationShape, PatientShape } from "./patientExampleData.js";
 import {
   patientData,
   tinyPatientData,
@@ -25,7 +25,7 @@ import {
   tinyPatientDataWithLanguageTags,
   patientUnnestedContext,
   patientNestedContext,
-} from "./patientExampleData";
+} from "./patientExampleData.js";
 import {
   namedNode,
   quad,
@@ -35,14 +35,14 @@ import {
 } from "@rdfjs/data-model";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
-import type { LdoJsonldContext } from "../src/LdoJsonldContext";
+import type { LdoJsonldContext } from "../src/LdoJsonldContext.js";
 import {
   scopedContext,
   scopedData,
   type Avatar,
   type Bender,
-} from "./scopedExampleData";
-import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy";
+} from "./scopedExampleData.js";
+import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy.js";
 
 global.console.warn = () => {};
 

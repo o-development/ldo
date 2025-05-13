@@ -1,4 +1,4 @@
-import { createDataset } from "../src";
+import { createDataset } from "../src.js";
 import { quad, namedNode } from "@rdfjs/data-model";
 
 describe("createExtendedDataset", () => {

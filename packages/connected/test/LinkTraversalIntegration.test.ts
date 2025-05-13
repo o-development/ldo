@@ -1,5 +1,5 @@
-import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset";
-import { changeData, commitData, createConnectedLdoDataset } from "../src";
+import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset.js";
+import { changeData, commitData, createConnectedLdoDataset } from "../src.js";
 import {
   solidConnectedPlugin,
   type SolidConnectedPlugin,
@@ -12,9 +12,9 @@ import {
   OTHER_PROFILE_URI,
   THIRD_PROFILE_SUBJECT,
   THIRD_PROFILE_URI,
-} from "./LinkTraversalData";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
-import { wait } from "./util/wait";
+} from "./LinkTraversalData.js";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+import { wait } from "./util/wait.js";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

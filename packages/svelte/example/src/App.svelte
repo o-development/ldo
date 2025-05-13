@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+  import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
   // Assuming these are the Svelte-specific functions/stores from your @ldo/svelte library
-  import { useResource, useSubject } from "./ldoSvelteMethods";
+  import { useResource, useSubject } from "./ldoSvelteMethods.js";
   const SAMPLE_DATA_URI =
     "http://example.com/example/link-query/main-profile.ttl";
   const resource = useResource(SAMPLE_DATA_URI);

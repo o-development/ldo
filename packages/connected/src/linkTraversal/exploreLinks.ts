@@ -1,10 +1,10 @@
 import type { LdoBase, ShapeType } from "@ldo/ldo";
-import type { ConnectedPlugin } from "../types/ConnectedPlugin";
+import type { ConnectedPlugin } from "../types/ConnectedPlugin.js";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { LQInput } from "../types/ILinkQuery";
+import type { LQInput } from "../types/ILinkQuery.js";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
-import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
-import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy";
+import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset.js";
+import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy.js";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 

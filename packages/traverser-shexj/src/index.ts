@@ -1,5 +1,5 @@
-import { ShexJTraverser } from "./ShexJTraverser";
+import { ShexJTraverser } from "./ShexJTraverser.js";
 
-export * from "./ShexJTraverserDefinition";
-export * from "./ShexJTraverserTypes";
+export * from "./ShexJTraverserDefinition.js";
+export * from "./ShexJTraverserTypes.js";
 export default ShexJTraverser;

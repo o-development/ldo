@@ -1,5 +1,5 @@
-import type { WaitingProcess } from "../src/util/RequestBatcher";
-import { RequestBatcher } from "../src/util/RequestBatcher";
+import type { WaitingProcess } from "../src/util/RequestBatcher.js";
+import { RequestBatcher } from "../src/util/RequestBatcher.js";
 
 describe("RequestBatcher", () => {
   type ReadWaitingProcess = WaitingProcess<[string], string>;

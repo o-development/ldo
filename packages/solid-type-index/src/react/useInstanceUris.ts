@@ -1,13 +1,13 @@
-import { useTypeIndexProfile } from "./useTypeIndexProfile";
+import { useTypeIndexProfile } from "./useTypeIndexProfile.js";
 import { useEffect, useMemo, useState } from "react";
-import { useSubscribeToUris } from "./util/useSubscribeToUris";
+import { useSubscribeToUris } from "./util/useSubscribeToUris.js";
 import { useLdo, useMatchSubject } from "@ldo/solid-react";
-import { TypeRegistrationShapeType } from "../.ldo/typeIndex.shapeTypes";
-import { RDF_TYPE, TYPE_REGISTRATION } from "../constants";
+import { TypeRegistrationShapeType } from "../.ldo/typeIndex.shapeTypes.js";
+import { RDF_TYPE, TYPE_REGISTRATION } from "../constants.js";
 import {
   getInstanceUris,
   getTypeIndexesUrisFromProfile,
-} from "../getTypeIndex";
+} from "../getTypeIndex.js";
 import type { SolidLeafUri } from "@ldo/connected-solid";
 
 /**

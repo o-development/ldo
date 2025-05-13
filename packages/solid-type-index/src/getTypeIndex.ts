@@ -1,10 +1,10 @@
-import type { TypeRegistration } from "./.ldo/typeIndex.typings";
-import type { TypeIndexProfile } from "./.ldo/profile.typings";
-import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
-import { TypeRegistrationShapeType } from "./.ldo/typeIndex.shapeTypes";
-import { RDF_TYPE, TYPE_REGISTRATION } from "./constants";
-import type { Options } from "./util/Options";
-import { guaranteeOptions } from "./util/Options";
+import type { TypeRegistration } from "./.ldo/typeIndex.typings.js";
+import type { TypeIndexProfile } from "./.ldo/profile.typings.js";
+import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes.js";
+import { TypeRegistrationShapeType } from "./.ldo/typeIndex.shapeTypes.js";
+import { RDF_TYPE, TYPE_REGISTRATION } from "./constants.js";
+import type { Options } from "./util/Options.js";
+import { guaranteeOptions } from "./util/Options.js";
 import type { LdSet } from "@ldo/ldo";
 import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 

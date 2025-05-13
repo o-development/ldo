@@ -1,6 +1,6 @@
 import type { Schema } from "shexj";
 import type { ContextDefinition } from "jsonld";
-import type { LdSet, ShapeType } from "../src";
+import type { LdSet, ShapeType } from "../src.js";
 
 export const profileShex: Schema = {
   type: "Schema",

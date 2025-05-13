@@ -1,4 +1,4 @@
-import { guaranteeFetch } from "../src/util/guaranteeFetch";
+import { guaranteeFetch } from "../src/util/guaranteeFetch.js";
 import crossFetch from "cross-fetch";
 
 describe("guaranteeFetch", () => {

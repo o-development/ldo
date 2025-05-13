@@ -6,7 +6,7 @@ import type {
   VisitorsInput,
 } from "..";
 import { Transformer, Visitor } from "..";
-import type { TransformersInput } from "../transformer/Transformers";
+import type { TransformersInput } from "../transformer/Transformers.js";
 
 export class Traverser<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

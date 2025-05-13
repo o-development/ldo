@@ -1,15 +1,15 @@
 import { blankNode, namedNode, quad } from "@rdfjs/data-model";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import { addObjectToDataset } from "../util/addObjectToDataset";
-import { deleteValueFromDataset } from "./deleteFromDataset";
+import { addObjectToDataset } from "../util/addObjectToDataset.js";
+import { deleteValueFromDataset } from "./deleteFromDataset.js";
 import {
   _getUnderlyingDataset,
   _getUnderlyingNode,
   _proxyContext,
   _writeGraphs,
-} from "../types";
-import { getValueForKey } from "./getValueForKey";
-import type { ProxyContext } from "../ProxyContext";
+} from "../types.js";
+import { getValueForKey } from "./getValueForKey.js";
+import type { ProxyContext } from "../ProxyContext.js";
 
 export interface SubjectProxyTarget {
   "@id": NamedNode | BlankNode;
