@@ -1,4 +1,4 @@
-export * from "./ConnectedLdoBuilder";
+export * from "./ConnectedLdoBuilder.js";
 export * from "./ConnectedLdoDataset";
 export * from "./ConnectedLdoTransactionDataset";
 

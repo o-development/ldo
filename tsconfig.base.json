@@ -3,21 +3,25 @@
     "module": "commonjs",
     "baseUrl": ".",
     "strict": true,
-    "declaration": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
     "removeComments": true,
-    "lib": ["ES2021"],
+    "lib": [
+      "ES2021"
+    ],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2021",
     "sourceMap": true,
     "jsx": "react-jsx",
     "noErrorTruncation": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": false
   },
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "**/dist",
+    "**/coverage"
   ]
 }
