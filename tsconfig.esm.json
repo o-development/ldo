@@ -6,6 +6,7 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
+    "isolatedModules": true,
     "paths": {
       "@ldo/*": [
         "packages/*/src"

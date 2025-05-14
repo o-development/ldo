@@ -40,12 +40,12 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.d.ts", // Make sure to include your new env.d.ts
+    "src/**/*.d.ts",
     "src/**/*.svelte",
     "tests/**/*.ts",
     "tests/**/*.svelte",
-    "example/src/**/*.ts", // Include example app's TS files
-    "example/src/**/*.svelte", // Include example app's Svelte files
+    "example/src/**/*.ts",
+    "example/src/**/*.svelte",
     "vite.config.ts",
     "vite.config.example.ts",
     "jest.config.js"
