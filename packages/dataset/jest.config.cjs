@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // packages/dataset/jest.config.cjs
 const sharedConfig = require("../../jest.config.js");
 

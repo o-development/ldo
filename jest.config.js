@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // jest.config.js
 const path = require("path");
 const monorepoRoot = path.resolve(__dirname);
