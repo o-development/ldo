@@ -3,7 +3,13 @@ import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData.js";
 import { ProfileShapeType } from "./profileData.js";
 import type { LdoBuilder, LdoDataset } from "../src/index.js";
-import { createLdoDataset, graphOf, parseRdf, toTurtle, set } from "../src/index.js";
+import {
+  createLdoDataset,
+  graphOf,
+  parseRdf,
+  toTurtle,
+  set,
+} from "../src/index.js";
 import { sampleJsonld, sampleTurtle } from "./sampleData.js";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import { _proxyContext } from "@ldo/jsonld-dataset-proxy";

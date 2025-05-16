@@ -8,4 +8,5 @@ export * from "./createLdoDataset.js";
 import type { LdoBase as LdoBaseImport } from "./util.js";
 export type LdoBase = LdoBaseImport;
 export * from "./types.js";
-export { LdSet, LdoJsonldContext, set } from "@ldo/jsonld-dataset-proxy";
+export type { LdSet, LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
+export { set } from "@ldo/jsonld-dataset-proxy";

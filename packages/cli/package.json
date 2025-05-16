@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/cli#readme",
   "devDependencies": {
-    "@ldo/cli": "^0.0.1-alpha.28",
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
     "@types/fs-extra": "^9.0.13",
