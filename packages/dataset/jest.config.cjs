@@ -9,4 +9,5 @@ module.exports = {
     "!src/**/*.d.ts",
     // "!src/index.ts", // Optional, if index.ts only re-exports
   ],
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
 };

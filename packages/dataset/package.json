@@ -15,9 +15,10 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
-    "watch": "tsc --watch",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "test": "jest --coverage",
     "example:extendedDataset": "ts-node ./example/extendedDatasetExample.ts",
     "example:loadData": "ts-node ./example/loadDataExample.ts",
     "prepublishOnly": "npm run test && npm run build",

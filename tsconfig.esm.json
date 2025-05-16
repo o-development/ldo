@@ -3,14 +3,8 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "isolatedModules": true,
-    "paths": {
-      "@ldo/*": [
-        "packages/*/src"
-      ]
-    }
+    "isolatedModules": true
   }
 }
