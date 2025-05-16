@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// jest.config.js
 const path = require("path");
 const monorepoRoot = path.resolve(__dirname);
 
@@ -8,7 +7,8 @@ module.exports = {
   testEnvironment: "node",
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
-    "^@ldo/(.*)$": `${monorepoRoot}/packages/$1/src/index.ts`,
+    "^@ldo/([^/]+)$": `${monorepoRoot}/packages/$1/src/index.ts`,
+    "^@ldo/([^/]+)/(.*)$": `${monorepoRoot}/packages/$1/$2`,
   },
   coveragePathIgnorePatterns: [
     "/node_modules/",
