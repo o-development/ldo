@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import EventEmitter from "events";
-import type { ResourceError } from "../../src.js";
-import type { ResourceError } from "../../src.js";
+import type { ResourceError } from "../../src/index.js";
+import type { ResourceError } from "../../src/index.js";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { ReadSuccess } from "../../src/results/success/ReadSuccess.js";
 import type { UpdateSuccess } from "../../src/results/success/UpdateSuccess.js";

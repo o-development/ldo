@@ -2,8 +2,8 @@ import {
   type ValidateTraverserTypes,
   type TraverserDefinitions,
   Traverser,
-} from "../src.js";
-import type { ParentIdentifiers } from "../src.js";
+} from "../src/index.js";
+import type { ParentIdentifiers } from "../src/index.js";
 
 async function run() {
   /**

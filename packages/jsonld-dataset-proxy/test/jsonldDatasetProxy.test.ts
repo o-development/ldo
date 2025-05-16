@@ -1,5 +1,5 @@
 import { createDataset, serializedToDataset } from "@ldo/dataset";
-import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src.js";
+import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src/index.js";
 import {
   graphOf,
   jsonldDatasetProxy,
@@ -14,7 +14,7 @@ import {
   _writeGraphs,
   set,
   SetProxy,
-} from "../src.js";
+} from "../src/index.js";
 import type { ObservationShape, PatientShape } from "./patientExampleData.js";
 import {
   patientData,

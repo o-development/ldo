@@ -9,6 +9,8 @@ import {
   blankNode,
 } from "@rdfjs/data-model";
 import type { Quad, BlankNode } from "@rdfjs/types";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
 describe("SubscribableDataset", () => {

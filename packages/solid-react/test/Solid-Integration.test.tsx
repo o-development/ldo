@@ -21,7 +21,7 @@ import {
   useSubject,
   useSubscribeToResource,
   useLinkQuery,
-} from "../src.js";
+} from "../src/index.js";
 import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
 import type { PostSh } from "./.ldo/post.typings.js";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";

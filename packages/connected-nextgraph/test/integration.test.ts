@@ -4,7 +4,7 @@ import type {
   NextGraphConnectedPlugin,
   NextGraphResource,
   NextGraphUri,
-} from "../src.js";
+} from "../src/index.js";
 import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset.js";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode } from "@rdfjs/data-model";

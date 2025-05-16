@@ -1,5 +1,5 @@
 import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset.js";
-import { changeData, commitData, createConnectedLdoDataset } from "../src.js";
+import { changeData, commitData, createConnectedLdoDataset } from "../src/index.js";
 import {
   solidConnectedPlugin,
   type SolidConnectedPlugin,

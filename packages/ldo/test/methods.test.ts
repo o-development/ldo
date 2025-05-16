@@ -23,7 +23,7 @@ import {
   write,
   setLanguagePreferences,
   languagesOf,
-} from "../src.js";
+} from "../src/index.js";
 import type { ILdoDataset } from "../src/types.js";
 
 describe("methods", () => {

@@ -16,7 +16,7 @@ import type { NoncompliantPodError } from "../src/requester/results/error/Noncom
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess.js";
 import { wait } from "./utils.helper.js";
 import path from "path";
-import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src.js";
+import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src/index.js";
 import {
   createSolidLdoDataset,
   type SolidConnectedPlugin,
@@ -24,7 +24,7 @@ import {
   type SolidContainerUri,
   type SolidLeaf,
   type SolidLeafUri,
-} from "../src.js";
+} from "../src/index.js";
 import type {
   AggregateError,
   AggregateSuccess,
