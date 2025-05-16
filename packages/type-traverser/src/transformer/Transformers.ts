@@ -10,7 +10,7 @@ import type {
   TraverserTypes,
   UnionReturnType,
   UnionType,
-} from "..";
+} from "../index.js";
 import type { InterfaceInstanceNode } from "../instanceGraph/nodes/InterfaceInstanceNode.js";
 import type { PrimitiveInstanceNode } from "../instanceGraph/nodes/PrimitiveInstanceNode.js";
 import type { UnionInstanceNode } from "../instanceGraph/nodes/UnionInstanceNode.js";

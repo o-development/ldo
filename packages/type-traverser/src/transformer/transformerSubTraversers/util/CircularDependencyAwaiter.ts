@@ -1,4 +1,4 @@
-import type { KeyTypes } from "../../../.js";
+import type { KeyTypes } from "../../../index.js";
 import { MultiMap } from "./MultiMap.js";
 import { MultiSet } from "./MultiSet.js";
 import type { TransformerSubTraverserExecutingPromises } from "./transformerSubTraverserTypes.js";

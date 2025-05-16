@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-$1$2.js$3
+import type {
+  InterfaceType,
+  PrimitiveType,
+  TraverserTypes,
+  UnionType,
+} from "../../traverser/TraverserTypes.js";
 import type { InstanceGraph } from "../InstanceGraph.js";
 import { InterfaceInstanceNode } from "./InterfaceInstanceNode.js";
 import { PrimitiveInstanceNode } from "./PrimitiveInstanceNode.js";

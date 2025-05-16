@@ -15,7 +15,7 @@ import type {
   UnionVisitorInputDefinition,
   Visitors,
   VisitorsInput,
-} from "../";
+} from "../index.js";
 import { InstanceGraph } from "../instanceGraph/InstanceGraph.js";
 import { MultiSet } from "../transformer/transformerSubTraversers/util/MultiSet.js";
 import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentSubTraverser.js";

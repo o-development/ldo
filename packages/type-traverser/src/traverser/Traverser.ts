@@ -4,8 +4,8 @@ import type {
   TraverserDefinitions,
   TraverserTypes,
   VisitorsInput,
-} from "..";
-import { Transformer, Visitor } from "..";
+} from "../index.js";
+import { Transformer, Visitor } from "../index.js";
 import type { TransformersInput } from "../transformer/Transformers.js";
 
 export class Traverser<

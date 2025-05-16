@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { InterfaceVisitorDefinition, TraverserTypes } from "../../.js";
+import type {
+  InterfaceVisitorDefinition,
+  TraverserTypes,
+} from "../../index.js";
 import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode.js";
 import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition.js";
 import type { InterfaceType } from "../../traverser/TraverserTypes.js";

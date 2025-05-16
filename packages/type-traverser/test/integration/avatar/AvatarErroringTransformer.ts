@@ -1,4 +1,4 @@
-import { Traverser } from "../../../src.js";
+import { Traverser } from "../../../src/index.js";
 import { avatarTraverserDefinition } from "./AvatarTraverserDefinition.js";
 import type { AvatarTraverserTypes } from "./AvatarTraverserTypes.js";
 

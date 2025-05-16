@@ -3,7 +3,7 @@ import type {
   PrimitiveType,
   TraverserTypes,
   UnionType,
-} from "..";
+} from "../index.js";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type InterfaceReturnType<Type extends InterfaceType<any>> = {

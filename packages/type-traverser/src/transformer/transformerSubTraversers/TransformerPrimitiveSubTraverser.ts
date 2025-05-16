@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes } from "../../.js";
+import type { TraverserTypes } from "../../index.js";
 import type { PrimitiveInstanceNode } from "../../instanceGraph/nodes/PrimitiveInstanceNode.js";
 import type {
   PrimitiveReturnType,

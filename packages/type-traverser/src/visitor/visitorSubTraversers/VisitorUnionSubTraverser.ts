@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes, UnionVisitorDefinition } from "../../.js";
+import type { TraverserTypes, UnionVisitorDefinition } from "../../index.js";
 import type { UnionInstanceNode } from "../../instanceGraph/nodes/UnionInstanceNode.js";
 import type { UnionTraverserDefinition } from "../../traverser/TraverserDefinition.js";
 import type { UnionType } from "../../traverser/TraverserTypes.js";
@@ -19,7 +19,7 @@ export async function visitorUnionSubTraverser<
   const { traverserDefinition, visitors } = globals;
   const definition = traverserDefinition[
     itemTypeName
-  ] as UnionTraverserDefinition<Type>;
+  ] as unknown as UnionTraverserDefinition<Type>;
   const visitor = visitors[itemTypeName] as unknown as UnionVisitorDefinition<
     Types,
     TypeName,

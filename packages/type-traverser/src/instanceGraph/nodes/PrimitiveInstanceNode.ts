@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-$1$2.js$3
+import type {
+  PrimitiveType,
+  TraverserTypes,
+} from "../../traverser/TraverserTypes.js";
 import { InstanceNode } from "./InstanceNode.js";
 
 export class PrimitiveInstanceNode<

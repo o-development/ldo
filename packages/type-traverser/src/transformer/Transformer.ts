@@ -12,7 +12,7 @@ import type {
   TraverserTypes,
   UnionReturnType,
   UnionType,
-} from "..";
+} from "../index.js";
 import { transformerParentSubTraverser } from "./transformerSubTraversers/TransformerParentSubTraverser.js";
 import { CircularDepenedencyAwaiter } from "./transformerSubTraversers/util/CircularDependencyAwaiter.js";
 import { MultiMap } from "./transformerSubTraversers/util/MultiMap.js";
