@@ -1,6 +1,8 @@
 import type { WaitingProcess } from "../src/util/RequestBatcher.js";
 import { RequestBatcher } from "../src/util/RequestBatcher.js";
 
+import { jest } from "@jest/globals";
+
 describe("RequestBatcher", () => {
   type ReadWaitingProcess = WaitingProcess<[string], string>;
 

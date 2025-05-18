@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type TypedEmitter from "typed-emitter";
 import type { ConnectedResult } from "./results/ConnectedResult.js";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type {
@@ -9,7 +8,8 @@ import type {
 import type { ResourceError } from "./results/error/ErrorResult.js";
 import type { ReadSuccess } from "./results/success/ReadSuccess.js";
 
-export type ResourceEventEmitter = TypedEmitter<{
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+export type ResourceEventEmitter = import("typed-emitter").default<{
   update: () => void;
   notification: () => void;
 }>;

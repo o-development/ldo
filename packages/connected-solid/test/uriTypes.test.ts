@@ -1,4 +1,4 @@
-import { isSolidLeafUri } from "../src/index.js";
+import { isSolidLeafUri } from "../src/util/isSolidUri";
 
 describe("isLeafUri", () => {
   it("returns true if the given value is a leaf URI", () => {

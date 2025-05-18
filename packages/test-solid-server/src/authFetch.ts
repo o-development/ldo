@@ -12,6 +12,12 @@ const config = {
   password: "abc123",
 };
 
+async function reportError(response: Response) {
+  if (response.status >= 400) {
+    console.error(await response.text());
+  }
+}
+
 async function getAuthorization(port: number): Promise<string> {
   // First we request the account API controls to find out where we can log in
   const indexResponse = await fetch(`http://localhost:${port}/.account/`);
@@ -27,6 +33,7 @@ async function getAuthorization(port: number): Promise<string> {
     }),
   });
   // This authorization value will be used to authenticate in the next step
+  await reportError(response);
   const result = await response.json();
   return result.authorization;
 }
@@ -57,7 +64,7 @@ async function getSecret(
       webId: `http://localhost:${port}/${config.podName}/profile/card#me`,
     }),
   });
-
+  await reportError(response);
   // These are the identifier and secret of your token.
   // Store the secret somewhere safe as there is no way to request it again from the server!
   // The `resource` value can be used to delete the token at a later point in time.
@@ -94,7 +101,7 @@ async function getAccessToken(
       },
       body: "grant_type=client_credentials&scope=webid",
     });
-
+    await reportError(response);
     // This is the Access token that will be used to do an authenticated request to the server.
     // The JSON also contains an "expires_in" field in seconds,
     // which you can use to know when you need request a new Access token.

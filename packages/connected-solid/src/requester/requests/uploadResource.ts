@@ -1,5 +1,4 @@
 import { guaranteeFetch } from "../../util/guaranteeFetch.js";
-import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 import { UnexpectedResourceError } from "@ldo/connected";
 import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
 import type {
@@ -11,6 +10,11 @@ import { readResource } from "./readResource.js";
 import type { DatasetRequestOptions } from "./requestOptions.js";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 import { CreateSuccess } from "../results/success/CreateSuccess.js";
+import {
+  addResourceRdfToContainer,
+  getParentUri,
+  getSlug,
+} from "../../util/rdfUtils.js";
 
 /**
  * @internal

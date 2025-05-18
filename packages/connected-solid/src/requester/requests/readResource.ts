@@ -3,7 +3,6 @@ import {
   HttpErrorResult,
   type HttpErrorResultType,
 } from "../results/error/HttpErrorResult.js";
-$1$2.js$3
 import type { DatasetRequestOptions } from "./requestOptions.js";
 import {
   BinaryReadSuccess,
@@ -18,6 +17,10 @@ import { checkHeadersForRootContainer } from "./checkRootContainer.js";
 import { namedNode } from "@rdfjs/data-model";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
+import {
+  addRawTurtleToDataset,
+  addResourceRdfToContainer,
+} from "../../util/rdfUtils.js";
 
 /**
  * All possible return values for reading a leaf

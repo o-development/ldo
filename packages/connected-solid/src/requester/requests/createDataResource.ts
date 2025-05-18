@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { guaranteeFetch } from "../../util/guaranteeFetch.js";
-import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 import type { AbsentReadSuccess, Resource } from "@ldo/connected";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult.js";
@@ -17,6 +16,11 @@ import { readResource } from "./readResource.js";
 import type { DatasetRequestOptions } from "./requestOptions.js";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
+import {
+  addResourceRdfToContainer,
+  getParentUri,
+  getSlug,
+} from "../../util/rdfUtils.js";
 
 /**
  * All possible return values when creating and overwriting a container

@@ -16,7 +16,11 @@ import type { NoncompliantPodError } from "../src/requester/results/error/Noncom
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess.js";
 import { wait } from "./utils.helper.js";
 import path from "path";
-import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src/index.js";
+import type {
+  GetWacRuleSuccess,
+  UpdateResultError,
+  WacRule,
+} from "../src/index.js";
 import {
   createSolidLdoDataset,
   type SolidConnectedPlugin,
@@ -43,6 +47,7 @@ import {
 import { getStorageFromWebId } from "../src/getStorageFromWebId.js";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
+import { jest } from "@jest/globals";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
