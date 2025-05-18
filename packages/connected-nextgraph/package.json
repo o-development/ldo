@@ -2,16 +2,28 @@
   "name": "@ldo/connected-nextgraph",
   "version": "1.0.0-alpha.9",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "watch": "tsc --watch",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "test": "npm run test:integration",
     "prepublishOnly": "npm run test && npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
-    "start-integration-test": "jest --coverage",
+    "start-integration-test": "vitest run --coverage",
     "test:integration": "start-server-and-test start-test-server http-get://localhost:14400 start-integration-test"
   },
   "repository": {

@@ -11,6 +11,7 @@ import { namedNode } from "@rdfjs/data-model";
 import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess.js";
 import { rm, cp } from "fs/promises";
 import path from "path";
+import { describe, it, expect, beforeEach, afterAll } from "vitest";
 
 const SAMPLE_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
