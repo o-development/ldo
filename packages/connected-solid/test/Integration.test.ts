@@ -47,7 +47,7 @@ import {
 import { getStorageFromWebId } from "../src/getStorageFromWebId.js";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
-import { jest } from "@jest/globals";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -2044,7 +2044,7 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
@@ -2100,13 +2100,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2134,13 +2134,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2168,13 +2168,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2203,7 +2203,7 @@ describe("Integration", () => {
 
     it.skip("returns an error when it cannot subscribe to a notification", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       await resource.subscribeToNotifications({
@@ -2215,7 +2215,7 @@ describe("Integration", () => {
 
     it.skip("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       const disabledWebsocketsApp = await createApp(
@@ -2233,7 +2233,7 @@ describe("Integration", () => {
 
     it.skip("attempts to reconnect multiple times before giving up.", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       const disabledWebsocketsApp = await createApp(

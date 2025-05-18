@@ -4,6 +4,7 @@
 // import { createSolidLdoDataset } from "../src/createSolidLdoDataset.js";
 // import { LeafRequester } from "../src/requester/LeafRequester.js";
 // import { namedNode, quad as createQuad } from "@rdfjs/data-model";
+import { describe, it, expect } from "vitest";
 
 describe("Leaf Requester", () => {
   it("trivial", () => {

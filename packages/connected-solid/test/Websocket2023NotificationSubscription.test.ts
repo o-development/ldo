@@ -1,3 +1,5 @@
+import { describe, it, expect } from "vitest";
+
 describe("Websocket Trivial", () => {
   it("is trivial", () => {
     expect(true).toBe(true);
