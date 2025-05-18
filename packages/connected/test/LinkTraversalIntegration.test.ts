@@ -19,6 +19,7 @@ import {
 } from "./LinkTraversalData.js";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { wait } from "./util/wait.js";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

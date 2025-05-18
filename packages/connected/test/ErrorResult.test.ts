@@ -6,6 +6,7 @@ import {
 } from "../src/results/error/ErrorResult.js";
 import { InvalidUriError } from "../src/results/error/InvalidUriError.js";
 import { MockResource } from "./mocks/MockResource.js";
+import { describe, it, expect } from "vitest";
 
 const mockResource = new MockResource("https://example.com/");
 

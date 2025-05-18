@@ -10,6 +10,7 @@ import {
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { ReadSuccess } from "../../src/results/success/ReadSuccess.js";
 import type { UpdateSuccess } from "../../src/results/success/UpdateSuccess.js";
+import { vi } from "vitest";
 
 export class MockResource
   extends (EventEmitter as new () => ResourceEventEmitter)
@@ -26,34 +27,32 @@ export class MockResource
     this.status = new Unfetched(this);
   }
 
-  isLoading = jest.fn<boolean, []>();
-  isFetched = jest.fn<boolean, []>();
-  isUnfetched = jest.fn<boolean, []>();
-  isDoingInitialFetch = jest.fn<boolean, []>();
-  isPresent = jest.fn<boolean | undefined, []>();
-  isAbsent = jest.fn<boolean | undefined, []>();
-  isSubscribedToNotifications = jest.fn<boolean, []>();
+  isLoading = vi.fn<() => boolean>();
+  isFetched = vi.fn<() => boolean>();
+  isUnfetched = vi.fn<() => boolean>();
+  isDoingInitialFetch = vi.fn<() => boolean>();
+  isPresent = vi.fn<() => boolean | undefined>();
+  isAbsent = vi.fn<() => boolean | undefined>();
+  isSubscribedToNotifications = vi.fn<() => boolean>();
 
-  read = jest.fn<Promise<ReadSuccess<any> | ResourceError<any>>, []>();
-  readIfUnfetched = jest.fn<
-    Promise<ReadSuccess<any> | ResourceError<any>>,
-    []
-  >();
-  update = jest.fn<
-    Promise<UpdateSuccess<any> | ResourceError<any>>,
-    [DatasetChanges]
-  >();
+  read = vi.fn<() => Promise<ReadSuccess<any> | ResourceError<any>>>();
+  readIfUnfetched =
+    vi.fn<() => Promise<ReadSuccess<any> | ResourceError<any>>>();
+  update =
+    vi.fn<
+      (
+        changes: DatasetChanges,
+      ) => Promise<UpdateSuccess<any> | ResourceError<any>>
+    >();
 
-  subscribeToNotifications = jest.fn<
-    Promise<string>,
-    [
-      {
+  subscribeToNotifications =
+    vi.fn<
+      (options?: {
         onNotification: (message: any) => void;
         onNotificationError: (err: Error) => void;
-      }?,
-    ]
-  >();
+      }) => Promise<string>
+    >();
 
-  unsubscribeFromNotifications = jest.fn<Promise<void>, [string]>();
-  unsubscribeFromAllNotifications = jest.fn<Promise<void>, []>();
+  unsubscribeFromNotifications = vi.fn<(id: string) => Promise<void>>();
+  unsubscribeFromAllNotifications = vi.fn<() => Promise<void>>();
 }
