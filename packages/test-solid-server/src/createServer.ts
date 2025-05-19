@@ -25,9 +25,8 @@ export async function createApp(
     variableBindings: {},
     shorthand: {
       port: port,
-      loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
-      rootFilePath: path.join(__dirname, "./data"),
+      rootFilePath: path.join(__dirname, `./data${port}`),
     },
   });
 }

@@ -53,7 +53,7 @@ export function setupServer(
     data.app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, "./data");
+    const testDataPath = path.join(__dirname, `./data${port}`);
     await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
