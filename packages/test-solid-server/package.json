@@ -1,6 +1,6 @@
 {
   "name": "@ldo/test-solid-server",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "A solid server to be used in jest tests",
   "type": "module",
   "main": "dist/index.js",

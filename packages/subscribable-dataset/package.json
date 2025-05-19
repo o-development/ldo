@@ -1,6 +1,6 @@
 {
   "name": "@ldo/subscribable-dataset",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "An RDFJS dataset implementation that can be subscribed to for updates",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -43,8 +43,8 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.10",
-    "@ldo/rdf-utils": "^1.0.0-alpha.10",
+    "@ldo/dataset": "^1.0.0-alpha.11",
+    "@ldo/rdf-utils": "^1.0.0-alpha.11",
     "uuid": "^11.1.0"
   },
   "files": [
