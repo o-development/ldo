@@ -1,4 +1,5 @@
 import {
+  fileData,
   MY_BOOKMARKS_1_URI,
   MY_BOOKMARKS_2_URI,
   PRIVATE_TYPE_INDEX_URI,
@@ -6,9 +7,8 @@ import {
   ROOT_CONTAINER,
   setupEmptyTypeIndex,
   setupFullTypeIndex,
-  setUpServer,
   WEB_ID,
-} from "./setUpServer.js";
+} from "./fileData.js";
 import { getInstanceUris, getTypeRegistrations } from "../src/getTypeIndex.js";
 import {
   addRegistration,
@@ -19,19 +19,43 @@ import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes.js";
 import { namedNode } from "@rdfjs/dataset";
 import { INSTANCE } from "../src/constants.js";
 import { createSolidLdoDataset } from "@ldo/connected-solid";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { setupServer } from "@ldo/test-solid-server";
+import { it, expect, describe, afterEach } from "vitest";
 
-// Use an increased timeout, since the CSS server takes too much setup time.
-jest.setTimeout(40_000);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ADDRESS_BOOK = "http://www.w3.org/2006/vcard/ns#AddressBook";
 const BOOKMARK = "http://www.w3.org/2002/01/bookmark#Bookmark";
 const EXAMPLE_THING = "https://example.com/ExampleThing";
 
 describe("General Tests", () => {
-  const s = setUpServer();
+  const s = setupServer(
+    3003,
+    fileData,
+    join(
+      __dirname,
+      "configs",
+      "components-config",
+      "unauthenticatedServer.json",
+    ),
+  );
+
+  afterEach(async () => {
+    await Promise.all([
+      await s.authFetch(WEB_ID, { method: "DELETE" }),
+      await s.authFetch(PUBLIC_TYPE_INDEX_URI, { method: "DELETE" }),
+      await s.authFetch(PRIVATE_TYPE_INDEX_URI, { method: "DELETE" }),
+      await s.authFetch(MY_BOOKMARKS_1_URI, { method: "DELETE" }),
+      await s.authFetch(MY_BOOKMARKS_2_URI, { method: "DELETE" }),
+    ]);
+  });
 
   it("gets the current typeindex", async () => {
-    await setupFullTypeIndex(s);
+    await setupFullTypeIndex(s.authFetch);
 
     const solidLdoDataset = createSolidLdoDataset();
     const typeRegistrations = await getTypeRegistrations(WEB_ID, {
@@ -67,7 +91,7 @@ describe("General Tests", () => {
   });
 
   it("initializes the type index", async () => {
-    await setupEmptyTypeIndex(s);
+    await setupEmptyTypeIndex(s.authFetch);
 
     const solidLdoDataset = createSolidLdoDataset();
 
@@ -84,7 +108,7 @@ describe("General Tests", () => {
   });
 
   it("Adds to the typeIndex", async () => {
-    await setupFullTypeIndex(s);
+    await setupFullTypeIndex(s.authFetch);
 
     const solidLdoDataset = createSolidLdoDataset();
 
@@ -125,7 +149,7 @@ describe("General Tests", () => {
   });
 
   it("Removes from the typeIndex", async () => {
-    await setupFullTypeIndex(s);
+    await setupFullTypeIndex(s.authFetch);
 
     const solidLdoDataset = createSolidLdoDataset();
 

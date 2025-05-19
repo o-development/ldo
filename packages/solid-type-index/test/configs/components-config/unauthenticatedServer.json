@@ -45,7 +45,7 @@
       },
       "overrideParameters": {
         "@type": "StaticFolderGenerator",
-        "templateFolder": "./test/test-server/configs/template"
+        "templateFolder": "./test/configs/template"
       }
     }
   ]

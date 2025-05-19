@@ -1,4 +1,5 @@
-import fetch from "cross-fetch";
+import type fetch from "cross-fetch";
+import type { ResourceInfo } from "@ldo/test-solid-server";
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3003/";
 export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
@@ -45,18 +46,16 @@ export const PRIVATE_TYPE_INDEX_TTL = `@prefix solid: <http://www.w3.org/ns/soli
   solid:forClass bk:Bookmark;
   solid:instanceContainer <${ROOT_CONTAINER}myBookmarks/>.`;
 
-export interface SetUpServerReturn {
-  authFetch: typeof fetch;
-  fetchMock: jest.Mock<
-    Promise<Response>,
-    [input: RequestInfo | URL, init?: RequestInit | undefined]
-  >;
-}
+export const fileData: ResourceInfo = {
+  slug: "myBookmarks/",
+  isContainer: true,
+  contains: [],
+};
 
-export async function setupFullTypeIndex(s: SetUpServerReturn) {
+export async function setupFullTypeIndex(authFetch: typeof fetch) {
   // Create a new document called sample.ttl
-  await s.authFetch(WEB_ID, { method: "DELETE" });
-  await s.authFetch(ROOT_CONTAINER, {
+  await authFetch(WEB_ID, { method: "DELETE" });
+  await authFetch(ROOT_CONTAINER, {
     method: "POST",
     headers: {
       link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
@@ -64,17 +63,17 @@ export async function setupFullTypeIndex(s: SetUpServerReturn) {
     },
   });
   await Promise.all([
-    s.authFetch(PROFILE_CONTAINER, {
+    authFetch(PROFILE_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "card.ttl" },
       body: PROFILE_TTL,
     }),
-    s.authFetch(PROFILE_CONTAINER, {
+    authFetch(PROFILE_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "publicTypeIndex.ttl" },
       body: PUBLIC_TYPE_INDEX_TTL,
     }),
-    s.authFetch(PROFILE_CONTAINER, {
+    authFetch(PROFILE_CONTAINER, {
       method: "POST",
       headers: {
         "content-type": "text/turtle",
@@ -82,12 +81,12 @@ export async function setupFullTypeIndex(s: SetUpServerReturn) {
       },
       body: PRIVATE_TYPE_INDEX_TTL,
     }),
-    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+    authFetch(MY_BOOKMARKS_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "bookmark1.ttl" },
       body: "",
     }),
-    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+    authFetch(MY_BOOKMARKS_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "bookmark2.ttl" },
       body: "",
@@ -95,10 +94,10 @@ export async function setupFullTypeIndex(s: SetUpServerReturn) {
   ]);
 }
 
-export async function setupEmptyTypeIndex(s: SetUpServerReturn) {
+export async function setupEmptyTypeIndex(authFetch: typeof fetch) {
   // Create a new document called sample.ttl
-  await s.authFetch(WEB_ID, { method: "DELETE" });
-  await s.authFetch(ROOT_CONTAINER, {
+  await authFetch(WEB_ID, { method: "DELETE" });
+  await authFetch(ROOT_CONTAINER, {
     method: "POST",
     headers: {
       link: '<http://www.w3.org/ns/ldp#Container>; rel="type"',
@@ -106,48 +105,20 @@ export async function setupEmptyTypeIndex(s: SetUpServerReturn) {
     },
   });
   await Promise.all([
-    s.authFetch(PROFILE_CONTAINER, {
+    authFetch(PROFILE_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "card.ttl" },
       body: "",
     }),
-    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+    authFetch(MY_BOOKMARKS_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "bookmark1.ttl" },
       body: "",
     }),
-    s.authFetch(MY_BOOKMARKS_CONTAINER, {
+    authFetch(MY_BOOKMARKS_CONTAINER, {
       method: "POST",
       headers: { "content-type": "text/turtle", slug: "bookmark2.ttl" },
       body: "",
     }),
   ]);
-}
-
-export function setUpServer(): SetUpServerReturn {
-  // Ignore to build s
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const s: SetUpServerReturn = {};
-
-  beforeAll(async () => {
-    // s.authFetch = await getAuthenticatedFetch();
-    s.authFetch = fetch;
-  });
-
-  beforeEach(async () => {
-    s.fetchMock = jest.fn(s.authFetch);
-  });
-
-  afterEach(async () => {
-    await Promise.all([
-      await s.authFetch(WEB_ID, { method: "DELETE" }),
-      await s.authFetch(PUBLIC_TYPE_INDEX_URI, { method: "DELETE" }),
-      await s.authFetch(PRIVATE_TYPE_INDEX_URI, { method: "DELETE" }),
-      await s.authFetch(MY_BOOKMARKS_1_URI, { method: "DELETE" }),
-      await s.authFetch(MY_BOOKMARKS_2_URI, { method: "DELETE" }),
-    ]);
-  });
-
-  return s;
 }

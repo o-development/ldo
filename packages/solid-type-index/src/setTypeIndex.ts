@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { v4 } from "uuid";
-$1$2.js$3
 import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants.js";
 import { guaranteeOptions, type Options } from "./util/Options.js";
 import { namedNode, quad } from "@rdfjs/data-model";
@@ -16,6 +15,10 @@ import type {
   SolidLeafUri,
 } from "@ldo/connected-solid";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import {
+  TypeIndexDocumentShapeType,
+  TypeRegistrationShapeType,
+} from "./.ldo/typeIndex.shapeTypes.js";
 
 /**
  * =============================================================================
