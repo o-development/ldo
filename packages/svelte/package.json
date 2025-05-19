@@ -1,6 +1,6 @@
 {
   "name": "@ldo/svelte",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.10",
   "description": "A Svelte library for LDO.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/svelte#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.9",
+    "@ldo/test-solid-server": "^1.0.0-alpha.10",
     "@sveltejs/vite-plugin-svelte": "^2.5.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.7",
@@ -55,11 +55,11 @@
     "svelte": "^3.50.0"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.9",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.9",
-    "@ldo/ldo": "^1.0.0-alpha.9",
-    "@ldo/rdf-utils": "^1.0.0-alpha.9",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.9",
+    "@ldo/connected": "^1.0.0-alpha.10",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.10",
+    "@ldo/ldo": "^1.0.0-alpha.10",
+    "@ldo/rdf-utils": "^1.0.0-alpha.10",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.10",
     "@rdfjs/data-model": "^1.2.0",
     "tsx": "^4.19.4"
   },
