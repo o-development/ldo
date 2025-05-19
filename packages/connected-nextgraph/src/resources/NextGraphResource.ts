@@ -122,25 +122,15 @@ export class NextGraphResource
       this.loading = true;
       this.emit("update");
 
-      // Fetch the data once using subscribe
-      await new Promise<void>(async (resolve, reject) => {
-        let unsub: () => void;
-        try {
-          unsub = await this.context.nextgraph.ng.doc_subscribe(
-            this.uri,
-            this.context.nextgraph.sessionId,
-            async (response: NextGraphNotificationMessage) => {
-              if (response.V0.State) {
-                unsub();
-                await this.onNotification(response);
-                resolve();
-              }
-            },
-          );
-        } catch (err) {
-          reject(err);
-        }
-      });
+      // Fetch the data once using construct
+      const sparqlResult = await this.context.nextgraph.ng.sparql_query(
+        this.context.nextgraph.sessionId,
+        `CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <${this.uri}> { ?s ?p ?o } }`,
+        undefined,
+        this.uri,
+      );
+      // Update the dataset
+      this.overwriteQuads(sparqlResult);
 
       // Update statuses
       const result = new NextGraphReadSuccess(this, false);
