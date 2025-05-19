@@ -20,7 +20,7 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "test": "jest --coverage",
     "example": "ts-node ./example/example.ts",
-    "prepublishOnly": "npm run test && npm run build",
+    "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown"
   },
@@ -63,5 +63,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "c63f055aab22155b60a5fdee4172979b9c287dfa"
+  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
 }

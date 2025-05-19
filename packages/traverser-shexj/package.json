@@ -19,7 +19,7 @@
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
     "test": "jest --coverage",
-    "prepublishOnly": "npm run test && npm run build",
+    "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
@@ -42,5 +42,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
+  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
 }

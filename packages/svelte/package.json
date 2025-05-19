@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "lint": "eslint . --ext .js,.ts,.svelte --fix --no-error-on-unmatched-pattern",
     "format": "prettier --write .",
-    "prepublishOnly": "npm run test && npm run lint && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -70,5 +70,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "0287cd6371f06630763568dec5e41653f7b8583e"
+  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
 }

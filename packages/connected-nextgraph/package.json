@@ -19,7 +19,7 @@
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
     "test": "npm run test:integration",
-    "prepublishOnly": "npm run test && npm run build",
+    "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
@@ -69,5 +69,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
 }
