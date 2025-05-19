@@ -2,18 +2,29 @@
   "name": "@ldo/solid-react",
   "version": "1.0.0-alpha.9",
   "description": "A React library for LDO and Solid",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "watch": "tsc --project tsconfig.build.json --watch",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "test": "npm run test:integration",
-    "test:watch": "jest --watch",
     "prepublishOnly": "npm run test && npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "test:integration": "start-server-and-test start-test-server http://localhost:3002 start-integration-test",
-    "start-test-server": "ts-node ./test/test-server/runServer.ts",
-    "start-integration-test": "jest --coverage"
+    "start-test-server": "ts-node ./test-server/runServer.ts",
+    "start-integration-test": "vitest run --coverage --sequence.concurrent"
   },
   "repository": {
     "type": "git",
@@ -28,15 +39,12 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
-    "@inrupt/jest-jsdom-polyfills": "^3.2.6",
     "@ldo/rdf-utils": "^1.0.0-alpha.9",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
-    "babel-jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "start-server-and-test": "^2.0.3",
-    "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {

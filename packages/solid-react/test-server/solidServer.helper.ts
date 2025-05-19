@@ -3,6 +3,11 @@
 import * as path from "path";
 import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export async function createApp(): Promise<App> {
   if (process.env.SERVER) {

@@ -1,5 +1,7 @@
 import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 import fetch from "cross-fetch";
+import type { MockedFunction } from "vitest";
+import { beforeAll, beforeEach, afterEach, vi } from "vitest";
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3002/";
 export const ROOT_ROUTE = process.env.ROOT_CONTAINER || "example/";
@@ -64,9 +66,11 @@ export const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
 
 export interface SetUpServerReturn {
   authFetch: typeof fetch;
-  fetchMock: jest.Mock<
-    Promise<Response>,
-    [input: RequestInfo | URL, init?: RequestInit | undefined]
+  fetchMock: MockedFunction<
+    (
+      input: RequestInfo | URL,
+      init?: RequestInit | undefined,
+    ) => Promise<Response>
   >;
 }
 
@@ -82,7 +86,7 @@ export function setUpServer(): SetUpServerReturn {
   });
 
   beforeEach(async () => {
-    s.fetchMock = jest.fn(s.authFetch);
+    s.fetchMock = vi.fn(s.authFetch);
     // Create a new document called sample.ttl
     await s.authFetch(ROOT_CONTAINER, {
       method: "POST",

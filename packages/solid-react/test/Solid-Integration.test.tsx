@@ -27,9 +27,10 @@ import type { PostSh } from "./.ldo/post.typings.js";
 import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/connected";
 import type { SolidProfileShape } from "./.ldo/solidProfile.typings.js";
+import { describe, vi, afterEach, expect, it } from "vitest";
 
 // Use an increased timeout, since the CSS server takes too much setup time.
-jest.setTimeout(40_000);
+vi.setConfig({ testTimeout: 40_000 });
 
 describe("Integration Tests", () => {
   setUpServer();
@@ -355,7 +356,7 @@ describe("Integration Tests", () => {
     });
 
     it("does not set a value if a value is attempted to be set", async () => {
-      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
       const UseSubjectTest: FunctionComponent = () => {
         const resource = useResource(SAMPLE_DATA_URI);
         const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
