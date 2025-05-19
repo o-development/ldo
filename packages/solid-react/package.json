@@ -18,13 +18,10 @@
     "build": "rimraf dist && npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
-    "test": "npm run test:integration",
+    "test": "vitest run --coverage",
     "prepublishOnly": "npm run test && npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "test:integration": "start-server-and-test start-test-server http://localhost:3002 start-integration-test",
-    "start-test-server": "ts-node ./test-server/runServer.ts",
-    "start-integration-test": "vitest run --coverage --sequence.concurrent"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
     "type": "git",
@@ -43,8 +40,6 @@
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "start-server-and-test": "^2.0.3",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.19.4",
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {

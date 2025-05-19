@@ -22,6 +22,7 @@ export function setupServer(
   port: number,
   resourceInfo: ResourceInfo,
   customConfigPath?: string,
+  skipAuthentication?: boolean,
 ) {
   const data: {
     app: App;
@@ -45,7 +46,7 @@ export function setupServer(
     // Start up the server
     data.app = await createApp(port, customConfigPath);
     await data.app.start();
-    data.authFetch = await generateAuthFetch(port);
+    data.authFetch = skipAuthentication ? fetch : await generateAuthFetch(port);
   });
 
   afterAll(async () => {

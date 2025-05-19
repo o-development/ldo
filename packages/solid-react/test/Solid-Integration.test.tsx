@@ -1,15 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 import type { FunctionComponent } from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import {
+  fileData,
   MAIN_PROFILE_SUBJECT,
   MAIN_PROFILE_URI,
   SAMPLE_BINARY_URI,
   SAMPLE_DATA_URI,
   SERVER_DOMAIN,
-  setUpServer,
+  setUpServerFiles,
   THIRD_PROFILE_SUBJECT,
-} from "./setUpServer.js";
+} from "./fileData.js";
 import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider.js";
 import {
   dataset,
@@ -28,16 +35,32 @@ import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/connected";
 import type { SolidProfileShape } from "./.ldo/solidProfile.typings.js";
 import { describe, vi, afterEach, expect, it } from "vitest";
+import { setupServer } from "@ldo/test-solid-server";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-// Use an increased timeout, since the CSS server takes too much setup time.
-vi.setConfig({ testTimeout: 40_000 });
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe("Integration Tests", () => {
-  setUpServer();
+  setupServer(
+    3002,
+    fileData,
+    join(
+      __dirname,
+      "configs",
+      "components-config",
+      "unauthenticatedServer.json",
+    ),
+    true,
+  );
+  setUpServerFiles();
 
   afterEach(() => {
     dataset.forgetAllResources();
     dataset.deleteMatches(undefined, undefined, undefined, undefined);
+    cleanup();
   });
 
   /**

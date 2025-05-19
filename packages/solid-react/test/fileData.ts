@@ -1,4 +1,5 @@
 import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
+import type { ResourceInfo } from "@ldo/test-solid-server";
 import fetch from "cross-fetch";
 import type { MockedFunction } from "vitest";
 import { beforeAll, beforeEach, afterEach, vi } from "vitest";
@@ -74,7 +75,46 @@ export interface SetUpServerReturn {
   >;
 }
 
-export function setUpServer(): SetUpServerReturn {
+export const fileData: ResourceInfo = {
+  slug: TEST_CONTAINER_SLUG,
+  isContainer: true,
+  contains: [
+    {
+      slug: "sample.ttl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      data: EXAMPLE_POST_TTL,
+    },
+    {
+      slug: "sample.txt",
+      isContainer: false,
+      mimeType: "text/plain",
+      data: `some text.`,
+    },
+    {
+      slug: "sample2.ttl",
+      isContainer: false,
+      mimeType: "text/turtle",
+      shouldNotInit: true,
+      data: "",
+    },
+    {
+      slug: "sample2.txt",
+      isContainer: false,
+      mimeType: "text/plain",
+      shouldNotInit: true,
+      data: "",
+    },
+    {
+      slug: "sampleContainer/",
+      isContainer: true,
+      shouldNotInit: true,
+      contains: [],
+    },
+  ],
+};
+
+export function setUpServerFiles(): SetUpServerReturn {
   // Ignore to build s
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
