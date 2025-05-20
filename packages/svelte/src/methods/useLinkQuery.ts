@@ -29,6 +29,6 @@ export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
     startingSubject: SubjectNode | string,
     linkQuery: QueryInput,
   ): ExpandDeep<LQReturn<Type, QueryInput>> | undefined {
-    throw new Error("Not Implemented");
+    throw new Error("Link Query is Not Implemented for Svelte");
   };
 }

@@ -12,6 +12,6 @@ export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
    * Starts a subscription to a resource.
    */
   return function useSubscribeToResource(...uris: string[]): void {
-    throw new Error("Not Implemented");
+    throw new Error("Subscribe to Resource is Not Implemented for Svelte");
   };
 }

@@ -3,12 +3,23 @@
   "version": "1.0.0-alpha.11",
   "description": "A solid server to be used in jest tests",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json && npm run copy-configs",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm && npm run copy-configs",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "prepublishOnly": "npm run build",
-    "copy-configs": "cp -r src/configs dist/configs",
+    "copy-configs": "cp -r src/configs dist/cjs/configs && cp -r src/configs dist/esm/configs",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {

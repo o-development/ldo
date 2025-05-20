@@ -1,6 +1,8 @@
-import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
+import type { LdoBase, LdoBuilder, LdSet, ShapeType } from "@ldo/ldo";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import { useTrackingProxy } from "../util/useTrackingProxy";
+import type { Readable } from "svelte/store";
 
 /**
  * @internal
@@ -19,7 +21,11 @@ export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
     predicate?: QuadMatch[1] | string,
     object?: QuadMatch[2] | string,
     graph?: QuadMatch[3] | string,
-  ): LdSet<Type> {
-    throw new Error("Not Implemented");
+  ): Readable<LdSet<Type>> {
+    const matchSubject = (builder: LdoBuilder<Type>) => {
+      return builder.matchSubject(predicate, object, graph);
+    };
+
+    return useTrackingProxy(shapeType, matchSubject, dataset);
   };
 }
