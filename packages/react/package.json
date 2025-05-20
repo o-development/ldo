@@ -1,6 +1,6 @@
 {
   "name": "@ldo/react",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "description": "A React library for LDO.",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -40,7 +40,7 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.11",
+    "@ldo/connected": "^1.0.0-alpha.12",
     "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.11",
     "@ldo/ldo": "^1.0.0-alpha.11",
     "@ldo/rdf-utils": "^1.0.0-alpha.11",

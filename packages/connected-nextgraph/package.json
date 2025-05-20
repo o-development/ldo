@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-nextgraph",
-  "version": "1.0.0-alpha.11",
+  "version": "1.0.0-alpha.12",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -54,7 +54,7 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.11",
+    "@ldo/connected": "^1.0.0-alpha.12",
     "@ldo/dataset": "^1.0.0-alpha.11",
     "@ldo/ldo": "^1.0.0-alpha.11",
     "@ldo/rdf-utils": "^1.0.0-alpha.11",
