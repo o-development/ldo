@@ -3,6 +3,7 @@ import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import { createTrackingProxyBuilder } from "@ldo/connected";
 import { writable, type Readable } from "svelte/store";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
+import { onDestroy } from "svelte";
 
 /**
  * @internal
@@ -36,6 +37,10 @@ export function useTrackingProxy<Type extends LdoBase, ReturnType>(
     return () => {
       dataset.removeListenerFromAllEvents(forceUpdate);
     };
+  });
+
+  onDestroy(() => {
+    dataset.removeListenerFromAllEvents(forceUpdate);
   });
 
   return {

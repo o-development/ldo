@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+  import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
   // Assuming these are the Svelte-specific functions/stores from your @ldo/svelte library
-  import { useResource, useSubject } from "./ldoSvelteMethods.js";
+  import { useResource, useSubject } from "./ldoSvelteMethods";
   const SAMPLE_DATA_URI =
     "http://localhost:3004/example/link-query/main-profile.ttl";
   const resource = useResource(SAMPLE_DATA_URI);
@@ -23,7 +23,6 @@
     {:else}
       <p>No friend found or friend has no @id.</p>
     {/if}
-
     <ul>
       {#each friendArray as friend (friend["@id"])}
         <li>{friend["@id"]}</li>
