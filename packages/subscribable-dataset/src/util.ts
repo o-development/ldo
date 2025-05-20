@@ -1,6 +1,6 @@
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { BaseQuad, Dataset } from "@rdfjs/types";
-import type { IBulkEditableDataset } from "./types";
+import type { IBulkEditableDataset } from "./types.js";
 
 /**
  * Performs a bulk update for a dataset even if it doesn't have a bulk method.

@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
-  BaseReturnType,
   BaseTraverserTypes,
-  KeyTypes,
-  TransformerReturnTypes,
-  TraverserDefinitions,
   TraverserTypes,
-} from "../../../";
-import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
-import type { Transformers } from "../../Transformers";
-import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter";
-import type { MultiMap } from "./MultiMap";
-import type { SuperPromise } from "./SuperPromise";
+} from "../../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph.js";
+import type { Transformers } from "../../Transformers.js";
+import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter.js";
+import type { MultiMap } from "./MultiMap.js";
+import type { SuperPromise } from "./SuperPromise.js";
+import type {
+  BaseReturnType,
+  TransformerReturnTypes,
+} from "../../TransformerReturnTypes.js";
+import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition.js";
+import type { KeyTypes } from "../../../UtilTypes.js";
 
 export type TransformerSubTraverser<
   Types extends TraverserTypes<any>,

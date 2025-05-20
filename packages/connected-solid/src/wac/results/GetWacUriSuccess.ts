@@ -1,7 +1,7 @@
 import { ResourceSuccess } from "@ldo/connected";
-import type { SolidLeafUri } from "../../types";
-import type { SolidContainer } from "../../resources/SolidContainer";
-import type { SolidLeaf } from "../../resources/SolidLeaf";
+import type { SolidLeafUri } from "../../types.js";
+import type { SolidContainer } from "../../resources/SolidContainer.js";
+import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 
 /**
  * Returned when the URI for a resources ACL document was successfully retried

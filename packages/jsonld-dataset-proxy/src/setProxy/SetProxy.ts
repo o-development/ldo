@@ -17,11 +17,11 @@ import {
   _getUnderlyingMatch,
   _getUnderlyingNode,
   _writeGraphs,
-} from "../types";
-import type { ProxyContext } from "../ProxyContext";
-import type { RawValue } from "../util/RawObject";
-import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
-import { BasicLdSet } from "./ldSet/BasicLdSet";
+} from "../types.js";
+import type { ProxyContext } from "../ProxyContext.js";
+import type { RawValue } from "../util/RawObject.js";
+import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation.js";
+import { BasicLdSet } from "./ldSet/BasicLdSet.js";
 
 /**
  * A Set Proxy represents a set of items in a dataset and is a proxy for

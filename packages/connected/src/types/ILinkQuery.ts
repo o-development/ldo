@@ -4,8 +4,8 @@
 // to start.
 
 import type { LdoBase, LdSet } from "@ldo/ldo";
-// import { SolidProfileShapeShapeType } from "../../test/.ldo/solidProfile.shapeTypes";
-// import type { SolidProfileShape } from "../../test/.ldo/solidProfile.typings";
+// import { SolidProfileShapeShapeType } from "../../test/.ldo/solidProfile.shapeTypes.js";
+// import type { SolidProfileShape } from "../../test/.ldo/solidProfile.typings.js";
 
 /**
  * Link Query Input
@@ -110,13 +110,15 @@ export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
 //   };
 // };
 
-// type testReturn = LQReturn<SolidProfileShape, TestLQInput>;
+// type testReturn = ExpandDeep<LQReturn<SolidProfileShape, TestLQInput>>;
 
 // type test2 = LQReturnSubSet<string | undefined, true>;
 
 // type lqInputObject = LQInputObject<string | undefined>;
 
 // type meh = TestLQInput extends true ? true : false;
+
+// const thingInput: TestLQInput =
 
 // const thing = test(SolidProfileShapeShapeType, {
 //   name: true,

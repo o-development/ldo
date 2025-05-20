@@ -1,5 +1,5 @@
-import { getPackageJson } from "./util/modifyPackageJson";
-import { forAllShapes } from "./util/forAllShapes";
+import { getPackageJson } from "./util/modifyPackageJson.js";
+import { forAllShapes } from "./util/forAllShapes.js";
 import { promises as fs } from "fs";
 import path from "path";
 import { Project } from "ts-morph";

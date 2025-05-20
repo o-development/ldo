@@ -1,8 +1,8 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import { createDataset } from "@ldo/dataset";
-import { LdoDatasetFactory } from "./LdoDatasetFactory";
+import { LdoDatasetFactory } from "./LdoDatasetFactory.js";
 import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
-import type { LdoDataset } from "./LdoDataset";
+import type { LdoDataset } from "./LdoDataset.js";
 
 /**
  * @category Getting an LdoDataset

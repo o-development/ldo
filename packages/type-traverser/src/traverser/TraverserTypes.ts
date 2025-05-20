@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { AssertExtends, KeyTypes } from "../UtilTypes";
+import type { AssertExtends, KeyTypes } from "../UtilTypes.js";
 
 export interface InterfaceType<TypeNames extends KeyTypes> {
   kind: "interface";

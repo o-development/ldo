@@ -49,8 +49,8 @@ import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
 
 
 // Shape Types
-import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
-import { SocialMediaPostShapeType } from "./.ldo/socialMediaPost.shapeTypes";
+import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
+import { SocialMediaPostShapeType } from "./.ldo/socialMediaPost.shapeTypes.js";
 
 // These are tools for Solid and NextGraph outside of the LDO ecosystem
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";

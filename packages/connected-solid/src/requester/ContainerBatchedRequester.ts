@@ -1,15 +1,15 @@
 import type { ConnectedContext } from "@ldo/connected";
-import type { SolidContainer } from "../resources/SolidContainer";
-import { BatchedRequester } from "./BatchedRequester";
-import type { CheckRootResult } from "./requests/checkRootContainer";
-import { checkRootContainer } from "./requests/checkRootContainer";
+import type { SolidContainer } from "../resources/SolidContainer.js";
+import { BatchedRequester } from "./BatchedRequester.js";
+import type { CheckRootResult } from "./requests/checkRootContainer.js";
+import { checkRootContainer } from "./requests/checkRootContainer.js";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
-} from "./requests/createDataResource";
-import type { ReadContainerResult } from "./requests/readResource";
-import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+} from "./requests/createDataResource.js";
+import type { ReadContainerResult } from "./requests/readResource.js";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions.js";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
 
 export const IS_ROOT_CONTAINER_KEY = "isRootContainer";
 

@@ -10,8 +10,8 @@ import type {
   SubscribableDataset,
 } from "@ldo/subscribable-dataset";
 import type { BlankNode, NamedNode, Quad } from "@rdfjs/types";
-import { createTrackingSubjectProxy } from "./TrackingSubjectProxy";
-import { createTrackingSetProxy } from "./TrackingSetProxy";
+import { createTrackingSubjectProxy } from "./TrackingSubjectProxy.js";
+import { createTrackingSetProxy } from "./TrackingSetProxy.js";
 
 /**
  * @internal

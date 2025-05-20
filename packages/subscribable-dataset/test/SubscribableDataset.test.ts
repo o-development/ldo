@@ -1,5 +1,5 @@
-import type { ISubscribableDataset } from "../src";
-import { TransactionDataset, createSubscribableDataset } from "../src";
+import type { ISubscribableDataset } from "../src/index.js";
+import { TransactionDataset, createSubscribableDataset } from "../src/index.js";
 import { createDataset } from "@ldo/dataset";
 import {
   namedNode,
@@ -9,6 +9,8 @@ import {
   blankNode,
 } from "@rdfjs/data-model";
 import type { Quad, BlankNode } from "@rdfjs/types";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
 
 describe("SubscribableDataset", () => {

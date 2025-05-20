@@ -1,7 +1,7 @@
 import type { Literal, Quad_Object } from "@rdfjs/types";
-import type { ProxyContext } from "../ProxyContext";
-import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
-import type { LiteralLike } from "../types";
+import type { ProxyContext } from "../ProxyContext.js";
+import type { SubjectProxy } from "../subjectProxy/SubjectProxy.js";
+import type { LiteralLike } from "../types.js";
 
 export type ObjectJsonRepresentation = LiteralLike | SubjectProxy;
 

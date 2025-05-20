@@ -1,30 +1,30 @@
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
-import { LeafBatchedRequester } from "../requester/LeafBatchedRequester";
-import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
+import { LeafBatchedRequester } from "../requester/LeafBatchedRequester.js";
+import type { CheckRootResultError } from "../requester/requests/checkRootContainer.js";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "../requester/requests/createDataResource";
-import type { DeleteResult } from "../requester/requests/deleteResource";
-import type { ReadLeafResult } from "../requester/requests/readResource";
-import type { UpdateResult } from "../requester/requests/updateDataResource";
-import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
-import { DataReadSuccess } from "../requester/results/success/SolidReadSuccess";
-import { BinaryReadSuccess } from "../requester/results/success/SolidReadSuccess";
-import { getParentUri } from "../util/rdfUtils";
-import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
-import type { SharedStatuses } from "./SolidResource";
-import { SolidResource } from "./SolidResource";
-import type { SolidLeafUri } from "../types";
+} from "../requester/requests/createDataResource.js";
+import type { DeleteResult } from "../requester/requests/deleteResource.js";
+import type { ReadLeafResult } from "../requester/requests/readResource.js";
+import type { UpdateResult } from "../requester/requests/updateDataResource.js";
+import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess.js";
+import { DataReadSuccess } from "../requester/results/success/SolidReadSuccess.js";
+import { BinaryReadSuccess } from "../requester/results/success/SolidReadSuccess.js";
+import { getParentUri } from "../util/rdfUtils.js";
+import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError.js";
+import type { SharedStatuses } from "./SolidResource.js";
+import { SolidResource } from "./SolidResource.js";
+import type { SolidLeafUri } from "../types.js";
 import type { ResourceSuccess } from "@ldo/connected";
 import {
   AbsentReadSuccess,
   Unfetched,
   type ConnectedContext,
 } from "@ldo/connected";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
-import type { SolidContainer } from "./SolidContainer";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
+import type { SolidContainer } from "./SolidContainer.js";
 
 /**
  * Represents the current status of a specific Leaf on a Pod as known by LDO.

@@ -1,8 +1,8 @@
 import type { GraphNode, PredicateNode, SubjectNode } from "@ldo/rdf-utils";
-import type { RawObject, RawValue } from "../util/RawObject";
-import { WildcardObjectSetProxy } from "./WildcardObjectSetProxy";
-import { addObjectToDataset } from "../util/addObjectToDataset";
-import type { ProxyContext } from "../ProxyContext";
+import type { RawObject, RawValue } from "../util/RawObject.js";
+import { WildcardObjectSetProxy } from "./WildcardObjectSetProxy.js";
+import { addObjectToDataset } from "../util/addObjectToDataset.js";
+import type { ProxyContext } from "../ProxyContext.js";
 
 export type ObjectSetProxyQuadMatch = [
   SubjectNode,

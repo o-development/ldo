@@ -1,3 +1,5 @@
+import { describe, it, expect } from "vitest";
+
 describe("Websocket Trivial", () => {
   it("is trivial", () => {
     expect(true).toBe(true);
@@ -5,9 +7,9 @@ describe("Websocket Trivial", () => {
 });
 
 // import type { WebSocket, Event, ErrorEvent } from "ws";
-// import { Websocket2023NotificationSubscription } from "../src/notifications/Websocket2023NotificationSubscription";
-// import type { SolidLdoDatasetContext } from "../src";
-// import { Leaf } from "../src";
+// import { Websocket2023NotificationSubscription } from "../src/notifications/Websocket2023NotificationSubscription.js";
+// import type { SolidLdoDatasetContext } from "../src/index.js";
+// import { Leaf } from "../src/index.js";
 // import type { NotificationChannel } from "@solid-notifications/types";
 
 // describe("Websocket2023NotificationSubscription", () => {

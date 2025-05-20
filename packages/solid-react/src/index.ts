@@ -1,2 +1,2 @@
-export * from "./createBrowserSolidReactMethods";
-export * from "./defaultIntance";
+export * from "./createBrowserSolidReactMethods.js";
+export * from "./defaultIntance.js";

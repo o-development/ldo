@@ -1,6 +1,6 @@
-import { BrokenAvatarTransformer } from "./AvatarBrokenTransformer";
-import { AvatarErroringTransformer } from "./AvatarErroringTransformer";
-import { aang } from "./sampleData";
+import { BrokenAvatarTransformer } from "./AvatarBrokenTransformer.js";
+import { AvatarErroringTransformer } from "./AvatarErroringTransformer.js";
+import { aang } from "./sampleData.js";
 
 describe("Avatar", () => {
   it("Throws an error before entering an infinite loop", async () => {

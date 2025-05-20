@@ -1,22 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { App } from "@solid/community-server";
-import { createApp } from "./createServer";
+import { createApp } from "./createServer.js";
 import path from "path";
-import type { ResourceInfo } from "./resourceUtils";
-import { cleanResources, initResources } from "./resourceUtils";
-import { generateAuthFetch } from "./authFetch";
+import type { ResourceInfo } from "./resourceUtils.js";
+import { cleanResources, initResources } from "./resourceUtils.js";
+import { generateAuthFetch } from "./authFetch.js";
 import fs from "fs/promises";
+import {
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+  vi,
+  type MockedFunction,
+} from "vitest";
+
+// Use an increased timeout, since the CSS server takes too much setup time.
+vi.setConfig({ testTimeout: 40_000 });
 
 export function setupServer(
   port: number,
   resourceInfo: ResourceInfo,
   customConfigPath?: string,
+  skipAuthentication?: boolean,
 ) {
   const data: {
     app: App;
-    fetchMock: jest.Mock<
-      Promise<Response>,
-      [input: RequestInfo | URL, init?: RequestInit | undefined]
+    fetchMock: MockedFunction<
+      (
+        input: RequestInfo | URL,
+        init?: RequestInit | undefined,
+      ) => Promise<Response>
     >;
     authFetch: typeof fetch;
     rootUri: string;
@@ -28,26 +42,23 @@ export function setupServer(
   let previousNodeEnv: string | undefined;
   beforeAll(async () => {
     // Remove Jest ID so that community solid server doesn't use the Jest Import
-    previousJestId = process.env.JEST_WORKER_ID;
-    previousNodeEnv = process.env.NODE_ENV;
-    delete process.env.JEST_WORKER_ID;
     process.env.NODE_ENV = "other_test";
     // Start up the server
     data.app = await createApp(port, customConfigPath);
     await data.app.start();
-    data.authFetch = await generateAuthFetch(port);
+    data.authFetch = skipAuthentication ? fetch : await generateAuthFetch(port);
   });
 
   afterAll(async () => {
     data.app.stop();
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, "./data");
+    const testDataPath = path.join(__dirname, `./data${port}`);
     await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
   beforeEach(async () => {
-    data.fetchMock = jest.fn(data.authFetch);
+    data.fetchMock = vi.fn(data.authFetch);
     // Create a new document called sample.ttl
     await initResources(data.rootUri, resourceInfo, data.authFetch);
   });

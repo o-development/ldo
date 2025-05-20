@@ -1,7 +1,7 @@
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import { _getUnderlyingNode } from "../types";
-import type { LdSet } from "../setProxy/ldSet/LdSet";
-import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
+import { _getUnderlyingNode } from "../types.js";
+import type { LdSet } from "../setProxy/ldSet/LdSet.js";
+import type { SubjectProxy } from "../subjectProxy/SubjectProxy.js";
 
 export type RawObject =
   | ({

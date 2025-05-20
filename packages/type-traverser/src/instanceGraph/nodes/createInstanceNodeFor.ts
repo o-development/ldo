@@ -4,11 +4,11 @@ import type {
   PrimitiveType,
   TraverserTypes,
   UnionType,
-} from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../InstanceGraph";
-import { InterfaceInstanceNode } from "./InterfaceInstanceNode";
-import { PrimitiveInstanceNode } from "./PrimitiveInstanceNode";
-import { UnionInstanceNode } from "./UnionInstanceNode";
+} from "../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../InstanceGraph.js";
+import { InterfaceInstanceNode } from "./InterfaceInstanceNode.js";
+import { PrimitiveInstanceNode } from "./PrimitiveInstanceNode.js";
+import { UnionInstanceNode } from "./UnionInstanceNode.js";
 
 export type InstanceNodeFor<
   Types extends TraverserTypes<any>,

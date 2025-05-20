@@ -1,6 +1,6 @@
 import parser from "@shexjs/parser";
-import { testData } from "./testData/testData";
-import { shexjToTyping } from "../src/typing/shexjToTyping";
+import { testData } from "./testData/testData.js";
+import { shexjToTyping } from "../src/typing/shexjToTyping.js";
 import type { Schema } from "shexj";
 
 console.warn = () => {};

@@ -1,5 +1,5 @@
 import { ConnectedLdoDataset } from "@ldo/connected";
-import { solidConnectedPlugin } from "./SolidConnectedPlugin";
+import { solidConnectedPlugin } from "./SolidConnectedPlugin.js";
 import { createDatasetFactory } from "@ldo/dataset";
 import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
 

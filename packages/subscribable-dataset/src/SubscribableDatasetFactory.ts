@@ -1,6 +1,6 @@
 import type { DatasetFactory, BaseQuad, Dataset } from "@rdfjs/types";
-import type { ITransactionDatasetFactory } from "./types";
-import { SubscribableDataset } from "./SubscribableDataset";
+import type { ITransactionDatasetFactory } from "./types.js";
+import { SubscribableDataset } from "./SubscribableDataset.js";
 
 /**
  * A DatasetFactory that returns a SubscribableDataset given a generic DatasetFactory.

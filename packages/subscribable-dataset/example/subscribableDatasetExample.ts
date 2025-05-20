@@ -1,4 +1,4 @@
-import { createSubscribableDataset } from "../src";
+import { createSubscribableDataset } from "../src/index.js";
 import { quad, namedNode, literal } from "@rdfjs/data-model";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 

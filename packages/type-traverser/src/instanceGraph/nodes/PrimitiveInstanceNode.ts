@@ -2,8 +2,8 @@
 import type {
   PrimitiveType,
   TraverserTypes,
-} from "../../traverser/TraverserTypes";
-import { InstanceNode } from "./InstanceNode";
+} from "../../traverser/TraverserTypes.js";
+import { InstanceNode } from "./InstanceNode.js";
 
 export class PrimitiveInstanceNode<
   Types extends TraverserTypes<any>,

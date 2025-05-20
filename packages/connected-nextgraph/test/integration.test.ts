@@ -4,13 +4,14 @@ import type {
   NextGraphConnectedPlugin,
   NextGraphResource,
   NextGraphUri,
-} from "../src";
-import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset";
+} from "../src/index.js";
+import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset.js";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode } from "@rdfjs/data-model";
-import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess";
+import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess.js";
 import { rm, cp } from "fs/promises";
 import path from "path";
+import { describe, it, expect, beforeEach, afterAll } from "vitest";
 
 const SAMPLE_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   BaseTraverserTypes,
-  TraverserDefinitions,
   TraverserTypes,
-  Visitors,
-} from "../../../";
-import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
-import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet";
+} from "../../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph.js";
+import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet.js";
+import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition.js";
+import type { Visitors } from "../../Visitors.js";
 
 export type VisitorSubTraverser<
   Types extends TraverserTypes<any>,

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
-import type { SolidContainerUri, SolidLeafUri } from "./types";
-import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
-import type { CheckRootResultError } from "./requester/requests/checkRootContainer";
-import type { ReadResultError } from "./requester/requests/readResource";
-import type { NoRootContainerError } from "./requester/results/error/NoRootContainerError";
-import type { SolidLeaf } from "./resources/SolidLeaf";
-import type { SolidContainer } from "./resources/SolidContainer";
-import type { SolidConnectedPlugin } from "./SolidConnectedPlugin";
-import { ProfileWithStorageShapeType } from "./.ldo/solid.shapeTypes";
+import type { SolidContainerUri, SolidLeafUri } from "./types.js";
+import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess.js";
+import type { CheckRootResultError } from "./requester/requests/checkRootContainer.js";
+import type { ReadResultError } from "./requester/requests/readResource.js";
+import type { NoRootContainerError } from "./requester/results/error/NoRootContainerError.js";
+import type { SolidLeaf } from "./resources/SolidLeaf.js";
+import type { SolidContainer } from "./resources/SolidContainer.js";
+import type { SolidConnectedPlugin } from "./SolidConnectedPlugin.js";
+import { ProfileWithStorageShapeType } from "./.ldo/solid.shapeTypes.js";
 
 /**
  * Gets a list of root storage containers for a user given their WebId

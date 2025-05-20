@@ -1,5 +1,5 @@
-import { testData } from "./testData/testData";
-import { shexjToContext } from "../src/context/shexjToContext";
+import { testData } from "./testData/testData.js";
+import { shexjToContext } from "../src/context/shexjToContext.js";
 import parser from "@shexjs/parser";
 import type { Schema } from "shexj";
 

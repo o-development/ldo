@@ -6,7 +6,7 @@ import schemaConverterShex from "@ldo/schema-converter-shex";
 import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";
-import { forAllShapes } from "./util/forAllShapes";
+import { forAllShapes } from "./util/forAllShapes.js";
 
 interface BuildOptions {
   input: string;

@@ -1,7 +1,7 @@
-import type { KeyTypes } from "../../../";
-import { MultiMap } from "./MultiMap";
-import { MultiSet } from "./MultiSet";
-import type { TransformerSubTraverserExecutingPromises } from "./transformerSubTraverserTypes";
+import type { KeyTypes } from "../../../index.js";
+import { MultiMap } from "./MultiMap.js";
+import { MultiSet } from "./MultiSet.js";
+import type { TransformerSubTraverserExecutingPromises } from "./transformerSubTraverserTypes.js";
 
 export class CircularDepenedencyAwaiter {
   private graphNodes: MultiMap<object, KeyTypes, MultiSet<object, KeyTypes>> =

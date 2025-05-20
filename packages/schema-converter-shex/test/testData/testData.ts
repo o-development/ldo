@@ -1,15 +1,15 @@
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
-import { activityPub } from "./activityPub";
-import { circular } from "./circular";
-import { profile } from "./profile";
-import { reducedProfile } from "./reducedProfile";
-import { simple } from "./simple";
-import { extendsSimple } from "./extendsSimple";
-import { reusedPredicates } from "./reusedPredicates";
-import { oldExtends } from "./oldExtends";
-import { orSimple } from "./orSimple";
-import { andSimple } from "./andSimple";
-import { eachOfAndSimple } from "./eachOfAndSimple";
+import { activityPub } from "./activityPub.js";
+import { circular } from "./circular.js";
+import { profile } from "./profile.js";
+import { reducedProfile } from "./reducedProfile.js";
+import { simple } from "./simple.js";
+import { extendsSimple } from "./extendsSimple.js";
+import { reusedPredicates } from "./reusedPredicates.js";
+import { oldExtends } from "./oldExtends.js";
+import { orSimple } from "./orSimple.js";
+import { andSimple } from "./andSimple.js";
+import { eachOfAndSimple } from "./eachOfAndSimple.js";
 
 export interface TestData {
   name: string;

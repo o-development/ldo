@@ -1,9 +1,9 @@
 import { namedNode } from "@rdfjs/data-model";
-import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy";
-import type { ObjectLike } from "../types";
-import { _getUnderlyingNode, _proxyContext } from "../types";
-import { createLanguageMapProxy } from "./languageMapProxy";
-import type { LdSet } from "../setProxy/ldSet/LdSet";
+import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy.js";
+import type { ObjectLike } from "../types.js";
+import { _getUnderlyingNode, _proxyContext } from "../types.js";
+import { createLanguageMapProxy } from "./languageMapProxy.js";
+import type { LdSet } from "../setProxy/ldSet/LdSet.js";
 
 /**
  * -----------------------------------------------------------------------------

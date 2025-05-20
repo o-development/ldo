@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { LoginOptions, SessionInfo } from "./SolidAuthContext";
-import { SolidAuthContext, useSolidAuth } from "./SolidAuthContext";
+import type { LoginOptions, SessionInfo } from "./SolidAuthContext.js";
+import { SolidAuthContext, useSolidAuth } from "./SolidAuthContext.js";
 import {
   getDefaultSession,
   handleIncomingRedirect,
@@ -11,7 +11,7 @@ import {
 } from "@inrupt/solid-client-authn-browser";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "@ldo/connected-solid";
-import { createUseRootContainerFor } from "./useRootContainerFor";
+import { createUseRootContainerFor } from "./useRootContainerFor.js";
 import { createUseResource } from "@ldo/react";
 
 const PRE_REDIRECT_URI = "PRE_REDIRECT_URI";

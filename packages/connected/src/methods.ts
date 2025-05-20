@@ -2,13 +2,16 @@ import { startTransaction, type LdoBase, write, getDataset } from "@ldo/ldo";
 import type { Quad } from "@rdfjs/types";
 import { _proxyContext, getProxyFromObject } from "@ldo/jsonld-dataset-proxy";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
-import type { Resource } from "./Resource";
-import type { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
+import type { Resource } from "./Resource.js";
+import type { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset.js";
 import type {
   AggregateSuccess,
   SuccessResult,
-} from "./results/success/SuccessResult";
-import type { AggregateError, ErrorResult } from "./results/error/ErrorResult";
+} from "./results/success/SuccessResult.js";
+import type {
+  AggregateError,
+  ErrorResult,
+} from "./results/error/ErrorResult.js";
 
 /**
  * Begins tracking changes to eventually commit.

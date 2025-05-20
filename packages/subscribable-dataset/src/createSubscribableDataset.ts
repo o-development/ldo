@@ -1,12 +1,12 @@
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import { createDataset } from "@ldo/dataset";
-import { SubscribableDatasetFactory } from "./SubscribableDatasetFactory";
+import { SubscribableDatasetFactory } from "./SubscribableDatasetFactory.js";
 import type {
   ISubscribableDataset,
   ISubscribableDatasetFactory,
   ITransactionDatasetFactory,
-} from "./types";
-import { TransactionDatasetFactory } from "./TransactionDatasetFactory";
+} from "./types.js";
+import { TransactionDatasetFactory } from "./TransactionDatasetFactory.js";
 
 const datasetFactory: DatasetFactory<Quad> = {
   dataset: (quads?: Dataset<Quad> | Quad[]): Dataset<Quad> => {

@@ -1,6 +1,6 @@
-import { init } from "./init";
-import { modifyPackageJson, savePackageJson } from "./util/modifyPackageJson";
-import { generateReadme } from "./generateReadme";
+import { init } from "./init.js";
+import { modifyPackageJson, savePackageJson } from "./util/modifyPackageJson.js";
+import { generateReadme } from "./generateReadme.js";
 import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";

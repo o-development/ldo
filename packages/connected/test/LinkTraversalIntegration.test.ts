@@ -1,5 +1,9 @@
-import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset";
-import { changeData, commitData, createConnectedLdoDataset } from "../src";
+import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset.js";
+import {
+  changeData,
+  commitData,
+  createConnectedLdoDataset,
+} from "../src/index.js";
 import {
   solidConnectedPlugin,
   type SolidConnectedPlugin,
@@ -12,9 +16,10 @@ import {
   OTHER_PROFILE_URI,
   THIRD_PROFILE_SUBJECT,
   THIRD_PROFILE_URI,
-} from "./LinkTraversalData";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
-import { wait } from "./util/wait";
+} from "./LinkTraversalData.js";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+import { wait } from "./util/wait.js";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,6 +37,7 @@ describe("Link Traversal", () => {
 
   it("does a simple run to traverse data", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
+
     const data = await solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
@@ -41,6 +47,7 @@ describe("Link Traversal", () => {
         },
       })
       .run();
+
     const resourceUris = solidLdoDataset
       .getResources()
       .map((resource) => resource.uri);

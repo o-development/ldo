@@ -6,7 +6,7 @@ import {
   SubscribableDatasetFactory,
   TransactionDataset,
   TransactionDatasetFactory,
-} from "../src";
+} from "../src/index.js";
 
 describe("Exports", () => {
   it("Has all exports", () => {

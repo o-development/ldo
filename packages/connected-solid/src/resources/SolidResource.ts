@@ -9,46 +9,46 @@ import type {
   SubscriptionCallbacks,
   Unfetched,
 } from "@ldo/connected";
-import type { SolidContainerUri, SolidLeafUri } from "../types";
+import type { SolidContainerUri, SolidLeafUri } from "../types.js";
 import EventEmitter from "events";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
-import type { BatchedRequester } from "../requester/BatchedRequester";
-import type { WacRule } from "../wac/WacRule";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
+import type { BatchedRequester } from "../requester/BatchedRequester.js";
+import type { WacRule } from "../wac/WacRule.js";
 import type { NotificationSubscription } from "@ldo/connected";
-import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription";
-import { getParentUri } from "../util/rdfUtils";
-import { isReadSuccess } from "../requester/results/success/SolidReadSuccess";
+import { Websocket2023NotificationSubscription } from "../notifications/Websocket2023NotificationSubscription.js";
+import { getParentUri } from "../util/rdfUtils.js";
+import { isReadSuccess } from "../requester/results/success/SolidReadSuccess.js";
 import type {
   ReadContainerResult,
   ReadLeafResult,
-} from "../requester/requests/readResource";
-import { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
+} from "../requester/requests/readResource.js";
+import { DeleteSuccess } from "../requester/results/success/DeleteSuccess.js";
 import {
   updateDatasetOnSuccessfulDelete,
   type DeleteResult,
-} from "../requester/requests/deleteResource";
+} from "../requester/requests/deleteResource.js";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "../requester/requests/createDataResource";
-import type { SolidContainer } from "./SolidContainer";
-import type { CheckRootResultError } from "../requester/requests/checkRootContainer";
-import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
-import type { SolidLeaf } from "./SolidLeaf";
-import type { GetWacUriError } from "../wac/getWacUri";
-import { getWacUri, type GetWacUriResult } from "../wac/getWacUri";
-import { getWacRuleWithAclUri, type GetWacRuleResult } from "../wac/getWacRule";
-import type { SetWacRuleResult } from "../wac/setWacRule";
-import { setWacRuleForAclUri } from "../wac/setWacRule";
-import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
-import type { SolidNotificationMessage } from "../notifications/SolidNotificationMessage";
-import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
-import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess";
-import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
+} from "../requester/requests/createDataResource.js";
+import type { SolidContainer } from "./SolidContainer.js";
+import type { CheckRootResultError } from "../requester/requests/checkRootContainer.js";
+import type { NoRootContainerError } from "../requester/results/error/NoRootContainerError.js";
+import type { SolidLeaf } from "./SolidLeaf.js";
+import type { GetWacUriError } from "../wac/getWacUri.js";
+import { getWacUri, type GetWacUriResult } from "../wac/getWacUri.js";
+import { getWacRuleWithAclUri, type GetWacRuleResult } from "../wac/getWacRule.js";
+import type { SetWacRuleResult } from "../wac/setWacRule.js";
+import { setWacRuleForAclUri } from "../wac/setWacRule.js";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError.js";
+import type { SolidNotificationMessage } from "../notifications/SolidNotificationMessage.js";
+import type { CreateSuccess } from "../requester/results/success/CreateSuccess.js";
+import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess.js";
+import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess.js";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { UpdateResult } from "../requester/requests/updateDataResource";
+import type { UpdateResult } from "../requester/requests/updateDataResource.js";
 
 /**
  * Statuses shared between both Leaf and Container

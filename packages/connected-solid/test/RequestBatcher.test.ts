@@ -1,5 +1,6 @@
-import type { WaitingProcess } from "../src/util/RequestBatcher";
-import { RequestBatcher } from "../src/util/RequestBatcher";
+import type { WaitingProcess } from "../src/util/RequestBatcher.js";
+import { RequestBatcher } from "../src/util/RequestBatcher.js";
+import { describe, it, expect, vi } from "vitest";
 
 describe("RequestBatcher", () => {
   type ReadWaitingProcess = WaitingProcess<[string], string>;
@@ -10,13 +11,13 @@ describe("RequestBatcher", () => {
       await wait(100);
       return `Hello ${input}`;
     };
-    const perform1 = jest.fn(perform);
-    const perform2 = jest.fn(perform);
-    const perform3 = jest.fn((input: string): Promise<string> => {
+    const perform1 = vi.fn(perform);
+    const perform2 = vi.fn(perform);
+    const perform3 = vi.fn((input: string): Promise<string> => {
       expect(requestBatcher.isLoading("read")).toBe(true);
       return perform(input);
     });
-    const perform4 = jest.fn(perform);
+    const perform4 = vi.fn(perform);
 
     const modifyQueue = (queue, currentlyProcessing, input: [string]) => {
       const last = queue[queue.length - 1];
@@ -95,7 +96,7 @@ describe("RequestBatcher", () => {
     const perform = async (_input: string): Promise<string> => {
       throw new Error("Test Error");
     };
-    const perform1 = jest.fn(perform);
+    const perform1 = vi.fn(perform);
     expect(() =>
       requestBatcher.queueProcess<[string], string>({
         name: "read",

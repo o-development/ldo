@@ -7,8 +7,8 @@ import {
   _proxyContext,
 } from "@ldo/jsonld-dataset-proxy";
 import { createDataset } from "@ldo/dataset";
-import type { SolidProfileShape } from "./profileData";
-import { ProfileShapeType } from "./profileData";
+import type { SolidProfileShape } from "./profileData.js";
+import { ProfileShapeType } from "./profileData.js";
 import {
   commitTransaction,
   createLdoDataset,
@@ -23,8 +23,8 @@ import {
   write,
   setLanguagePreferences,
   languagesOf,
-} from "../src";
-import type { ILdoDataset } from "../src/types";
+} from "../src/index.js";
+import type { ILdoDataset } from "../src/types.js";
 
 describe("methods", () => {
   let dataset: ILdoDataset;

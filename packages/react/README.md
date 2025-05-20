@@ -46,7 +46,7 @@ import {
   useSolidAuth,
   useSubject,
 } from "@ldo/react";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/solid";
 
 // The base component for the app

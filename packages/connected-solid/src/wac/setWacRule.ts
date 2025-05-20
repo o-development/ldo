@@ -1,20 +1,20 @@
 import { createLdoDataset } from "@ldo/ldo";
-import type { AccessModeList, WacRule } from "./WacRule";
-import { SetWacRuleSuccess } from "./results/SetWacRuleSuccess";
-import type { Authorization } from "../.ldo/wac.typings";
-import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
+import type { AccessModeList, WacRule } from "./WacRule.js";
+import { SetWacRuleSuccess } from "./results/SetWacRuleSuccess.js";
+import type { Authorization } from "../.ldo/wac.typings.js";
+import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes.js";
 import { v4 } from "uuid";
-import { guaranteeFetch } from "../util/guaranteeFetch";
-import type { SolidLeafUri } from "../types";
-import type { SolidLeaf } from "../resources/SolidLeaf";
-import type { SolidContainer } from "../resources/SolidContainer";
+import { guaranteeFetch } from "../util/guaranteeFetch.js";
+import type { SolidLeafUri } from "../types.js";
+import type { SolidLeaf } from "../resources/SolidLeaf.js";
+import type { SolidContainer } from "../resources/SolidContainer.js";
 import {
   HttpErrorResult,
   type HttpErrorResultType,
-} from "../requester/results/error/HttpErrorResult";
+} from "../requester/results/error/HttpErrorResult.js";
 import type { UnexpectedResourceError } from "@ldo/connected";
-import type { BasicRequestOptions } from "../requester/requests/requestOptions";
-import { isSolidContainerUri } from "../util/isSolidUri";
+import type { BasicRequestOptions } from "../requester/requests/requestOptions.js";
+import { isSolidContainerUri } from "../util/isSolidUri.js";
 
 export type SetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
   | HttpErrorResultType<ResourceType>

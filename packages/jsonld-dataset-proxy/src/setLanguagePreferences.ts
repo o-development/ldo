@@ -1,6 +1,6 @@
-import type { LanguageOrdering } from "./language/languageTypes";
-import type { InteractOptions } from "./util/createInteractOptions";
-import { createInteractOptions } from "./util/createInteractOptions";
+import type { LanguageOrdering } from "./language/languageTypes.js";
+import type { InteractOptions } from "./util/createInteractOptions.js";
+import { createInteractOptions } from "./util/createInteractOptions.js";
 
 /**
  * Set the default language pr

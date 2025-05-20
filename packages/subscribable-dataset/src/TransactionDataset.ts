@@ -1,9 +1,9 @@
 import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { ITransactionDataset, ITransactionDatasetFactory } from "./types";
-import { mergeDatasetChanges } from "./mergeDatasetChanges";
-import { SubscribableDataset } from "./SubscribableDataset";
-import { updateDatasetInBulk } from "./util";
+import type { ITransactionDataset, ITransactionDatasetFactory } from "./types.js";
+import { mergeDatasetChanges } from "./mergeDatasetChanges.js";
+import { SubscribableDataset } from "./SubscribableDataset.js";
+import { updateDatasetInBulk } from "./util.js";
 
 /**
  * Proxy Transactional Dataset is a transactional dataset that does not duplicate

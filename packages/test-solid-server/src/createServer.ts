@@ -3,10 +3,6 @@
 import * as path from "path";
 import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
-import "jest-rdf";
-
-// Use an increased timeout, since the CSS server takes too much setup time.
-jest.setTimeout(40_000);
 
 export async function createApp(
   port: number,
@@ -31,7 +27,7 @@ export async function createApp(
       port: port,
       loggingLevel: "off",
       seedConfig: path.join(__dirname, "configs", "solid-css-seed.json"),
-      rootFilePath: path.join(__dirname, "./data"),
+      rootFilePath: path.join(__dirname, `./data${port}`),
     },
   });
 }

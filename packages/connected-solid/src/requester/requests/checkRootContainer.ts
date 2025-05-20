@@ -1,14 +1,14 @@
-import type { BasicRequestOptions } from "./requestOptions";
+import type { BasicRequestOptions } from "./requestOptions.js";
 import { parse as parseLinkHeader } from "http-link-header";
-import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
+import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess.js";
 import type {
   HttpErrorResultType,
   UnexpectedHttpError,
-} from "../results/error/HttpErrorResult";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+} from "../results/error/HttpErrorResult.js";
+import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
 import { UnexpectedResourceError } from "@ldo/connected";
-import type { SolidContainer } from "../../resources/SolidContainer";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
+import type { SolidContainer } from "../../resources/SolidContainer.js";
+import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 
 /**
  * checkRootContainer result

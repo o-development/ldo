@@ -1,17 +1,23 @@
 import React, { useCallback, useEffect, useState } from "react";
 import type { FunctionComponent } from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
 import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import {
+  fileData,
   MAIN_PROFILE_SUBJECT,
   MAIN_PROFILE_URI,
-  OTHER_PROFILE_URI,
   SAMPLE_BINARY_URI,
   SAMPLE_DATA_URI,
   SERVER_DOMAIN,
-  setUpServer,
+  setUpServerFiles,
   THIRD_PROFILE_SUBJECT,
-} from "./setUpServer";
-import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
+} from "./fileData.js";
+import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider.js";
 import {
   dataset,
   useLdo,
@@ -22,22 +28,39 @@ import {
   useSubject,
   useSubscribeToResource,
   useLinkQuery,
-} from "../src";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
-import type { PostSh } from "./.ldo/post.typings";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+} from "../src/index.js";
+import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
+import type { PostSh } from "./.ldo/post.typings.js";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/connected";
-import type { SolidProfileShape } from "./.ldo/solidProfile.typings";
+import type { SolidProfileShape } from "./.ldo/solidProfile.typings.js";
+import { describe, vi, afterEach, expect, it } from "vitest";
+import { setupServer } from "@ldo/test-solid-server";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-// Use an increased timeout, since the CSS server takes too much setup time.
-jest.setTimeout(40_000);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe("Integration Tests", () => {
-  setUpServer();
+  setupServer(
+    3002,
+    fileData,
+    join(
+      __dirname,
+      "configs",
+      "components-config",
+      "unauthenticatedServer.json",
+    ),
+    true,
+  );
+  setUpServerFiles();
 
   afterEach(() => {
     dataset.forgetAllResources();
     dataset.deleteMatches(undefined, undefined, undefined, undefined);
+    cleanup();
   });
 
   /**
@@ -356,7 +379,7 @@ describe("Integration Tests", () => {
     });
 
     it("does not set a value if a value is attempted to be set", async () => {
-      const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
       const UseSubjectTest: FunctionComponent = () => {
         const resource = useResource(SAMPLE_DATA_URI);
         const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { BaseTraverserTypes, TraverserTypes } from "../../";
+import type { BaseTraverserTypes, TraverserTypes } from "../../index.js";
 import type {
   VisitorSubTraverser,
   VisitorSubTraverserGlobals,
-} from "./util/visitorSubTraverserTypes";
-import { visitorInterfaceSubTraverser } from "./VisitorInterfaceSubTraverser";
-import { visitorUnionSubTraverser } from "./VisitorUnionSubTraverser";
-import { visitorPrimitiveSubTraverser } from "./VisitorPrimitiveSubTraverser";
+} from "./util/visitorSubTraverserTypes.js";
+import { visitorInterfaceSubTraverser } from "./VisitorInterfaceSubTraverser.js";
+import { visitorUnionSubTraverser } from "./VisitorUnionSubTraverser.js";
+import { visitorPrimitiveSubTraverser } from "./VisitorPrimitiveSubTraverser.js";
 
 const subTraversers: Record<string, VisitorSubTraverser<any, any, any, any>> = {
   interface: visitorInterfaceSubTraverser,

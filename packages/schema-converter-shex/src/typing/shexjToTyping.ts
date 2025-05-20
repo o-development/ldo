@@ -1,9 +1,9 @@
 import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
-import { JsonLdContextBuilder } from "../context/JsonLdContextBuilder";
-import { ShexJNameVisitor } from "../context/ShexJContextVisitor";
+import { JsonLdContextBuilder } from "../context/JsonLdContextBuilder.js";
+import { ShexJNameVisitor } from "../context/ShexJContextVisitor.js";
 import { jsonld2graphobject } from "jsonld2graphobject";
-import { ShexJTypingTransformer } from "./ShexJTypingTransformer";
+import { ShexJTypingTransformer } from "./ShexJTypingTransformer.js";
 import * as dom from "dts-dom";
 
 export interface TypeingReturn {

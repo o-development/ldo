@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ApplyArrayAndUndefined } from "../../transformer/TransformerReturnTypesDefaults";
+import type { ApplyArrayAndUndefined } from "../../transformer/TransformerReturnTypesDefaults.js";
 import type {
   InterfaceType,
   TraverserTypes,
-} from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../InstanceGraph";
-import type { InstanceNodeFor } from "./createInstanceNodeFor";
-import { InstanceNode } from "./InstanceNode";
+} from "../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../InstanceGraph.js";
+import type { InstanceNodeFor } from "./createInstanceNodeFor.js";
+import { InstanceNode } from "./InstanceNode.js";
 
 /**
  * Helper Function

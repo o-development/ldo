@@ -1,7 +1,7 @@
 import type { Dataset, Quad } from "@rdfjs/types";
 import type { ISubscribableDatasetFactory } from "@ldo/subscribable-dataset";
 import { SubscribableDatasetFactory } from "@ldo/subscribable-dataset";
-import { LdoDataset } from "./LdoDataset";
+import { LdoDataset } from "./LdoDataset.js";
 
 /**
  * @category Getting an LdoDataset

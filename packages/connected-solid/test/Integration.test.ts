@@ -4,19 +4,23 @@ import {
   literal,
   defaultGraph,
 } from "@rdfjs/data-model";
-import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
+import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess.js";
 import { Buffer } from "buffer";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
 import type {
   ServerHttpError,
   UnauthenticatedHttpError,
   UnexpectedHttpError,
-} from "../src/requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
-import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
-import { wait } from "./utils.helper";
+} from "../src/requester/results/error/HttpErrorResult.js";
+import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError.js";
+import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess.js";
+import { wait } from "./utils.helper.js";
 import path from "path";
-import type { GetWacRuleSuccess, UpdateResultError, WacRule } from "../src";
+import type {
+  GetWacRuleSuccess,
+  UpdateResultError,
+  WacRule,
+} from "../src/index.js";
 import {
   createSolidLdoDataset,
   type SolidConnectedPlugin,
@@ -24,7 +28,7 @@ import {
   type SolidContainerUri,
   type SolidLeaf,
   type SolidLeafUri,
-} from "../src";
+} from "../src/index.js";
 import type {
   AggregateError,
   AggregateSuccess,
@@ -40,9 +44,10 @@ import {
   commitData,
   ConnectedLdoTransactionDataset,
 } from "@ldo/connected";
-import { getStorageFromWebId } from "../src/getStorageFromWebId";
+import { getStorageFromWebId } from "../src/getStorageFromWebId.js";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -2039,7 +2044,7 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
@@ -2095,13 +2100,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2129,13 +2134,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2163,13 +2168,13 @@ describe("Integration", () => {
       const testContainer = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       await resource.read();
 
-      const spidermanCallback = jest.fn();
+      const spidermanCallback = vi.fn();
       solidLdoDataset.addListener(
         [spidermanNode, null, null, null],
         spidermanCallback,
       );
 
-      const containerCallback = jest.fn();
+      const containerCallback = vi.fn();
       solidLdoDataset.addListener(
         [namedNode(TEST_CONTAINER_URI), null, null, null],
         containerCallback,
@@ -2198,7 +2203,7 @@ describe("Integration", () => {
 
     it.skip("returns an error when it cannot subscribe to a notification", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       await resource.subscribeToNotifications({
@@ -2210,7 +2215,7 @@ describe("Integration", () => {
 
     it.skip("returns an error when the server doesnt support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       const disabledWebsocketsApp = await createApp(
@@ -2228,7 +2233,7 @@ describe("Integration", () => {
 
     it.skip("attempts to reconnect multiple times before giving up.", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const onError = jest.fn();
+      const onError = vi.fn();
 
       await s.app.stop();
       const disabledWebsocketsApp = await createApp(

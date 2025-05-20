@@ -1,0 +1,1 @@
+{"version":3,"file":"serializedToQuads.d.ts","sourceRoot":"","sources":["serializedToQuads.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,cAAc,CAAC;AACzC,OAAO,KAAK,EAAE,aAAa,IAAI,mBAAmB,EAAE,MAAM,IAAI,CAAC;AAG/D,MAAM,MAAM,aAAa,GAAG,mBAAmB,CAAC;AAEhD,wBAAsB,iBAAiB,CACrC,IAAI,EAAE,MAAM,EACZ,OAAO,CAAC,EAAE,aAAa,GACtB,OAAO,CAAC,IAAI,EAAE,CAAC,CAiCjB"}

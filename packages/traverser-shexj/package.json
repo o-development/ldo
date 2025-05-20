@@ -1,33 +1,46 @@
 {
   "name": "@ldo/traverser-shexj",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.11",
   "description": "A type-traverser for ShexJ",
-  "main": "dist/index.js",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "test": "jest --coverage",
-    "prepublishOnly": "npm run test && npm run build",
+    "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/o-development/ldobjects.git"
+    "url": "git+https://github.com/o-development/ldo.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/o-development/ldobjects/issues"
+    "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldobjects/tree/main/packages/traverser-shexj#readme",
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/traverser-shexj#readme",
   "files": [
     "dist",
     "src"
   ],
   "dependencies": {
-    "@ldo/type-traverser": "^1.0.0-alpha.9"
+    "@ldo/type-traverser": "^1.0.0-alpha.11"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "d2364cd2f8da5f0b673b1202d29df5b7c071a17c"
+  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
 }

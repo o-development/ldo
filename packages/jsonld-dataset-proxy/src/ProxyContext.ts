@@ -1,13 +1,13 @@
 import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import type { BlankNode, Dataset, NamedNode } from "@rdfjs/types";
-import { createSubjectHandler } from "./subjectProxy/createSubjectHandler";
-import type { SubjectProxy } from "./subjectProxy/SubjectProxy";
-import type { SetProxy } from "./setProxy/SetProxy";
-import type { ContextUtil } from "./ContextUtil";
-import type { LanguageOrdering } from "./language/languageTypes";
+import { createSubjectHandler } from "./subjectProxy/createSubjectHandler.js";
+import type { SubjectProxy } from "./subjectProxy/SubjectProxy.js";
+import type { SetProxy } from "./setProxy/SetProxy.js";
+import type { ContextUtil } from "./ContextUtil.js";
+import type { LanguageOrdering } from "./language/languageTypes.js";
 import { namedNode } from "@rdfjs/data-model";
-import type { RawValue } from "./util/RawObject";
-import { createNewSetProxy } from "./setProxy/createNewSetProxy";
+import type { RawValue } from "./util/RawObject.js";
+import { createNewSetProxy } from "./setProxy/createNewSetProxy.js";
 
 export interface ProxyContextOptions {
   dataset: Dataset;

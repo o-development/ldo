@@ -12,11 +12,11 @@ import type {
   TraverserTypes,
   UnionReturnType,
   UnionType,
-} from "..";
-import { transformerParentSubTraverser } from "./transformerSubTraversers/TransformerParentSubTraverser";
-import { CircularDepenedencyAwaiter } from "./transformerSubTraversers/util/CircularDependencyAwaiter";
-import { MultiMap } from "./transformerSubTraversers/util/MultiMap";
-import { SuperPromise } from "./transformerSubTraversers/util/SuperPromise";
+} from "../index.js";
+import { transformerParentSubTraverser } from "./transformerSubTraversers/TransformerParentSubTraverser.js";
+import { CircularDepenedencyAwaiter } from "./transformerSubTraversers/util/CircularDependencyAwaiter.js";
+import { MultiMap } from "./transformerSubTraversers/util/MultiMap.js";
+import { SuperPromise } from "./transformerSubTraversers/util/SuperPromise.js";
 import type {
   GetTransformedChildrenFunction,
   InterfaceTransformerDefinition,
@@ -27,8 +27,8 @@ import type {
   TransformersInput,
   UnionTransformerDefinition,
   UnionTransformerInputDefinition,
-} from "./Transformers";
-import { InstanceGraph } from "../instanceGraph/InstanceGraph";
+} from "./Transformers.js";
+import { InstanceGraph } from "../instanceGraph/InstanceGraph.js";
 
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
 // but if I ever feel so inclined, I should fix this in the future.

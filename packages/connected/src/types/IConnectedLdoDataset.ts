@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
-import type { ConnectedPlugin } from "./ConnectedPlugin";
-import type { InvalidIdentifierResource } from "../InvalidIdentifierResource";
-import type { IConnectedLdoBuilder } from "./IConnectedLdoBuilder";
+import type { ConnectedPlugin } from "./ConnectedPlugin.js";
+import type { InvalidIdentifierResource } from "../InvalidIdentifierResource.js";
+import type { IConnectedLdoBuilder } from "./IConnectedLdoBuilder.js";
 
 export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   arg: Arg,

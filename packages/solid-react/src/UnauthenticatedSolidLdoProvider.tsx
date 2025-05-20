@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 import React, { useCallback, useMemo } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { LoginOptions, SessionInfo } from "./SolidAuthContext";
-import { SolidAuthContext } from "./SolidAuthContext";
+import type { LoginOptions, SessionInfo } from "./SolidAuthContext.js";
+import { SolidAuthContext } from "./SolidAuthContext.js";
 import libraryFetch from "cross-fetch";
 
 const DUMMY_SESSION: SessionInfo = {

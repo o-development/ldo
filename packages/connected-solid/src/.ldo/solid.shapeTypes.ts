@@ -1,7 +1,7 @@
 import { ShapeType } from "@ldo/ldo";
-import { solidSchema } from "./solid.schema";
-import { solidContext } from "./solid.context";
-import { Container, Resource, ProfileWithStorage } from "./solid.typings";
+import { solidSchema } from "./solid.schema.js";
+import { solidContext } from "./solid.context.js";
+import { Container, Resource, ProfileWithStorage } from "./solid.typings.js";
 
 /**
  * =============================================================================

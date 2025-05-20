@@ -4,7 +4,7 @@ import type {
   TraverserTypes,
   UnionType,
   PrimitiveType,
-} from "..";
+} from "../index.js";
 
 export type InterfaceTraverserDefinition<Type extends InterfaceType<any>> = {
   kind: "interface";

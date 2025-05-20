@@ -1,7 +1,7 @@
-import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy";
-import type { ObjectLike } from "../types";
-import { _getUnderlyingNode, _proxyContext } from "../types";
-import { getProxyFromObject } from "./isProxy";
+import { getSubjectProxyFromObject } from "../subjectProxy/isSubjectProxy.js";
+import type { ObjectLike } from "../types.js";
+import { _getUnderlyingNode, _proxyContext } from "../types.js";
+import { getProxyFromObject } from "./isProxy.js";
 
 export interface InteractOptions {
   /**

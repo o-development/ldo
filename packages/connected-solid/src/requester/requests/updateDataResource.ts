@@ -1,14 +1,14 @@
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import { changesToSparqlUpdate } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
+import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 import type { Resource } from "@ldo/connected";
 import { UnexpectedResourceError, UpdateSuccess } from "@ldo/connected";
-import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
-import type { DatasetRequestOptions } from "./requestOptions";
-import type { SolidContainer } from "../../resources/SolidContainer";
-import type { SolidLeaf } from "../../resources/SolidLeaf";
+import type { HttpErrorResultType } from "../results/error/HttpErrorResult.js";
+import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
+import type { DatasetRequestOptions } from "./requestOptions.js";
+import type { SolidContainer } from "../../resources/SolidContainer.js";
+import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 
 /**
  * All return values for updateDataResource

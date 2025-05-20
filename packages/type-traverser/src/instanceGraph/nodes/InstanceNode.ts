@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserDefinition } from "../..";
-import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes";
-import type { TraverserTypes } from "../../traverser/TraverserTypes";
-import type { InstanceGraph } from "../InstanceGraph";
-import type { InstanceNodeFor } from "./createInstanceNodeFor";
+import type { TraverserDefinition } from "../../index.js";
+import type { ParentIdentifiers } from "../../instanceGraph/ReverseRelationshipTypes.js";
+import type { TraverserTypes } from "../../traverser/TraverserTypes.js";
+import type { InstanceGraph } from "../InstanceGraph.js";
+import type { InstanceNodeFor } from "./createInstanceNodeFor.js";
 
 export abstract class InstanceNode<
   Types extends TraverserTypes<any>,
@@ -31,7 +31,8 @@ export abstract class InstanceNode<
   private getParentKey(
     identifiers: ParentIdentifiers<Types, TypeName>,
   ): string {
-    return identifiers.join("|");
+    // HACK: any cast. For some reason this doesn't build for ESM
+    return (identifiers as any).join("|");
   }
 
   public _setParent<Identifiers extends ParentIdentifiers<Types, TypeName>>(
@@ -40,13 +41,16 @@ export abstract class InstanceNode<
   ) {
     const parentKey = this.getParentKey(identifiers);
     if (!this.parents[parentKey]) this.parents[parentKey] = new Set();
-    this.parents[parentKey].add(parentNode);
+    // HACK: any cast. For some reason this doesn't build for ESM
+    this.parents[parentKey].add(parentNode as any);
   }
 
   public parent<Identifiers extends ParentIdentifiers<Types, TypeName>>(
     ...identifiers: Identifiers
   ): InstanceNodeFor<Types, Identifiers[0]>[] {
-    return Array.from(this.parents[this.getParentKey(identifiers)] ?? []);
+    return Array.from(
+      this.parents[this.getParentKey(identifiers)] ?? [],
+    ) as InstanceNodeFor<Types, Identifiers[0]>[];
   }
 
   public allParents(): InstanceNodeFor<

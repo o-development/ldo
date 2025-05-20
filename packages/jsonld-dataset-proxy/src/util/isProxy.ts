@@ -1,9 +1,9 @@
-import { isSetProxy } from "../setProxy/isSetProxy";
-import type { LdSet } from "../setProxy/ldSet/LdSet";
-import type { SetProxy } from "../setProxy/SetProxy";
-import { isSubjectProxy } from "../subjectProxy/isSubjectProxy";
-import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
-import type { ObjectLike } from "../types";
+import { isSetProxy } from "../setProxy/isSetProxy.js";
+import type { LdSet } from "../setProxy/ldSet/LdSet.js";
+import type { SetProxy } from "../setProxy/SetProxy.js";
+import { isSubjectProxy } from "../subjectProxy/isSubjectProxy.js";
+import type { SubjectProxy } from "../subjectProxy/SubjectProxy.js";
+import type { ObjectLike } from "../types.js";
 
 export function isProxy(
   someObject?: unknown,
