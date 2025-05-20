@@ -66,12 +66,12 @@ export function createLdoSvelteMethods<
 
   return {
     dataset,
-    useLdo: createUseLdo(dataset),
-    useMatchObject: createUseMatchObject(dataset),
-    useMatchSubject: createUseMatchSubject(dataset),
-    useResource: createUseResource(dataset),
-    useSubject: createUseSubject(dataset),
-    useSubscribeToResource: createUseSubscribeToResource(dataset),
-    useLinkQuery: createUseLinkQuery(dataset),
+    useLdo: createUseLdo<Plugins>(dataset),
+    useMatchObject: createUseMatchObject<Plugins>(dataset),
+    useMatchSubject: createUseMatchSubject<Plugins>(dataset),
+    useResource: createUseResource<Plugins>(dataset),
+    useSubject: createUseSubject<Plugins>(dataset),
+    useSubscribeToResource: createUseSubscribeToResource<Plugins>(dataset),
+    useLinkQuery: createUseLinkQuery<Plugins>(dataset),
   };
 }
