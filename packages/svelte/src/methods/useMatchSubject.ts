@@ -1,7 +1,7 @@
 import type { LdoBase, LdoBuilder, LdSet, ShapeType } from "@ldo/ldo";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
-import { useTrackingProxy } from "../util/useTrackingProxy";
+import { useTrackingProxy } from "../util/useTrackingProxy.js";
 import type { Readable } from "svelte/store";
 
 /**
