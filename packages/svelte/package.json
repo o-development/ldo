@@ -1,6 +1,6 @@
 {
   "name": "@ldo/svelte",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-alpha.16",
   "description": "A Svelte library for LDO.",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -64,7 +64,7 @@
     "svelte": "^3.50.0"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.15",
+    "@ldo/connected": "^1.0.0-alpha.16",
     "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.14",
     "@ldo/ldo": "^1.0.0-alpha.14",
     "@ldo/rdf-utils": "^1.0.0-alpha.14",
