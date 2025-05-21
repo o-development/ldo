@@ -15,7 +15,6 @@ const DEFAULT_LDO_FOLDER = "./.ldo";
 const POTENTIAL_PARENT_DIRECTORIES = ["src", "lib", "bin"];
 
 export async function init(directory?: string) {
-  console.log("directory", directory);
   // Find folder to save to
   const projectDirectory = directory ?? "./";
 
@@ -35,15 +34,12 @@ export async function init(directory?: string) {
       break;
     }
   }
-  console.log("parentDirectory", parentDirectory);
 
   // Install dependencies
   await exec(`cd ${projectDirectory} && npm install @ldo/ldo --save`);
   await exec(
     `cd ${projectDirectory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
   );
-
-  console.log("Ran installs");
 
   // Create "shapes" folder
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
@@ -64,15 +60,12 @@ export async function init(directory?: string) {
     }),
   );
 
-  console.log("Createed shapes folder and filled with default shex shapes");
-
   // Add build script
   await modifyPackageJson("./", async (packageJson) => {
     if (!packageJson.scripts) {
       packageJson.scripts = {};
     }
     const ldoFolder = path.join(parentDirectory, DEFAULT_LDO_FOLDER);
-    console.log("ldo folder", ldoFolder);
     packageJson.scripts["build:ldo"] = `ldo build --input ${path.relative(
       projectDirectory,
       shapesFolderPath,
