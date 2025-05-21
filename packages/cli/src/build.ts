@@ -6,16 +6,18 @@ import schemaConverterShex from "@ldo/schema-converter-shex";
 import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { forAllShapes } from "./util/forAllShapes.js";
-import {fileURLToPath} from 'url';
-const __filename = fileURLToPath(import.meta.url);
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 interface BuildOptions {
   input: string;
   output: string;
 }
-
-const __dirname = path.dirname(__filename);
 
 export async function build(options: BuildOptions) {
   const load = loading("Preparing Environment");

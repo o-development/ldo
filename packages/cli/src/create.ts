@@ -1,12 +1,20 @@
 import { init } from "./init.js";
-import { modifyPackageJson, savePackageJson } from "./util/modifyPackageJson.js";
+import {
+  modifyPackageJson,
+  savePackageJson,
+} from "./util/modifyPackageJson.js";
 import { generateReadme } from "./generateReadme.js";
 import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";
 import loading from "loading-cli";
 import { promises as fs } from "fs";
-import { renderFile } from "ejs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function create(directory: string) {
   // Init the NPM Package

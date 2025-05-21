@@ -3,6 +3,12 @@ import fs from "fs-extra";
 import path from "path";
 import { renderFile } from "ejs";
 import { modifyPackageJson } from "./util/modifyPackageJson.js";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const DEFAULT_SHAPES_FOLDER = "./.shapes";
 const DEFAULT_LDO_FOLDER = "./.ldo";

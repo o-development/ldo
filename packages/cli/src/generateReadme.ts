@@ -4,6 +4,12 @@ import { promises as fs } from "fs";
 import path from "path";
 import { Project } from "ts-morph";
 import { renderFile } from "ejs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 interface GenerateReadmeOptions {
   project: string;
