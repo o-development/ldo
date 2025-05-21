@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha.14",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
+  "type": "module",
   "bin": {
     "ldo": "./dist/index.js"
   },
