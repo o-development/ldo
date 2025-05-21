@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "1.0.0-alpha.17",
+  "version": "1.0.0-alpha.18",
   "description": "A React library for LDO and Solid",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -44,9 +44,9 @@
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "2.3.0",
-    "@ldo/connected": "^1.0.0-alpha.17",
-    "@ldo/connected-solid": "^1.0.0-alpha.17",
-    "@ldo/react": "^1.0.0-alpha.17",
+    "@ldo/connected": "^1.0.0-alpha.18",
+    "@ldo/connected-solid": "^1.0.0-alpha.18",
+    "@ldo/react": "^1.0.0-alpha.18",
     "@rdfjs/data-model": "^1.2.0",
     "cross-fetch": "^3.1.6"
   },
