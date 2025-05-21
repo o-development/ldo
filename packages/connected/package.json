@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "A library for connecting LDO to resources outside the LDO environment",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
-    "@ldo/connected-solid": "^1.0.0-alpha.14",
+    "@ldo/connected-solid": "^1.0.0-alpha.15",
     "@ldo/test-solid-server": "^1.0.0-alpha.14",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",

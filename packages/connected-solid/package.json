@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-solid",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -36,7 +36,7 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^2.2.6",
-    "@ldo/cli": "^1.0.0-alpha.14",
+    "@ldo/cli": "^1.0.0-alpha.15",
     "@ldo/test-solid-server": "^1.0.0-alpha.14",
     "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/types": "^1.0.1",

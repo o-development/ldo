@@ -1,6 +1,6 @@
 {
   "name": "@ldo/cli",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
