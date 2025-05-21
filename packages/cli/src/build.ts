@@ -7,14 +7,18 @@ import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";
 import { forAllShapes } from "./util/forAllShapes.js";
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
 
 interface BuildOptions {
   input: string;
   output: string;
 }
 
+const __dirname = path.dirname(__filename);
+
 export async function build(options: BuildOptions) {
-  const load = loading("Peparing Environment");
+  const load = loading("Preparing Environment");
   load.start();
   // Prepare new folder by clearing/and/or creating it
   if (fs.existsSync(options.output)) {
