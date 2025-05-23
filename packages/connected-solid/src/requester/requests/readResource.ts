@@ -14,13 +14,15 @@ import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 import type { Resource } from "@ldo/connected";
 import { UnexpectedResourceError, AbsentReadSuccess } from "@ldo/connected";
 import { checkHeadersForRootContainer } from "./checkRootContainer.js";
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
 import {
   addRawTurtleToDataset,
   addResourceRdfToContainer,
 } from "../../util/rdfUtils.js";
+
+const { namedNode } = rdfdm;
 
 /**
  * All possible return values for reading a leaf

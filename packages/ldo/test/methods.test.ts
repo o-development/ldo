@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
@@ -25,6 +25,8 @@ import {
   languagesOf,
 } from "../src/index.js";
 import type { ILdoDataset } from "../src/types.js";
+
+const { namedNode } = rdfdm;
 
 describe("methods", () => {
   let dataset: ILdoDataset;

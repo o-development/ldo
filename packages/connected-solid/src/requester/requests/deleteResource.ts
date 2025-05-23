@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { guaranteeFetch } from "../../util/guaranteeFetch.js";
 import { deleteResourceRdfFromContainer } from "../../util/rdfUtils.js";
 import type { Resource } from "@ldo/connected";
@@ -12,6 +12,8 @@ import type { IBulkEditableDataset } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
+
+const { namedNode } = rdfdm;
 
 /**
  * All possible return values for deleteResource

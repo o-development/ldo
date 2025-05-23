@@ -50,7 +50,8 @@ npm install @ldo/jsonld-dataset-proxy
 import jsonldDatasetProxy, { write, LdSet } from "jsonld-dataset-proxy";
 import { ContextDefinition } from "jsonld";
 import { serializedToDataset } from "@ldo/dataset";
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from '@rdfjs/data-model';
+const { namedNode } = rdfdm;
 
 async function start() {
   // Define initial data

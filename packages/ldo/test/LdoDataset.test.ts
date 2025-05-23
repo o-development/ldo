@@ -1,4 +1,4 @@
-import { literal, namedNode, quad } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { createDataset } from "@ldo/dataset";
 import type { SolidProfileShape } from "./profileData.js";
 import { ProfileShapeType } from "./profileData.js";
@@ -13,6 +13,8 @@ import {
 import { sampleJsonld, sampleTurtle } from "./sampleData.js";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
+
+const { namedNode, quad, literal } = rdfdm;
 
 describe("LdoDataset", () => {
   let ldoDataset: LdoDataset;

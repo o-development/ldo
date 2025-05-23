@@ -1,6 +1,8 @@
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { ContextUtil } from "../src/ContextUtil.js";
 import { scopedContext } from "./scopedExampleData.js";
+
+const { namedNode } = rdfdm;
 
 describe("ContextUtil", () => {
   describe("keyToIri and iriToKey", () => {

@@ -1,9 +1,11 @@
 import type { LdoDataset } from "@ldo/ldo";
 import { parseRdf } from "@ldo/ldo";
-import { namedNode, quad as createQuad } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import type { Dataset } from "@rdfjs/types";
 import type { SolidContainerUri } from "../types.js";
 import { isSolidContainerUri } from "./isSolidUri.js";
+
+const { namedNode, quad: createQuad } = rdfdm;
 
 export const ldpContains = namedNode("http://www.w3.org/ns/ldp#contains");
 export const rdfType = namedNode(

@@ -1,6 +1,8 @@
 import type { BaseQuad, Dataset, Quad } from "@rdfjs/types";
-import { quad as createQuad } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { datasetToString } from "./datasetConverters.js";
+
+const { quad: createQuad } = rdfdm;
 
 /**
  * An interface representing the changes made

@@ -2,7 +2,7 @@
 import { v4 } from "uuid";
 import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants.js";
 import { guaranteeOptions, type Options } from "./util/Options.js";
-import { namedNode, quad } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import type { TypeRegistration } from "./.ldo/typeIndex.typings.js";
 import { getProfile } from "./getTypeIndex.js";
 import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes.js";
@@ -19,6 +19,8 @@ import {
   TypeIndexDocumentShapeType,
   TypeRegistrationShapeType,
 } from "./.ldo/typeIndex.shapeTypes.js";
+
+const { namedNode, quad } = rdfdm;
 
 /**
  * =============================================================================

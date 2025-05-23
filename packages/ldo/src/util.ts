@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import type { Dataset, Quad } from "@rdfjs/types";
 import type { SetProxy, SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
@@ -11,6 +11,8 @@ import type {
   ISubscribableDataset,
   ITransactionDataset,
 } from "@ldo/subscribable-dataset";
+
+const { namedNode } = rdfdm;
 
 /**
  * @category Types

@@ -1,5 +1,5 @@
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import { literal, namedNode, quad } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { _getUnderlyingNode } from "../types.js";
 import type { SubjectProxy } from "../subjectProxy/SubjectProxy.js";
 import { getNodeFromRawObject, getNodeFromRawValue } from "./getNodeFromRaw.js";
@@ -13,6 +13,8 @@ import {
   languageKeyToLiteralLanguage,
 } from "../language/languageUtils.js";
 import { BasicLdSet } from "../setProxy/ldSet/BasicLdSet.js";
+
+const { namedNode, literal, quad } = rdfdm;
 
 export function addRawValueToDatasetRecursive(
   subject: NamedNode | BlankNode,

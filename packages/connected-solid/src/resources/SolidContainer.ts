@@ -1,4 +1,4 @@
-import { namedNode } from "@rdfjs/data-model";
+import * as rdfdm from "@rdfjs/data-model";
 import { ContainerBatchedRequester } from "../requester/ContainerBatchedRequester.js";
 import type {
   CheckRootResult,
@@ -40,6 +40,8 @@ import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
 import type { SolidLeaf } from "./SolidLeaf.js";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult.js";
 import type { DatasetChanges } from "@ldo/rdf-utils";
+
+const { namedNode } = rdfdm;
 
 /**
  * Represents the current status of a specific container on a Pod as known by
