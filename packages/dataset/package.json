@@ -1,6 +1,6 @@
 {
   "name": "@ldo/dataset",
-  "version": "1.0.0-alpha.19",
+  "version": "1.0.0-alpha.20",
   "description": "An RDFJS dataset implementation",
   "type": "module",
   "main": "./dist/cjs/index.js",
