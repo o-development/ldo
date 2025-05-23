@@ -5,8 +5,10 @@ import type {
   Quad,
 } from "@rdfjs/types";
 import ExtendedDatasetFactory from "./ExtendedDatasetFactory.js";
-import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
+import * as rdfds from "@rdfjs/dataset";
 import type ExtendedDataset from "./ExtendedDataset.js";
+
+const { dataset: initializeDatasetCore } = rdfds;
 
 /**
  * Creates a dataset factory that generates ExtendedDatasets

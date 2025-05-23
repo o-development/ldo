@@ -39,11 +39,13 @@ Usage:
 ```typescript
 import { createDataset } from "@ldo/dataset";
 import * as rdfdm from '@rdfjs/data-model';
-const { quad, namedNode, literal } = rdfdm;
 // Required for advanced features:
-import { dataset as initializeDatasetCore } from "@rdfjs/dataset";
+import * as rdfds from "@rdfjs/dataset";
 import { ExtendedDatasetFactory } from "@ldo/dataset";
 import { Dataset, Quad, DatasetCoreFactory, DatasetCore } from "@rdfjs/types";
+
+const { quad, namedNode, literal } = rdfdm;
+const { dataset: initializeDatasetCore } = rdfds;
 
 /**
  * Create a dataset with default settings
