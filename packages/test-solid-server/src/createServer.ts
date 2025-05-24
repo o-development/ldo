@@ -3,6 +3,12 @@
 import * as path from "path";
 import type { App } from "@solid/community-server";
 import { AppRunner, resolveModulePath } from "@solid/community-server";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function createApp(
   port: number,

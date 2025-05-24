@@ -1,5 +1,5 @@
 import type { BasicRequestOptions } from "./requestOptions.js";
-import { parse as parseLinkHeader } from "http-link-header";
+import * as httpLinkHeader from "http-link-header";
 import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess.js";
 import type {
   HttpErrorResultType,
@@ -9,6 +9,9 @@ import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
 import { guaranteeFetch } from "../../util/guaranteeFetch.js";
+
+const parseLinkHeader: (typeof httpLinkHeader)["default"]["parse"] =
+  httpLinkHeader.default.parse;
 
 /**
  * checkRootContainer result
