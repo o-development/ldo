@@ -14,6 +14,12 @@ import {
   vi,
   type MockedFunction,
 } from "vitest";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Use an increased timeout, since the CSS server takes too much setup time.
 vi.setConfig({ testTimeout: 40_000 });
