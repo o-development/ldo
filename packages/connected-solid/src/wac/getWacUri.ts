@@ -4,7 +4,7 @@ import {
 } from "../requester/results/error/HttpErrorResult.js";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult.js";
 import { GetWacUriSuccess } from "./results/GetWacUriSuccess.js";
-import { parse as parseLinkHeader } from "http-link-header";
+import * as httpLinkHeader from "http-link-header";
 import { UnexpectedResourceError } from "@ldo/connected";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError.js";
 import type { SolidContainer } from "../resources/SolidContainer.js";
@@ -12,6 +12,9 @@ import type { SolidLeaf } from "../resources/SolidLeaf.js";
 import type { BasicRequestOptions } from "../requester/requests/requestOptions.js";
 import { guaranteeFetch } from "../util/guaranteeFetch.js";
 import type { SolidLeafUri } from "../types.js";
+
+const parseLinkHeader: (typeof httpLinkHeader)["default"]["parse"] =
+  httpLinkHeader.default.parse;
 
 export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
   | HttpErrorResultType<ResourceType>
