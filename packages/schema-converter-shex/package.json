@@ -1,6 +1,6 @@
 {
   "name": "@ldo/schema-converter-shex",
-  "version": "1.0.0-alpha.20",
+  "version": "1.0.0-alpha.21",
   "description": "",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/schema-converter-shex#readme",
   "devDependencies": {
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.20",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.21",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "@types/jsonld": "^1.5.6",
     "@types/shexj": "^2.1.3",
