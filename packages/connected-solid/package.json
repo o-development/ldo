@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-solid",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.23",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/cjs/index.js",
