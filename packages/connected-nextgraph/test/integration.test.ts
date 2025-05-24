@@ -7,13 +7,11 @@ import type {
 } from "../src/index.js";
 import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset.js";
 import { parseRdf } from "@ldo/ldo";
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess.js";
 import { rm, cp } from "fs/promises";
 import path from "path";
 import { describe, it, expect, beforeEach, afterAll } from "vitest";
-
-const { namedNode } = rdfdm;
 
 const SAMPLE_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

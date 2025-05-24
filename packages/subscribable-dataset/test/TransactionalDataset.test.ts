@@ -1,4 +1,4 @@
-import * as rdfdm from "@rdfjs/data-model";
+import { quad, namedNode, literal } from "@ldo/rdf-utils";
 import type {
   Dataset,
   DatasetCoreFactory,
@@ -13,8 +13,6 @@ import {
   createTransactionDatasetFactory,
 } from "../src/index.js";
 import datasetCoreFactory from "@rdfjs/dataset";
-
-const { quad, namedNode, literal } = rdfdm;
 
 describe("TransactionDataset", () => {
   let parentDataset: ISubscribableDataset<Quad>;

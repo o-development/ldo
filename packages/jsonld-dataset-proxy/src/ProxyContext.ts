@@ -5,11 +5,9 @@ import type { SubjectProxy } from "./subjectProxy/SubjectProxy.js";
 import type { SetProxy } from "./setProxy/SetProxy.js";
 import type { ContextUtil } from "./ContextUtil.js";
 import type { LanguageOrdering } from "./language/languageTypes.js";
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import type { RawValue } from "./util/RawObject.js";
 import { createNewSetProxy } from "./setProxy/createNewSetProxy.js";
-
-const { namedNode } = rdfdm;
 
 export interface ProxyContextOptions {
   dataset: Dataset;

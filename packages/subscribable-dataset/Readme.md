@@ -12,8 +12,7 @@ npm i @ldo/subscribable-dataset
 ```typescript
 import { createSubscribableDataset, DatasetChanges } from "@ldo/subscribable-dataset";
 import { Dataset } from "@rdfjs/types";
-import * as rdfdm from '@rdfjs/data-model';
-const { quad, namedNode } = rdfdm;
+import { quad, namedNode }from '@ldo/rdf-utils';
 
 const subscribableDataset = createSubscribableDataset([
   quad(
@@ -100,9 +99,8 @@ run();
 
 ```typescript
 import { createSubscribableDataset, DatasetChanges } from "@ldo/subscribable-dataset";
-import * as rdfdm from '@rdfjs/data-model';
+import { quad, namedNode, literal } from '@ldo/rdf-utils';
 import { Dataset } from "@rdfjs/types";
-const { quad, namedNode, literal } = rdfdm;
 
 // Create an empty subscribable dataset
 const subscribableDataset = createSubscribableDataset();

@@ -8,7 +8,10 @@ import ExtendedDatasetFactory from "./ExtendedDatasetFactory.js";
 import * as rdfds from "@rdfjs/dataset";
 import type ExtendedDataset from "./ExtendedDataset.js";
 
-const { dataset: initializeDatasetCore } = rdfds;
+const initializeDatasetCore: (typeof rdfds)["dataset"] =
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  rdfds.default?.dataset || rdfds.dataset;
 
 /**
  * Creates a dataset factory that generates ExtendedDatasets

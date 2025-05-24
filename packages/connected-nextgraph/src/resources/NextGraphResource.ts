@@ -16,15 +16,12 @@ import type { NextGraphConnectedPlugin } from "../NextGraphConnectedPlugin.js";
 import { changesToSparqlUpdate, type DatasetChanges } from "@ldo/rdf-utils";
 import type { NextGraphNotificationMessage } from "../notifications/NextGraphNotificationMessage.js";
 import type { Dataset, Quad } from "@rdfjs/types";
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode, quad as createQuad } from "@ldo/rdf-utils";
 import { NextGraphReadSuccess } from "../results/NextGraphReadSuccess.js";
 import { NextGraphNotificationSubscription } from "../notifications/NextGraphNotificationSubscription.js";
 import { parseRdf } from "@ldo/ldo";
 import type { LdoDataset } from "@ldo/ldo";
 import { createDataset } from "@ldo/dataset";
-
-const { namedNode, quad: createQuad } = rdfdm;
-
 export class NextGraphResource
   extends (EventEmitter as new () => ResourceEventEmitter)
   implements Resource<NextGraphUri>

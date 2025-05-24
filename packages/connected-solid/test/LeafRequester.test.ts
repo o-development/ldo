@@ -3,7 +3,6 @@
 // import type { SolidLdoDataset } from "../src/SolidLdoDataset.js";
 // import { createSolidLdoDataset } from "../src/createSolidLdoDataset.js";
 // import { LeafRequester } from "../src/requester/LeafRequester.js";
-// import * as rdfdm from '@rdfjs/data-model';
 import { describe, it, expect } from "vitest";
 
 describe("Leaf Requester", () => {

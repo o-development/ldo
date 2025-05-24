@@ -12,8 +12,7 @@ npm i @ldo/dataset
 
 ```typescript
 import { createDataset } from "@ldo/dataset";
-import * as rdfdm from '@rdfjs/data-model';
-const { quad, namedNode } = rdfdm;
+import { quad, namedNode } from "@ldo/rdf-utils";
 
 imports: quad, namedNode as MyNamedNode
 const dataset = createDataset();
@@ -38,13 +37,12 @@ The extended dataset implements all the [additional methods](https://rdf.js.org/
 Usage:
 ```typescript
 import { createDataset } from "@ldo/dataset";
-import * as rdfdm from '@rdfjs/data-model';
+import { quad, namedNode, literal } as rdfdm from '@ldo/rdf-utils';
 // Required for advanced features:
 import * as rdfds from "@rdfjs/dataset";
 import { ExtendedDatasetFactory } from "@ldo/dataset";
 import { Dataset, Quad, DatasetCoreFactory, DatasetCore } from "@rdfjs/types";
 
-const { quad, namedNode, literal } = rdfdm;
 const { dataset: initializeDatasetCore } = rdfds;
 
 /**

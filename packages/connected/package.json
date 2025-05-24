@@ -51,8 +51,7 @@
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.20",
     "@ldo/ldo": "^1.0.0-alpha.20",
-    "@ldo/rdf-utils": "^1.0.0-alpha.19",
-    "@rdfjs/data-model": "^1.2.0"
+    "@ldo/rdf-utils": "^1.0.0-alpha.19"
   },
   "files": [
     "dist",

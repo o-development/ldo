@@ -8,7 +8,7 @@ import { addObjectToDataset } from "../util/addObjectToDataset.js";
 import type { ProxyContext } from "../ProxyContext.js";
 import { WildcardSubjectSetProxy } from "./WildcardSubjectSetProxy.js";
 import { _getUnderlyingNode } from "../types.js";
-import * as rdfdm from "@rdfjs/data-model";
+import { quad, defaultGraph } from "@ldo/rdf-utils";
 import {
   createTransactionDatasetFactory,
   TransactionDataset,
@@ -16,8 +16,6 @@ import {
 import { createDatasetFactory } from "@ldo/dataset";
 import { getNodeFromRawObject } from "../util/getNodeFromRaw.js";
 import { nodeToString } from "../util/NodeSet.js";
-
-const { quad, defaultGraph } = rdfdm;
 
 export type SubjectSetProxyQuadMatch = [
   undefined | null,

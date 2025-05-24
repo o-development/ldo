@@ -1,9 +1,7 @@
 import { createDataset } from "@ldo/dataset";
 import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
-import * as rdfdm from "@rdfjs/data-model";
-
-const { defaultGraph, namedNode, quad: createQuad } = rdfdm;
+import { defaultGraph, namedNode, quad as createQuad } from "@ldo/rdf-utils";
 
 /**
  * @internal

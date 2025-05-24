@@ -7,7 +7,7 @@ import {
   quad,
   defaultGraph,
   blankNode,
-} from "@rdfjs/data-model";
+} from "@ldo/rdf-utils";
 import type { Quad, BlankNode } from "@rdfjs/types";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

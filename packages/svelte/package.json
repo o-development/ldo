@@ -69,7 +69,6 @@
     "@ldo/ldo": "^1.0.0-alpha.20",
     "@ldo/rdf-utils": "^1.0.0-alpha.19",
     "@ldo/subscribable-dataset": "^1.0.0-alpha.20",
-    "@rdfjs/data-model": "^1.2.0",
     "tsx": "^4.19.4"
   },
   "files": [

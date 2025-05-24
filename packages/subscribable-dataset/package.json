@@ -34,7 +34,6 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/subscribable-dataset#readme",
   "devDependencies": {
-    "@rdfjs/data-model": "^1.2.0",
     "@rdfjs/dataset": "^1.1.0",
     "@rdfjs/types": "^1.0.1",
     "@types/jsonld": "^1.5.6",

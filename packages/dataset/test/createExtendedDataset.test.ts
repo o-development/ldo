@@ -1,7 +1,5 @@
 import { createDataset } from "../src/index.js";
-import * as rdfdm from "@rdfjs/data-model";
-
-const { quad, namedNode } = rdfdm;
+import { quad, namedNode } from "@ldo/rdf-utils";
 
 describe("createExtendedDataset", () => {
   it("creates a dataset when give another datset", () => {

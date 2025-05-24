@@ -16,15 +16,13 @@ import {
   removeRegistration,
 } from "../src/setTypeIndex.js";
 import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes.js";
-import * as rdfdm from "@rdfjs/dataset";
 import { INSTANCE } from "../src/constants.js";
 import { createSolidLdoDataset } from "@ldo/connected-solid";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setupServer } from "@ldo/test-solid-server";
 import { it, expect, describe, afterEach } from "vitest";
-
-const { namedNode } = rdfdm;
+import { namedNode } from "@ldo/rdf-utils";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

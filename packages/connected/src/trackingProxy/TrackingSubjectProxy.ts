@@ -5,9 +5,7 @@ import {
 } from "@ldo/jsonld-dataset-proxy";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
 import type { TrackingProxyContext } from "./TrackingProxyContext.js";
-import * as rdfdm from "@rdfjs/data-model";
-
-const { namedNode } = rdfdm;
+import { namedNode } from "@ldo/rdf-utils";
 
 /**
  * @internal

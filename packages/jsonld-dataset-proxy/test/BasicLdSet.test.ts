@@ -1,11 +1,9 @@
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import jsonldDatasetProxy, {
   BasicLdSet,
   _getUnderlyingNode,
 } from "../src/index.js";
 import { createDataset } from "@ldo/dataset";
-
-const { namedNode } = rdfdm;
 
 describe("BasicLdSet", () => {
   describe("constructor and add", () => {

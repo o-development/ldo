@@ -1,5 +1,9 @@
 import { createDataset, serializedToDataset } from "@ldo/dataset";
-import type { JsonldDatasetProxyBuilder, LanguageSet, LdSet } from "../src/index.js";
+import type {
+  JsonldDatasetProxyBuilder,
+  LanguageSet,
+  LdSet,
+} from "../src/index.js";
 import {
   graphOf,
   jsonldDatasetProxy,
@@ -32,7 +36,7 @@ import {
   literal,
   defaultGraph,
   blankNode,
-} from "@rdfjs/data-model";
+} from "@ldo/rdf-utils";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
 import type { LdoJsonldContext } from "../src/LdoJsonldContext.js";

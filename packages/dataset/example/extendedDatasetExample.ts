@@ -2,7 +2,7 @@ import { createDataset } from "../src/index.js";
 // Required for advanced features:
 import * as rdfds from "@rdfjs/dataset";
 import { ExtendedDatasetFactory } from "../src/index.js";
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode, quad, literal } from "@ldo/rdf-utils";
 import type {
   Dataset,
   Quad,
@@ -10,8 +10,9 @@ import type {
   DatasetCore,
 } from "@rdfjs/types";
 
-const { namedNode, quad, literal } = rdfdm;
-const { dataset: initializeDatasetCore } = rdfds;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const { dataset: initializeDatasetCore } = rdfds.default || rdfds;
 
 /**
  * Create a dataset with default settings

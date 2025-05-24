@@ -51,8 +51,6 @@
   "dependencies": {
     "@ldo/rdf-utils": "^1.0.0-alpha.19",
     "@ldo/subscribable-dataset": "^1.0.0-alpha.20",
-    "@rdfjs/data-model": "^1.2.0",
-    "@rdfjs/dataset": "^1.1.0",
     "jsonld2graphobject": "^0.0.4"
   },
   "publishConfig": {

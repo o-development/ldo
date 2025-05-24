@@ -1,4 +1,4 @@
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode, blankNode, quad } from "@ldo/rdf-utils";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
 import { addObjectToDataset } from "../util/addObjectToDataset.js";
 import { deleteValueFromDataset } from "./deleteFromDataset.js";
@@ -10,8 +10,6 @@ import {
 } from "../types.js";
 import { getValueForKey } from "./getValueForKey.js";
 import type { ProxyContext } from "../ProxyContext.js";
-
-const { namedNode, blankNode, quad } = rdfdm;
 export interface SubjectProxyTarget {
   "@id": NamedNode | BlankNode;
 }

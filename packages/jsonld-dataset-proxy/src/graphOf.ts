@@ -1,5 +1,5 @@
 import type { ObjectNode, GraphNode } from "@ldo/rdf-utils";
-import * as rdfdm from "@rdfjs/data-model";
+import { namedNode } from "@ldo/rdf-utils";
 import { getSubjectProxyFromObject } from "./subjectProxy/isSubjectProxy.js";
 import type { ObjectLike } from "./types.js";
 import {
@@ -10,8 +10,6 @@ import {
 } from "./types.js";
 import type { LdSet } from "./setProxy/ldSet/LdSet.js";
 import { getNodeFromRawValue } from "./util/getNodeFromRaw.js";
-
-const { namedNode } = rdfdm;
 
 /**
  * Returns the graph for which a defined triple is a member

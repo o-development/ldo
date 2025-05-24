@@ -5,11 +5,9 @@ import {
 import { LdoBuilder } from "@ldo/ldo";
 import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import { TrackingProxyContext } from "./TrackingProxyContext.js";
-import * as rdfdm from "@rdfjs/data-model";
+import { defaultGraph } from "@ldo/rdf-utils";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
-
-const { defaultGraph } = rdfdm;
 
 /**
  * @internal

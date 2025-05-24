@@ -3,7 +3,7 @@ import {
   quad as createQuad,
   literal,
   defaultGraph,
-} from "@rdfjs/data-model";
+} from "@ldo/rdf-utils";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess.js";
 import { Buffer } from "buffer";
 import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
