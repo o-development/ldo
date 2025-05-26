@@ -1,5 +1,22 @@
 import fs from "fs";
 import path from "path";
+import { shaclStoreToShexSchema, writeShexSchema } from "@jeswr/shacl2shex";
+import derefStore from "rdf-dereference-store";
+import type { Store } from "n3";
+import { DataFactory as DF } from "n3";
+import { rdf } from "rdf-namespaces";
+
+function hasMatch(store: Store, predicate: string, object: string) {
+  for (const _ in store.match(
+    null,
+    DF.namedNode(predicate),
+    DF.namedNode(object),
+    DF.defaultGraph(),
+  )) {
+    return true;
+  }
+  return false;
+}
 
 export async function forAllShapes(
   shapePath: string,
@@ -12,7 +29,7 @@ export async function forAllShapes(
   const shexFiles = shapeDir.filter(
     (file) => file.isFile() && file.name.endsWith(".shex"),
   );
-  await Promise.all(
+  const shexPromise = Promise.all(
     shexFiles.map(async (file) => {
       const fileName = path.parse(file.name).name;
       // Get the content of each document
@@ -23,4 +40,38 @@ export async function forAllShapes(
       await callback(fileName, shexC);
     }),
   );
+  // See if any of the RDF files contain a SHACL shape
+  const shaclPromise = Promise.all(
+    shapeDir.map(async (file) => {
+      if (file.isFile()) {
+        try {
+          const store = await derefStore(path.join(shapePath, file.name), {
+            localFiles: true,
+          });
+          // Make sure the RDF file contains a SHACL shape
+          if (
+            hasMatch(
+              store.store,
+              rdf.type,
+              "http://www.w3.org/ns/shacl#NodeShape",
+            ) ||
+            hasMatch(
+              store.store,
+              rdf.type,
+              "http://www.w3.org/ns/shacl#PropertyShape",
+            )
+          ) {
+            const shex = await writeShexSchema(
+              await shaclStoreToShexSchema(store.store),
+              store.prefixes,
+            );
+            await callback(shex, path.parse(file.name).name);
+          }
+        } catch (e) {
+          // no-op ignore invalid RDF file
+        }
+      }
+    }),
+  );
+  await Promise.all([shexPromise, shaclPromise]);
 }
