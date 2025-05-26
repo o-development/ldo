@@ -44,31 +44,32 @@ export async function forAllShapes(
   const shaclPromise = Promise.all(
     shapeDir.map(async (file) => {
       if (file.isFile()) {
+        let store: Awaited<ReturnType<typeof derefStore>>;
         try {
-          const store = await derefStore(path.join(shapePath, file.name), {
+          store = await derefStore(path.join(shapePath, file.name), {
             localFiles: true,
           });
-          // Make sure the RDF file contains a SHACL shape
-          if (
-            hasMatch(
-              store.store,
-              rdf.type,
-              "http://www.w3.org/ns/shacl#NodeShape",
-            ) ||
-            hasMatch(
-              store.store,
-              rdf.type,
-              "http://www.w3.org/ns/shacl#PropertyShape",
-            )
-          ) {
-            const shex = await writeShexSchema(
-              await shaclStoreToShexSchema(store.store),
-              store.prefixes,
-            );
-            await callback(shex, path.parse(file.name).name);
-          }
         } catch (e) {
-          // no-op ignore invalid RDF file
+          return;
+        }
+        // Make sure the RDF file contains a SHACL shape
+        if (
+          hasMatch(
+            store.store,
+            rdf.type,
+            "http://www.w3.org/ns/shacl#NodeShape",
+          ) ||
+          hasMatch(
+            store.store,
+            rdf.type,
+            "http://www.w3.org/ns/shacl#PropertyShape",
+          )
+        ) {
+          const shex = await writeShexSchema(
+            await shaclStoreToShexSchema(store.store),
+            store.prefixes,
+          );
+          await callback(shex, path.parse(file.name).name);
         }
       }
     }),
