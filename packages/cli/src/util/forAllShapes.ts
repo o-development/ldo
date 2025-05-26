@@ -40,7 +40,7 @@ export async function forAllShapes(
       await callback(fileName, shexC);
     }),
   );
-  // See if any of the RDF files contain a SHACL shape
+
   const shaclPromise = Promise.all(
     shapeDir.map(async (file) => {
       if (file.isFile()) {
