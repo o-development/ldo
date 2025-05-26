@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { shaclStoreToShexSchema, writeShexSchema } from "@jeswr/shacl2shex";
-import derefStore from "rdf-dereference-store";
+import { dereferenceStore } from "rdf-dereference-store";
 import type { Store } from "n3";
 import { DataFactory as DF } from "n3";
 import { rdf } from "rdf-namespaces";
@@ -44,9 +44,9 @@ export async function forAllShapes(
   const shaclPromise = Promise.all(
     shapeDir.map(async (file) => {
       if (file.isFile()) {
-        let store: Awaited<ReturnType<typeof derefStore>>;
+        let store: Awaited<ReturnType<typeof dereferenceStore>>;
         try {
-          store = await derefStore(path.join(shapePath, file.name), {
+          store = await dereferenceStore(path.join(shapePath, file.name), {
             localFiles: true,
           });
         } catch (e) {
@@ -69,7 +69,7 @@ export async function forAllShapes(
             await shaclStoreToShexSchema(store.store),
             store.prefixes,
           );
-          await callback(shex, path.parse(file.name).name);
+          await callback(path.parse(file.name).name, shex);
         }
       }
     }),
