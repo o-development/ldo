@@ -43,7 +43,7 @@
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-browser": "2.3.0",
+    "@inrupt/solid-client-authn-browser": "2.5.0",
     "@ldo/connected": "^1.0.0-alpha.24",
     "@ldo/connected-solid": "^1.0.0-alpha.24",
     "@ldo/react": "^1.0.0-alpha.24",
