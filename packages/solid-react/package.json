@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "1.0.0-alpha.24",
+  "version": "1.0.0-alpha.25",
   "description": "A React library for LDO and Solid",
   "type": "module",
   "main": "./dist/cjs/index.js",
