@@ -459,7 +459,10 @@ export class SolidLeaf extends SolidResource {
   ): Promise<LeafCreateAndOverwriteResult> {
     const result = await this.requester.upload(blob, mimeType, true);
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
@@ -491,7 +494,10 @@ export class SolidLeaf extends SolidResource {
   ): Promise<LeafCreateIfAbsentResult> {
     const result = await this.requester.upload(blob, mimeType);
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
@@ -540,7 +546,10 @@ export class SolidLeaf extends SolidResource {
   ): Promise<UpdateResult<SolidLeaf>> {
     const result = await this.requester.updateDataResource(changes);
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.binaryData = undefined;
     this.absent = false;
     this.emitThisAndParent();

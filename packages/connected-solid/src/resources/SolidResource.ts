@@ -39,7 +39,10 @@ import type { NoRootContainerError } from "../requester/results/error/NoRootCont
 import type { SolidLeaf } from "./SolidLeaf.js";
 import type { GetWacUriError } from "../wac/getWacUri.js";
 import { getWacUri, type GetWacUriResult } from "../wac/getWacUri.js";
-import { getWacRuleWithAclUri, type GetWacRuleResult } from "../wac/getWacRule.js";
+import {
+  getWacRuleWithAclUri,
+  type GetWacRuleResult,
+} from "../wac/getWacRule.js";
 import type { SetWacRuleResult } from "../wac/setWacRule.js";
 import { setWacRuleForAclUri } from "../wac/setWacRule.js";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError.js";
@@ -397,7 +400,10 @@ export abstract class SolidResource
   protected async handleRead(): Promise<ReadContainerResult | ReadLeafResult> {
     const result = await this.requester.read();
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.updateWithReadSuccess(result);
     this.emitThisAndParent();
     return result;
@@ -454,7 +460,10 @@ export abstract class SolidResource
   > {
     const result = await this.requester.delete();
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.updateWithDeleteSuccess(result);
     this.emitThisAndParent();
     return result;
@@ -505,7 +514,10 @@ export abstract class SolidResource
   > {
     const result = await this.requester.createDataResource(true);
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.updateWithCreateSuccess(result);
     this.emitThisAndParent();
     return result;
@@ -538,7 +550,10 @@ export abstract class SolidResource
   > {
     const result = await this.requester.createDataResource();
     this.status = result;
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.updateWithCreateSuccess(result);
     this.emitThisAndParent();
     return result;
@@ -739,7 +754,10 @@ export abstract class SolidResource
         fetch: this.context.solid.fetch,
       },
     );
-    if (result.isError) return result;
+    if (result.isError) {
+      this.emit("update");
+      return result;
+    }
     this.wacRule = result.wacRule;
     return result;
   }

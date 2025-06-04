@@ -157,7 +157,6 @@ export class SolidContainer extends SolidResource {
    */
   async read(): Promise<ReadContainerResult> {
     const result = (await this.handleRead()) as ReadContainerResult;
-    if (result.isError) return result;
     return { ...result, resource: this };
   }
 
