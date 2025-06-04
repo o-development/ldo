@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-type-index",
-  "version": "1.0.0-alpha.25",
+  "version": "1.0.0-alpha.26",
   "description": "Solid Type Index support for LDO",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -43,8 +43,8 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@ldo/connected-solid": "^1.0.0-alpha.24",
-    "@ldo/solid-react": "^1.0.0-alpha.25"
+    "@ldo/connected-solid": "^1.0.0-alpha.26",
+    "@ldo/solid-react": "^1.0.0-alpha.26"
   },
   "files": [
     "dist",
