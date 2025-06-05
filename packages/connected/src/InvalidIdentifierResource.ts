@@ -11,7 +11,7 @@ export class InvalidIdentifierResource
   implements Resource
 {
   public readonly uri: string;
-  public readonly type = "InvalidIdentifierResouce" as const;
+  public readonly type = "InvalidIdentifierResource" as const;
   public status: InvalidUriError<this>;
   public readonly isError = false as const;
 
