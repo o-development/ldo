@@ -25,19 +25,6 @@ export type LQInputFlattenSet<Type> = Type extends LdSet<infer SetSubType>
   : LQInputSubSet<Type>;
 
 /**
- * Link Query Input Default
- */
-// TODO: I don't remember why I need this. Delete if unneeded
-// export type LQInputDefaultType<Type> = {
-//   [key in keyof Type]: Type[key] extends object ? undefined : true;
-// };
-
-// export type LQInputDefault<Type> =
-//   LQInputDefaultType<Type> extends LQInput<Type>
-//     ? LQInputDefaultType<Type>
-//     : never;
-
-/**
  * Link Query Return
  */
 export type LQReturn<Type, Input extends LQInput<Type>> = LQReturnObject<
@@ -73,6 +60,9 @@ export type LQReturnExpandSet<
   ? LdSet<LQReturnSubSet<SetSubType, Input>>
   : LQReturnSubSet<Type, Input>;
 
+/**
+ * Helper Functions
+ */
 export type ExpandDeep<T> = T extends LdSet<infer U>
   ? LdSet<ExpandDeep<U>> // recursively expand sets
   : T extends object
@@ -95,34 +85,3 @@ export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
   unsubscribeAll(): Promise<void>;
   fromSubject(): ExpandDeep<LQReturn<Type, Input>>;
 }
-
-// function test<Type extends LdoBase, Input extends LQInput<Type>>(
-//   shapeType: ShapeType<Type>,
-//   input: Input,
-// ): ExpandDeep<LQReturn<Type, Input>> {
-//   throw new Error("Not Implemented");
-// }
-
-// type TestLQInput = {
-//   name: true;
-//   knows: {
-//     name: true;
-//   };
-// };
-
-// type testReturn = ExpandDeep<LQReturn<SolidProfileShape, TestLQInput>>;
-
-// type test2 = LQReturnSubSet<string | undefined, true>;
-
-// type lqInputObject = LQInputObject<string | undefined>;
-
-// type meh = TestLQInput extends true ? true : false;
-
-// const thingInput: TestLQInput =
-
-// const thing = test(SolidProfileShapeShapeType, {
-//   name: true,
-//   knows: {
-//     name: true,
-//   },
-// });
