@@ -1,4 +1,4 @@
-name: Test LDO Packages
+name: Test Node.js Monorepo
 
 on:
   pull_request:
@@ -15,24 +15,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # or whatever Node version you use
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install dependencies with npm workspaces
         run: npm install
 
-      - name: Build package
+      - name: Bootstrap workspaces (if needed)
+        run: npx lerna link
+
+      - name: Build all packages
         run: npm run build
 
       - name: Run tests
         run: npm test
-
-      - name: Upload test results if available
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            **/junit*.xml
-            **/test-results*.xml
-            **/coverage
-          if-no-files-found: ignore
