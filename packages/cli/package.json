@@ -40,7 +40,6 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
-    "@jeswr/shacl2shex": "^1.1.0",
     "@ldo/ldo": "^1.0.0-alpha.21",
     "@ldo/schema-converter-shex": "^1.0.0-alpha.21",
     "@shexjs/parser": "^1.0.0-alpha.24",
@@ -51,8 +50,6 @@
     "loading-cli": "^1.1.0",
     "prettier": "^3.0.3",
     "prompts": "^2.4.2",
-    "rdf-dereference-store": "^1.4.0",
-    "rdf-namespaces": "^1.12.0",
     "ts-morph": "^24.0.0",
     "type-fest": "^2.19.0"
   },
