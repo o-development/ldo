@@ -1,4 +1,4 @@
-name: Test Node.js Monorepo
+name: CI - Build & Test
 
 on:
   pull_request:
@@ -18,13 +18,10 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies with npm workspaces
+      - name: Install dependencies using npm workspaces
         run: npm install
 
-      - name: Bootstrap workspaces (if needed)
-        run: npx lerna link
-
-      - name: Build all packages
+      - name: Build all packages in topological order
         run: npm run build
 
       - name: Run tests

@@ -22,7 +22,8 @@
     "example:extendedDataset": "ts-node ./example/extendedDatasetExample.ts",
     "example:loadData": "ts-node ./example/loadDataExample.ts",
     "prepublishOnly": " npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

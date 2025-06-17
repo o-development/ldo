@@ -25,7 +25,8 @@
     "test": "jest --coverage",
     "lint": "eslint . --ext .js,.ts,.svelte --fix --no-error-on-unmatched-pattern",
     "format": "prettier --write .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

@@ -22,7 +22,8 @@
     "example": "ts-node ./example/example.ts",
     "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "docs": "typedoc --plugin typedoc-plugin-markdown"
+    "docs": "typedoc --plugin typedoc-plugin-markdown",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

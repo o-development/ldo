@@ -8,7 +8,7 @@
     "test": "lerna run test",
     "build": "lerna run build",
     "lint": "lerna run lint",
-    "clean": "lerna run clean",
+    "clean": "lerna clean --yes && lerna run remove-dist && rimraf node_modules",
     "publish": "lerna publish --no-private"
   },
   "devDependencies": {
