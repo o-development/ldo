@@ -114,7 +114,7 @@ describe("Link Traversal", () => {
     // Unsubscribe
   });
 
-  it.only("handles subscriptions if data changes on the Pod", async () => {
+  it("handles subscriptions if data changes on the Pod", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
     const linkQuery = solidLdoDataset
       .usingType(SolidProfileShapeShapeType)
