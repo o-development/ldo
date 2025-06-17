@@ -47,7 +47,7 @@ import {
 import { getStorageFromWebId } from "../src/getStorageFromWebId.js";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -2039,6 +2039,14 @@ describe("Integration", () => {
   describe("Notification Subscriptions", () => {
     const spidermanNode = namedNode("http://example.org/#spiderman");
     const foafNameNode = namedNode("http://xmlns.com/foaf/0.1/name");
+
+    afterEach(async () => {
+      await Promise.all(
+        solidLdoDataset.getResources().map(async (resource) => {
+          await resource.unsubscribeFromAllNotifications();
+        }),
+      );
+    });
 
     it("handles notification when a resource is updated", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
