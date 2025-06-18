@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Use an increased timeout, since the CSS server takes too much setup time.
-vi.setConfig({ testTimeout: 40_000 });
+vi.setConfig({ testTimeout: 40_000, hookTimeout: 40_000 });
 
 export function setupServer(
   port: number,
