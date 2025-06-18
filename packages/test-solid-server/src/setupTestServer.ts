@@ -56,11 +56,31 @@ export function setupServer(
   });
 
   afterAll(async () => {
-    await data.app.stop();
+    // We're potentially ignoring data clean up and server shutdown because
+    // sometimes this doesn't work in CI.
+    try {
+      await Promise.race([
+        data.app.stop?.(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Shutdown timeout")), 10000),
+        ),
+      ]);
+    } catch (err) {
+      console.warn("⚠️ Ignoring shutdown error in CI:", (err as Error).message);
+    }
+
+    try {
+      const testDataPath = path.join(__dirname, `./data${port}`);
+      await fs.rm(testDataPath, { recursive: true, force: true });
+    } catch (err) {
+      console.warn(
+        "⚠️ Ignoring data cleanup error in CI:",
+        (err as Error).message,
+      );
+    }
+
     process.env.JEST_WORKER_ID = previousJestId;
     process.env.NODE_ENV = previousNodeEnv;
-    const testDataPath = path.join(__dirname, `./data${port}`);
-    await fs.rm(testDataPath, { recursive: true, force: true });
   });
 
   beforeEach(async () => {
