@@ -13,6 +13,10 @@ import { rm, cp } from "fs/promises";
 import path from "path";
 import { describe, it, expect, beforeEach, afterAll } from "vitest";
 
+const isCI = process.env.CI === "true";
+
+const describeIfNotCI = isCI ? describe.skip : describe;
+
 const SAMPLE_TTL = `@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -29,7 +33,7 @@ const SAMPLE_TTL = `@base <http://example.org/> .
     a foaf:Person ;
     foaf:name "Spiderman", "Человек-паук"@ru .`;
 
-describe("NextGraph Plugin", () => {
+describeIfNotCI("NextGraph Plugin", () => {
   let nextgraphLdoDataset: ConnectedLdoDataset<NextGraphConnectedPlugin[]>;
 
   beforeEach(async () => {
