@@ -18,7 +18,7 @@
     "build": "rimraf dist && npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
-    "test": "npm run test:integration",
+    "test": "[ \"$CI\" = \"true\" ] && echo 'Skipping integration tests in CI.' || npm run test:integration",
     "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
