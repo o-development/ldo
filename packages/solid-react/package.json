@@ -40,7 +40,8 @@
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "start-server-and-test": "^2.0.3",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "remove-dist": "rimraf dist/"
   },
   "dependencies": {
     "@inrupt/solid-client-authn-browser": "2.5.0",

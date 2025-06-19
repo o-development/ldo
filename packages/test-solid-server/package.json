@@ -20,7 +20,8 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "prepublishOnly": "npm run build",
     "copy-configs": "cp -r src/configs dist/cjs/configs && cp -r src/configs dist/esm/configs",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

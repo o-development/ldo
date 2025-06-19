@@ -20,7 +20,8 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "test": "jest --coverage",
     "prepublishOnly": " npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern"
+    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

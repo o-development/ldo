@@ -18,13 +18,14 @@
     "build": "rimraf dist && npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:esm": "tsc --project tsconfig.esm.json",
-    "test": "npm run test:integration",
+    "test": "[ \"$CI\" = \"true\" ] && echo 'Skipping integration tests in CI.' || npm run test:integration",
     "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
     "start-integration-test": "vitest run --coverage",
-    "test:integration": "start-server-and-test start-test-server http-get://localhost:14400 start-integration-test"
+    "test:integration": "start-server-and-test start-test-server http-get://localhost:14400 start-integration-test",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",

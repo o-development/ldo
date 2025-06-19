@@ -22,7 +22,8 @@
     "prepublishOnly": " npm run build",
     "build:ldo": "ldo build --input src/.shapes --output src/.ldo",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
-    "docs": "typedoc --plugin typedoc-plugin-markdown"
+    "docs": "typedoc --plugin typedoc-plugin-markdown",
+    "remove-dist": "rimraf dist/"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,7 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
+    "@ldo/connected": "^1.0.0-alpha.21",
     "@ldo/dataset": "^1.0.0-alpha.21",
     "@ldo/ldo": "^1.0.0-alpha.21",
     "@ldo/rdf-utils": "^1.0.0-alpha.21",
