@@ -1,6 +1,6 @@
 {
   "name": "@ldo/dataset",
-  "version": "1.0.0-alpha.21",
+  "version": "1.0.0-alpha.27",
   "description": "An RDFJS dataset implementation",
   "type": "module",
   "main": "./dist/cjs/index.js",
@@ -44,7 +44,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldo/rdf-utils": "^1.0.0-alpha.21",
+    "@ldo/rdf-utils": "^1.0.0-alpha.27",
     "@rdfjs/dataset": "^1.1.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.2.0"
