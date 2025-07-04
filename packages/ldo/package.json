@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "1.0.0-alpha.27",
+  "version": "1.0.0-alpha.28",
   "description": "",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/ldo#readme",
   "devDependencies": {
-    "@ldo/rdf-utils": "^1.0.0-alpha.27",
+    "@ldo/rdf-utils": "^1.0.0-alpha.28",
     "@rdfjs/types": "^1.0.1",
     "@types/jsonld": "^1.5.6",
     "@types/n3": "^1.10.4",
@@ -47,9 +47,9 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.27",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.27",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.27",
+    "@ldo/dataset": "^1.0.0-alpha.28",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.28",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.28",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
   },

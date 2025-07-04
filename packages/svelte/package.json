@@ -1,6 +1,6 @@
 {
   "name": "@ldo/svelte",
-  "version": "1.0.0-alpha.27",
+  "version": "1.0.0-alpha.28",
   "description": "A Svelte library for LDO.",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/svelte#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.27",
+    "@ldo/test-solid-server": "^1.0.0-alpha.28",
     "@sveltejs/vite-plugin-svelte": "^2.5.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.7",
@@ -65,11 +65,11 @@
     "svelte": "^3.50.0"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.27",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.27",
-    "@ldo/ldo": "^1.0.0-alpha.27",
-    "@ldo/rdf-utils": "^1.0.0-alpha.27",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.27",
+    "@ldo/connected": "^1.0.0-alpha.28",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.28",
+    "@ldo/ldo": "^1.0.0-alpha.28",
+    "@ldo/rdf-utils": "^1.0.0-alpha.28",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.28",
     "tsx": "^4.19.4"
   },
   "files": [
