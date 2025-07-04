@@ -44,7 +44,7 @@
     "remove-dist": "rimraf dist/"
   },
   "dependencies": {
-    "@inrupt/solid-client-authn-browser": "2.5.0",
+    "@inrupt/solid-client-authn-browser": "^3.0.0",
     "@ldo/connected": "^1.0.0-alpha.26",
     "@ldo/connected-solid": "^1.0.0-alpha.26",
     "@ldo/react": "^1.0.0-alpha.26",

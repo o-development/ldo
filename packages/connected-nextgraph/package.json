@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
-    "@inrupt/solid-client-authn-core": "^2.2.6",
+    "@inrupt/solid-client-authn-core": "^3.0.0",
     "@ldo/cli": "^1.0.0-alpha.21",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/types": "^0.1.2",
