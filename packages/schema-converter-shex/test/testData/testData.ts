@@ -10,6 +10,7 @@ import { oldExtends } from "./oldExtends.js";
 import { orSimple } from "./orSimple.js";
 import { andSimple } from "./andSimple.js";
 import { eachOfAndSimple } from "./eachOfAndSimple.js";
+import { multipleSharedPredicates } from "./multipleSharedPredicates.js";
 
 export interface TestData {
   name: string;
@@ -32,4 +33,5 @@ export const testData: TestData[] = [
   orSimple,
   andSimple,
   eachOfAndSimple,
+  multipleSharedPredicates,
 ];

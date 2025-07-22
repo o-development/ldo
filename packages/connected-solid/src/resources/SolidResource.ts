@@ -39,10 +39,8 @@ import type { NoRootContainerError } from "../requester/results/error/NoRootCont
 import type { SolidLeaf } from "./SolidLeaf.js";
 import type { GetWacUriError } from "../wac/getWacUri.js";
 import { getWacUri, type GetWacUriResult } from "../wac/getWacUri.js";
-import {
-  getWacRuleWithAclUri,
-  type GetWacRuleResult,
-} from "../wac/getWacRule.js";
+import type { GetWacRuleError } from "../wac/getWacRule.js";
+import { getWacRuleWithAclUri } from "../wac/getWacRule.js";
 import type { SetWacRuleResult } from "../wac/setWacRule.js";
 import { setWacRuleForAclUri } from "../wac/setWacRule.js";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError.js";
@@ -664,7 +662,8 @@ export abstract class SolidResource
     ignoreCache: boolean;
   }): Promise<
     | GetWacUriError<SolidContainer | SolidLeaf>
-    | GetWacRuleResult<SolidContainer | SolidLeaf>
+    | GetWacRuleError<SolidContainer | SolidLeaf>
+    | GetWacRuleSuccess<SolidContainer | SolidLeaf>
   > {
     const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Return the wac rule if it's already cached

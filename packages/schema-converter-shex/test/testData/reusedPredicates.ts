@@ -33,12 +33,14 @@ export const reusedPredicates: TestData = {
   successfulContext: {
     type: {
       "@id": "@type",
+      "@isCollection": true,
     },
     Document: {
       "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#Document",
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         vocabulary: {
           "@id":
@@ -64,11 +66,11 @@ export const reusedPredicates: TestData = {
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         name: {
           "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
           "@type": "http://www.w3.org/2001/XMLSchema#string",
-          "@isCollection": true,
         },
         path: {
           "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#path",
@@ -96,6 +98,7 @@ export const reusedPredicates: TestData = {
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         name: {
           "@id": "https://www.forsakringskassan.se/vocabs/fk-sem-poc.ttl#name",
@@ -110,5 +113,5 @@ export const reusedPredicates: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface DocumentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Document";\n    };\n    vocabulary?: LdSet<VocabularyShape>;\n    law: LawShape;\n}\n\nexport interface LawShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Law";\n    };\n    name?: LdSet<string>;\n    path: {\n        "@id": string;\n    };\n}\n\nexport interface VocabularyShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Vocabulary";\n    };\n    name: string;\n    path?: LdSet<{\n        "@id": string;\n    }>;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface DocumentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Document";\n    }>;\n    vocabulary?: LdSet<VocabularyShape>;\n    law: LawShape;\n}\n\nexport interface LawShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Law";\n    }>;\n    name?: LdSet<string>;\n    path: {\n        "@id": string;\n    };\n}\n\nexport interface VocabularyShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Vocabulary";\n    }>;\n    name: string;\n    path?: LdSet<{\n        "@id": string;\n    }>;\n}\n\n',
 };

@@ -33,12 +33,14 @@ export const circular: TestData = {
   successfulContext: {
     type: {
       "@id": "@type",
+      "@isCollection": true,
     },
     Parent: {
       "@id": "http://example.com/Parent",
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         hasChild: {
           "@id": "http://example.com/hasChild",
@@ -55,6 +57,7 @@ export const circular: TestData = {
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         hasParent: {
           "@id": "http://example.com/hasParent",
@@ -68,5 +71,5 @@ export const circular: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: {\n        "@id": "Parent";\n    };\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: {\n        "@id": "Child";\n    };\n    hasParent: ParentShape;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface ParentShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Parent";\n    }>;\n    hasChild: ChildShape;\n}\n\nexport interface ChildShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Child";\n    }>;\n    hasParent: ParentShape;\n}\n\n',
 };

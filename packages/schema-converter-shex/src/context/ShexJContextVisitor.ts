@@ -45,6 +45,15 @@ export const ShexJNameVisitor =
                   rdfType,
                   tripleConstraint.annotations,
                 );
+              } else if (tripleConstraint.valueExpr.values) {
+                context.addPredicate(
+                  tripleConstraint.predicate,
+                  {},
+                  isContainer,
+                  rdfType,
+                  tripleConstraint.annotations,
+                  tripleConstraint.valueExpr.values,
+                );
               } else {
                 context.addPredicate(
                   tripleConstraint.predicate,

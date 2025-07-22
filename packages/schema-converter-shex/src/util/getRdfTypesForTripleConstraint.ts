@@ -1,5 +1,28 @@
-import type { ShexJTraverserTypes } from "@ldo/traverser-shexj";
+import type {
+  ShexJTraverserTypes,
+  tripleExprOrRef,
+} from "@ldo/traverser-shexj";
 import type { InterfaceInstanceNode } from "@ldo/type-traverser";
+
+function addRdfTypeFromTripleExpr(
+  tripleExpr: tripleExprOrRef,
+  rdfTypeSet: Set<string>,
+) {
+  if (
+    typeof tripleExpr === "object" &&
+    tripleExpr.type === "TripleConstraint" &&
+    tripleExpr.predicate ===
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" &&
+    typeof tripleExpr.valueExpr === "object" &&
+    tripleExpr.valueExpr.type === "NodeConstraint" &&
+    tripleExpr.valueExpr.values
+  ) {
+    tripleExpr.valueExpr.values.forEach((val) => {
+      if (typeof val === "string") rdfTypeSet.add(val);
+      // TODO handle other edge cases like IRIStem
+    });
+  }
+}
 
 function recursivelyGatherTypesFromShapeNodes(
   shapeNode: InterfaceInstanceNode<
@@ -9,6 +32,9 @@ function recursivelyGatherTypesFromShapeNodes(
   >,
   rdfTypeSet: Set<string>,
 ): void {
+  const tripleExpr = shapeNode.instance.expression;
+  if (tripleExpr) addRdfTypeFromTripleExpr(tripleExpr, rdfTypeSet);
+
   shapeNode.parent("shapeExpr").forEach((parentShapeExpr) => {
     parentShapeExpr
       .parent("ShapeDecl", "shapeExpr")
@@ -52,20 +78,7 @@ function recursivelyGatherTypesFromEachOfNodes(
 ): void {
   const tripleExprs = eachOfNode.instance.expressions;
   tripleExprs.forEach((tripleExpr) => {
-    if (
-      typeof tripleExpr === "object" &&
-      tripleExpr.type === "TripleConstraint" &&
-      tripleExpr.predicate ===
-        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" &&
-      typeof tripleExpr.valueExpr === "object" &&
-      tripleExpr.valueExpr.type === "NodeConstraint" &&
-      tripleExpr.valueExpr.values
-    ) {
-      tripleExpr.valueExpr.values.forEach((val) => {
-        if (typeof val === "string") rdfTypeSet.add(val);
-        // TODO handle other edge cases like IRIStem
-      });
-    }
+    addRdfTypeFromTripleExpr(tripleExpr, rdfTypeSet);
   });
 
   eachOfNode.parent("tripleExpr").forEach((tripleExprNode) => {
@@ -102,6 +115,11 @@ export function getRdfTypesForTripleConstraint(
           .parent("EachOf", "expressions")
           .forEach((eachOfParent) => {
             recursivelyGatherTypesFromEachOfNodes(eachOfParent, rdfTypeSet);
+          });
+        tripleExprOrRefParent
+          .parent("Shape", "expression")
+          .forEach((shapeParent) => {
+            recursivelyGatherTypesFromShapeNodes(shapeParent, rdfTypeSet);
           });
       });
   });

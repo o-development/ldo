@@ -223,7 +223,9 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         rdfTypes[0],
       );
       const isSet =
-        tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
+        (tripleConstraint.max !== undefined && tripleConstraint.max !== 1) ||
+        tripleConstraint.predicate ===
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
       const isOptional = tripleConstraint.min === 0;
       let type: dom.Type = dom.type.any;
       if (transformedChildren.valueExpr) {

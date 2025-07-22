@@ -1,6 +1,7 @@
-import type { Annotation } from "shexj";
+import type { Annotation, valueSetValue } from "shexj";
 import type { ExpandedTermDefinition } from "jsonld";
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
+import { hashValueSetValue } from "./util/hashValueSetValue";
 
 /**
  * Name functions
@@ -59,7 +60,7 @@ export function isJsonLdContextBuilder(
  */
 export class JsonLdContextBuilder {
   protected iriAnnotations: Record<string, Annotation[]> = {};
-  protected iriTypes: Record<
+  public iriTypes: Record<
     string,
     ExpandedTermDefinition | JsonLdContextBuilder
   > = {};
@@ -99,20 +100,49 @@ export class JsonLdContextBuilder {
     isContainer: boolean,
     rdfType?: string,
     annotations?: Annotation[],
+    associatedValues?: valueSetValue[],
   ) {
     const relevantBuilders = this.getRelevantBuilders(rdfType);
+
     relevantBuilders.forEach((relevantBuilder) => {
       relevantBuilder.addSubject(iri, undefined, annotations);
+
+      // If there are multiple associated
+      const associatedValuesSet = new Set(
+        associatedValues?.map((val) => hashValueSetValue(val)),
+      );
+
       if (!relevantBuilder.iriTypes[iri]) {
-        relevantBuilder.iriTypes[iri] = expandedTermDefinition;
-        if (isContainer) {
+        relevantBuilder.iriTypes[iri] = { ...expandedTermDefinition };
+        if (
+          isContainer ||
+          associatedValuesSet.size > 1 ||
+          iri === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+        ) {
           relevantBuilder.iriTypes[iri]["@isCollection"] = true;
+        }
+        if (associatedValuesSet.size > 0) {
+          relevantBuilder.iriTypes[iri]["@associatedValues"] =
+            associatedValuesSet;
         }
       } else {
         const curDef = relevantBuilder.iriTypes[iri];
         const newDef = expandedTermDefinition;
         if (isContainer) {
           curDef["@isCollection"] = true;
+        }
+        // If there's a different associated value, it must be a collection because you can have multiple types
+        if (associatedValuesSet.size > 0) {
+          if (associatedValuesSet.size > 1) {
+            relevantBuilder.iriTypes[iri]["@isCollection"] = true;
+          }
+          const oldAssociatedValueSetSize = curDef["@associatedValues"].size;
+          associatedValuesSet.forEach((val) =>
+            curDef["@associatedValues"].add(val),
+          );
+          if (curDef["@associatedValues"].size !== oldAssociatedValueSetSize) {
+            curDef["@isCollection"] = true;
+          }
         }
         // If the old and new versions both have types
         if (curDef["@type"] && newDef["@type"]) {
@@ -203,6 +233,7 @@ export class JsonLdContextBuilder {
             ...this.iriTypes[iri],
           };
         }
+        delete subContext["@associatedValues"];
 
         contextDefnition[name] = subContext;
       } else {

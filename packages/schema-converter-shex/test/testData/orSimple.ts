@@ -27,12 +27,14 @@ export const orSimple: TestData = {
   successfulContext: {
     type: {
       "@id": "@type",
+      "@isCollection": true,
     },
     MediaContainer: {
       "@id": "https://example.com/MediaContainer",
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         primaryMedia: {
           "@id": "https://example.com/primaryMedia",
@@ -49,8 +51,24 @@ export const orSimple: TestData = {
       "@id": "https://example.com/primaryMedia",
       "@type": "@id",
     },
-    Video: "https://example.com/Video",
-    Image: "https://example.com/Image",
+    Video: {
+      "@id": "https://example.com/Video",
+      "@context": {
+        type: {
+          "@id": "@type",
+          "@isCollection": true,
+        },
+      },
+    },
+    Image: {
+      "@id": "https://example.com/Image",
+      "@context": {
+        type: {
+          "@id": "@type",
+          "@isCollection": true,
+        },
+      },
+    },
     media: {
       "@id": "https://example.com/media",
       "@type": "@id",
@@ -58,5 +76,5 @@ export const orSimple: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainerShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "MediaContainer";\n    };\n    primaryMedia: VideoShape | ImageShape;\n    media?: LdSet<VideoShape | ImageShape>;\n}\n\nexport interface VideoShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Video";\n    };\n}\n\nexport interface ImageShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Image";\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainerShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "MediaContainer";\n    }>;\n    primaryMedia: VideoShape | ImageShape;\n    media?: LdSet<VideoShape | ImageShape>;\n}\n\nexport interface VideoShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Video";\n    }>;\n}\n\nexport interface ImageShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Image";\n    }>;\n}\n\n',
 };

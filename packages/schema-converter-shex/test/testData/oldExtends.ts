@@ -44,12 +44,14 @@ export const oldExtends: TestData = {
   successfulContext: {
     type: {
       "@id": "@type",
+      "@isCollection": true,
     },
     Entity: {
       "@id": "https://example.com/Entity",
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         entityId: "https://example.com/entityId",
       },
@@ -60,6 +62,7 @@ export const oldExtends: TestData = {
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         entityId: "https://example.com/entityId",
         name: "http://xmlns.com/foaf/0.1/name",
@@ -71,6 +74,7 @@ export const oldExtends: TestData = {
       "@context": {
         type: {
           "@id": "@type",
+          "@isCollection": true,
         },
         entityId: "https://example.com/entityId",
         name: "http://xmlns.com/foaf/0.1/name",
@@ -80,5 +84,5 @@ export const oldExtends: TestData = {
     employeeNumber: "https://example.com/employeeNumber",
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface EntityShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: {\n        "@id": "Entity";\n    };\n    entityId: any;\n}\n\nexport interface PersonShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    }>;\n    entityId: any;\n    name: any;\n}\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    } | {\n        "@id": "Employee";\n    }>;\n    entityId: any;\n    name: any;\n    employeeNumber: any;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface EntityShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Entity";\n    }>;\n    entityId: any;\n}\n\nexport interface PersonShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    }>;\n    entityId: any;\n    name: any;\n}\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Entity";\n    } | {\n        "@id": "Person";\n    } | {\n        "@id": "Employee";\n    }>;\n    entityId: any;\n    name: any;\n    employeeNumber: any;\n}\n\n',
 };
