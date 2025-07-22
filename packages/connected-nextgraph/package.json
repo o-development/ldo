@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-nextgraph",
-  "version": "1.0.0-alpha.28",
+  "version": "1.0.0-alpha.29",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^3.0.0",
-    "@ldo/cli": "^1.0.0-alpha.28",
+    "@ldo/cli": "^1.0.0-alpha.29",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/types": "^0.1.2",
     "@solid/community-server": "8.0.0-alpha.0",
