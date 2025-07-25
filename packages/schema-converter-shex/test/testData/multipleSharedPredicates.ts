@@ -56,5 +56,5 @@ export const multipleSharedPredicates: TestData = {
     Thing3: "https://example.com/Thing3",
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainerShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Media";\n    } | {\n        "@id": "Video";\n    }>;\n    something: LdSet<{\n        "@id": "OtherThing";\n    } | {\n        "@id": "Thing3";\n    }>;\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainer {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Media";\n    } | {\n        "@id": "Video";\n    }>;\n    something: LdSet<{\n        "@id": "OtherThing";\n    } | {\n        "@id": "Thing3";\n    }>;\n}\n\n',
 };

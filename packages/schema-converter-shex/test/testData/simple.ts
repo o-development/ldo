@@ -49,5 +49,5 @@ export const simple: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface EmployeeShape {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    givenName: LdSet<string>;\n    familyName: string;\n    phone?: LdSet<{\n        "@id": string;\n    }>;\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface Employee {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    givenName: LdSet<string>;\n    familyName: string;\n    phone?: LdSet<{\n        "@id": string;\n    }>;\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
 };
