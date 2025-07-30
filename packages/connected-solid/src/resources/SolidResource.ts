@@ -818,7 +818,7 @@ export abstract class SolidResource
   ): Promise<void> {
     const objectResource = this.context.dataset.getResource(message.object);
     // Do Nothing if the resource is invalid.
-    if (objectResource.type === "InvalidIdentifierResouce") return;
+    if (objectResource.type === "InvalidIdentifierResource") return;
     if (objectResource.type === "SolidLeaf") {
       switch (message.type) {
         case "Update":
