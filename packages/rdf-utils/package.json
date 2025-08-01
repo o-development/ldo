@@ -15,7 +15,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json",
+    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --project tsconfig.cjs.json && node ../../scripts/rename-to-cjs.js",
+    "build:esm": "tsc --project tsconfig.esm.json",
     "watch": "tsc --watch",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
