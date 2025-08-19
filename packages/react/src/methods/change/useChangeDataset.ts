@@ -32,6 +32,7 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
     specificDataset?: IConnectedLdoDataset<Plugins>,
   ): useChangeDatasetReturn<Plugins> {
     const transactionDataset = useMemo(() => {
+      console.log("Uh oh! Getting another dataset!!!");
       return (
         specificDataset ?? dataset
       ).startTransaction() as ConnectedLdoTransactionDataset<Plugins>;
@@ -47,6 +48,10 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
     );
 
     const commitData = useCallback<useChangeCommitData<Plugins>>(() => {
+      const changes = transactionDataset.getChanges();
+      console.log("Changes!!!!!");
+      console.log(changes.added?.toString());
+      console.log(changes.removed?.toString());
       return transactionDataset.commitToRemote();
     }, [transactionDataset]);
 

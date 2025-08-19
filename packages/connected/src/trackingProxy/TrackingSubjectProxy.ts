@@ -19,11 +19,12 @@ export function createTrackingSubjectProxy(
 ): SubjectProxy {
   const baseHandler = createSubjectHandler(proxyContext);
   const oldGetFunction = baseHandler.get;
-  const newGetFunction: ProxyHandler<SubjectProxyTarget>["get"] = (
+  const trackingProxyGetFunction: ProxyHandler<SubjectProxyTarget>["get"] = (
     target: SubjectProxyTarget,
     key: string | symbol,
     receiver,
   ) => {
+    console.log("Should be calling this get function");
     const subject = target["@id"];
     const rdfTypes = proxyContext.getRdfType(subject);
     if (typeof key === "symbol") {
@@ -31,6 +32,7 @@ export function createTrackingSubjectProxy(
     } else if (key === "@id") {
       proxyContext.addListener([subject, null, null, null]);
     } else if (!proxyContext.contextUtil.isSet(key, rdfTypes)) {
+      console.log("Should be registering here!!!!", key);
       const predicate = namedNode(
         proxyContext.contextUtil.keyToIri(key, rdfTypes),
       );
@@ -38,7 +40,7 @@ export function createTrackingSubjectProxy(
     }
     return oldGetFunction && oldGetFunction(target, key, receiver);
   };
-  baseHandler.get = newGetFunction;
+  baseHandler.get = trackingProxyGetFunction;
   baseHandler.set = () => {
     console.warn(
       "You've attempted to set a value on a Linked Data Object from the useSubject, useMatchingSubject, or useMatchingObject hooks. These linked data objects should only be used to render data, not modify it. To modify data, use the `changeData` function.",

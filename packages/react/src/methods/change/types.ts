@@ -6,16 +6,17 @@ import type { LdoBase, LdSet } from "@ldo/ldo";
 
 export type useChangeReturn<Type, Plugins extends ConnectedPlugin[]> = [
   Type,
-  useChangeSetData<Type>,
+  useChangeSetData<Type, Plugins>,
   useChangeCommitData<Plugins>,
 ];
 
 type BaseOtherType = LdoBase | LdSet<LdoBase>;
 
-export type useChangeSetData<T> = <
+export type useChangeSetData<Type, Plugins extends ConnectedPlugin[]> = <
   OtherType extends BaseOtherType | undefined = undefined,
 >(
-  changer: (toChange: OtherType extends undefined ? T : OtherType) => void,
+  resource: Plugins[number]["types"]["resource"],
+  changer: (toChange: OtherType extends undefined ? Type : OtherType) => void,
   input?: OtherType,
 ) => void;
 

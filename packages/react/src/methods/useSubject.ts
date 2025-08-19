@@ -50,6 +50,8 @@ export function createUseSubject<Plugins extends ConnectedPlugin[]>(
     subject?: string | SubjectNode,
     options?: UseSubjectOptions<Plugins>,
   ): Type | undefined {
+    console.log("options", options);
+
     const fromSubject = useCallback(
       (builder: LdoBuilder<Type>) => {
         if (!subject) return;

@@ -23,7 +23,6 @@ export function createUseChangeMatchObject<Plugins extends ConnectedPlugin[]>(
    */
   return function useChangeSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    writeResource: Plugins[number]["types"]["resource"],
     subject?: QuadMatch[0] | string,
     predicate?: QuadMatch[1] | string,
     graph?: QuadMatch[3] | string,
@@ -37,8 +36,8 @@ export function createUseChangeMatchObject<Plugins extends ConnectedPlugin[]>(
       dataset: transactionDataset,
     });
 
-    const setData = useCallback<useChangeSetData<LdSet<Type>>>(
-      (changer) => {
+    const setData = useCallback<useChangeSetData<LdSet<Type>, Plugins>>(
+      (writeResource, changer, _other) => {
         setDataset((dataset) => {
           const ldSet = dataset
             .usingType(shapeType)
@@ -49,7 +48,7 @@ export function createUseChangeMatchObject<Plugins extends ConnectedPlugin[]>(
           changer(ldSet);
         });
       },
-      [setDataset, subject, predicate, graph, shapeType, writeResource],
+      [setDataset, subject, predicate, graph, shapeType],
     );
 
     return useMemo(

@@ -11,8 +11,10 @@ export function updateDatasetInBulk<InAndOutQuad extends BaseQuad = BaseQuad>(
   dataset: Dataset<InAndOutQuad>,
   datasetChanges: DatasetChanges<InAndOutQuad>,
 ) {
+  console.log("Update Dataset In Bulk");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((dataset as any).bulk) {
+    console.log("Updating in bulk");
     (dataset as IBulkEditableDataset<InAndOutQuad>).bulk(datasetChanges);
   } else {
     if (datasetChanges.added) {

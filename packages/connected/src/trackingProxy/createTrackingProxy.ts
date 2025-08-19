@@ -25,6 +25,7 @@ export function createTrackingProxyBuilder<Type extends LdoBase>(
 
   // Rebuild the LdoBuilder from scratch to inject TrackingProxyContext
   const contextUtil = new ContextUtil(shapeType.context);
+  console.log("Creating proxy", dataset);
   const proxyContext = new TrackingProxyContext(
     {
       dataset,

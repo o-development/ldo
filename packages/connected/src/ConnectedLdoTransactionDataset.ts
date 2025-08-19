@@ -65,6 +65,8 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
   extends LdoTransactionDataset
   implements IConnectedLdoDataset<Plugins>
 {
+  public instanceId: number;
+  static nextId = 0;
   /**
    * @internal
    */
@@ -91,6 +93,14 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
   ) {
     super(parentDataset, datasetFactory, transactionDatasetFactory);
     this.context = context;
+    this.instanceId = ConnectedLdoTransactionDataset.nextId++;
+  }
+
+  add(quad: Quad): this {
+    console.log("Adding");
+    super.add(quad);
+    console.log(this);
+    return this;
   }
 
   getResource<

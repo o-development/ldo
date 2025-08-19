@@ -3,7 +3,7 @@ import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import { createUseChangeDataset } from "./useChangeDataset.js";
 import type { UseSubjectOptions } from "../useSubject.js";
 import { createUseSubject } from "../useSubject.js";
-import type { LdoBase, ShapeType } from "@ldo/ldo";
+import { write, type LdoBase, type ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import type { useChangeReturn, useChangeSetData } from "./types.js";
 import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
@@ -11,19 +11,16 @@ import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
 export type useChangeSubjectType<Plugins extends ConnectedPlugin[]> = {
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    writeResource: Plugins[number]["types"]["resource"],
     subject: string | SubjectNode,
     options?: UseSubjectOptions<Plugins>,
   ): useChangeReturn<Type, Plugins>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    writeResource: Plugins[number]["types"]["resource"],
     subject?: string | SubjectNode,
     options?: UseSubjectOptions<Plugins>,
   ): useChangeReturn<Type | undefined, Plugins>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    writeResource: Plugins[number]["types"]["resource"],
     subject?: string | SubjectNode,
     options?: UseSubjectOptions<Plugins>,
   ): useChangeReturn<Type | undefined, Plugins>;
@@ -45,7 +42,6 @@ export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
    */
   return function useChangeSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    writeResource: Plugins[number]["types"]["resource"],
     subject?: string | SubjectNode,
     options?: UseSubjectOptions<Plugins>,
   ): useChangeReturn<Type | undefined, Plugins> {
@@ -57,14 +53,17 @@ export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
       dataset: transactionDataset,
     });
 
-    const setData = useCallback<useChangeSetData<Type>>(
-      (changer, otherType?) => {
+    const setData = useCallback<useChangeSetData<Type, Plugins>>(
+      (writeResource, changer, otherType?) => {
+        console.log("Setting data");
         if (!subject) return;
         setDataset((dataset) => {
           const ldObject = otherType
-            ? createProxyInteractOptions("dataset", dataset).usingCopy(
-                otherType,
-              )
+            ? write(writeResource.uri).usingCopy(
+                createProxyInteractOptions("dataset", dataset).usingCopy(
+                  otherType,
+                )[0],
+              )[0]
             : dataset
                 .usingType(shapeType)
                 .write(writeResource.uri)
@@ -74,8 +73,10 @@ export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
           changer(ldObject);
         });
       },
-      [setDataset, subject, shapeType, writeResource],
+      [setDataset, subject, shapeType],
     );
+
+    console.log("This is ldObject", ldObject);
 
     return useMemo(
       () => [ldObject, setData, commitData],
