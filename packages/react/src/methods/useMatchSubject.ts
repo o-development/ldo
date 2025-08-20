@@ -3,7 +3,15 @@ import type { QuadMatch } from "@ldo/rdf-utils";
 import type { LdoBuilder } from "@ldo/ldo";
 import { useCallback } from "react";
 import { useTrackingProxy } from "../util/useTrackingProxy.js";
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type {
+  ConnectedLdoDataset,
+  ConnectedPlugin,
+  IConnectedLdoDataset,
+} from "@ldo/connected";
+
+export interface UseMatchSubjectOptions<Plugins extends ConnectedPlugin[]> {
+  dataset?: IConnectedLdoDataset<Plugins>;
+}
 
 /**
  * @internal
@@ -22,6 +30,7 @@ export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
     predicate?: QuadMatch[1] | string,
     object?: QuadMatch[2] | string,
     graph?: QuadMatch[3] | string,
+    options?: UseMatchSubjectOptions<Plugins>,
   ): LdSet<Type> {
     const matchSubject = useCallback(
       (builder: LdoBuilder<Type>) => {
@@ -30,6 +39,10 @@ export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
       [predicate, object, graph],
     );
 
-    return useTrackingProxy(shapeType, matchSubject, dataset);
+    return useTrackingProxy(
+      shapeType,
+      matchSubject,
+      options?.dataset ?? dataset,
+    );
   };
 }

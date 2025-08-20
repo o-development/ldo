@@ -1,6 +1,6 @@
 {
   "name": "@ldo/svelte",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.31",
   "description": "A Svelte library for LDO.",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -65,11 +65,11 @@
     "svelte": "^3.50.0"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.30",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.30",
-    "@ldo/ldo": "^1.0.0-alpha.30",
+    "@ldo/connected": "^1.0.0-alpha.31",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.31",
+    "@ldo/ldo": "^1.0.0-alpha.31",
     "@ldo/rdf-utils": "^1.0.0-alpha.30",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.30",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.31",
     "tsx": "^4.19.4"
   },
   "files": [

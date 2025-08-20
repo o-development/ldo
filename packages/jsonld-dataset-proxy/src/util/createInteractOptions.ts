@@ -19,7 +19,7 @@ export interface InteractOptions {
   usingCopy<T extends ObjectLike>(...objects: T[]): T[];
 }
 
-export function createInteractOptions(
+export function createProxyInteractOptions(
   paramKey: string,
   parameter: unknown,
 ): InteractOptions {

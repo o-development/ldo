@@ -65,6 +65,8 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
   extends LdoTransactionDataset
   implements IConnectedLdoDataset<Plugins>
 {
+  public instanceId: number;
+  static nextId = 0;
   /**
    * @internal
    */
@@ -91,6 +93,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
   ) {
     super(parentDataset, datasetFactory, transactionDatasetFactory);
     this.context = context;
+    this.instanceId = ConnectedLdoTransactionDataset.nextId++;
   }
 
   getResource<
@@ -221,6 +224,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     );
 
     // If one has errored, return error
+    console.log(results);
     const errors = (
       results.map((result) => result[2]) as (SuccessResult | ErrorResult)[]
     ).filter((result): result is ErrorResult => result.isError);

@@ -1,6 +1,9 @@
 import type { Dataset, BaseQuad, Term, DatasetFactory } from "@rdfjs/types";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { ITransactionDataset, ITransactionDatasetFactory } from "./types.js";
+import type {
+  ITransactionDataset,
+  ITransactionDatasetFactory,
+} from "./types.js";
 import { mergeDatasetChanges } from "./mergeDatasetChanges.js";
 import { SubscribableDataset } from "./SubscribableDataset.js";
 import { updateDatasetInBulk } from "./util.js";
@@ -232,15 +235,18 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     removed?: Dataset<InAndOutQuad> | InAndOutQuad[];
   }): void {
     this.checkIfTransactionCommitted();
-
-    mergeDatasetChanges(this.datasetChanges, {
+    const newDatasetChanges = {
       added: changes.added
         ? this.datasetFactory.dataset(changes.added)
         : undefined,
       removed: changes.removed
         ? this.datasetFactory.dataset(changes.removed)
         : undefined,
-    });
+    };
+
+    mergeDatasetChanges(this.datasetChanges, newDatasetChanges);
+
+    this.triggerSubscriptionForQuads(newDatasetChanges);
   }
 
   /**
