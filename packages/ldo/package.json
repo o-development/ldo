@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "1.0.0-alpha.31",
+  "version": "1.0.0-alpha.32",
   "description": "",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -48,8 +48,8 @@
   },
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.30",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.31",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.31",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.32",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.32",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
   },

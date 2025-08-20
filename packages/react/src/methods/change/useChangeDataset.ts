@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import type {
   ConnectedLdoDataset,
   ConnectedLdoTransactionDataset,
@@ -31,10 +31,21 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
   return function useChangeDataset(
     specificDataset?: IConnectedLdoDataset<Plugins>,
   ): useChangeDatasetReturn<Plugins> {
-    const transactionDataset = useMemo(() => {
+    const [transactionDataset, setTransactionDataset] = useState<
+      ConnectedLdoTransactionDataset<Plugins>
+    >(() => {
       return (
         specificDataset ?? dataset
       ).startTransaction() as ConnectedLdoTransactionDataset<Plugins>;
+    });
+
+    // Update transaction dataset when specificDataset changes
+    useEffect(() => {
+      setTransactionDataset(
+        (
+          specificDataset ?? dataset
+        ).startTransaction() as ConnectedLdoTransactionDataset<Plugins>,
+      );
     }, [specificDataset]);
 
     const setData = useCallback<useChangeSetDataset<Plugins>>(
@@ -46,9 +57,18 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
       [transactionDataset],
     );
 
-    const commitData = useCallback<useChangeCommitData<Plugins>>(() => {
-      return transactionDataset.commitToRemote();
-    }, [transactionDataset]);
+    const commitData = useCallback<useChangeCommitData<Plugins>>(async () => {
+      const result = await transactionDataset.commitToRemote();
+      if (!result.isError) {
+        // Replace with a new transaction from the dataset or specificDataset
+        setTransactionDataset(
+          (
+            specificDataset ?? dataset
+          ).startTransaction() as ConnectedLdoTransactionDataset<Plugins>,
+        );
+      }
+      return result;
+    }, [transactionDataset, specificDataset]);
 
     return useMemo(
       () => [transactionDataset, setData, commitData],

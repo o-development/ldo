@@ -61,8 +61,8 @@ export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
     );
 
     return useMemo(
-      () => [ldObject, setData, commitData],
-      [ldObject, setData, commitData],
+      () => [ldObject, setData, commitData, transactionDataset],
+      [ldObject, setData, commitData, transactionDataset],
     );
   };
 }
