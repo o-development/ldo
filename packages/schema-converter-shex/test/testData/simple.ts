@@ -8,13 +8,15 @@ export const simple: TestData = {
   shexc: `
   PREFIX foaf: <http://xmlns.com/foaf/0.1/>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX ns: <https://ns.example/>
   PREFIX example: <https://example.com/>
 
   example:EmployeeShape {                # An <EmployeeShape> has:
     foaf:givenName  xsd:string+,   # at least one givenName.
     foaf:familyName xsd:string,    # one familyName.
     foaf:phone      IRI*,          # any number of phone numbers.
-    foaf:mbox       IRI            # one FOAF mbox.
+    foaf:mbox       IRI,           # one FOAF mbox.
+    ns:someDouble   xsd:double     # just to test the data type.
   }
   `,
   sampleTurtle: `
@@ -24,7 +26,8 @@ export const simple: TestData = {
       foaf:givenName  "Robert"^^xsd:string, "Taylor"^^xsd:string ;
       foaf:familyName "Johnson"^^xsd:string ;
       # no phone number needed
-      foaf:mbox       <mailto:rtj@example.com>
+      foaf:mbox       <mailto:rtj@example.com> ;
+      ns:someDouble "1e4"^^xsd:double ;
       .
   `,
   baseNode: "http://a.example/Employee7",
@@ -47,7 +50,11 @@ export const simple: TestData = {
       "@id": "http://xmlns.com/foaf/0.1/mbox",
       "@type": "@id",
     },
+    someDouble: {
+      "@id": "https://ns.example/someDouble",
+      "@type": "http://www.w3.org/2001/XMLSchema#double",
+    },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface Employee {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    givenName: LdSet<string>;\n    familyName: string;\n    phone?: LdSet<{\n        "@id": string;\n    }>;\n    mbox: {\n        "@id": string;\n    };\n}\n\n',
+    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface Employee {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    givenName: LdSet<string>;\n    familyName: string;\n    phone?: LdSet<{\n        "@id": string;\n    }>;\n    mbox: {\n        "@id": string;\n    };\n    someDouble: number;\n}\n\n',
 };
