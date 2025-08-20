@@ -1,6 +1,6 @@
 {
   "name": "@ldo/react",
-  "version": "1.0.0-alpha.32",
+  "version": "1.0.0-alpha.33",
   "description": "A React library for LDO.",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
