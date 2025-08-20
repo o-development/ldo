@@ -287,4 +287,17 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   public getChanges(): DatasetChanges<InAndOutQuad> {
     return this.datasetChanges;
   }
+
+  /**
+   * Returns true if the transaction is holding changes that have yet to be committed.
+   * Returns false if no changes have yet been made to it.
+   */
+  public hasChanges(): boolean {
+    return (
+      ((this.datasetChanges.added && this.datasetChanges.added.size > 0) ||
+        (this.datasetChanges.removed &&
+          this.datasetChanges.removed.size > 0)) ??
+      false
+    );
+  }
 }

@@ -8,6 +8,7 @@ export type useChangeReturn<Type, Plugins extends ConnectedPlugin[]> = [
   Type,
   useChangeSetData<Type, Plugins>,
   useChangeCommitData<Plugins>,
+  transactionDataset: ConnectedLdoTransactionDataset<Plugins>,
 ];
 
 type BaseOtherType = LdoBase | LdSet<LdoBase>;
