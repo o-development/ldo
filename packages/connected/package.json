@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.31",
   "description": "A library for connecting LDO to resources outside the LDO environment",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.30",
-    "@ldo/ldo": "^1.0.0-alpha.30",
+    "@ldo/ldo": "^1.0.0-alpha.31",
     "@ldo/rdf-utils": "^1.0.0-alpha.30"
   },
   "files": [
