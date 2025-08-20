@@ -14,8 +14,6 @@ const FormTest: FunctionComponent = () => {
     "Example0",
   );
 
-  console.log("This is data", data);
-
   return (
     <div>
       <h1>Form</h1>
@@ -24,7 +22,6 @@ const FormTest: FunctionComponent = () => {
         onSubmit={async (e) => {
           e.preventDefault();
           const result = await commitData();
-          console.log(result);
         }}
       >
         {/* Primary name field */}
@@ -33,7 +30,6 @@ const FormTest: FunctionComponent = () => {
           value={data?.fn ?? ""}
           onChange={(e) => {
             setData(randomResource, (profile) => {
-              console.log("Inside changer");
               profile.fn = e.target.value;
             })
           }}

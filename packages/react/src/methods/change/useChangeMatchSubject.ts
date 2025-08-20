@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from "react";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import { createUseChangeDataset } from "./useChangeDataset.js";
-import type { LdoBase, LdSet, ShapeType } from "@ldo/ldo";
+import { write, type LdoBase, type LdSet, type ShapeType } from "@ldo/ldo";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type { useChangeReturn, useChangeSetData } from "./types.js";
 import {
   createUseMatchSubject,
   type UseMatchSubjectOptions,
 } from "../useMatchSubject.js";
+import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
 
 /**
  * @internal
@@ -23,7 +24,7 @@ export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
   /**
    * Returns a list of matched subjects that can be modified and committed
    */
-  return function useChangeSubject<Type extends LdoBase>(
+  return function useChangeMatchSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     predicate?: QuadMatch[1] | string,
     object?: QuadMatch[2] | string,
@@ -34,28 +35,34 @@ export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
       options?.dataset,
     );
 
-    const ldSubjects = useMatchSubject(shapeType, predicate, object, graph, {
+    const ldObject = useMatchSubject(shapeType, predicate, object, graph, {
       dataset: transactionDataset,
     });
 
-    const setData = useCallback<useChangeSetData<LdSet<Type>, Plugins>>(
-      (writeResource, changer, _other) => {
+    const setData = useCallback<useChangeSetData<Type, Plugins>>(
+      (writeResource, changer, otherType?) => {
         setDataset((dataset) => {
-          const ldSet = dataset
-            .usingType(shapeType)
-            .write(writeResource.uri)
-            .matchSubject(predicate, object, graph);
+          const ldObject = otherType
+            ? write(writeResource.uri).usingCopy(
+                createProxyInteractOptions("dataset", dataset).usingCopy(
+                  otherType,
+                )[0],
+              )[0]
+            : dataset
+                .usingType(shapeType)
+                .write(writeResource.uri)
+                .matchSubject(predicate, object, graph);
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          changer(ldSet);
+          changer(ldObject);
         });
       },
-      [setDataset, object, predicate, graph, shapeType],
+      [setDataset, predicate, object, graph, shapeType],
     );
 
     return useMemo(
-      () => [ldSubjects, setData, commitData],
-      [ldSubjects, setData, commitData],
+      () => [ldObject, setData, commitData],
+      [ldObject, setData, commitData],
     );
   };
 }

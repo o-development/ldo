@@ -25,13 +25,13 @@ export const mockConnectedPlugin: MockConnectedPlugin = {
 
   getResource: function (
     uri: string,
-    _context: ConnectedContext<MockConnectedPlugin[]>,
+    context: ConnectedContext<MockConnectedPlugin[]>,
   ): MockResource {
-    return new MockResource(uri);
+    return new MockResource(uri, context);
   },
 
-  createResource: async function (): Promise<MockResource> {
-    return new MockResource(v4());
+  createResource: async function (context): Promise<MockResource> {
+    return new MockResource(v4(), context);
   },
 
   isUriValid: function (uri: string): uri is string {

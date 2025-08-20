@@ -96,13 +96,6 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     this.instanceId = ConnectedLdoTransactionDataset.nextId++;
   }
 
-  add(quad: Quad): this {
-    console.log("Adding");
-    super.add(quad);
-    console.log(this);
-    return this;
-  }
-
   getResource<
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
@@ -231,6 +224,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     );
 
     // If one has errored, return error
+    console.log(results);
     const errors = (
       results.map((result) => result[2]) as (SuccessResult | ErrorResult)[]
     ).filter((result): result is ErrorResult => result.isError);

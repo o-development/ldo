@@ -2,7 +2,7 @@
 /// <reference types="@testing-library/jest-dom" />
 import { useResource, useChangeSubject, useSubject } from "./mockLdoMethods.js";
 import type { FunctionComponent } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -15,34 +15,35 @@ import "@testing-library/jest-dom/vitest";
  * accessible labels, and committed data shown via useSubject.
  */
 const FormTest: FunctionComponent = () => {
-  const randomResource = useResource("random");
+  const randomResource = useResource("http://example.com/resource.ttl");
   const submittedData = useSubject(SolidProfileShapeShapeType, "Example0");
+
+  const [count, setCount] = useState(1);
 
   const [data, setData, commitData] = useChangeSubject(
     SolidProfileShapeShapeType,
-    randomResource,
     "Example0",
   );
 
   return (
     <div>
       <h1>Form</h1>
+      <button onClick={() => setCount(count + 1)}>Rerender {count}</button>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const result = await commitData();
-          console.log(result);
+          await commitData();
         }}
       >
         {/* Primary name field */}
         <input
           aria-label="Name"
           value={data?.fn ?? ""}
-          onChange={(e) =>
-            setData((profile) => {
+          onChange={(e) => {
+            setData(randomResource, (profile) => {
               profile.fn = e.target.value;
-            })
-          }
+            });
+          }}
         />
 
         {/* Friends */}
@@ -53,15 +54,19 @@ const FormTest: FunctionComponent = () => {
               aria-label={`Friend name for ${person["@id"]}`}
               value={person?.fn ?? ""}
               onChange={(e) =>
-                setData((p) => {
-                  p.fn = e.target.value;
-                }, person)
+                setData(
+                  randomResource,
+                  (p) => {
+                    p.fn = e.target.value;
+                  },
+                  person,
+                )
               }
             />
             <button
               type="button"
               onClick={() => {
-                setData((cData) => {
+                setData(randomResource, (cData) => {
                   cData.knows?.delete(person);
                 });
               }}
@@ -75,9 +80,9 @@ const FormTest: FunctionComponent = () => {
           type="button"
           onClick={() => {
             // Auto-generate deterministic IDs: Example1, Example2, ...
-            const count = data?.knows?.size ?? 0;
-            const friendId = `Example${count + 1}`;
-            setData((cData) => {
+            const friendId = `Example${count}`;
+            setCount(count + 1);
+            setData(randomResource, (cData) => {
               cData.knows?.add({
                 "@id": friendId,
                 type: set({ "@id": "Person" }),
@@ -89,7 +94,7 @@ const FormTest: FunctionComponent = () => {
           Add Friend
         </button>
 
-        <button type="submit">Submit</button>
+        <input type="submit" value="Submit" />
       </form>
 
       <hr />
@@ -190,15 +195,25 @@ describe("useChangeSubject", () => {
     expect(screen.queryByTestId("friend-Example2")).not.toBeInTheDocument();
 
     // 5) Submit -> committed data reflects Example0 + Example1 only
-    await user.click(screen.getByRole("button", { name: /submit/i }));
+    await user.click(screen.getByRole("button", { name: /Submit/i }));
 
     // Form retained its values
     expect(nameInput).toHaveValue("Example0");
     expect(friend1Input).toHaveValue("Example1");
     expect(screen.queryByTestId("friend-Example2")).not.toBeInTheDocument();
 
-    // Committed view updated
-    expect(submittedName).toHaveTextContent("Name: Example0");
+    // Wait for the submitted data to appear in the document before asserting
+    const submittedSection2 = screen.getByRole("region", {
+      name: /submitted data/i,
+    });
+    const submittedName2 =
+      within(submittedSection2).getByTestId("submitted-name");
+
+    // Use `findByText` from the `within` helper to wait for the change
+    await within(submittedSection2).findByText("Name: Example0");
+
+    // Now that we've successfully waited, we can safely make our assertions
+    expect(submittedName2).toHaveTextContent("Name: Example0");
     const itemsAfterSubmit = within(submittedList).getAllByRole("listitem");
     expect(itemsAfterSubmit).toHaveLength(1);
     expect(itemsAfterSubmit[0]).toHaveTextContent(

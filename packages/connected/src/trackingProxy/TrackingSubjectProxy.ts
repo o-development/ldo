@@ -24,7 +24,6 @@ export function createTrackingSubjectProxy(
     key: string | symbol,
     receiver,
   ) => {
-    console.log("Should be calling this get function");
     const subject = target["@id"];
     const rdfTypes = proxyContext.getRdfType(subject);
     if (typeof key === "symbol") {
@@ -32,7 +31,6 @@ export function createTrackingSubjectProxy(
     } else if (key === "@id") {
       proxyContext.addListener([subject, null, null, null]);
     } else if (!proxyContext.contextUtil.isSet(key, rdfTypes)) {
-      console.log("Should be registering here!!!!", key);
       const predicate = namedNode(
         proxyContext.contextUtil.keyToIri(key, rdfTypes),
       );

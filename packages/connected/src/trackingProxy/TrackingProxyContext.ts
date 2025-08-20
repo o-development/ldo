@@ -41,7 +41,6 @@ export class TrackingProxyContext extends ProxyContext {
     listener: nodeEventListener<Quad>,
   ) {
     super(options);
-    console.log("trackingProxyContextDataset", options.dataset);
     this.subscribableDataset = options.dataset;
     this.listener = listener;
   }
@@ -52,7 +51,6 @@ export class TrackingProxyContext extends ProxyContext {
     if (!listeners.includes(this.listener)) {
       this.subscribableDataset.on(eventName, this.listener);
     }
-    console.log("Added Listener", this.subscribableDataset);
   }
 
   protected createNewSubjectProxy(node: NamedNode | BlankNode): SubjectProxy {

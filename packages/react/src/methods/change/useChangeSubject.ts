@@ -55,7 +55,6 @@ export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
 
     const setData = useCallback<useChangeSetData<Type, Plugins>>(
       (writeResource, changer, otherType?) => {
-        console.log("Setting data");
         if (!subject) return;
         setDataset((dataset) => {
           const ldObject = otherType
@@ -75,8 +74,6 @@ export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
       },
       [setDataset, subject, shapeType],
     );
-
-    console.log("This is ldObject", ldObject);
 
     return useMemo(
       () => [ldObject, setData, commitData],
