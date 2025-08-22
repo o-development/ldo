@@ -7,6 +7,7 @@
   "bin": {
     "ldo": "./dist/index.js"
   },
+  "type": "module",
   "scripts": {
     "build": "npm run remove-dist && npm run build:ts && npm run copy-files && npm run update-permission",
     "build:ts": "tsc --project tsconfig.cjs.json",
