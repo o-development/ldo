@@ -8,9 +8,7 @@
     "ldo": "./dist/index.js"
   },
   "scripts": {
-    "build": "npm run remove-dist && npm run build:ts && npm run copy-files && npm run update-permission",
-    "build:ts": "tsc --project tsconfig.cjs.json",
-    "remove-dist": "rimraf dist/",
+    "build": "rimraf dist && tsc && npm run copy-files && npm run update-permission",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
     "update-permission": "chmod +x ./dist/index.js",
     "test": "jest --coverage",
