@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ES2022",
+    "module": "node20",
     "lib": [
       "ES2022"
     ],
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "nodenext",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

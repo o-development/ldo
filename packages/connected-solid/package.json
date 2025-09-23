@@ -40,10 +40,7 @@
     "@solid-notifications/types": "^0.1.2",
     "@solid/community-server": "8.0.0-alpha.1",
     "cross-env": "^7.0.3",
-    "ts-node": "^10.9.1",
-    "typed-emitter": "^2.1.0",
-    "typedoc": "^0.25.4",
-    "typedoc-plugin-markdown": "^3.17.1"
+    "typed-emitter": "^2.1.0"
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.32",

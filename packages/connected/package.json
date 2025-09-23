@@ -39,10 +39,7 @@
     "jest-rdf": "^1.8.0",
     "rimraf": "^6.0.1",
     "ts-jest": "^29.3.2",
-    "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
-    "typedoc": "^0.25.4",
-    "typedoc-plugin-markdown": "^3.17.1",
     "uuid": "^11.1.0"
   },
   "dependencies": {

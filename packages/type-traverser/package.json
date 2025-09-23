@@ -33,8 +33,7 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/type=traverser#readme",
   "devDependencies": {
     "@types/uuid": "^8.3.4",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.4.0"
+    "rimraf": "^6.0.1"
   },
   "dependencies": {
     "uuid": "^8.3.2"

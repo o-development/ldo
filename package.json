@@ -30,7 +30,10 @@
     "lerna": "^7.2.0",
     "prettier": "3.0.3",
     "ts-jest": "^29.3.0",
-    "typescript": "^5.2.2",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.28.13",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "^5.9.2",
     "vitest": "^3.1.3"
   }
 }

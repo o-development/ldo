@@ -45,10 +45,7 @@
     "jest-rdf": "^1.8.0",
     "nextgraph": "^0.1.1-alpha.7",
     "start-server-and-test": "^2.0.11",
-    "ts-node": "^10.9.1",
-    "typed-emitter": "^2.1.0",
-    "typedoc": "^0.25.4",
-    "typedoc-plugin-markdown": "^3.17.1"
+    "typed-emitter": "^2.1.0"
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.32",
