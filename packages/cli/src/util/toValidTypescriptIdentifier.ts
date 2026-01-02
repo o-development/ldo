@@ -12,16 +12,30 @@
  * @returns A valid TypeScript identifier
  */
 export function toValidTypescriptIdentifier(text: string): string {
-  // Replace hyphens and underscores with spaces, then convert to camelCase
-  const camelCased = text
-    .replace(/([-_]){1,}/g, " ")
-    .split(/[-_ ]/)
-    .reduce((cur, acc) => {
-      return cur + acc[0].toUpperCase() + acc.substring(1);
-    });
+  if (!text) {
+    return "_";
+  }
 
-  // Remove any remaining invalid characters (keep letters, digits, underscore, dollar sign)
+  // Replace hyphens with spaces, then convert to camelCase
+  // Note: We only convert hyphens, not underscores, since underscores are valid in identifiers
+  const parts = text.split(/-+/);
+  const camelCased = parts
+    .filter((part) => part.length > 0)
+    .map((part, index) => {
+      if (index === 0) {
+        return part;
+      }
+      return part[0].toUpperCase() + part.substring(1);
+    })
+    .join("");
+
+  // Remove any invalid characters (keep letters, digits, underscore, dollar sign)
   const cleaned = camelCased.replace(/[^a-zA-Z0-9_$]/g, "");
+
+  // If empty after cleaning, return a default
+  if (!cleaned) {
+    return "_";
+  }
 
   // If the result starts with a digit, prepend an underscore
   if (/^[0-9]/.test(cleaned)) {

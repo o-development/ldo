@@ -14,18 +14,17 @@ describe("toValidTypescriptIdentifier", () => {
     );
   });
 
-  it("should convert underscored names to camelCase", () => {
+  it("should preserve underscores since they are valid in identifiers", () => {
     expect(toValidTypescriptIdentifier("volunteer_profile")).toBe(
-      "volunteerProfile",
+      "volunteer_profile",
     );
     expect(toValidTypescriptIdentifier("volunteer_profile_shapes")).toBe(
-      "volunteerProfileShapes",
+      "volunteer_profile_shapes",
     );
   });
 
-  it("should handle multiple consecutive separators", () => {
+  it("should handle multiple consecutive hyphens", () => {
     expect(toValidTypescriptIdentifier("test--name")).toBe("testName");
-    expect(toValidTypescriptIdentifier("test__name")).toBe("testName");
   });
 
   it("should handle names starting with numbers by prepending underscore", () => {
@@ -41,10 +40,19 @@ describe("toValidTypescriptIdentifier", () => {
 
   it("should preserve dollar signs and underscores", () => {
     expect(toValidTypescriptIdentifier("$myShape")).toBe("$myShape");
-    expect(toValidTypescriptIdentifier("_myShape")).toBe("MyShape");
+    expect(toValidTypescriptIdentifier("_myShape")).toBe("_myShape");
   });
 
-  it("should handle mixed separators", () => {
-    expect(toValidTypescriptIdentifier("my-test_shape")).toBe("myTestShape");
+  it("should handle empty strings by returning underscore", () => {
+    expect(toValidTypescriptIdentifier("")).toBe("_");
+  });
+
+  it("should handle strings that become empty after cleaning", () => {
+    expect(toValidTypescriptIdentifier("---")).toBe("_");
+    expect(toValidTypescriptIdentifier("@#%")).toBe("_");
+  });
+
+  it("should handle mixed hyphens and underscores", () => {
+    expect(toValidTypescriptIdentifier("my-test_shape")).toBe("myTest_shape");
   });
 });
