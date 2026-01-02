@@ -31,6 +31,14 @@ export function getNodeFromRawValue(
   // Get the Object Node
   if (value == undefined) {
     return undefined;
+  } else if (value instanceof Date) {
+    if (!datatype) {
+      return undefined;
+    } else if (datatype === "@id") {
+      return namedNode(value.toISOString());
+    } else {
+      return literal(value.toISOString(), datatype);
+    }
   } else if (
     typeof value === "string" ||
     typeof value === "boolean" ||

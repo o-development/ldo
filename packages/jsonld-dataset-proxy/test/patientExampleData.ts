@@ -18,7 +18,7 @@ export type PatientShape = {
   type: { "@id": "Patient" };
   name?: LdSet<string>;
   langName?: LdSet<string>;
-  birthdate?: string;
+  birthdate?: string | Date;
   age?: number;
   isHappy?: boolean;
   roommate?: LdSet<PatientShape>;
