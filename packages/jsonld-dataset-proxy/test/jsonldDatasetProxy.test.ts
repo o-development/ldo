@@ -480,7 +480,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       patient.type = { "@id": "Patient" };
       patient.birthdate = new Date("2024-06-15T14:30:00Z");
       expect(dataset.toString()).toBe(
-        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2024-06-15T14:30:00.000Z"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2024-06-15"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
       );
     });
 

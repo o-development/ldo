@@ -32,11 +32,15 @@ export function getNodeFromRawValue(
   if (value == undefined) {
     return undefined;
   } else if (value instanceof Date) {
-    if (!datatype) {
+    if (!datatype || datatype === "@id") {
+      // Dates cannot be used as named node identifiers
       return undefined;
-    } else if (datatype === "@id") {
-      return namedNode(value.toISOString());
+    } else if (datatype === "http://www.w3.org/2001/XMLSchema#date") {
+      // Format as date-only (YYYY-MM-DD) for xsd:date
+      const dateString = value.toISOString().split("T")[0];
+      return literal(dateString, datatype);
     } else {
+      // Use full ISO format for xsd:dateTime and other date-related types
       return literal(value.toISOString(), datatype);
     }
   } else if (
