@@ -341,6 +341,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       }
       if (nodeConstraint.values) {
         const valuesUnion = dom.create.union([]);
+        const addedPrimitiveTypes = new Set<dom.Type>();
         nodeConstraint.values.forEach((value) => {
           if (typeof value === "string") {
             // IRI value
@@ -352,17 +353,23 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
                 ),
               ]),
             );
-          } else if ("value" in value) {
+          } else if (
+            typeof value === "object" &&
+            value !== null &&
+            "value" in value
+          ) {
             // ObjectLiteral value - infer type from datatype if available
             const objectLiteral = value as ObjectLiteral;
             if (objectLiteral.type) {
               const domType = datatypeToDomType(objectLiteral.type);
-              if (domType && !valuesUnion.members.includes(domType)) {
+              if (domType && !addedPrimitiveTypes.has(domType)) {
+                addedPrimitiveTypes.add(domType);
                 valuesUnion.members.push(domType);
               }
             } else {
               // No datatype, default to string
-              if (!valuesUnion.members.includes(dom.type.string)) {
+              if (!addedPrimitiveTypes.has(dom.type.string)) {
+                addedPrimitiveTypes.add(dom.type.string);
                 valuesUnion.members.push(dom.type.string);
               }
             }

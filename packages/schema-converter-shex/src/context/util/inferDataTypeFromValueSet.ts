@@ -1,6 +1,19 @@
 import type { ObjectLiteral, valueSetValue } from "shexj";
 
 /**
+ * Type guard to check if a valueSetValue is an ObjectLiteral.
+ * ObjectLiteral has a required 'value' property of type string.
+ */
+function isObjectLiteral(value: valueSetValue): value is ObjectLiteral {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "value" in value &&
+    typeof (value as ObjectLiteral).value === "string"
+  );
+}
+
+/**
  * Infers the datatype from a value set if all ObjectLiteral values have the same type.
  * Returns undefined if:
  * - The value set is empty
@@ -18,13 +31,11 @@ export function inferDataTypeFromValueSet(
   let inferredType: string | undefined = undefined;
 
   for (const value of values) {
-    // Check if value is an ObjectLiteral (has a 'value' property)
-    if (typeof value !== "string" && "value" in value) {
-      const objectLiteral = value as ObjectLiteral;
-      if (objectLiteral.type) {
+    if (isObjectLiteral(value)) {
+      if (value.type) {
         if (inferredType === undefined) {
-          inferredType = objectLiteral.type;
-        } else if (inferredType !== objectLiteral.type) {
+          inferredType = value.type;
+        } else if (inferredType !== value.type) {
           // Different types found, cannot infer a single type
           return undefined;
         }
