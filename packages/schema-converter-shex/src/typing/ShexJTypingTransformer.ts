@@ -1,10 +1,66 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
 import * as dom from "dts-dom";
-import type { Annotation } from "shexj";
+import type { Annotation, ObjectLiteral } from "shexj";
 import { nameFromObject } from "../context/JsonLdContextBuilder.js";
 import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration.js";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint.js";
 import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers.js";
+
+/**
+ * Maps an XSD datatype IRI to a dts-dom primitive type.
+ * Returns undefined if the datatype is not recognized.
+ */
+function datatypeToDomType(datatype: string): dom.Type | undefined {
+  switch (datatype) {
+    case "http://www.w3.org/2001/XMLSchema#string":
+    case "http://www.w3.org/2001/XMLSchema#ENTITIES":
+    case "http://www.w3.org/2001/XMLSchema#ENTITY":
+    case "http://www.w3.org/2001/XMLSchema#ID":
+    case "http://www.w3.org/2001/XMLSchema#IDREF":
+    case "http://www.w3.org/2001/XMLSchema#IDREFS":
+    case "http://www.w3.org/2001/XMLSchema#language":
+    case "http://www.w3.org/2001/XMLSchema#Name":
+    case "http://www.w3.org/2001/XMLSchema#NCName":
+    case "http://www.w3.org/2001/XMLSchema#NMTOKEN":
+    case "http://www.w3.org/2001/XMLSchema#NMTOKENS":
+    case "http://www.w3.org/2001/XMLSchema#normalizedString":
+    case "http://www.w3.org/2001/XMLSchema#QName":
+    case "http://www.w3.org/2001/XMLSchema#token":
+    case "http://www.w3.org/2001/XMLSchema#date":
+    case "http://www.w3.org/2001/XMLSchema#dateTime":
+    case "http://www.w3.org/2001/XMLSchema#duration":
+    case "http://www.w3.org/2001/XMLSchema#gDay":
+    case "http://www.w3.org/2001/XMLSchema#gMonth":
+    case "http://www.w3.org/2001/XMLSchema#gMonthDay":
+    case "http://www.w3.org/2001/XMLSchema#gYear":
+    case "http://www.w3.org/2001/XMLSchema#gYearMonth":
+    case "http://www.w3.org/2001/XMLSchema#time":
+    case "http://www.w3.org/2001/XMLSchema#hexBinary":
+    case "http://www.w3.org/2001/XMLSchema#anyURI":
+      return dom.type.string;
+    case "http://www.w3.org/2001/XMLSchema#byte":
+    case "http://www.w3.org/2001/XMLSchema#decimal":
+    case "http://www.w3.org/2001/XMLSchema#double":
+    case "http://www.w3.org/2001/XMLSchema#float":
+    case "http://www.w3.org/2001/XMLSchema#int":
+    case "http://www.w3.org/2001/XMLSchema#integer":
+    case "http://www.w3.org/2001/XMLSchema#long":
+    case "http://www.w3.org/2001/XMLSchema#negativeInteger":
+    case "http://www.w3.org/2001/XMLSchema#nonNegativeInteger":
+    case "http://www.w3.org/2001/XMLSchema#nonPositiveInteger":
+    case "http://www.w3.org/2001/XMLSchema#positiveInteger":
+    case "http://www.w3.org/2001/XMLSchema#short":
+    case "http://www.w3.org/2001/XMLSchema#unsignedLong":
+    case "http://www.w3.org/2001/XMLSchema#unsignedInt":
+    case "http://www.w3.org/2001/XMLSchema#unsignedShort":
+    case "http://www.w3.org/2001/XMLSchema#unsignedByte":
+      return dom.type.number;
+    case "http://www.w3.org/2001/XMLSchema#boolean":
+      return dom.type.boolean;
+    default:
+      return undefined;
+  }
+}
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string, rdfType?: string) => string;
@@ -259,58 +315,8 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       context,
     ) => {
       if (nodeConstraint.datatype) {
-        switch (nodeConstraint.datatype) {
-          case "http://www.w3.org/2001/XMLSchema#string":
-          case "http://www.w3.org/2001/XMLSchema#ENTITIES":
-          case "http://www.w3.org/2001/XMLSchema#ENTITY":
-          case "http://www.w3.org/2001/XMLSchema#ID":
-          case "http://www.w3.org/2001/XMLSchema#IDREF":
-          case "http://www.w3.org/2001/XMLSchema#IDREFS":
-          case "http://www.w3.org/2001/XMLSchema#language":
-          case "http://www.w3.org/2001/XMLSchema#Name":
-          case "http://www.w3.org/2001/XMLSchema#NCName":
-          case "http://www.w3.org/2001/XMLSchema#NMTOKEN":
-          case "http://www.w3.org/2001/XMLSchema#NMTOKENS":
-          case "http://www.w3.org/2001/XMLSchema#normalizedString":
-          case "http://www.w3.org/2001/XMLSchema#QName":
-          case "http://www.w3.org/2001/XMLSchema#token":
-            return dom.type.string;
-          case "http://www.w3.org/2001/XMLSchema#date":
-          case "http://www.w3.org/2001/XMLSchema#dateTime":
-          case "http://www.w3.org/2001/XMLSchema#duration":
-          case "http://www.w3.org/2001/XMLSchema#gDay":
-          case "http://www.w3.org/2001/XMLSchema#gMonth":
-          case "http://www.w3.org/2001/XMLSchema#gMonthDay":
-          case "http://www.w3.org/2001/XMLSchema#gYear":
-          case "http://www.w3.org/2001/XMLSchema#gYearMonth":
-          case "http://www.w3.org/2001/XMLSchema#time":
-            return dom.type.string;
-          case "http://www.w3.org/2001/XMLSchema#byte":
-          case "http://www.w3.org/2001/XMLSchema#decimal":
-          case "http://www.w3.org/2001/XMLSchema#double":
-          case "http://www.w3.org/2001/XMLSchema#float":
-          case "http://www.w3.org/2001/XMLSchema#int":
-          case "http://www.w3.org/2001/XMLSchema#integer":
-          case "http://www.w3.org/2001/XMLSchema#long":
-          case "http://www.w3.org/2001/XMLSchema#negativeInteger":
-          case "http://www.w3.org/2001/XMLSchema#nonNegativeInteger":
-          case "http://www.w3.org/2001/XMLSchema#nonPositiveInteger":
-          case "http://www.w3.org/2001/XMLSchema#positiveInteger":
-          case "http://www.w3.org/2001/XMLSchema#short":
-          case "http://www.w3.org/2001/XMLSchema#unsignedLong":
-          case "http://www.w3.org/2001/XMLSchema#unsignedInt":
-          case "http://www.w3.org/2001/XMLSchema#unsignedShort":
-          case "http://www.w3.org/2001/XMLSchema#unsignedByte":
-            return dom.type.number;
-          case "http://www.w3.org/2001/XMLSchema#boolean":
-            return dom.type.boolean;
-          case "http://www.w3.org/2001/XMLSchema#hexBinary":
-            return dom.type.string;
-          case "http://www.w3.org/2001/XMLSchema#anyURI":
-            return dom.type.string;
-          default:
-            return dom.type.string;
-        }
+        const domType = datatypeToDomType(nodeConstraint.datatype);
+        return domType ?? dom.type.string;
       }
       if (nodeConstraint.nodeKind) {
         switch (nodeConstraint.nodeKind) {
@@ -337,6 +343,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         const valuesUnion = dom.create.union([]);
         nodeConstraint.values.forEach((value) => {
           if (typeof value === "string") {
+            // IRI value
             valuesUnion.members.push(
               dom.create.objectType([
                 dom.create.property(
@@ -345,8 +352,26 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
                 ),
               ]),
             );
+          } else if ("value" in value) {
+            // ObjectLiteral value - infer type from datatype if available
+            const objectLiteral = value as ObjectLiteral;
+            if (objectLiteral.type) {
+              const domType = datatypeToDomType(objectLiteral.type);
+              if (domType && !valuesUnion.members.includes(domType)) {
+                valuesUnion.members.push(domType);
+              }
+            } else {
+              // No datatype, default to string
+              if (!valuesUnion.members.includes(dom.type.string)) {
+                valuesUnion.members.push(dom.type.string);
+              }
+            }
           }
         });
+        // If there's only one type in the union, return that type directly
+        if (valuesUnion.members.length === 1) {
+          return valuesUnion.members[0];
+        }
         return valuesUnion;
       }
       return dom.type.undefined;
