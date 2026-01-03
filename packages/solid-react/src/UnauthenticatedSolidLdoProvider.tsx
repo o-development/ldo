@@ -3,7 +3,6 @@ import React, { useCallback, useMemo } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
 import type { LoginOptions, SessionInfo } from "./SolidAuthContext.js";
 import { SolidAuthContext } from "./SolidAuthContext.js";
-import libraryFetch from "cross-fetch";
 
 const DUMMY_SESSION: SessionInfo = {
   isLoggedIn: false,
@@ -51,7 +50,7 @@ export const UnauthenticatedSolidLdoProvider: FunctionComponent<
       signUp,
       session: DUMMY_SESSION,
       ranInitialAuthCheck: true,
-      fetch: libraryFetch,
+      fetch,
     }),
     [login, logout, signUp],
   );

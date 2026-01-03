@@ -4,6 +4,7 @@
     "outDir": "./dist/esm",
     "rootDir": "./src",
     "declarationDir": "./dist/types",
+    "lib": ["ES2021", "DOM"],
     "types": [
       "jest"
     ]
