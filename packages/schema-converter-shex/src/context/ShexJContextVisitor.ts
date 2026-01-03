@@ -1,6 +1,7 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
 import type { JsonLdContextBuilder } from "./JsonLdContextBuilder.js";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint.js";
+import { inferDataTypeFromValueSet } from "./util/inferDataTypeFromValueSet.js";
 
 /**
  * Visitor
@@ -46,9 +47,12 @@ export const ShexJNameVisitor =
                   tripleConstraint.annotations,
                 );
               } else if (tripleConstraint.valueExpr.values) {
+                const inferredDataType = inferDataTypeFromValueSet(
+                  tripleConstraint.valueExpr.values,
+                );
                 context.addPredicate(
                   tripleConstraint.predicate,
-                  {},
+                  inferredDataType ? { "@type": inferredDataType } : {},
                   isContainer,
                   rdfType,
                   tripleConstraint.annotations,

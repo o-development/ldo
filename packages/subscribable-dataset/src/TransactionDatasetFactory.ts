@@ -1,5 +1,8 @@
 import type { BaseQuad, DatasetFactory } from "@rdfjs/types";
-import type { ISubscribableDataset, ITransactionDatasetFactory } from "./types.js";
+import type {
+  ISubscribableDataset,
+  ITransactionDatasetFactory,
+} from "./types.js";
 import { TransactionDataset } from "./TransactionDataset.js";
 
 export class TransactionDatasetFactory<InAndOutQuad extends BaseQuad>

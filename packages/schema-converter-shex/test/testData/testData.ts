@@ -11,6 +11,7 @@ import { orSimple } from "./orSimple.js";
 import { andSimple } from "./andSimple.js";
 import { eachOfAndSimple } from "./eachOfAndSimple.js";
 import { multipleSharedPredicates } from "./multipleSharedPredicates.js";
+import { booleanValueSet } from "./booleanValueSet.js";
 
 export interface TestData {
   name: string;
@@ -34,4 +35,5 @@ export const testData: TestData[] = [
   andSimple,
   eachOfAndSimple,
   multipleSharedPredicates,
+  booleanValueSet,
 ];

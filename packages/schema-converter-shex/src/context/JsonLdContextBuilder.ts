@@ -9,14 +9,14 @@ import { hashValueSetValue } from "./util/hashValueSetValue.js";
 export function iriToName(iri: string): string {
   try {
     const url = new URL(iri);
-    let name: string
+    let name: string;
     if (url.hash) {
       name = url.hash.slice(1);
     } else {
       const splitPathname = url.pathname.split("/");
       name = splitPathname[splitPathname.length - 1];
     }
-    return name.replace(/(?<!^)Shape$/, '')
+    return name.replace(/(?<!^)Shape$/, "");
   } catch (err) {
     return iri;
   }
