@@ -4,6 +4,9 @@
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "ldo": "./dist/index.js"
   },
@@ -53,6 +56,7 @@
     "prompts": "^2.4.2",
     "rdf-dereference-store": "^1.4.0",
     "rdf-namespaces": "^1.13.1",
+    "to-valid-identifier": "^1.0.0",
     "ts-morph": "^24.0.0",
     "type-fest": "^2.19.0"
   },
