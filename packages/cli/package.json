@@ -4,6 +4,9 @@
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "bin": {
     "ldo": "./dist/index.js"
   },
