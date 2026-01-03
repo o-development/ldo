@@ -9,7 +9,7 @@ import loading from "loading-cli";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { forAllShapes } from "./util/forAllShapes.js";
-import { toValidTypescriptIdentifier } from "./util/toValidTypescriptIdentifier.js";
+import toValidIdentifier from "to-valid-identifier";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -48,7 +48,7 @@ export async function build(options: BuildOptions) {
     // Convert the content to types
     const [typings, context] = await schemaConverterShex(schema);
     // Convert fileName to a valid TypeScript identifier for use in generated code
-    const identifierName = toValidTypescriptIdentifier(fileName);
+    const identifierName = toValidIdentifier(fileName);
     await Promise.all(
       ["context", "schema", "shapeTypes", "typings"].map(
         async (templateName) => {
