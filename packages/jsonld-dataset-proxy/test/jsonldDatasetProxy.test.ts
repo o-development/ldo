@@ -484,6 +484,17 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       );
     });
 
+    it("serializes Date to xsd:date using UTC date component", async () => {
+      const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
+      // This date is 2024-06-14 23:00:00 UTC, which could be June 15 in some timezones
+      // but should serialize as 2024-06-14 since we use UTC
+      patient.birthdate = new Date("2024-06-14T23:00:00Z");
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2024-06-14"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
+      );
+    });
+
     it("sets a @type value as rdf:type", async () => {
       const [dataset, patient] = await getEmptyPatientDataset();
       patient.type = { "@id": "Patient" };

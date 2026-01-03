@@ -23,8 +23,10 @@ export function literalToJsonldRepresentation(literal: Literal) {
     case "http://www.w3.org/2001/XMLSchema#token":
       return literal.value;
     case "http://www.w3.org/2001/XMLSchema#date":
-    case "http://www.w3.org/2001/XMLSchema#dateTime":
-      return new Date(literal.value);
+    case "http://www.w3.org/2001/XMLSchema#dateTime": {
+      const date = new Date(literal.value);
+      return isNaN(date.getTime()) ? literal.value : date;
+    }
     case "http://www.w3.org/2001/XMLSchema#duration":
     case "http://www.w3.org/2001/XMLSchema#gDay":
     case "http://www.w3.org/2001/XMLSchema#gMonth":

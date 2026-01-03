@@ -105,7 +105,23 @@ describe("objectToJsonRepresentation", () => {
     ).toBe("P1Y2M3D");
   });
 
-  it("throws an error when it encoutners a quad that is not a Liter, NamedNode, or BlankNode", () => {
+  it("returns original string for invalid xsd:date", () => {
+    const result = nodeToJsonldRepresentation(
+      literal("invalid-date", "http://www.w3.org/2001/XMLSchema#date"),
+      extraParams,
+    );
+    expect(result).toBe("invalid-date");
+  });
+
+  it("returns original string for invalid xsd:dateTime", () => {
+    const result = nodeToJsonldRepresentation(
+      literal("2024-13-45", "http://www.w3.org/2001/XMLSchema#dateTime"),
+      extraParams,
+    );
+    expect(result).toBe("2024-13-45");
+  });
+
+  it("throws an error when it encounters a quad that is not a Literal, NamedNode, or BlankNode", () => {
     expect(() =>
       // @ts-expect-error defaultGraph is not allowed
       nodeToJsonldRepresentation(defaultGraph(), extraParams),

@@ -39,9 +39,12 @@ export function getNodeFromRawValue(
       // Format as date-only (YYYY-MM-DD) for xsd:date
       const dateString = value.toISOString().split("T")[0];
       return literal(dateString, datatype);
-    } else {
-      // Use full ISO format for xsd:dateTime and other date-related types
+    } else if (datatype === "http://www.w3.org/2001/XMLSchema#dateTime") {
+      // Use full ISO format for xsd:dateTime
       return literal(value.toISOString(), datatype);
+    } else {
+      // For non-date-related datatypes, do not coerce Date values
+      return undefined;
     }
   } else if (
     typeof value === "string" ||
