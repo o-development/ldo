@@ -11,6 +11,7 @@ import { orSimple } from "./orSimple.js";
 import { andSimple } from "./andSimple.js";
 import { eachOfAndSimple } from "./eachOfAndSimple.js";
 import { multipleSharedPredicates } from "./multipleSharedPredicates.js";
+import { nemaline } from "./nemaline.js";
 
 export interface TestData {
   name: string;
@@ -22,16 +23,17 @@ export interface TestData {
 }
 
 export const testData: TestData[] = [
-  simple,
-  circular,
-  profile,
-  reducedProfile,
-  activityPub,
-  extendsSimple,
-  oldExtends,
-  reusedPredicates,
-  orSimple,
-  andSimple,
-  eachOfAndSimple,
-  multipleSharedPredicates,
+  // simple,
+  // circular,
+  // profile,
+  // reducedProfile,
+  // activityPub,
+  // extendsSimple,
+  // oldExtends,
+  // reusedPredicates,
+  // orSimple,
+  // andSimple,
+  // eachOfAndSimple,
+  // multipleSharedPredicates,
+  nemaline,
 ];

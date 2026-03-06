@@ -9,14 +9,14 @@ import { hashValueSetValue } from "./util/hashValueSetValue.js";
 export function iriToName(iri: string): string {
   try {
     const url = new URL(iri);
-    let name: string
+    let name: string;
     if (url.hash) {
       name = url.hash.slice(1);
     } else {
       const splitPathname = url.pathname.split("/");
       name = splitPathname[splitPathname.length - 1];
     }
-    return name.replace(/(?<!^)Shape$/, '')
+    return name.replace(/(?<!^)Shape$/, "");
   } catch (err) {
     return iri;
   }
@@ -138,12 +138,16 @@ export class JsonLdContextBuilder {
           if (associatedValuesSet.size > 1) {
             relevantBuilder.iriTypes[iri]["@isCollection"] = true;
           }
-          const oldAssociatedValueSetSize = curDef["@associatedValues"].size;
-          associatedValuesSet.forEach((val) =>
-            curDef["@associatedValues"].add(val),
-          );
-          if (curDef["@associatedValues"].size !== oldAssociatedValueSetSize) {
+          const existingSet = curDef["@associatedValues"];
+          if (!existingSet) {
+            curDef["@associatedValues"] = new Set(associatedValuesSet);
             curDef["@isCollection"] = true;
+          } else {
+            const oldAssociatedValueSetSize = existingSet.size;
+            associatedValuesSet.forEach((val) => existingSet.add(val));
+            if (existingSet.size !== oldAssociatedValueSetSize) {
+              curDef["@isCollection"] = true;
+            }
           }
         }
         // If the old and new versions both have types

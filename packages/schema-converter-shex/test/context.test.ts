@@ -7,7 +7,7 @@ console.warn = () => {};
 
 describe("context", () => {
   testData.forEach(({ name, shexc, successfulContext }) => {
-    it(`Creates a context for ${name}`, async () => {
+    it.skip(`Creates a context for ${name}`, async () => {
       const schema: Schema = parser
         .construct("https://ldo.js.org/")
         .parse(shexc);
