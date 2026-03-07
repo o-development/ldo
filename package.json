@@ -9,7 +9,7 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "clean": "lerna clean --yes && lerna run remove-dist && rimraf node_modules",
-    "publish": "lerna publish --no-private"
+    "publish": "node ./scripts/publish-with-rollback.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
