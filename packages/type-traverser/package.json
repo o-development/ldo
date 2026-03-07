@@ -1,6 +1,6 @@
 {
   "name": "@ldo/type-traverser",
-  "version": "1.0.0-alpha.35",
+  "version": "1.0.0-alpha.36",
   "description": "An organized way to traverse over objects using typescript",
   "type": "module",
   "main": "./dist/index.cjs",
