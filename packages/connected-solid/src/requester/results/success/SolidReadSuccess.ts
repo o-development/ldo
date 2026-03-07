@@ -1,7 +1,7 @@
 import type { ConnectedResult } from "@ldo/connected";
 import { ReadSuccess, type Resource } from "@ldo/connected";
-import type { SolidLeaf } from "../../../resources/SolidLeaf.js";
-import type { SolidContainer } from "../../../resources/SolidContainer.js";
+import type { SolidLeaf } from "../../../resources/SolidLeaf";
+import type { SolidContainer } from "../../../resources/SolidContainer";
 
 /**
  * Indicates that the read request was successful and that the resource

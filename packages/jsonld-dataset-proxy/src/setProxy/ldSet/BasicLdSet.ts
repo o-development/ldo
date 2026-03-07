@@ -1,7 +1,7 @@
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import { _getUnderlyingNode } from "../../types.js";
-import type { RawValue } from "../../util/RawObject.js";
-import type { LdSet } from "./LdSet.js";
+import { _getUnderlyingNode } from "../../types";
+import type { RawValue } from "../../util/RawObject";
+import type { LdSet } from "./LdSet";
 import { blankNode } from "@ldo/rdf-utils";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

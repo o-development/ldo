@@ -1,5 +1,5 @@
-import type { TraverserDefinitions } from "../../../src/index.js";
-import type { AvatarTraverserTypes, Bender } from "./AvatarTraverserTypes.js";
+import type { TraverserDefinitions } from "../../../src/index";
+import type { AvatarTraverserTypes, Bender } from "./AvatarTraverserTypes";
 
 export const avatarTraverserDefinition: TraverserDefinitions<AvatarTraverserTypes> =
   {

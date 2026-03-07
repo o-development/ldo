@@ -1,27 +1,30 @@
 {
   "name": "@ldo/rdf-utils",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.36",
   "description": "Some RDF Utilities to support LDO librariers",
   "type": "module",
-  "main": "./dist/cjs/index.cjs",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc --project tsconfig.cjs.json && node ../../scripts/rename-to-cjs.js",
-    "build:esm": "tsc --project tsconfig.esm.json",
+    "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
     "watch": "tsc --watch",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "prepublishOnly": " npm run build",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "prepublishOnly": "npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "remove-dist": "rimraf dist/"
   },
@@ -36,11 +39,11 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/rdf-utils#readme",
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
     "@types/jsonld": "^1.5.9"
   },
   "dependencies": {
     "@rdfjs/data-model": "^1.2.0",
+    "@rdfjs/types": "^1.0.1",
     "n3": "^1.17.1",
     "rdf-string": "^1.6.3"
   },
@@ -51,5 +54,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
+  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
 }

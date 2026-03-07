@@ -1,5 +1,5 @@
-import { createDataset } from "../src/index.js";
-import testDataset from "./dataset.testHelper.js";
+import { createDataset } from "../src/index";
+import testDataset from "./dataset.testHelper";
 
 describe("ExtendedDataset", () => {
   testDataset({

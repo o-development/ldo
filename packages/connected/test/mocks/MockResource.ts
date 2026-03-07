@@ -7,10 +7,10 @@ import {
   type Resource,
   type ResourceError,
   type ResourceEventEmitter,
-} from "../../src/index.js";
+} from "../../src/index";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { ReadSuccess } from "../../src/results/success/ReadSuccess.js";
-import { UpdateSuccess } from "../../src/results/success/UpdateSuccess.js";
+import type { ReadSuccess } from "../../src/results/success/ReadSuccess";
+import { UpdateSuccess } from "../../src/results/success/UpdateSuccess";
 import { vi } from "vitest";
 import type { MockConnectedPlugin } from "./MockConnectedPlugin.js";
 import type { Quad } from "@rdfjs/types";

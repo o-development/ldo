@@ -1,6 +1,6 @@
 import { namedNode } from "@ldo/rdf-utils";
-import { ContextUtil } from "../src/ContextUtil.js";
-import { scopedContext } from "./scopedExampleData.js";
+import { ContextUtil } from "../src/ContextUtil";
+import { scopedContext } from "./scopedExampleData";
 
 describe("ContextUtil", () => {
   describe("keyToIri and iriToKey", () => {

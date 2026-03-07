@@ -16,8 +16,8 @@ import {
   SERVER_DOMAIN,
   setUpServerFiles,
   THIRD_PROFILE_SUBJECT,
-} from "./fileData.js";
-import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider.js";
+} from "./fileData";
+import { UnauthenticatedSolidLdoProvider } from "../src/UnauthenticatedSolidLdoProvider";
 import {
   dataset,
   useLdo,
@@ -28,12 +28,12 @@ import {
   useSubject,
   useSubscribeToResource,
   useLinkQuery,
-} from "../src/index.js";
-import { PostShShapeType } from "./.ldo/post.shapeTypes.js";
-import type { PostSh } from "./.ldo/post.typings.js";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+} from "../src/index";
+import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import type { PostSh } from "./.ldo/post.typings";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
 import { changeData, commitData } from "@ldo/connected";
-import type { SolidProfileShape } from "./.ldo/solidProfile.typings.js";
+import type { SolidProfileShape } from "./.ldo/solidProfile.typings";
 import { describe, vi, afterEach, expect, it } from "vitest";
 import { setupServer } from "@ldo/test-solid-server";
 import { dirname, join } from "node:path";

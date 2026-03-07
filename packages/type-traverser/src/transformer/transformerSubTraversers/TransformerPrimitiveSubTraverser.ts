@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { TraverserTypes } from "../../index.js";
-import type { PrimitiveInstanceNode } from "../../instanceGraph/nodes/PrimitiveInstanceNode.js";
+import type { TraverserTypes } from "../../index";
+import type { PrimitiveInstanceNode } from "../../instanceGraph/nodes/PrimitiveInstanceNode";
 import type {
   PrimitiveReturnType,
   TransformerReturnTypes,
-} from "../TransformerReturnTypes.js";
-import type { PrimitiveTransformerDefinition } from "../Transformers.js";
-import type { PrimitiveType } from "../../traverser/TraverserTypes.js";
-import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes.js";
+} from "../TransformerReturnTypes";
+import type { PrimitiveTransformerDefinition } from "../Transformers";
+import type { PrimitiveType } from "../../traverser/TraverserTypes";
+import type { TransformerSubTraverserGlobals } from "./util/transformerSubTraverserTypes";
 
 export async function transformerPrimitiveSubTraverser<
   Types extends TraverserTypes<any>,

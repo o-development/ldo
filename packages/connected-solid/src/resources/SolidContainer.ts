@@ -1,34 +1,34 @@
 import { namedNode } from "@ldo/rdf-utils";
-import { ContainerBatchedRequester } from "../requester/ContainerBatchedRequester.js";
+import { ContainerBatchedRequester } from "../requester/ContainerBatchedRequester";
 import type {
   CheckRootResult,
   CheckRootResultError,
-} from "../requester/requests/checkRootContainer.js";
+} from "../requester/requests/checkRootContainer";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "../requester/requests/createDataResource.js";
+} from "../requester/requests/createDataResource";
 import type {
   DeleteResult,
   DeleteResultError,
-} from "../requester/requests/deleteResource.js";
+} from "../requester/requests/deleteResource";
 import type {
   ReadContainerResult,
   ReadResultError,
-} from "../requester/requests/readResource.js";
-import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess.js";
-import type { ContainerReadSuccess } from "../requester/results/success/SolidReadSuccess.js";
-import { getParentUri, ldpContains } from "../util/rdfUtils.js";
-import { NoRootContainerError } from "../requester/results/error/NoRootContainerError.js";
-import type { SharedStatuses } from "./SolidResource.js";
-import { SolidResource } from "./SolidResource.js";
+} from "../requester/requests/readResource";
+import type { DeleteSuccess } from "../requester/results/success/DeleteSuccess";
+import type { ContainerReadSuccess } from "../requester/results/success/SolidReadSuccess";
+import { getParentUri, ldpContains } from "../util/rdfUtils";
+import { NoRootContainerError } from "../requester/results/error/NoRootContainerError";
+import type { SharedStatuses } from "./SolidResource";
+import { SolidResource } from "./SolidResource";
 import type {
   SolidContainerSlug,
   SolidContainerUri,
   SolidLeafSlug,
-} from "../types.js";
+} from "../types";
 import type { ReadSuccess } from "@ldo/connected";
 import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
@@ -36,9 +36,9 @@ import {
   type ConnectedContext,
   AggregateError,
 } from "@ldo/connected";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
-import type { SolidLeaf } from "./SolidLeaf.js";
-import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult.js";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+import type { SolidLeaf } from "./SolidLeaf";
+import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 
 /**

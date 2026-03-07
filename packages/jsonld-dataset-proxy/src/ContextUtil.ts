@@ -2,7 +2,7 @@ import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
 import type {
   LdoJsonldContext,
   LdoJsonldContextExpandedTermDefinition,
-} from "./LdoJsonldContext.js";
+} from "./LdoJsonldContext";
 import type { NamedNode } from "@rdfjs/types";
 
 // Create JSONLD Shorthands

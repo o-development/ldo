@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { WaitingProcess } from "../../util/RequestBatcher.js";
+import type { WaitingProcess } from "../../util/RequestBatcher";
 
 /**
  * @internal

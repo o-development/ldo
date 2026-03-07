@@ -1,20 +1,20 @@
-import { guaranteeFetch } from "../../util/guaranteeFetch.js";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { UnexpectedResourceError } from "@ldo/connected";
-import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
+import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "./createDataResource.js";
-import { deleteResource } from "./deleteResource.js";
-import { readResource } from "./readResource.js";
-import type { DatasetRequestOptions } from "./requestOptions.js";
-import type { SolidLeaf } from "../../resources/SolidLeaf.js";
-import { CreateSuccess } from "../results/success/CreateSuccess.js";
+} from "./createDataResource";
+import { deleteResource } from "./deleteResource";
+import { readResource } from "./readResource";
+import type { DatasetRequestOptions } from "./requestOptions";
+import type { SolidLeaf } from "../../resources/SolidLeaf";
+import { CreateSuccess } from "../results/success/CreateSuccess";
 import {
   addResourceRdfToContainer,
   getParentUri,
   getSlug,
-} from "../../util/rdfUtils.js";
+} from "../../util/rdfUtils";
 
 /**
  * @internal

@@ -1,5 +1,5 @@
 import { ConnectedLdoDataset } from "@ldo/connected";
-import { nextGraphConnectedPlugin } from "./NextGraphConnectedPlugin.js";
+import { nextGraphConnectedPlugin } from "./NextGraphConnectedPlugin";
 import { createDatasetFactory } from "@ldo/dataset";
 import { createTransactionDatasetFactory } from "@ldo/subscribable-dataset";
 

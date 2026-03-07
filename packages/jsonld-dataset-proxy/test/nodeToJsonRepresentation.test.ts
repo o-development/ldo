@@ -1,8 +1,8 @@
 import { createDataset } from "@ldo/dataset";
-import { ContextUtil } from "../src/ContextUtil.js";
-import { nodeToJsonldRepresentation } from "../src/util/nodeToJsonldRepresentation.js";
+import { ContextUtil } from "../src/ContextUtil";
+import { nodeToJsonldRepresentation } from "../src/util/nodeToJsonldRepresentation";
 import { defaultGraph, literal } from "@ldo/rdf-utils";
-import { ProxyContext } from "../src/index.js";
+import { ProxyContext } from "../src/index";
 
 describe("objectToJsonRepresentation", () => {
   const extraParams: ProxyContext = new ProxyContext({

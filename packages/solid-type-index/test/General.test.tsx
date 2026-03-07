@@ -8,15 +8,15 @@ import {
   setupEmptyTypeIndex,
   setupFullTypeIndex,
   WEB_ID,
-} from "./fileData.js";
-import { getInstanceUris, getTypeRegistrations } from "../src/getTypeIndex.js";
+} from "./fileData";
+import { getInstanceUris, getTypeRegistrations } from "../src/getTypeIndex";
 import {
   addRegistration,
   initTypeIndex,
   removeRegistration,
-} from "../src/setTypeIndex.js";
-import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes.js";
-import { INSTANCE } from "../src/constants.js";
+} from "../src/setTypeIndex";
+import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes";
+import { INSTANCE } from "../src/constants";
 import { createSolidLdoDataset } from "@ldo/connected-solid";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";

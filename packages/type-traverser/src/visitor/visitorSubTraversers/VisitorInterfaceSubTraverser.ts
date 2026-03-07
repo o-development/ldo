@@ -2,12 +2,12 @@
 import type {
   InterfaceVisitorDefinition,
   TraverserTypes,
-} from "../../index.js";
-import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode.js";
-import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition.js";
-import type { InterfaceType } from "../../traverser/TraverserTypes.js";
-import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes.js";
-import { visitorParentSubTraverser } from "./VisitorParentSubTraverser.js";
+} from "../../index";
+import type { InterfaceInstanceNode } from "../../instanceGraph/nodes/InterfaceInstanceNode";
+import type { InterfaceTraverserDefinition } from "../../traverser/TraverserDefinition";
+import type { InterfaceType } from "../../traverser/TraverserTypes";
+import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes";
+import { visitorParentSubTraverser } from "./VisitorParentSubTraverser";
 
 export async function visitorInterfaceSubTraverser<
   Types extends TraverserTypes<any>,

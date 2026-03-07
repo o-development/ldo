@@ -1,23 +1,23 @@
-import { ANY_KEY, RequestBatcher } from "../util/RequestBatcher.js";
+import { ANY_KEY, RequestBatcher } from "../util/RequestBatcher";
 import type { ConnectedContext } from "@ldo/connected";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
-} from "./requests/createDataResource.js";
-import { createDataResource } from "./requests/createDataResource.js";
+} from "./requests/createDataResource";
+import { createDataResource } from "./requests/createDataResource";
 import type {
   ReadContainerResult,
   ReadLeafResult,
-} from "./requests/readResource.js";
-import { readResource } from "./requests/readResource.js";
-import type { DeleteResult } from "./requests/deleteResource.js";
-import { deleteResource } from "./requests/deleteResource.js";
-import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions.js";
-import type { SolidConnectedPlugin } from "../SolidConnectedPlugin.js";
-import type { SolidContainer } from "../resources/SolidContainer.js";
-import type { SolidLeaf } from "../resources/SolidLeaf.js";
+} from "./requests/readResource";
+import { readResource } from "./requests/readResource";
+import type { DeleteResult } from "./requests/deleteResource";
+import { deleteResource } from "./requests/deleteResource";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
+import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
+import type { SolidContainer } from "../resources/SolidContainer";
+import type { SolidLeaf } from "../resources/SolidLeaf";
 
 const READ_KEY = "read";
 const CREATE_KEY = "createDataResource";

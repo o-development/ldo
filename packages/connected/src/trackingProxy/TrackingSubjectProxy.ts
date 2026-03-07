@@ -4,7 +4,7 @@ import {
   type SubjectProxy,
 } from "@ldo/jsonld-dataset-proxy";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
-import type { TrackingProxyContext } from "./TrackingProxyContext.js";
+import type { TrackingProxyContext } from "./TrackingProxyContext";
 import { namedNode } from "@ldo/rdf-utils";
 
 /**

@@ -1,10 +1,10 @@
-export * from "./types.js";
-export * from "./NextGraphConnectedPlugin.js";
+export * from "./types";
+export * from "./NextGraphConnectedPlugin";
 
-export * from "./resources/NextGraphResource.js";
+export * from "./resources/NextGraphResource";
 
-export * from "./util/isNextGraphUri.js";
+export * from "./util/isNextGraphUri";
 
-export * from "./results/NextGraphReadSuccess.js";
+export * from "./results/NextGraphReadSuccess";
 
-export * from "./createNextGraphLdoDataset.js";
+export * from "./createNextGraphLdoDataset";

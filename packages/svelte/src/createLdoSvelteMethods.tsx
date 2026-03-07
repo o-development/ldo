@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createUseLdo } from "./methods/useLdo.js";
+import { createUseLdo } from "./methods/useLdo";
 import {
   createConnectedLdoDataset,
   type ConnectedPlugin,
 } from "@ldo/connected";
-import { createUseMatchObject } from "./methods/useMatchObject.js";
-import { createUseMatchSubject } from "./methods/useMatchSubject.js";
-import { createUseResource } from "./methods/useResource.js";
-import { createUseSubject } from "./methods/useSubject.js";
-import { createUseSubscribeToResource } from "./methods/useSubscribeToResource.js";
-import { createUseLinkQuery } from "./methods/useLinkQuery.js";
+import { createUseMatchObject } from "./methods/useMatchObject";
+import { createUseMatchSubject } from "./methods/useMatchSubject";
+import { createUseResource } from "./methods/useResource";
+import { createUseSubject } from "./methods/useSubject";
+import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
+import { createUseLinkQuery } from "./methods/useLinkQuery";
 
 /**
  * A function that creates all common react functions given specific plugin.

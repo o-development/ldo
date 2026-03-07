@@ -1,6 +1,6 @@
-import type { LanguageOrdering } from "./language/languageTypes.js";
-import type { InteractOptions } from "./util/createInteractOptions.js";
-import { createProxyInteractOptions } from "./util/createInteractOptions.js";
+import type { LanguageOrdering } from "./language/languageTypes";
+import type { InteractOptions } from "./util/createInteractOptions";
+import { createProxyInteractOptions } from "./util/createInteractOptions";
 
 /**
  * Set the default language pr

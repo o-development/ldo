@@ -19,7 +19,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies using npm workspaces
-        run: npm install
+        run: npm install --include=optional
 
       - name: Build all packages in topological order
         run: npm run build

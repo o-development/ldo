@@ -1,16 +1,16 @@
 import { namedNode, quad, literal } from "@ldo/rdf-utils";
 import { createDataset } from "@ldo/dataset";
-import type { SolidProfileShape } from "./profileData.js";
-import { ProfileShapeType } from "./profileData.js";
-import type { LdoBuilder, LdoDataset } from "../src/index.js";
+import type { SolidProfileShape } from "./profileData";
+import { ProfileShapeType } from "./profileData";
+import type { LdoBuilder, LdoDataset } from "../src/index";
 import {
   createLdoDataset,
   graphOf,
   parseRdf,
   toTurtle,
   set,
-} from "../src/index.js";
-import { sampleJsonld, sampleTurtle } from "./sampleData.js";
+} from "../src/index";
+import { sampleJsonld, sampleTurtle } from "./sampleData";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
 

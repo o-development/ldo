@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { TestData } from "./testData.js";
+import type { TestData } from "./testData";
 
 /**
  * Activity Pub

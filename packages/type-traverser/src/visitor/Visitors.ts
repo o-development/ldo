@@ -4,10 +4,10 @@ import type {
   PrimitiveType,
   TraverserTypes,
   UnionType,
-} from "../index.js";
-import type { InterfaceInstanceNode } from "../instanceGraph/nodes/InterfaceInstanceNode.js";
-import type { PrimitiveInstanceNode } from "../instanceGraph/nodes/PrimitiveInstanceNode.js";
-import type { UnionInstanceNode } from "../instanceGraph/nodes/UnionInstanceNode.js";
+} from "../index";
+import type { InterfaceInstanceNode } from "../instanceGraph/nodes/InterfaceInstanceNode";
+import type { PrimitiveInstanceNode } from "../instanceGraph/nodes/PrimitiveInstanceNode";
+import type { UnionInstanceNode } from "../instanceGraph/nodes/UnionInstanceNode";
 
 export type InterfaceVisitorFunction<
   Types extends TraverserTypes<any>,

@@ -1,9 +1,9 @@
-import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset.js";
+import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset";
 import {
   changeData,
   commitData,
   createConnectedLdoDataset,
-} from "../src/index.js";
+} from "../src/index";
 import {
   solidConnectedPlugin,
   type SolidConnectedPlugin,
@@ -16,9 +16,9 @@ import {
   OTHER_PROFILE_URI,
   THIRD_PROFILE_SUBJECT,
   THIRD_PROFILE_URI,
-} from "./LinkTraversalData.js";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
-import { wait } from "./util/wait.js";
+} from "./LinkTraversalData";
+import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { wait } from "./util/wait";
 import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Link Traversal", () => {

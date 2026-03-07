@@ -2,18 +2,18 @@
 import type {
   BaseTraverserTypes,
   TraverserTypes,
-} from "../../../traverser/TraverserTypes.js";
-import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph.js";
-import type { Transformers } from "../../Transformers.js";
-import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter.js";
-import type { MultiMap } from "./MultiMap.js";
-import type { SuperPromise } from "./SuperPromise.js";
+} from "../../../traverser/TraverserTypes";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
+import type { Transformers } from "../../Transformers";
+import type { CircularDepenedencyAwaiter } from "./CircularDependencyAwaiter";
+import type { MultiMap } from "./MultiMap";
+import type { SuperPromise } from "./SuperPromise";
 import type {
   BaseReturnType,
   TransformerReturnTypes,
-} from "../../TransformerReturnTypes.js";
-import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition.js";
-import type { KeyTypes } from "../../../UtilTypes.js";
+} from "../../TransformerReturnTypes";
+import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition";
+import type { KeyTypes } from "../../../UtilTypes";
 
 export type TransformerSubTraverser<
   Types extends TraverserTypes<any>,

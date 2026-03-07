@@ -1,6 +1,6 @@
 import EventEmitter from "events";
-import type { Resource, ResourceEventEmitter } from "./Resource.js";
-import { InvalidUriError } from "./results/error/InvalidUriError.js";
+import type { Resource, ResourceEventEmitter } from "./Resource";
+import { InvalidUriError } from "./results/error/InvalidUriError";
 
 /**
  * A resource that represents a URI that does not have a valid URI given the

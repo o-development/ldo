@@ -10,7 +10,7 @@ import type {
   TraverserTypes,
   UnionInputReturnType,
   UnionType,
-} from "../index.js";
+} from "../index";
 
 export type RecursivelyFindReturnType<
   Types extends TraverserTypes<any>,

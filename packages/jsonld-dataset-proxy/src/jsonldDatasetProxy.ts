@@ -1,10 +1,10 @@
 import { defaultGraph } from "@ldo/rdf-utils";
 import type { Dataset } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
-import { ContextUtil } from "./ContextUtil.js";
-import { JsonldDatasetProxyBuilder } from "./JsonldDatasetProxyBuilder.js";
-import { ProxyContext } from "./ProxyContext.js";
-import type { LdoJsonldContext } from "./LdoJsonldContext.js";
+import { ContextUtil } from "./ContextUtil";
+import { JsonldDatasetProxyBuilder } from "./JsonldDatasetProxyBuilder";
+import { ProxyContext } from "./ProxyContext";
+import type { LdoJsonldContext } from "./LdoJsonldContext";
 
 /**
  * Creates a JSON-LD Dataset Proxy

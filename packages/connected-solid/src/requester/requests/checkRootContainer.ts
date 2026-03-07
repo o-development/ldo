@@ -1,14 +1,14 @@
-import type { BasicRequestOptions } from "./requestOptions.js";
+import type { BasicRequestOptions } from "./requestOptions";
 import * as httpLinkHeader from "http-link-header";
-import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess.js";
+import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
 import type {
   HttpErrorResultType,
   UnexpectedHttpError,
-} from "../results/error/HttpErrorResult.js";
-import { HttpErrorResult } from "../results/error/HttpErrorResult.js";
+} from "../results/error/HttpErrorResult";
+import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import { UnexpectedResourceError } from "@ldo/connected";
-import type { SolidContainer } from "../../resources/SolidContainer.js";
-import { guaranteeFetch } from "../../util/guaranteeFetch.js";
+import type { SolidContainer } from "../../resources/SolidContainer";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 
 const parseLinkHeader: (typeof httpLinkHeader)["default"]["parse"] =
   httpLinkHeader.default.parse;

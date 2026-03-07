@@ -1,6 +1,6 @@
 {
   "name": "@ldo/cli",
-  "version": "1.0.0-alpha.32",
+  "version": "1.0.0-alpha.36",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
@@ -13,7 +13,7 @@
     "remove-dist": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
     "update-permission": "chmod +x ./dist/index.js",
-    "test": "jest --coverage",
+    "test": "vitest run --coverage",
     "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "test:init": "rm -rf ./example-init && cp -R ./example-init-placeholder ./example-init && cd ./example-init && ../dist/index.js init",
@@ -41,8 +41,8 @@
   },
   "dependencies": {
     "@jeswr/shacl2shex": "^1.1.0",
-    "@ldo/ldo": "^1.0.0-alpha.32",
-    "@ldo/schema-converter-shex": "^1.0.0-alpha.32",
+    "@ldo/ldo": "^1.0.0-alpha.36",
+    "@ldo/schema-converter-shex": "^1.0.0-alpha.36",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
@@ -63,5 +63,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
+  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
 }

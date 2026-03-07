@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource.js";
-import type { ConnectedResult } from "../ConnectedResult.js";
+import type { Resource } from "../../Resource";
+import type { ConnectedResult } from "../ConnectedResult";
 
 /**
  * Indicates that some action taken by LDO was a success

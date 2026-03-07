@@ -1,19 +1,19 @@
-import { GetWacRuleSuccess } from "./results/GetWacRuleSuccess.js";
-import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes.js";
-import type { AccessModeList, WacRule } from "./WacRule.js";
-import type { Authorization } from "../.ldo/wac.typings.js";
-import { WacRuleAbsent } from "./results/WacRuleAbsent.js";
+import { GetWacRuleSuccess } from "./results/GetWacRuleSuccess";
+import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
+import type { AccessModeList, WacRule } from "./WacRule";
+import type { Authorization } from "../.ldo/wac.typings";
+import { WacRuleAbsent } from "./results/WacRuleAbsent";
 import {
   HttpErrorResult,
   type HttpErrorResultType,
-} from "../requester/results/error/HttpErrorResult.js";
-import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError.js";
+} from "../requester/results/error/HttpErrorResult";
+import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { UnexpectedResourceError } from "@ldo/connected";
-import type { SolidLeaf } from "../resources/SolidLeaf.js";
-import type { SolidContainer } from "../resources/SolidContainer.js";
-import { guaranteeFetch } from "../util/guaranteeFetch.js";
-import type { BasicRequestOptions } from "../requester/requests/requestOptions.js";
-import { rawTurtleToDataset } from "../util/rdfUtils.js";
+import type { SolidLeaf } from "../resources/SolidLeaf";
+import type { SolidContainer } from "../resources/SolidContainer";
+import { guaranteeFetch } from "../util/guaranteeFetch";
+import type { BasicRequestOptions } from "../requester/requests/requestOptions";
+import { rawTurtleToDataset } from "../util/rdfUtils";
 
 export type GetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
   | HttpErrorResultType<ResourceType>

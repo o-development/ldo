@@ -1,10 +1,10 @@
-import type { SubjectProxyTarget } from "./createSubjectHandler.js";
+import type { SubjectProxyTarget } from "./createSubjectHandler";
 import { namedNode } from "@ldo/rdf-utils";
-import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation.js";
-import type { SubjectProxy } from "./SubjectProxy.js";
-import type { SetProxy } from "../setProxy/SetProxy.js";
-import type { ProxyContext } from "../ProxyContext.js";
-import { filterQuadsByLanguageOrdering } from "../language/languageUtils.js";
+import { nodeToJsonldRepresentation } from "../util/nodeToJsonldRepresentation";
+import type { SubjectProxy } from "./SubjectProxy";
+import type { SetProxy } from "../setProxy/SetProxy";
+import type { ProxyContext } from "../ProxyContext";
+import { filterQuadsByLanguageOrdering } from "../language/languageUtils";
 
 /**
  * Given a subject target and a key return the correct value

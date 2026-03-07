@@ -2,7 +2,7 @@ import { namedNode } from "@ldo/rdf-utils";
 import jsonldDatasetProxy, {
   BasicLdSet,
   _getUnderlyingNode,
-} from "../src/index.js";
+} from "../src/index";
 import { createDataset } from "@ldo/dataset";
 
 describe("BasicLdSet", () => {

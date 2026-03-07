@@ -1,7 +1,7 @@
 import type { Annotation, valueSetValue } from "shexj";
 import type { ExpandedTermDefinition } from "jsonld";
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
-import { hashValueSetValue } from "./util/hashValueSetValue.js";
+import { hashValueSetValue } from "./util/hashValueSetValue";
 
 /**
  * Name functions

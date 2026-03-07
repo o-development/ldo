@@ -1,6 +1,6 @@
 import type { ContextDefinition } from "jsonld";
 import type { Schema } from "shexj";
-import type { LdoBase } from "./util.js";
+import type { LdoBase } from "./util";
 
 /**
  * @category Types
@@ -15,9 +15,9 @@ import type { LdoBase } from "./util.js";
  * The following is the ShapeType generated for the example `FoafProfile.shex` file.
  * ```typescript
  * import { ShapeType } from "ldo";
- * import { foafProfileSchema } from "./foafProfile.schema.js";
- * import { foafProfileContext } from "./foafProfile.context.js";
- * import { FoafProfile } from "./foafProfile.typings.js";
+ * import { foafProfileSchema } from "./foafProfile.schema";
+ * import { foafProfileContext } from "./foafProfile.context";
+ * import { FoafProfile } from "./foafProfile.typings";
  *
  * export const FoafProfileShapeType: ShapeType<FoafProfile> = {
  *   schema: foafProfileSchema,
@@ -28,8 +28,8 @@ import type { LdoBase } from "./util.js";
  *
  * This can be imported and used to create a Linked Data Object.
  * ```typescript
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
- * import { FoafProfile } from "./.ldo/foafProfile.typings.js";
+ * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ * import { FoafProfile } from "./.ldo/foafProfile.typings";
  *
  * const profile: FoafProfile = ldoDataset
  *   .usingType(FoafProfileShapeType)

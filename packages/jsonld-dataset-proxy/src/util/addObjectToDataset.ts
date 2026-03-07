@@ -1,18 +1,18 @@
 import type { BlankNode, NamedNode } from "@rdfjs/types";
 import { namedNode, literal, quad } from "@ldo/rdf-utils";
-import { _getUnderlyingNode } from "../types.js";
-import type { SubjectProxy } from "../subjectProxy/SubjectProxy.js";
-import { getNodeFromRawObject, getNodeFromRawValue } from "./getNodeFromRaw.js";
-import type { RawObject, RawValue } from "./RawObject.js";
-import type { ProxyContext } from "../ProxyContext.js";
-import { isSubjectProxy } from "../subjectProxy/isSubjectProxy.js";
-import { NodeSet } from "./NodeSet.js";
+import { _getUnderlyingNode } from "../types";
+import type { SubjectProxy } from "../subjectProxy/SubjectProxy";
+import { getNodeFromRawObject, getNodeFromRawValue } from "./getNodeFromRaw";
+import type { RawObject, RawValue } from "./RawObject";
+import type { ProxyContext } from "../ProxyContext";
+import { isSubjectProxy } from "../subjectProxy/isSubjectProxy";
+import { NodeSet } from "./NodeSet";
 import {
   getLanguageKeyForWriteOperation,
   languageDeleteMatch,
   languageKeyToLiteralLanguage,
-} from "../language/languageUtils.js";
-import { BasicLdSet } from "../setProxy/ldSet/BasicLdSet.js";
+} from "../language/languageUtils";
+import { BasicLdSet } from "../setProxy/ldSet/BasicLdSet";
 
 export function addRawValueToDatasetRecursive(
   subject: NamedNode | BlankNode,

@@ -1,4 +1,4 @@
-import { serializedToSubscribableDataset } from "../src/index.js";
+import { serializedToSubscribableDataset } from "../src/index";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { turtleData, jsonLdData } from "@ldo/dataset/test/sampleData";

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { v4 } from "uuid";
-import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants.js";
-import { guaranteeOptions, type Options } from "./util/Options.js";
+import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants";
+import { guaranteeOptions, type Options } from "./util/Options";
 import { namedNode, quad } from "@ldo/rdf-utils";
-import type { TypeRegistration } from "./.ldo/typeIndex.typings.js";
-import { getProfile } from "./getTypeIndex.js";
-import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes.js";
+import type { TypeRegistration } from "./.ldo/typeIndex.typings";
+import { getProfile } from "./getTypeIndex";
+import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
 import type { NamedNode } from "@rdfjs/types";
 import { set } from "@ldo/ldo";
 import type {
@@ -18,7 +18,7 @@ import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import {
   TypeIndexDocumentShapeType,
   TypeRegistrationShapeType,
-} from "./.ldo/typeIndex.shapeTypes.js";
+} from "./.ldo/typeIndex.shapeTypes";
 
 /**
  * =============================================================================
