@@ -172,7 +172,7 @@ export async function createDataResource(
       slug: getSlug(resource.uri),
     };
     if (resource.type === "SolidContainer") {
-      headers.link = '<http://www.w3.org/ns/ldp#Container>; rel="type"';
+      headers.link = '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"';
     }
     const response = await fetch(parentUri, {
       method: "post",

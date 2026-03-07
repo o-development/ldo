@@ -966,6 +966,13 @@ describe("Integration", () => {
           .children()
           .some((child) => child.uri === SAMPLE_CONTAINER_URI),
       ).toBe(true);
+      const postRequest = s.fetchMock.mock.calls.find(
+        (call) => call[1]?.method?.toLowerCase() === "post",
+      );
+      expect(postRequest?.[1]?.headers).toHaveProperty(
+        "link",
+        '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"',
+      );
     });
 
     it("returns an error if creating a container", async () => {
