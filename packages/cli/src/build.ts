@@ -8,7 +8,7 @@ import prettier from "prettier";
 import loading from "loading-cli";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { forAllShapes } from "./util/forAllShapes";
+import { forAllShapes } from "./util/forAllShapes.js";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

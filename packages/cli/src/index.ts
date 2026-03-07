@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import { program } from "commander";
-import { build } from "./build";
-import { init } from "./init";
-import { create } from "./create";
-import { generateReadme } from "./generateReadme";
+import { build } from "./build.js";
+import { init } from "./init.js";
+import { create } from "./create.js";
+import { generateReadme } from "./generateReadme.js";
 
 program
   .name("LDO-CLI")
