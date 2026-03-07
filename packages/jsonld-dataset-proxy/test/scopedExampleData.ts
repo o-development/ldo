@@ -1,5 +1,5 @@
 import type { ContextDefinition } from "jsonld";
-import type { LdoJsonldContext } from "../src/LdoJsonldContext.js";
+import type { LdoJsonldContext } from "../src/LdoJsonldContext";
 
 export interface Bender {
   "@id"?: string;

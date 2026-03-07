@@ -4,9 +4,9 @@ import type {
   DatasetCore,
   Quad,
 } from "@rdfjs/types";
-import ExtendedDatasetFactory from "./ExtendedDatasetFactory.js";
+import ExtendedDatasetFactory from "./ExtendedDatasetFactory";
 import * as rdfds from "@rdfjs/dataset";
-import type ExtendedDataset from "./ExtendedDataset.js";
+import type ExtendedDataset from "./ExtendedDataset";
 
 const initializeDatasetCore: (typeof rdfds)["dataset"] =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

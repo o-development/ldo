@@ -1,9 +1,9 @@
-import { init } from "./init.js";
+import { init } from "./init";
 import {
   modifyPackageJson,
   savePackageJson,
-} from "./util/modifyPackageJson.js";
-import { generateReadme } from "./generateReadme.js";
+} from "./util/modifyPackageJson";
+import { generateReadme } from "./generateReadme";
 import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";

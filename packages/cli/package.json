@@ -13,7 +13,7 @@
     "remove-dist": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
     "update-permission": "chmod +x ./dist/index.js",
-    "test": "jest --coverage",
+    "test": "vitest run --coverage",
     "prepublishOnly": " npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "test:init": "rm -rf ./example-init && cp -R ./example-init-placeholder ./example-init && cd ./example-init && ../dist/index.js init",

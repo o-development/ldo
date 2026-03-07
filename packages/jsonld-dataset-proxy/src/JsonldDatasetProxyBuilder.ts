@@ -1,10 +1,10 @@
 import { namedNode, blankNode } from "@ldo/rdf-utils";
 import type { BlankNode, NamedNode } from "@rdfjs/types";
 import type { GraphNode, QuadMatch } from "@ldo/rdf-utils";
-import type { LanguageOrdering } from "./language/languageTypes.js";
-import type { ProxyContext } from "./ProxyContext.js";
-import type { LiteralLike, ObjectLike } from "./types.js";
-import type { LdSet } from "./setProxy/ldSet/LdSet.js";
+import type { LanguageOrdering } from "./language/languageTypes";
+import type { ProxyContext } from "./ProxyContext";
+import type { LiteralLike, ObjectLike } from "./types";
+import type { LdSet } from "./setProxy/ldSet/LdSet";
 
 /**
  * Helps build JSON LD Dataset Proxies for a specific dataset and context

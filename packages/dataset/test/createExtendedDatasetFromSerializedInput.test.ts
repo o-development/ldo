@@ -1,5 +1,5 @@
-import { serializedToDataset } from "../src/index.js";
-import { turtleData, jsonLdData, turtleData2 } from "./sampleData.js";
+import { serializedToDataset } from "../src/index";
+import { turtleData, jsonLdData, turtleData2 } from "./sampleData";
 
 describe("createExtendedDatasetFromSerializedInput", () => {
   it("creates a dataset with turtle", async () => {

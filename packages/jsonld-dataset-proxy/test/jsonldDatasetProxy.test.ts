@@ -3,7 +3,7 @@ import type {
   JsonldDatasetProxyBuilder,
   LanguageSet,
   LdSet,
-} from "../src/index.js";
+} from "../src/index";
 import {
   graphOf,
   jsonldDatasetProxy,
@@ -18,8 +18,8 @@ import {
   _writeGraphs,
   set,
   SetProxy,
-} from "../src/index.js";
-import type { ObservationShape, PatientShape } from "./patientExampleData.js";
+} from "../src/index";
+import type { ObservationShape, PatientShape } from "./patientExampleData";
 import {
   patientData,
   tinyPatientData,
@@ -29,7 +29,7 @@ import {
   tinyPatientDataWithLanguageTags,
   patientUnnestedContext,
   patientNestedContext,
-} from "./patientExampleData.js";
+} from "./patientExampleData";
 import {
   namedNode,
   quad,
@@ -39,14 +39,14 @@ import {
 } from "@ldo/rdf-utils";
 import type { Dataset, NamedNode } from "@rdfjs/types";
 import type { ContextDefinition } from "jsonld";
-import type { LdoJsonldContext } from "../src/LdoJsonldContext.js";
+import type { LdoJsonldContext } from "../src/LdoJsonldContext";
 import {
   scopedContext,
   scopedData,
   type Avatar,
   type Bender,
-} from "./scopedExampleData.js";
-import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy.js";
+} from "./scopedExampleData";
+import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy";
 
 global.console.warn = () => {};
 

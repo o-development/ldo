@@ -5,8 +5,8 @@ import { createDatasetFromSerializedInput } from "@ldo/dataset";
 import {
   createLdoDataset,
   createLdoDatasetFactory,
-} from "./createLdoDataset.js";
-import type { LdoDataset } from "./LdoDataset.js";
+} from "./createLdoDataset";
+import type { LdoDataset } from "./LdoDataset";
 
 /**
  * @category Getting an LdoDataset

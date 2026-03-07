@@ -1,5 +1,5 @@
-import type { ISubscribableDataset } from "../src/index.js";
-import { TransactionDataset, createSubscribableDataset } from "../src/index.js";
+import type { ISubscribableDataset } from "../src/index";
+import { TransactionDataset, createSubscribableDataset } from "../src/index";
 import { createDataset } from "@ldo/dataset";
 import {
   namedNode,

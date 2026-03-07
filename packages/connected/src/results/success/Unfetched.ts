@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource.js";
-import { ResourceSuccess } from "./SuccessResult.js";
+import type { Resource } from "../../Resource";
+import { ResourceSuccess } from "./SuccessResult";
 
 /**
  * Indicates that a specific resource is unfetched

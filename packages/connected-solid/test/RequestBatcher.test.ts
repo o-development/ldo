@@ -1,5 +1,5 @@
-import type { WaitingProcess } from "../src/util/RequestBatcher.js";
-import { RequestBatcher } from "../src/util/RequestBatcher.js";
+import type { WaitingProcess } from "../src/util/RequestBatcher";
+import { RequestBatcher } from "../src/util/RequestBatcher";
 import { describe, it, expect, vi } from "vitest";
 
 describe("RequestBatcher", () => {

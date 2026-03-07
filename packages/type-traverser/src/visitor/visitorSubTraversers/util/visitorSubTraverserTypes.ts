@@ -2,11 +2,11 @@
 import type {
   BaseTraverserTypes,
   TraverserTypes,
-} from "../../../traverser/TraverserTypes.js";
-import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph.js";
-import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet.js";
-import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition.js";
-import type { Visitors } from "../../Visitors.js";
+} from "../../../traverser/TraverserTypes";
+import type { InstanceGraph } from "../../../instanceGraph/InstanceGraph";
+import type { MultiSet } from "../../../transformer/transformerSubTraversers/util/MultiSet";
+import type { TraverserDefinitions } from "../../../traverser/TraverserDefinition";
+import type { Visitors } from "../../Visitors";
 
 export type VisitorSubTraverser<
   Types extends TraverserTypes<any>,

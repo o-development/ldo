@@ -4,11 +4,11 @@ import type {
   NextGraphConnectedPlugin,
   NextGraphResource,
   NextGraphUri,
-} from "../src/index.js";
-import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset.js";
+} from "../src/index";
+import { createNextGraphLdoDataset } from "../src/createNextGraphLdoDataset";
 import { parseRdf } from "@ldo/ldo";
 import { namedNode } from "@ldo/rdf-utils";
-import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess.js";
+import type { NextGraphReadSuccess } from "../src/results/NextGraphReadSuccess";
 import { rm, cp } from "fs/promises";
 import path from "path";
 import { describe, it, expect, beforeEach, afterAll } from "vitest";

@@ -1,4 +1,4 @@
-import { serializedToDataset } from "../src/index.js";
+import { serializedToDataset } from "../src/index";
 
 async function run(): Promise<void> {
   // Create an ExtendedDataset using Turtle

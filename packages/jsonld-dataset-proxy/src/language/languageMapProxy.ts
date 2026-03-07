@@ -1,13 +1,13 @@
 import type { PredicateNode, SubjectNode } from "@ldo/rdf-utils";
 import { quad, literal } from "@ldo/rdf-utils";
-import type { ProxyContext } from "../ProxyContext.js";
+import type { ProxyContext } from "../ProxyContext";
 import {
   languageKeyToLiteralLanguage,
   quadsToLanguageQuadMap,
   languageDeleteMatch,
-} from "./languageUtils.js";
-import type { LanguageMap, LanguageSetMap } from "./languagesOf.js";
-import LanguageSet from "./languageSet.js";
+} from "./languageUtils";
+import type { LanguageMap, LanguageSetMap } from "./languagesOf";
+import LanguageSet from "./languageSet";
 
 export function createLanguageMapProxy<
   Target extends LanguageMap | LanguageSetMap,

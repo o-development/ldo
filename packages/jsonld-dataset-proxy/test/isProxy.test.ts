@@ -3,7 +3,7 @@ import {
   getSubjectProxyFromObject,
   isSetProxy,
   isSubjectProxy,
-} from "../src/index.js";
+} from "../src/index";
 
 describe("isSubjectProxy", () => {
   it("returns false if undefined is passed as a parameter", () => {

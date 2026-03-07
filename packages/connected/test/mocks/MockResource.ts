@@ -6,10 +6,10 @@ import {
   type Resource,
   type ResourceError,
   type ResourceEventEmitter,
-} from "../../src/index.js";
+} from "../../src/index";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { ReadSuccess } from "../../src/results/success/ReadSuccess.js";
-import type { UpdateSuccess } from "../../src/results/success/UpdateSuccess.js";
+import type { ReadSuccess } from "../../src/results/success/ReadSuccess";
+import type { UpdateSuccess } from "../../src/results/success/UpdateSuccess";
 import { vi } from "vitest";
 
 export class MockResource

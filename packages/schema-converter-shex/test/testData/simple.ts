@@ -1,4 +1,4 @@
-import type { TestData } from "./testData.js";
+import type { TestData } from "./testData";
 
 /**
  * SIMPLE

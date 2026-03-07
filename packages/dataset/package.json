@@ -3,25 +3,28 @@
   "version": "1.0.0-alpha.30",
   "description": "An RDFJS dataset implementation",
   "type": "module",
-  "main": "./dist/cjs/index.cjs",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc --project tsconfig.cjs.json && node ../../scripts/rename-to-cjs.js",
-    "build:esm": "tsc --project tsconfig.esm.json",
-    "test": "jest --coverage",
+    "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
+    "test": "vitest run --coverage",
     "example:extendedDataset": "ts-node ./example/extendedDatasetExample.ts",
     "example:loadData": "ts-node ./example/loadDataExample.ts",
-    "prepublishOnly": " npm run build",
+    "prepublishOnly": "npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "remove-dist": "rimraf dist/"
   },
@@ -36,7 +39,6 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/dataset#readme",
   "devDependencies": {
-    "@rdfjs/types": "^1.0.1",
     "@types/jsonld": "^1.5.6",
     "@types/rdfjs__dataset": "^1.0.4",
     "@types/readable-stream": "^2.3.13",
@@ -47,7 +49,8 @@
     "@ldo/rdf-utils": "^1.0.0-alpha.30",
     "@rdfjs/dataset": "^1.1.0",
     "buffer": "^6.0.3",
-    "readable-stream": "^4.2.0"
+    "readable-stream": "^4.2.0",
+    "@rdfjs/types": "^1.0.1"
   },
   "files": [
     "dist",

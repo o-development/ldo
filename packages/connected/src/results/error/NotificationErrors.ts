@@ -1,6 +1,6 @@
-import type { Resource } from "../../Resource.js";
-import type { UnexpectedResourceError } from "./ErrorResult.js";
-import { ResourceError } from "./ErrorResult.js";
+import type { Resource } from "../../Resource";
+import type { UnexpectedResourceError } from "./ErrorResult";
+import { ResourceError } from "./ErrorResult";
 
 export type NotificationCallbackError<ResourceType extends Resource> =
   | DisconnectedAttemptingReconnectError<ResourceType>

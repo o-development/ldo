@@ -5,13 +5,13 @@ import type {
   Quad,
   DatasetCore,
 } from "@rdfjs/types";
-import type { ISubscribableDataset } from "../src/index.js";
+import type { ISubscribableDataset } from "../src/index";
 import { ExtendedDatasetFactory, createDataset } from "@ldo/dataset";
 import {
   TransactionDataset,
   createSubscribableDataset,
   createTransactionDatasetFactory,
-} from "../src/index.js";
+} from "../src/index";
 import datasetCoreFactory from "@rdfjs/dataset";
 
 describe("TransactionDataset", () => {

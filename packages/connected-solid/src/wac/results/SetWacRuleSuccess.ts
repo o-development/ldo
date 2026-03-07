@@ -1,7 +1,7 @@
 import { ResourceSuccess } from "@ldo/connected";
-import type { WacRule } from "../WacRule.js";
-import type { SolidContainer } from "../../resources/SolidContainer.js";
-import type { SolidLeaf } from "../../resources/SolidLeaf.js";
+import type { WacRule } from "../WacRule";
+import type { SolidContainer } from "../../resources/SolidContainer";
+import type { SolidLeaf } from "../../resources/SolidLeaf";
 
 /**
  * Returned when rules were successfully written

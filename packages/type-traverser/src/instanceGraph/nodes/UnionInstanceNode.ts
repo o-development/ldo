@@ -2,9 +2,9 @@
 import type {
   TraverserTypes,
   UnionType,
-} from "../../traverser/TraverserTypes.js";
-import type { InstanceNodeFor } from "./createInstanceNodeFor.js";
-import { InstanceNode } from "./InstanceNode.js";
+} from "../../traverser/TraverserTypes";
+import type { InstanceNodeFor } from "./createInstanceNodeFor";
+import { InstanceNode } from "./InstanceNode";
 
 export class UnionInstanceNode<
   Types extends TraverserTypes<any>,

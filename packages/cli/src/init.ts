@@ -2,7 +2,7 @@ import { exec } from "child-process-promise";
 import fs from "fs-extra";
 import path from "path";
 import { renderFile } from "ejs";
-import { modifyPackageJson } from "./util/modifyPackageJson.js";
+import { modifyPackageJson } from "./util/modifyPackageJson";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 

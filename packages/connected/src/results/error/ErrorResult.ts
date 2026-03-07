@@ -1,5 +1,5 @@
-import type { Resource } from "../../Resource.js";
-import type { ConnectedResult } from "../ConnectedResult.js";
+import type { Resource } from "../../Resource";
+import type { ConnectedResult } from "../ConnectedResult";
 
 /**
  * A result indicating that the request failed in some kind of way

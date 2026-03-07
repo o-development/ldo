@@ -1,6 +1,6 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
-import type { JsonLdContextBuilder } from "./JsonLdContextBuilder.js";
-import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint.js";
+import type { JsonLdContextBuilder } from "./JsonLdContextBuilder";
+import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
 
 /**
  * Visitor

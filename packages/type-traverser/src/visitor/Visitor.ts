@@ -15,10 +15,10 @@ import type {
   UnionVisitorInputDefinition,
   Visitors,
   VisitorsInput,
-} from "../index.js";
-import { InstanceGraph } from "../instanceGraph/InstanceGraph.js";
-import { MultiSet } from "../transformer/transformerSubTraversers/util/MultiSet.js";
-import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentSubTraverser.js";
+} from "../index";
+import { InstanceGraph } from "../instanceGraph/InstanceGraph";
+import { MultiSet } from "../transformer/transformerSubTraversers/util/MultiSet";
+import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentSubTraverser";
 
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
 // but if I ever feel so inclined, I should fix this in the future.

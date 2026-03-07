@@ -1,4 +1,4 @@
-import { SetProxy } from "./SetProxy.js";
+import { SetProxy } from "./SetProxy";
 
 export function isSetProxy(someObject?: unknown): someObject is SetProxy {
   if (!someObject) return false;

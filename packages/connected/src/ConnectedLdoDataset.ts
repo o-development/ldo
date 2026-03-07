@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoDataset, startTransaction } from "@ldo/ldo";
-import type { ConnectedPlugin } from "./types/ConnectedPlugin.js";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
-import { InvalidIdentifierResource } from "./InvalidIdentifierResource.js";
-import type { ConnectedContext } from "./types/ConnectedContext.js";
+import { InvalidIdentifierResource } from "./InvalidIdentifierResource";
+import type { ConnectedContext } from "./types/ConnectedContext";
 import type {
   GetResourceReturnType,
   IConnectedLdoDataset,
-} from "./types/IConnectedLdoDataset.js";
-import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset.js";
+} from "./types/IConnectedLdoDataset";
+import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder.js";
+import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
 import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**

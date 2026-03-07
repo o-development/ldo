@@ -7,6 +7,15 @@
         "packages/*/src"
       ]
     },
-    "allowJs": true
-  }
+    "allowJs": true,
+    "noEmit": true
+  },
+  "exclude": [
+    "**/dist/**",
+    "**/coverage/**",
+    "**/node_modules/**",
+    "**/vitest.config.js",
+    "**/vite.config.*",
+    "**/jest.config.*"
+  ]
 }

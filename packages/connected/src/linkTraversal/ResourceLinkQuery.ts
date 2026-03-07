@@ -4,12 +4,12 @@ import type {
   ILinkQuery,
   LQInput,
   LQReturn,
-} from "../types/ILinkQuery.js";
-import type { ConnectedPlugin } from "../types/ConnectedPlugin.js";
+} from "../types/ILinkQuery";
+import type { ConnectedPlugin } from "../types/ConnectedPlugin";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import { exploreLinks } from "./exploreLinks.js";
-import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset.js";
-import type { IConnectedLdoBuilder } from "../types/IConnectedLdoBuilder.js";
+import { exploreLinks } from "./exploreLinks";
+import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
+import type { IConnectedLdoBuilder } from "../types/IConnectedLdoBuilder";
 import { v4 } from "uuid";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";

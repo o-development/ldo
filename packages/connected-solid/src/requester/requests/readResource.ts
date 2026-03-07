@@ -1,26 +1,26 @@
-import type { UnexpectedHttpError } from "../results/error/HttpErrorResult.js";
+import type { UnexpectedHttpError } from "../results/error/HttpErrorResult";
 import {
   HttpErrorResult,
   type HttpErrorResultType,
-} from "../results/error/HttpErrorResult.js";
-import type { DatasetRequestOptions } from "./requestOptions.js";
+} from "../results/error/HttpErrorResult";
+import type { DatasetRequestOptions } from "./requestOptions";
 import {
   BinaryReadSuccess,
   DataReadSuccess,
-} from "../results/success/SolidReadSuccess.js";
-import { ContainerReadSuccess } from "../results/success/SolidReadSuccess.js";
-import { NoncompliantPodError } from "../results/error/NoncompliantPodError.js";
-import { guaranteeFetch } from "../../util/guaranteeFetch.js";
+} from "../results/success/SolidReadSuccess";
+import { ContainerReadSuccess } from "../results/success/SolidReadSuccess";
+import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
+import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { Resource } from "@ldo/connected";
 import { UnexpectedResourceError, AbsentReadSuccess } from "@ldo/connected";
-import { checkHeadersForRootContainer } from "./checkRootContainer.js";
+import { checkHeadersForRootContainer } from "./checkRootContainer";
 import { namedNode } from "@ldo/rdf-utils";
-import type { SolidLeaf } from "../../resources/SolidLeaf.js";
-import type { SolidContainer } from "../../resources/SolidContainer.js";
+import type { SolidLeaf } from "../../resources/SolidLeaf";
+import type { SolidContainer } from "../../resources/SolidContainer";
 import {
   addRawTurtleToDataset,
   addResourceRdfToContainer,
-} from "../../util/rdfUtils.js";
+} from "../../util/rdfUtils";
 
 /**
  * All possible return values for reading a leaf

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { BaseTraverserTypes, TraverserTypes } from "../../index.js";
+import type { BaseTraverserTypes, TraverserTypes } from "../../index";
 import type {
   BaseReturnType,
   TransformerReturnTypes,
-} from "../TransformerReturnTypes.js";
-import { transformerInterfaceSubTraverser } from "./TransformerInterfaceSubTraverser.js";
-import { transformerPrimitiveSubTraverser } from "./TransformerPrimitiveSubTraverser.js";
-import { transformerUnionSubTraverser } from "./TransformerUnionSubTraverser.js";
+} from "../TransformerReturnTypes";
+import { transformerInterfaceSubTraverser } from "./TransformerInterfaceSubTraverser";
+import { transformerPrimitiveSubTraverser } from "./TransformerPrimitiveSubTraverser";
+import { transformerUnionSubTraverser } from "./TransformerUnionSubTraverser";
 import type {
   TransformerSubTraverser,
   TransformerSubTraverserGlobals,
-} from "./util/transformerSubTraverserTypes.js";
-import { timeout } from "./util/timeout.js";
+} from "./util/transformerSubTraverserTypes";
+import { timeout } from "./util/timeout";
 
 const subTraversers: Record<
   string,

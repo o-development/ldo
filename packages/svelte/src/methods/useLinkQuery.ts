@@ -8,7 +8,7 @@ import {
 import { type LdoBase, type LdoBuilder, type ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import { type Readable } from "svelte/store";
-import { useTrackingProxy } from "../util/useTrackingProxy.js";
+import { useTrackingProxy } from "../util/useTrackingProxy";
 import { onDestroy } from "svelte";
 
 /**

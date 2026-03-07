@@ -3,23 +3,26 @@
   "version": "1.0.0-alpha.30",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
-  "main": "./dist/cjs/index.cjs",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rimraf dist && npm run build:cjs && npm run build:esm",
-    "build:cjs": "tsc --project tsconfig.cjs.json && node ../../scripts/rename-to-cjs.js",
-    "build:esm": "tsc --project tsconfig.esm.json",
+    "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
     "test": "[ \"$CI\" = \"true\" ] && echo 'Skipping integration tests in CI.' || npm run test:integration",
-    "prepublishOnly": " npm run build",
+    "prepublishOnly": "npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "start-test-server": "./test/ngd -vv --save-key -l 14400 --base ./test/nextgraph-data",
@@ -40,7 +43,6 @@
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^3.0.0",
     "@ldo/cli": "^1.0.0-alpha.30",
-    "@rdfjs/types": "^1.0.1",
     "@solid-notifications/types": "^0.1.2",
     "@solid/community-server": "8.0.0-alpha.0",
     "cross-env": "^7.0.3",
@@ -60,7 +62,9 @@
     "@ldo/rdf-utils": "^1.0.0-alpha.30",
     "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "@rdfjs/types": "^1.0.1",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.30"
   },
   "files": [
     "dist",

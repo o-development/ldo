@@ -1,6 +1,6 @@
-import type { SubjectProxyTarget } from "./createSubjectHandler.js";
-import type { ProxyContext } from "../ProxyContext.js";
-import { addObjectToDataset } from "../util/addObjectToDataset.js";
+import type { SubjectProxyTarget } from "./createSubjectHandler";
+import type { ProxyContext } from "../ProxyContext";
+import { addObjectToDataset } from "../util/addObjectToDataset";
 
 export function deleteValueFromDataset(
   target: SubjectProxyTarget,

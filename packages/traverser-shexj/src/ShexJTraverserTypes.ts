@@ -41,7 +41,7 @@ import type {
   tripleExprRef,
   valueSetValue,
   Wildcard,
-} from "./ShexJTypes.js";
+} from "./ShexJTypes";
 import type { ValidateTraverserTypes } from "@ldo/type-traverser";
 
 export type ShexJTraverserTypes = ValidateTraverserTypes<{

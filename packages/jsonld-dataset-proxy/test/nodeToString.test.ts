@@ -1,5 +1,5 @@
 import { namedNode, blankNode, literal, defaultGraph } from "@ldo/rdf-utils";
-import { nodeToString } from "../src/index.js";
+import { nodeToString } from "../src/index";
 
 describe("nodeToString", () => {
   it("returns all the correct values for nodeToString", () => {

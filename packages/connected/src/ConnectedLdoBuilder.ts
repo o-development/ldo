@@ -1,12 +1,12 @@
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import { LdoBuilder } from "@ldo/ldo";
-import type { IConnectedLdoBuilder } from "./types/IConnectedLdoBuilder.js";
+import type { IConnectedLdoBuilder } from "./types/IConnectedLdoBuilder";
 import type { JsonldDatasetProxyBuilder } from "@ldo/jsonld-dataset-proxy";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { LQInput } from "./types/ILinkQuery.js";
-import { ResourceLinkQuery } from "./linkTraversal/ResourceLinkQuery.js";
-import type { ConnectedPlugin } from "./types/ConnectedPlugin.js";
-import type { IConnectedLdoDataset } from "./types/IConnectedLdoDataset.js";
+import type { LQInput } from "./types/ILinkQuery";
+import { ResourceLinkQuery } from "./linkTraversal/ResourceLinkQuery";
+import type { ConnectedPlugin } from "./types/ConnectedPlugin";
+import type { IConnectedLdoDataset } from "./types/IConnectedLdoDataset";
 
 export class ConnectedLdoBuilder<
     Type extends LdoBase,

@@ -4,8 +4,8 @@
 // to start.
 
 import type { LdoBase, LdSet } from "@ldo/ldo";
-// import { SolidProfileShapeShapeType } from "../../test/.ldo/solidProfile.shapeTypes.js";
-// import type { SolidProfileShape } from "../../test/.ldo/solidProfile.typings.js";
+// import { SolidProfileShapeShapeType } from "../../test/.ldo/solidProfile.shapeTypes";
+// import type { SolidProfileShape } from "../../test/.ldo/solidProfile.typings";
 
 /**
  * Link Query Input

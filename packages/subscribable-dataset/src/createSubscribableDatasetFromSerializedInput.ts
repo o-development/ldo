@@ -1,8 +1,8 @@
 import type { Quad } from "@rdfjs/types";
 import type { ParserOptions } from "@ldo/rdf-utils";
 import { createDatasetFromSerializedInput } from "@ldo/dataset";
-import { createSubscribableDatasetFactory } from "./createSubscribableDataset.js";
-import type { ISubscribableDataset } from "./types.js";
+import { createSubscribableDatasetFactory } from "./createSubscribableDataset";
+import type { ISubscribableDataset } from "./types";
 
 /**
  * Creates a SubscribableDataset with a string input that could be JSON-LD, Turtle, N-Triples, TriG, RDF*, or N3.

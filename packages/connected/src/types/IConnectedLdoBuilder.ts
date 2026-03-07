@@ -1,7 +1,7 @@
 import type { LdoBase, LdoBuilder } from "@ldo/ldo";
-import type { ConnectedPlugin } from "./ConnectedPlugin.js";
+import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { ILinkQuery, LQInput } from "./ILinkQuery.js";
+import type { ILinkQuery, LQInput } from "./ILinkQuery";
 
 export interface IConnectedLdoBuilder<
   Type extends LdoBase,
