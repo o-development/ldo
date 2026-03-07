@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-type-index",
-  "version": "1.0.0-alpha.34",
+  "version": "1.0.0-alpha.35",
   "description": "Solid Type Index support for LDO",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -38,17 +38,17 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-react#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.34",
+    "@ldo/test-solid-server": "^1.0.0-alpha.35",
     "@testing-library/react": "^14.1.2",
     "start-server-and-test": "^2.0.3",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.34",
-    "@ldo/connected-solid": "^1.0.0-alpha.34",
-    "@ldo/ldo": "^1.0.0-alpha.34",
-    "@ldo/rdf-utils": "^1.0.0-alpha.34",
-    "@ldo/solid-react": "^1.0.0-alpha.34",
+    "@ldo/connected": "^1.0.0-alpha.35",
+    "@ldo/connected-solid": "^1.0.0-alpha.35",
+    "@ldo/ldo": "^1.0.0-alpha.35",
+    "@ldo/rdf-utils": "^1.0.0-alpha.35",
+    "@ldo/solid-react": "^1.0.0-alpha.35",
     "@rdfjs/types": "^1.0.1"
   },
   "files": [
@@ -58,5 +58,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "840910c56ec3f61416f031cc76771a5673af6757"
+  "gitHead": "fafcf4dc40b0f10068e833033bfe73ee4c10898f"
 }
