@@ -166,4 +166,5 @@ export interface ITransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   rollback(): void;
   commit(): void;
   getChanges(): DatasetChanges<InAndOutQuad>;
+  hasChanges(): boolean;
 }

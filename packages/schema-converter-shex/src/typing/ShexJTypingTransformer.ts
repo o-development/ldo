@@ -287,6 +287,8 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
             return dom.type.string;
           case "http://www.w3.org/2001/XMLSchema#byte":
           case "http://www.w3.org/2001/XMLSchema#decimal":
+          case "http://www.w3.org/2001/XMLSchema#double":
+          case "http://www.w3.org/2001/XMLSchema#float":
           case "http://www.w3.org/2001/XMLSchema#int":
           case "http://www.w3.org/2001/XMLSchema#integer":
           case "http://www.w3.org/2001/XMLSchema#long":

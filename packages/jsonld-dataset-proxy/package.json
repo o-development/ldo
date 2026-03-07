@@ -1,6 +1,6 @@
 {
   "name": "@ldo/jsonld-dataset-proxy",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.32",
   "description": "",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@ldo/rdf-utils": "^1.0.0-alpha.30",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.30",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.32",
     "jsonld2graphobject": "^0.0.4",
     "@rdfjs/types": "^1.1.0",
     "@ldo/dataset": "^1.0.0-alpha.30"

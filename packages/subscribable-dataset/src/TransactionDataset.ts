@@ -232,15 +232,18 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
     removed?: Dataset<InAndOutQuad> | InAndOutQuad[];
   }): void {
     this.checkIfTransactionCommitted();
-
-    mergeDatasetChanges(this.datasetChanges, {
+    const newDatasetChanges = {
       added: changes.added
         ? this.datasetFactory.dataset(changes.added)
         : undefined,
       removed: changes.removed
         ? this.datasetFactory.dataset(changes.removed)
         : undefined,
-    });
+    };
+
+    mergeDatasetChanges(this.datasetChanges, newDatasetChanges);
+
+    this.triggerSubscriptionForQuads(newDatasetChanges);
   }
 
   /**
@@ -280,5 +283,18 @@ export class TransactionDataset<InAndOutQuad extends BaseQuad = BaseQuad>
 
   public getChanges(): DatasetChanges<InAndOutQuad> {
     return this.datasetChanges;
+  }
+
+  /**
+   * Returns true if the transaction is holding changes that have yet to be committed.
+   * Returns false if no changes have yet been made to it.
+   */
+  public hasChanges(): boolean {
+    return (
+      ((this.datasetChanges.added && this.datasetChanges.added.size > 0) ||
+        (this.datasetChanges.removed &&
+          this.datasetChanges.removed.size > 0)) ??
+      false
+    );
   }
 }

@@ -7,6 +7,7 @@ import { createBrowserSolidReactMethods } from "./createBrowserSolidReactMethods
  */
 export const {
   dataset,
+  useDataset,
   useLdo,
   useMatchObject,
   useMatchSubject,
@@ -14,6 +15,10 @@ export const {
   useSubject,
   useSubscribeToResource,
   useLinkQuery,
+  useChangeDataset,
+  useChangeSubject,
+  useChangeMatchObject,
+  useChangeMatchSubject,
 } = createLdoReactMethods([solidConnectedPlugin]);
 
 export const { BrowserSolidLdoProvider, useSolidAuth, useRootContainerFor } =

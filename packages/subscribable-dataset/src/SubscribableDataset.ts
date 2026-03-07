@@ -42,7 +42,7 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   /**
    * Helps find all the events for a given listener
    */
-  private listenerHashMap: Map<nodeEventListener<InAndOutQuad>, Set<string>> =
+  protected listenerHashMap: Map<nodeEventListener<InAndOutQuad>, Set<string>> =
     new Map();
 
   /**
@@ -170,7 +170,7 @@ export class SubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
    * Triggers all subscriptions based on an updated quads
    * @param changed The changed triples of the transaction
    */
-  private triggerSubscriptionForQuads(
+  protected triggerSubscriptionForQuads(
     changed: DatasetChanges<InAndOutQuad>,
   ): void {
     // A mapping of serialized QuadMatches to the changed quads
