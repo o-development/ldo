@@ -49,7 +49,7 @@ export const UnauthenticatedSolidLdoProvider: FunctionComponent<
       signUp,
       session: DUMMY_SESSION,
       ranInitialAuthCheck: true,
-      fetch: fetch,
+      fetch,
     }),
     [login, logout, signUp],
   );
