@@ -63,7 +63,6 @@
     "@ldo/subscribable-dataset": "^1.0.0-alpha.36",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/subscription": "^0.1.2",
-    "cross-fetch": "^3.1.6",
     "ws": "^8.18.0"
   },
   "files": [
