@@ -8,6 +8,7 @@
     "test": "lerna run test",
     "build": "lerna run build",
     "lint": "lerna run lint",
+    "format": "prettier . --write",
     "clean": "lerna clean --yes && lerna run remove-dist && rimraf node_modules",
     "publish": "lerna publish from-package --no-private",
     "release:preflight": "npm run lint && npm run test && npm run build",
