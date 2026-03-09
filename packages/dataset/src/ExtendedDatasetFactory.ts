@@ -1,17 +1,16 @@
 import type {
-  DatasetFactory,
   BaseQuad,
   Dataset,
   DatasetCoreFactory,
+  DatasetFactory,
 } from "@rdfjs/types";
-import ExtendedDataset from "./ExtendedDataset";
+import { ExtendedDataset } from "./ExtendedDataset";
 
 /**
  * A DatasetFactory that creates an ExtendedDataset given a DatasetCoreFactory.
  */
-export default class ExtendedDatasetFactory<
-  InAndOutQuad extends BaseQuad = BaseQuad,
-> implements DatasetFactory<InAndOutQuad, InAndOutQuad>
+export class ExtendedDatasetFactory<InAndOutQuad extends BaseQuad = BaseQuad>
+  implements DatasetFactory<InAndOutQuad, InAndOutQuad>
 {
   private datasetCoreFactory: DatasetCoreFactory<InAndOutQuad, InAndOutQuad>;
   constructor(
