@@ -1,19 +1,19 @@
+import { datasetToString } from "@ldo/rdf-utils";
 import {
-  type DatasetCore,
-  type Dataset,
   type BaseQuad,
-  type Stream,
-  type Term,
+  type Dataset,
+  type DatasetCore,
   type DatasetCoreFactory,
   type Quad,
+  type Stream,
+  type Term,
 } from "@rdfjs/types";
-import { datasetToString } from "@ldo/rdf-utils";
 import { Readable } from "readable-stream";
 
 /**
  * A full implementation of the RDF JS Dataset interface.
  */
-export default class ExtendedDataset<InAndOutQuad extends BaseQuad = BaseQuad>
+export class ExtendedDataset<InAndOutQuad extends BaseQuad = BaseQuad>
   implements Dataset<InAndOutQuad, InAndOutQuad>
 {
   /**

@@ -1,12 +1,12 @@
+import * as rdfds from "@rdfjs/dataset";
 import type {
   Dataset,
-  DatasetCoreFactory,
   DatasetCore,
+  DatasetCoreFactory,
   Quad,
 } from "@rdfjs/types";
-import ExtendedDatasetFactory from "./ExtendedDatasetFactory";
-import * as rdfds from "@rdfjs/dataset";
-import type ExtendedDataset from "./ExtendedDataset";
+import type { ExtendedDataset } from "./ExtendedDataset";
+import { ExtendedDatasetFactory } from "./ExtendedDatasetFactory";
 
 const initializeDatasetCore: (typeof rdfds)["dataset"] =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -33,7 +33,7 @@ export function createExtendedDatasetFactory(): ExtendedDatasetFactory<Quad> {
  * @param quads: A dataset or array of Quads to initialize the dataset.
  * @returns Dataset
  */
-export default function createExtendedDataset(
+export function createExtendedDataset(
   quads?: Dataset<Quad> | Quad[],
 ): ExtendedDataset<Quad> {
   const extendedDatasetFactory = createExtendedDatasetFactory();
