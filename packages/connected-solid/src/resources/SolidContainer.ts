@@ -236,14 +236,14 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = ldoSolidDataset
    *   .getResource("https://example.com/container/");
-   * const rootContainer = await container.getRootContainer();
+   * const rootContainer = await container.getRootContainerByTraversal();
    * if (!rootContainer.isError) {
    *   // logs "https://example.com/"
    *   console.log(rootContainer.uri);
    * }
    * ```
    */
-  async getRootContainer(): Promise<
+  async getRootContainerByTraversal(): Promise<
     SolidContainer | CheckRootResultError | NoRootContainerError<SolidContainer>
   > {
     const parentContainerResult = await this.getParentContainer();
@@ -251,7 +251,7 @@ export class SolidContainer extends SolidResource {
     if (!parentContainerResult) {
       return this.isRootContainer() ? this : new NoRootContainerError(this);
     }
-    return parentContainerResult.getRootContainer();
+    return parentContainerResult.getRootContainerByTraversal();
   }
 
   /**
