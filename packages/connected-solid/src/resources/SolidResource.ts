@@ -50,6 +50,10 @@ import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess";
 import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { UpdateResult } from "../requester/requests/updateDataResource";
+import {
+  getRootContainerFromStorageDescription,
+  getStorageDescriptionUris,
+} from "../requester/requests/getStorageDescription.js";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -589,14 +593,48 @@ export abstract class SolidResource
    * }
    * ```
    */
-  abstract getRootContainer(): Promise<
+  async getRootContainer(): Promise<
     | SolidContainer
     | CheckRootResultError
     | NoRootContainerError<SolidLeaf | SolidContainer>
-  >;
+  > {
+    const result = await this.getRootContainerFromStorageDescription();
+
+    if (!result.isError) return result;
+
+    // if root container has not been found from storage description, fall back to traversal
+    return await this.getRootContainerByTraversal();
+  }
 
   abstract getParentContainer(): Promise<
     SolidContainer | CheckRootResultError | undefined
+  >;
+
+  async getRootContainerFromStorageDescription() {
+    const storageDescriptionResult = await getStorageDescriptionUris(
+      this,
+      this.context.solid,
+    );
+    if (storageDescriptionResult.isError) return storageDescriptionResult;
+    const result = await getRootContainerFromStorageDescription(
+      storageDescriptionResult.storageDescriptionUri,
+      this,
+      this.context.solid,
+    );
+    if (result.isError) return result;
+
+    const rootContainer = this.context.dataset.getResource(
+      result.rootContainerUri,
+    );
+    // some dependencies assume that the root container has been fetched
+    await rootContainer.readIfUnfetched();
+    return rootContainer;
+  }
+
+  abstract getRootContainerByTraversal(): Promise<
+    | SolidContainer
+    | CheckRootResultError
+    | NoRootContainerError<SolidLeaf | SolidContainer>
   >;
 
   /**
