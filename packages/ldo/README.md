@@ -30,7 +30,7 @@ npm i @ldo/ldo
 
 ## Simple Example
 
-Below is a simple example of LDO in a real use-case (changing the name on a Solid Pod). Assume that a ShapeType was previously generated and placed at `./.ldo/foafProfile.shapeTypes`.
+Below is a simple example of LDO in a real use-case (changing the name on a Solid Pod). Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes`.
 
 ```typescript
 import {
@@ -40,7 +40,7 @@ import {
   toTurtle,
   set,
 } from "@ldo/ldo";
-import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 
 async function run() {
   const rawTurtle = `

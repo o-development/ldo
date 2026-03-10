@@ -17,7 +17,7 @@ import {
   THIRD_PROFILE_SUBJECT,
   THIRD_PROFILE_URI,
 } from "./LinkTraversalData";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes";
 import { wait } from "./util/wait";
 import { describe, it, expect, beforeEach } from "vitest";
 

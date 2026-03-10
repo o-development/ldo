@@ -25,7 +25,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
-    "build:ldo": "ldo build --input test/.shapes --output test/.ldo",
+    "build:ldo": "ldo build --input test/_shapes --output test/_ldo",
     "remove-dist": "rimraf dist/"
   },
   "repository": {

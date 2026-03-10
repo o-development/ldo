@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes.js";
 import { set } from "@ldo/jsonld-dataset-proxy";
 import "@testing-library/jest-dom/vitest";
 

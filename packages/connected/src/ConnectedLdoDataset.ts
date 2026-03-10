@@ -25,7 +25,7 @@ import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
  * @example
  * ```typescript
  * import { createConnectedLdoDataset } from "@ldo/connected";
- * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ * import { ProfileShapeType } from "./_ldo/profile.shapeTypes.ts"
  *
  * // At least one plugin needs to be provided to a ConnectedLdoDataset. In this
  * // example we'll use both the Solid and NextGraph plugins.
@@ -247,7 +247,7 @@ export class ConnectedLdoDataset<
    *
    * @example
    * ```typescript
-   * import { ProfielShapeType } from "./.ldo/foafProfile.shapeType.ts"
+   * import { ProfielShapeType } from "./_ldo/foafProfile.shapeType.ts"
    *
    * const resource = connectedLdoDataset
    *   .getResource("https://example.com/profile");

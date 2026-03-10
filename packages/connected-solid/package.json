@@ -23,7 +23,7 @@
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
     "test": "vitest run --coverage",
     "prepublishOnly": "npm run build",
-    "build:ldo": "ldo build --input src/.shapes --output src/.ldo",
+    "build:ldo": "ldo build --input src/_shapes --output src/_ldo",
     "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
     "docs": "typedoc --plugin typedoc-plugin-markdown",
     "remove-dist": "rimraf dist/"

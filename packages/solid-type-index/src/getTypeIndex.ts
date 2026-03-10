@@ -1,7 +1,7 @@
-import type { TypeRegistration } from "./.ldo/typeIndex.typings";
-import type { TypeIndexProfile } from "./.ldo/profile.typings";
-import { TypeIndexProfileShapeType } from "./.ldo/profile.shapeTypes";
-import { TypeRegistrationShapeType } from "./.ldo/typeIndex.shapeTypes";
+import type { TypeRegistration } from "./_ldo/typeIndex.typings";
+import type { TypeIndexProfile } from "./_ldo/profile.typings";
+import { TypeIndexProfileShapeType } from "./_ldo/profile.shapeTypes";
+import { TypeRegistrationShapeType } from "./_ldo/typeIndex.shapeTypes";
 import { RDF_TYPE, TYPE_REGISTRATION } from "./constants";
 import type { Options } from "./util/Options";
 import { guaranteeOptions } from "./util/Options";

@@ -10,8 +10,8 @@ import { fileURLToPath } from "node:url";
 // @ts-ignore
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const DEFAULT_SHAPES_FOLDER = "./.shapes";
-const DEFAULT_LDO_FOLDER = "./.ldo";
+const DEFAULT_SHAPES_FOLDER = "./_shapes";
+const DEFAULT_LDO_FOLDER = "./_ldo";
 const POTENTIAL_PARENT_DIRECTORIES = ["src", "lib", "bin"];
 
 export async function init(directory?: string) {

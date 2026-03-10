@@ -18,7 +18,7 @@ import { normalizeNodeName, normalizeNodeNames } from "./util";
  * @example
  * ```typescript
  * import { LdoDataset, createLdoDatasetFactory } from "@ldo/ldo";
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ * import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
  *
  * const ldoDataset = createLdoDataset();
  * const ldoBuilder = ldoDataset.usingType(FoafProfileShapeType);

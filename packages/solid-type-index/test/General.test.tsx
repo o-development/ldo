@@ -15,7 +15,7 @@ import {
   initTypeIndex,
   removeRegistration,
 } from "../src/setTypeIndex";
-import { TypeIndexProfileShapeType } from "../src/.ldo/profile.shapeTypes";
+import { TypeIndexProfileShapeType } from "../src/_ldo/profile.shapeTypes";
 import { INSTANCE } from "../src/constants";
 import { createSolidLdoDataset } from "@ldo/connected-solid";
 import { dirname, join } from "node:path";

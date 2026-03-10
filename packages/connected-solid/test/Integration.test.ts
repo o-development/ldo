@@ -6,7 +6,7 @@ import {
 } from "@ldo/rdf-utils";
 import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 import { Buffer } from "buffer";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
+import { PostShShapeType } from "./_ldo/post.shapeTypes";
 import type {
   ServerHttpError,
   UnauthenticatedHttpError,

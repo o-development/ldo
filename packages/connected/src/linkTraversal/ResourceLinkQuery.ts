@@ -20,7 +20,7 @@ import type { Quad } from "@rdfjs/types";
  *
  * @example
  * ```typescript
- * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+ * import { ProfileShapeType } from "./_ldo/Profile.shapeType.ts";
  *
  * // Create a link query
  * const linkQuery = ldoDataset
@@ -86,7 +86,7 @@ export class ResourceLinkQuery<
    *
    * @example
    * ```
-   * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+   * import { ProfileShapeType } from "./_ldo/Profile.shapeType.ts";
    *
    * // Create a link query
    * const linkQuery = ldoDataset
@@ -133,7 +133,7 @@ export class ResourceLinkQuery<
    *
    * @example
    * ```
-   * import { ProfileShapeType } from "./.ldo/Profile.shapeType.ts";
+   * import { ProfileShapeType } from "./_ldo/Profile.shapeType.ts";
    *
    * // Create a link query
    * const linkQuery = ldoDataset

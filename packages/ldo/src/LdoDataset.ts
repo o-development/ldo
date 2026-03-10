@@ -17,7 +17,7 @@ import type { ILdoDataset } from "./types";
  * @example
  * ```typescript
  * import { LdoDataset, createLdoDatasetFactory } from "@ldo/ldo";
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
+ * import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
  *
  * const ldoDatasetFactory = createLdoDatasetFactory();
  * const ldoDataset = new LdoDataset();

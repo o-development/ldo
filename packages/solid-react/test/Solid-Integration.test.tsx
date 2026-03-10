@@ -29,11 +29,11 @@ import {
   useSubscribeToResource,
   useLinkQuery,
 } from "../src/index";
-import { PostShShapeType } from "./.ldo/post.shapeTypes";
-import type { PostSh } from "./.ldo/post.typings";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes";
+import { PostShShapeType } from "./_ldo/post.shapeTypes";
+import type { PostSh } from "./_ldo/post.typings";
+import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes";
 import { changeData, commitData } from "@ldo/connected";
-import type { SolidProfileShape } from "./.ldo/solidProfile.typings";
+import type { SolidProfileShape } from "./_ldo/solidProfile.typings";
 import { describe, vi, afterEach, expect, it } from "vitest";
 import { setupServer } from "@ldo/test-solid-server";
 import { dirname, join } from "node:path";

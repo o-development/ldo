@@ -36,7 +36,7 @@ import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
  * @example
  * ```typescript
  * import { createConnectedLdoDataset } from "@ldo/connected";
- * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ * import { ProfileShapeType } from "./_ldo/profile.shapeTypes.ts"
  * import { solidConnectedPlugin } from "connected-solid";
  *
  * // ...
@@ -151,7 +151,7 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
    * @example
    * ```typescript
    * import { createConnectedLdoDataset } from "@ldo/connected";
-   * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+   * import { ProfileShapeType } from "./_ldo/profile.shapeTypes.ts"
    * import { solidConnectedPlugin } from "connected-solid";
    *
    * // ...

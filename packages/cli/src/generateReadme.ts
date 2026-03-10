@@ -96,7 +96,7 @@ interface GenerateIndexOptions {
 }
 
 export async function generateIndex(options: GenerateIndexOptions) {
-  const ldoDir = await fs.readdir(path.join(options.project, "./.ldo"), {
+  const ldoDir = await fs.readdir(path.join(options.project, "./_ldo"), {
     withFileTypes: true,
   });
   const indexText = await renderFile(
