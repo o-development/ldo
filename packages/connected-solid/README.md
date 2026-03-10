@@ -30,14 +30,14 @@ npm i @ldo/ldo @ldo/solid
 
 ## Simple Examples
 
-Below is a simple example of @ldo/solid. Assume that a ShapeType was previously generated and placed at `./.ldo/foafProfile.shapeTypes`. Also assume we have a shape type for social media at `./.ldo/socialMediaPost.shapeTypes`
+Below is a simple example of @ldo/solid. Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes`. Also assume we have a shape type for social media at `./_ldo/socialMediaPost.shapeTypes`
 
 ```typescript
 import { changeData, commitData } from "@ldo/connected";
 import { createSolidLdoDataset } from "@ldo/solid";
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
-import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes.js";
-import { SocialMediaPostShapeType } from "./.ldo/socialMediaPost.shapeTypes.js";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
+import { SocialMediaPostShapeType } from "./_ldo/socialMediaPost.shapeTypes.js";
 
 async function main() {
   /**

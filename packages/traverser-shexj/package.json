@@ -1,6 +1,6 @@
 {
   "name": "@ldo/traverser-shexj",
-  "version": "1.0.0-alpha.36",
+  "version": "1.0.0-alpha.38",
   "description": "A type-traverser for ShexJ",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -41,10 +41,10 @@
     "src"
   ],
   "dependencies": {
-    "@ldo/type-traverser": "^1.0.0-alpha.36"
+    "@ldo/type-traverser": "^1.0.0-alpha.38"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
+  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
 }

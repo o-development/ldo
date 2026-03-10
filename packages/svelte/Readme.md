@@ -36,7 +36,7 @@ Use them in your svelte components
 
 ```svelte
 <script lang="ts">
-  import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+  import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes.js";
   // Assuming these are the Svelte-specific functions/stores from your @ldo/svelte library
   import { useResource, useSubject } from "./ldoSvelteMethods.js";
   const SAMPLE_DATA_URI =

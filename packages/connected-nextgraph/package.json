@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-nextgraph",
-  "version": "1.0.0-alpha.36",
+  "version": "1.0.0-alpha.38",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -42,7 +42,7 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^3.0.0",
-    "@ldo/cli": "^1.0.0-alpha.36",
+    "@ldo/cli": "^1.0.0-alpha.38",
     "@solid-notifications/types": "^0.1.2",
     "@solid/community-server": "8.0.0-alpha.0",
     "cross-env": "^7.0.3",
@@ -56,11 +56,11 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.36",
-    "@ldo/dataset": "^1.0.0-alpha.36",
-    "@ldo/ldo": "^1.0.0-alpha.36",
-    "@ldo/rdf-utils": "^1.0.0-alpha.36",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.36",
+    "@ldo/connected": "^1.0.0-alpha.38",
+    "@ldo/dataset": "^1.0.0-alpha.38",
+    "@ldo/ldo": "^1.0.0-alpha.38",
+    "@ldo/rdf-utils": "^1.0.0-alpha.38",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.38",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/subscription": "^0.1.2",
     "cross-fetch": "^3.1.6",
@@ -73,5 +73,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
+  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
 }

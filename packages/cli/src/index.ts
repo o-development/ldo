@@ -14,8 +14,8 @@ program
 program
   .command("build")
   .description("Build contents of a shex folder into Shape Types")
-  .option("-i, --input <inputPath>", "Provide the input path", "./.shapes")
-  .option("-o, --output <outputPath>", "Provide the output path", "./.ldo")
+  .option("-i, --input <inputPath>", "Provide the input path", "./_shapes")
+  .option("-o, --output <outputPath>", "Provide the output path", "./_ldo")
   .action(build);
 
 program
@@ -41,12 +41,12 @@ program
   .requiredOption(
     "-s, --shapes <shapesPath>",
     "Provide the path to the shapes folder",
-    "./.shapes",
+    "./_shapes",
   )
   .requiredOption(
     "-s, --ldo <ldoPath>",
     "Provide the path to the ldo folder",
-    "./.ldo",
+    "./_ldo",
   )
   .action(generateReadme);
 

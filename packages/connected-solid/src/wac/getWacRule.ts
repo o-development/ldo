@@ -1,7 +1,7 @@
 import { GetWacRuleSuccess } from "./results/GetWacRuleSuccess";
-import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
+import { AuthorizationShapeType } from "../_ldo/wac.shapeTypes";
 import type { AccessModeList, WacRule } from "./WacRule";
-import type { Authorization } from "../.ldo/wac.typings";
+import type { Authorization } from "../_ldo/wac.typings";
 import { WacRuleAbsent } from "./results/WacRuleAbsent";
 import {
   HttpErrorResult,

@@ -8,7 +8,7 @@ import type { NoRootContainerError } from "./requester/results/error/NoRootConta
 import type { SolidLeaf } from "./resources/SolidLeaf";
 import type { SolidContainer } from "./resources/SolidContainer";
 import type { SolidConnectedPlugin } from "./SolidConnectedPlugin";
-import { ProfileWithStorageShapeType } from "./.ldo/solid.shapeTypes";
+import { ProfileWithStorageShapeType } from "./_ldo/solid.shapeTypes";
 
 /**
  * Gets a list of root storage containers for a user given their WebId

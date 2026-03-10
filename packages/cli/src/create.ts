@@ -99,7 +99,7 @@ export async function create(directory: string) {
       "npm run build:ldo && npm run generate-readme";
     packageJson.scripts[
       "generate-readme"
-    ] = `ldo generate-readme --project ./ --shapes ./.shapes --ldo ./.ldo`;
+    ] = `ldo generate-readme --project ./ --shapes ./_shapes --ldo ./_ldo`;
     return packageJson;
   });
 
@@ -107,8 +107,8 @@ export async function create(directory: string) {
   load.text = "Generating README";
   await generateReadme({
     project: directory,
-    shapes: path.join(directory, ".shapes"),
-    ldo: path.join(directory, ".ldo"),
+    shapes: path.join(directory, "_shapes"),
+    ldo: path.join(directory, "_ldo"),
   });
 
   // Create .gitignore

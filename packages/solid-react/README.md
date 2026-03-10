@@ -30,7 +30,7 @@ npm i @ldo/ldo @ldo/solid @ldo/solid-react
 
 ## Simple Example
 
-Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./.ldo/solidProfile.shapeTypess`.
+Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/solidProfile.shapeTypess`.
 
 
 ```typescript
@@ -42,7 +42,7 @@ import {
   useSolidAuth,
   useSubject,
 } from "@ldo/solid-react";
-import { SolidProfileShapeShapeType } from "./.ldo/solidProfile.shapeTypes.js";
+import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes.js";
 import { changeData, commitData } from "@ldo/solid";
 
 // The base component for the app

@@ -40,7 +40,7 @@ import { createUseLinkQuery } from "./methods/useLinkQuery";
  * `App.tsx`
  * ```typescript
  * import react, { FunctionComponent } from "react";
- * import { PostShShapeType } from "./.ldo/posts.shapeType.ts";
+ * import { PostShShapeType } from "./_ldo/posts.shapeType.ts";
  * import { useResource, useSubject } from "./methods.ts";
  *
  * const UseSubjectTest: FunctionComponent = () => {

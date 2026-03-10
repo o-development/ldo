@@ -28,8 +28,8 @@ import type { LdoBase } from "./util";
  *
  * This can be imported and used to create a Linked Data Object.
  * ```typescript
- * import { FoafProfileShapeType } from "./.ldo/foafProfile.shapeTypes";
- * import { FoafProfile } from "./.ldo/foafProfile.typings";
+ * import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
+ * import { FoafProfile } from "./_ldo/foafProfile.typings";
  *
  * const profile: FoafProfile = ldoDataset
  *   .usingType(FoafProfileShapeType)

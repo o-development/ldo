@@ -1,8 +1,8 @@
 import { createLdoDataset } from "@ldo/ldo";
 import type { AccessModeList, WacRule } from "./WacRule";
 import { SetWacRuleSuccess } from "./results/SetWacRuleSuccess";
-import type { Authorization } from "../.ldo/wac.typings";
-import { AuthorizationShapeType } from "../.ldo/wac.shapeTypes";
+import type { Authorization } from "../_ldo/wac.typings";
+import { AuthorizationShapeType } from "../_ldo/wac.shapeTypes";
 import { v4 } from "uuid";
 import { guaranteeFetch } from "../util/guaranteeFetch";
 import type { SolidLeafUri } from "../types";

@@ -28,7 +28,7 @@ export type GetResourceReturnType<
  * @example
  * ```typescript
  * import { createConnectedLdoDataset } from "@ldo/connected";
- * import { ProfileShapeType } from "./.ldo/profile.shapeTypes.ts"
+ * import { ProfileShapeType } from "./_ldo/profile.shapeTypes.ts"
  *
  * // At least one plugin needs to be provided to a ConnectedLdoDataset. In this
  * // example we'll use both the Solid and NextGraph plugins.

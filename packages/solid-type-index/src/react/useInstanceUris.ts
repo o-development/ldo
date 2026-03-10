@@ -2,7 +2,7 @@ import { useTypeIndexProfile } from "./useTypeIndexProfile";
 import { useEffect, useMemo, useState } from "react";
 import { useSubscribeToUris } from "./util/useSubscribeToUris";
 import { useLdo, useMatchSubject } from "@ldo/solid-react";
-import { TypeRegistrationShapeType } from "../.ldo/typeIndex.shapeTypes";
+import { TypeRegistrationShapeType } from "../_ldo/typeIndex.shapeTypes";
 import { RDF_TYPE, TYPE_REGISTRATION } from "../constants";
 import {
   getInstanceUris,
