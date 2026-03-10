@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected",
-  "version": "1.0.0-alpha.37",
+  "version": "1.0.0-alpha.38",
   "description": "A library for connecting LDO to resources outside the LDO environment",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.37",
+    "@ldo/test-solid-server": "^1.0.0-alpha.38",
     "cross-env": "^7.0.3",
     "jest-rdf": "^1.8.0",
     "rimraf": "^6.0.1",
@@ -48,11 +48,11 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.37",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.37",
-    "@ldo/ldo": "^1.0.0-alpha.37",
-    "@ldo/rdf-utils": "^1.0.0-alpha.37",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.37",
+    "@ldo/dataset": "^1.0.0-alpha.38",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.38",
+    "@ldo/ldo": "^1.0.0-alpha.38",
+    "@ldo/rdf-utils": "^1.0.0-alpha.38",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.38",
     "@rdfjs/types": "^1.0.1",
     "typed-emitter": "^2.1.0",
     "uuid": "^11.1.0"
@@ -64,5 +64,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
+  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
 }

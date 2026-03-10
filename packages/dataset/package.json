@@ -1,6 +1,6 @@
 {
   "name": "@ldo/dataset",
-  "version": "1.0.0-alpha.37",
+  "version": "1.0.0-alpha.38",
   "description": "An RDFJS dataset implementation",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -46,7 +46,7 @@
     "ts-node": "^9.1.1"
   },
   "dependencies": {
-    "@ldo/rdf-utils": "^1.0.0-alpha.37",
+    "@ldo/rdf-utils": "^1.0.0-alpha.38",
     "@rdfjs/dataset": "^1.1.0",
     "@rdfjs/types": "^1.0.1",
     "buffer": "^6.0.3",
@@ -59,5 +59,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "e97a0f8b5fa7f609e5070e472b1b63ff8a9502a8"
+  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
 }
