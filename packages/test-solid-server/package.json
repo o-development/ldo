@@ -23,7 +23,8 @@
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
     "prepublishOnly": "npm run build",
     "copy-configs": "cp -r src/configs dist/cjs/configs && cp -r src/configs dist/esm/configs",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint src/** --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "remove-dist": "rimraf dist/"
   },
   "repository": {

@@ -9,6 +9,7 @@ A full walkthrough for using the `@ldo/solid` library can be found in the [For S
 ## Installation
 
 Navigate into your project's root folder and run the following command:
+
 ```
 cd my_project/
 npx run @ldo/cli init
@@ -31,7 +32,6 @@ npm i @ldo/ldo @ldo/solid @ldo/solid-react
 ## Simple Example
 
 Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/solidProfile.shapeTypess`.
-
 
 ```typescript
 import type { FunctionComponent } from "react";
@@ -111,25 +111,28 @@ export default App;
 
 Providers
 
- - [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/solid-react/BrowserSolidLdoProvider/)
- - [SolidLdoProvider](https://ldo.js.org/latest/api/solid-react/SolidLdoProvider/)
+- [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/solid-react/BrowserSolidLdoProvider/)
+- [SolidLdoProvider](https://ldo.js.org/latest/api/solid-react/SolidLdoProvider/)
 
 Hooks
- - [useLdo](https://ldo.js.org/latest/api/solid-react/useLdo/)
- - [useResource](https://ldo.js.org/latest/api/solid-react/useResource/)
- - [useRootContainer](https://ldo.js.org/latest/api/solid-react/useRootContainer/)
- - [useSolidAuth](https://ldo.js.org/latest/api/solid-react/useSolidAuth/)
- - [useSubject](https://ldo.js.org/latest/api/solid-react/useSubject/)
- - [useMatchSubject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
- - [useLinkQUery](https://ldo.js.org/latest/api/solid-react/useLinkQuery/)
+
+- [useLdo](https://ldo.js.org/latest/api/solid-react/useLdo/)
+- [useResource](https://ldo.js.org/latest/api/solid-react/useResource/)
+- [useRootContainer](https://ldo.js.org/latest/api/solid-react/useRootContainer/)
+- [useSolidAuth](https://ldo.js.org/latest/api/solid-react/useSolidAuth/)
+- [useSubject](https://ldo.js.org/latest/api/solid-react/useSubject/)
+- [useMatchSubject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
+- [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
+- [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
+- [useLinkQUery](https://ldo.js.org/latest/api/solid-react/useLinkQuery/)
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT

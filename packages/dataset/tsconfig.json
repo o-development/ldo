@@ -3,12 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@ldo/dataset": [
-        "./src/index.ts"
-      ],
-      "@ldo/dataset/*": [
-        "./src/*"
-      ],
+      "@ldo/dataset": ["./src/index.ts"],
+      "@ldo/dataset/*": ["./src/*"]
     },
     "sourceMap": true,
     "esModuleInterop": true,
@@ -18,12 +14,6 @@
     "declarationMap": false,
     "noEmit": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

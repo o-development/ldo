@@ -71,4 +71,3 @@ Use them in your svelte components
   </div>
 {/if}
 ```
-

@@ -4,5 +4,5 @@
   "tsconfig": "tsconfig.build.json",
   "allReflectionsHaveOwnDocument": true,
   "hideInPageTOC": true,
-  "hideBreadcrumbs": true,
+  "hideBreadcrumbs": true
 }

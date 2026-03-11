@@ -5,6 +5,7 @@
 ## Installation
 
 Navigate into your project's root folder and run the following command:
+
 ```
 cd my_project/
 npx run @ldo/cli init
@@ -32,6 +33,7 @@ If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@l
 ```
 npm i @ldo/ldo @ldo/solid
 ```
+
 </details>
 
 ## Simple Examples
@@ -42,11 +44,10 @@ Below is a simple example of @ldo/solid. Assume that a ShapeType was previously 
 import {
   changeData,
   commitData,
-  createConnectedLdoDataset
+  createConnectedLdoDataset,
 } from "@ldo/connected";
 import { solidConnectedPlugin } from "@ldo/connected-solid";
 import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
-
 
 // Shape Types
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
@@ -64,13 +65,13 @@ async function main() {
    */
   const connectedLdoDataset = createConnectedLdoDataset([
     solidConncetedPlugin,
-    nextGraphConnectedPlugin
+    nextGraphConnectedPlugin,
   ]);
   // Set context to be able to make authenticated requests
   connectedLdoDataset.setContext("solid", { fetch });
   const session = await ng.session_in_memory_start(
     openedWallet.V0.wallet_id,
-    openedWallet.V0.personal_site
+    openedWallet.V0.personal_site,
   );
   connectedLdoDataset.setContext("nextGraph", { sessionId: session.sessionId });
 
@@ -82,16 +83,15 @@ async function main() {
 
   // We can get a Solid resource by including a Solid-Compatible URL
   const solidResource = solidLdoDataset.getResource(
-    "https://pod.example.com/profile.ttl"
+    "https://pod.example.com/profile.ttl",
   );
   // Similarly, we can get a NextGraph resource by including a
   // NextGraph-Compatible URL
   const nextGraphResource = solidLdoDataset.getResource(
-    "did:ng:o:W6GCQRfQkNTLtSS_2-QhKPJPkhEtLVh-B5lzpWMjGNEA:v:h8ViqyhCYMS2I6IKwPrY6UZi4ougUm1gpM4QnxlmNMQA"
+    "did:ng:o:W6GCQRfQkNTLtSS_2-QhKPJPkhEtLVh-B5lzpWMjGNEA:v:h8ViqyhCYMS2I6IKwPrY6UZi4ougUm1gpM4QnxlmNMQA",
   );
   // Optionally, you can provide the name of the specific plugin you want to use
   const anotherSolidResource = solidLdoDataset.getResource("", "solid");
-
 
   // This resource is currently unfetched
   console.log(solidResource.isUnfetched()); // Logs true
@@ -110,13 +110,19 @@ async function main() {
   if (solidReadResult.isError) {
     switch (solidReadResult.type) {
       case "serverError":
-        console.error("The solid server had an error:", solidReadResult.message);
+        console.error(
+          "The solid server had an error:",
+          solidReadResult.message,
+        );
         return;
       case "noncompliantPodError":
         console.error("The Pod responded in a way not compliant with the spec");
         return;
       default:
-        console.error("Some other error was detected:", solidReadResult.message);
+        console.error(
+          "Some other error was detected:",
+          solidReadResult.message,
+        );
     }
   }
 
@@ -166,8 +172,9 @@ async function main() {
   const newNgResource = await connectedLdoDataset.createResource("nextGraph");
 
   // For Solid, you can also create resources at a predefined location
-  const postContainer = connectedLdoDataset
-    .getResource("https://pod.example.com/socialPosts/");
+  const postContainer = connectedLdoDataset.getResource(
+    "https://pod.example.com/socialPosts/",
+  );
   const createPostContainerResult =
     await solidSocialPostsContainer.createIfAbsent();
   if (createPostContainerResult.isError) throw createPostContainerResult;
@@ -272,10 +279,12 @@ ErrorResult
 - [UnsupportedNotificationError](https://ldo.js.org/latest/api/connected/classes/UnsupportedNotificationError/)
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT
