@@ -3,19 +3,24 @@
 Traverse a ShexJ schema with custom functionality.
 
 ## Installation
+
 ```bash
 npm i @ldo/traverser-shexj
 ```
 
 ## Tutorial
+
 This library uses `type-traverser`. To learn more about how type traverser can be used, go to the [Type Traverser Tutorial](https://github.com/o-development/type-traverser/blob/master/README.md#using-a-traverser).
 
 ## Usage
+
 There are two ways you can use the ShexJ-Traverser:
- - A `visitor`
- - A `transformer`
+
+- A `visitor`
+- A `transformer`
 
 ### Visitor
+
 This visitor shows all the possible visitor functions you can use. Note that you do not need to define every visitor function, only the ones you care about.
 
 Run `npm run start` to see this code in action.
@@ -624,6 +629,7 @@ await shexJVisitor.visit(simpleSchema, "Schema", undefined);
 ```
 
 ### Transformer
+
 This transformer shows all the possible return types. Note that you do not need to define every return type yourself. This library will automatically deduce return types.
 
 ```typescript
@@ -858,7 +864,7 @@ const shexJTransformer = shexJTraverser.createTransformer<
       item,
       getTransformedChildren,
       _setReturnPointer,
-      _context
+      _context,
     ) => {
       const children: {
         startActs: string;
@@ -874,10 +880,12 @@ const shexJTransformer = shexJTraverser.createTransformer<
 ```
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT

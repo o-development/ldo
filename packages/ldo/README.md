@@ -11,6 +11,7 @@ A full walkthrough for using the `@ldo/ldo` library can be found in the [For RDF
 ### Automatic Installation
 
 Navigate into your project's root folder and run the following command:
+
 ```
 cd my_project/
 npx run @ldo/cli init
@@ -26,6 +27,7 @@ If you already have generated ShapeTypes, you may install the `@ldo/ldo` library
 ```
 npm i @ldo/ldo
 ```
+
 </details>
 
 ## Simple Example
@@ -122,51 +124,53 @@ run();
 
 Types
 
- - [`LdoBase`](https://ldo.js.org/latest/api/ldo/LdoBase/)
- - [`ShapeType`](https://ldo.js.org/latest/api/ldo/ShapeType/)
+- [`LdoBase`](https://ldo.js.org/latest/api/ldo/LdoBase/)
+- [`ShapeType`](https://ldo.js.org/latest/api/ldo/ShapeType/)
 
 Getting an LdoDataset
 
- - [`parseRdf`](https://ldo.js.org/latest/api/ldo/parseRdf/)
- - [`createLdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/createLdoDatasetFactory/)
- - [`LdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/LdoDatasetFactory/)
- - [`createLdoDataset`](https://ldo.js.org/latest/api/ldo/createLdoDataset/)
- - [`LdoDataset`](https://ldo.js.org/latest/api/ldo/LdoDataset/)
+- [`parseRdf`](https://ldo.js.org/latest/api/ldo/parseRdf/)
+- [`createLdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/createLdoDatasetFactory/)
+- [`LdoDatasetFactory`](https://ldo.js.org/latest/api/ldo/LdoDatasetFactory/)
+- [`createLdoDataset`](https://ldo.js.org/latest/api/ldo/createLdoDataset/)
+- [`LdoDataset`](https://ldo.js.org/latest/api/ldo/LdoDataset/)
 
 Getting a Linked Data Object
 
- - [`LdoBuilder`](https://ldo.js.org/latest/api/ldo/LdoBuilder/)
+- [`LdoBuilder`](https://ldo.js.org/latest/api/ldo/LdoBuilder/)
 
 Converting a Linked Data Object to Raw RDF
 
- - [`toTurtle`](https://ldo.js.org/latest/api/ldo/toTurtle/)
- - [`toNTriples`](https://ldo.js.org/latest/api/ldo/toNTriples/)
- - [`serialize`](https://ldo.js.org/latest/api/ldo/serialize/)
+- [`toTurtle`](https://ldo.js.org/latest/api/ldo/toTurtle/)
+- [`toNTriples`](https://ldo.js.org/latest/api/ldo/toNTriples/)
+- [`serialize`](https://ldo.js.org/latest/api/ldo/serialize/)
 
 Transactions
 
- - [transactions](https://ldo.js.org/latest/api/ldo/transactions/)
- - [`toSparqlUpdate`](https://ldo.js.org/latest/api/ldo/toSparqlUpdate/)
+- [transactions](https://ldo.js.org/latest/api/ldo/transactions/)
+- [`toSparqlUpdate`](https://ldo.js.org/latest/api/ldo/toSparqlUpdate/)
 
 Language Tag Support
 
- - [`languageOf`](https://ldo.js.org/latest/api/ldo/languageOf/)
- - [`setLanguagePreferences`](https://ldo.js.org/latest/api/ldo/setLanguagePreferences/)
+- [`languageOf`](https://ldo.js.org/latest/api/ldo/languageOf/)
+- [`setLanguagePreferences`](https://ldo.js.org/latest/api/ldo/setLanguagePreferences/)
 
 Graph Support
 
- - [`graphOf`](https://ldo.js.org/latest/api/ldo/graphOf/)
- - [`write`](https://ldo.js.org/latest/api/ldo/write/)
+- [`graphOf`](https://ldo.js.org/latest/api/ldo/graphOf/)
+- [`write`](https://ldo.js.org/latest/api/ldo/write/)
 
 Other Helper Functions
 
- - [`getDataset`](https://ldo.js.org/latest/api/ldo/getDataset/)
+- [`getDataset`](https://ldo.js.org/latest/api/ldo/getDataset/)
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT
