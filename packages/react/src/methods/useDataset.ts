@@ -1,8 +1,8 @@
-import { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
 /**
  * @internal
- * 
+ *
  * Creates a useDataset function
  */
 export function createUseDataset<Plugins extends ConnectedPlugin[]>(
@@ -13,5 +13,5 @@ export function createUseDataset<Plugins extends ConnectedPlugin[]>(
    */
   return function useDataset() {
     return dataset;
-  }
+  };
 }
