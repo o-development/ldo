@@ -15,7 +15,8 @@
     "update-permission": "chmod +x ./dist/index.js",
     "test": "vitest run --coverage",
     "prepublishOnly": " npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint src/** --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "test:init": "rm -rf ./example-init && cp -R ./example-init-placeholder ./example-init && cd ./example-init && ../dist/index.js init",
     "test:create": "rm -rf ./example-create && ./dist/index.js create ./example-create"
   },

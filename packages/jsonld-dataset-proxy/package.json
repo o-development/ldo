@@ -25,7 +25,8 @@
     "prepublishOnly": "npm run build",
     "start": "ts-node ./example/example.ts",
     "start:lang": "ts-node ./example/languageExample.ts",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint src/** --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "remove-dist": "rimraf dist/"
   },
   "repository": {
