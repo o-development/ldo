@@ -35,29 +35,30 @@ const ldoDataset = createNextGraphLdoDataset();
 Before you can create or access resources, you need an active session:
 
 ```ts
-import ng from "nextgraph" // or `import ng from "nextgraphweb"` for the browser
+import ng from "nextgraph"; // or `import ng from "nextgraphweb"` for the browser
 
 // Open your nextgraph wallet
 const openedWallet = await ng.wallet_open_with_mnemonic_words(
   walletBinary,
   mnemonic,
-  [1, 2, 3, 4]
+  [1, 2, 3, 4],
 );
 
 // Start a session
 const session = await ng.session_in_memory_start(
   openedWallet.V0.wallet_id,
-  openedWallet.V0.personal_site
+  openedWallet.V0.personal_site,
 );
 ```
 
 ---
 
 ### 3. Link Your Dataset to the NextGraph Session
+
 ```ts
 ldoDataset.setContext("nextgraph", {
   ng,
-  sessionId: session.session_id
+  sessionId: session.session_id,
 });
 ```
 
@@ -72,7 +73,7 @@ if (!resource.isError) {
 }
 ```
 
-### 5. Read and Monitor a Resource**
+### 5. Read and Monitor a Resource\*\*
 
 #### Read Existing Resource
 
@@ -119,7 +120,7 @@ const triples = await parseRdf(ttlData);
 
 await resource.update({
   added: triples,
-  removed: undefined
+  removed: undefined,
 });
 ```
 
@@ -152,7 +153,7 @@ export const {
 // called at any time to set that as well.
 dataset.setContext("nextgraph", {
   ng,
-  sessionId: "SOME_ID"
+  sessionId: "SOME_ID",
 });
 ```
 
@@ -175,12 +176,13 @@ export const UseSubjectTest: FunctionComponent = () => {
 };
 ```
 
-
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT

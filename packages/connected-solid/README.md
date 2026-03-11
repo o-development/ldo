@@ -5,6 +5,7 @@
 ## Installation
 
 Navigate into your project's root folder and run the following command:
+
 ```
 cd my_project/
 npx run @ldo/cli init
@@ -26,6 +27,7 @@ If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@l
 ```
 npm i @ldo/ldo @ldo/solid
 ```
+
 </details>
 
 ## Simple Examples
@@ -207,22 +209,23 @@ main();
 
 SolidLdoDataset
 
- - [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
+- [createSolidLdoDataset](https://ldo.js.org/latest/api/solid/functions/createSolidLdoDataset/)
 
 Resources (Manage batching requests)
 
- - [SolidResource](https://ldo.js.org/latest/api/classes/SolidResource/)
- - [SolidLeafUri](https://ldo.js.org/latest/api/solid/types/SolidLeafUri/)
- - [SolidContainerUri](https://ldo.js.org/latest/api/solid/types/SolidContainerUri/)
- - [SolidLeaf](https://ldo.js.org/latest/api/solid/classes/SolidLeaf/)
- - [SolidContainer](https://ldo.js.org/latest/api/solid/classes/SolidContainer/)
-
+- [SolidResource](https://ldo.js.org/latest/api/classes/SolidResource/)
+- [SolidLeafUri](https://ldo.js.org/latest/api/solid/types/SolidLeafUri/)
+- [SolidContainerUri](https://ldo.js.org/latest/api/solid/types/SolidContainerUri/)
+- [SolidLeaf](https://ldo.js.org/latest/api/solid/classes/SolidLeaf/)
+- [SolidContainer](https://ldo.js.org/latest/api/solid/classes/SolidContainer/)
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT
