@@ -52,10 +52,10 @@ npm run build:ldo
 ```
 
 This will generate five files:
- - `./ldo/foafProfile.shapeTypes.ts` <-- This is the important file
- - `./ldo/foafProfile.typings.ts`
- - `./ldo/foafProfile.schema.ts`
- - `./ldo/foafProfile.context.ts`
+ - `./_ldo/foafProfile.shapeTypes.ts` <-- This is the important file
+ - `./_ldo/foafProfile.typings.ts`
+ - `./_ldo/foafProfile.schema.ts`
+ - `./_ldo/foafProfile.context.ts`
 
 ## Creating a new project to distribure shapes
 
