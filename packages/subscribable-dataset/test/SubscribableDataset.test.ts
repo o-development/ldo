@@ -12,6 +12,7 @@ import type { Quad, BlankNode } from "@rdfjs/types";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import testDataset from "@ldo/dataset/test/dataset.testHelper";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("SubscribableDataset", () => {
   // Regular dataset tests
@@ -55,7 +56,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when a node is added", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.addListener(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
@@ -73,7 +74,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when a node is removed", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
@@ -91,7 +92,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when multiple quads are added", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       callbackFunc,
@@ -110,7 +111,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when bulk updated by only adding", () => {
-    const callbackFuncLicky = jest.fn();
+    const callbackFuncLicky = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Licky"), null, null, null],
       callbackFuncLicky,
@@ -134,7 +135,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when bulk updated by only removing", () => {
-    const callbackFuncTom = jest.fn();
+    const callbackFuncTom = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFuncTom,
@@ -158,7 +159,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when emit is called", () => {
-    const callbackFuncTom = jest.fn();
+    const callbackFuncTom = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFuncTom,
@@ -171,8 +172,8 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when bulk updated", () => {
-    const callbackFuncLicky = jest.fn();
-    const callbackFuncTom = jest.fn();
+    const callbackFuncLicky = vi.fn();
+    const callbackFuncTom = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFuncTom,
@@ -202,7 +203,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when the default graph is updated but not when another graph is", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on([null, null, null, defaultGraph()], callbackFunc);
     subscribableDatastet.add(lickyNameQuad);
     subscribableDatastet.add(
@@ -222,7 +223,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Alerts when a named graph is updated", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [null, null, null, namedNode("https://coolgraphs.com")],
       callbackFunc,
@@ -254,7 +255,7 @@ describe("SubscribableDataset", () => {
       blankNode(),
     );
     subscribableDatastet.addAll([blankNodeQuadA, blankNodeQuadB]);
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [blankNodeQuadA.object as BlankNode, null, null, null],
       callbackFunc,
@@ -355,7 +356,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Unsubscribes from a listener", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,
@@ -369,7 +370,7 @@ describe("SubscribableDataset", () => {
   });
 
   it("Unsubscribes from all events for a particular listener", () => {
-    const callbackFunc = jest.fn();
+    const callbackFunc = vi.fn();
     subscribableDatastet.on(
       [namedNode("http://example.org/cartoons#Tom"), null, null, null],
       callbackFunc,

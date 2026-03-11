@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { BrokenAvatarTransformer } from "./AvatarBrokenTransformer";
 import { AvatarErroringTransformer } from "./AvatarErroringTransformer";
 import { aang } from "./sampleData";
