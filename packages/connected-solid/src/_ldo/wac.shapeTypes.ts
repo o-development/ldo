@@ -1,7 +1,7 @@
-import { ShapeType } from "@ldo/ldo";
+import type { ShapeType } from "@ldo/ldo";
 import { wacSchema } from "./wac.schema";
 import { wacContext } from "./wac.context";
-import { Authorization } from "./wac.typings";
+import type { Authorization } from "./wac.typings";
 
 /**
  * =============================================================================

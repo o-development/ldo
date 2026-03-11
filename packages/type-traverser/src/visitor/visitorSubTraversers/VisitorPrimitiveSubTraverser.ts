@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-  PrimitiveVisitorDefinition,
-  TraverserTypes,
-} from "../../index";
+import type { PrimitiveVisitorDefinition, TraverserTypes } from "../../index";
 import type { PrimitiveInstanceNode } from "../../instanceGraph/nodes/PrimitiveInstanceNode";
 import type { PrimitiveType } from "../../traverser/TraverserTypes";
 import type { VisitorSubTraverserGlobals } from "./util/visitorSubTraverserTypes";
