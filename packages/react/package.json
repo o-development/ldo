@@ -24,7 +24,8 @@
     "test": "vitest run --coverage",
     "prepublishOnly": "npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint src/** --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "remove-dist": "rimraf dist/"
   },
   "repository": {

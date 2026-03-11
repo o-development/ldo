@@ -15,8 +15,8 @@ jobs:
           node-version: 22
       - run: npm ci --include=optional
 
-      - name: Check code quality
-        run: npx lerna run lint --ignore @ldo/svelte
+      - name: Check lint
+        run: npx lerna run lint:check --ignore @ldo/svelte
 
-      - name: Check code formatting
+      - name: Check formatting
         run: npx prettier . --check
