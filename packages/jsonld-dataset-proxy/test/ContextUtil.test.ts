@@ -1,6 +1,7 @@
 import { namedNode } from "@ldo/rdf-utils";
 import { ContextUtil } from "../src/ContextUtil";
 import { scopedContext } from "./scopedExampleData";
+import { describe, it, expect } from "vitest";
 
 describe("ContextUtil", () => {
   describe("keyToIri and iriToKey", () => {
