@@ -26,7 +26,7 @@ describe("Leaf Requester", () => {
 //   });
 
 //   beforeEach(async () => {
-//     fetchMock = jest.fn(authFetch);
+//     fetchMock = vi.fn(authFetch);
 //     solidLdoDataset = createSolidLdoDataset({ fetch: fetchMock });
 //     // Create a new document called sample.ttl
 //     await Promise.all([
