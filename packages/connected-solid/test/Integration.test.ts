@@ -587,13 +587,27 @@ describe("Integration", () => {
     });
 
     describe("Root container from storage description", async () => {
-      it("Finds the root container", async () => {
+      async function testSuccess() {
         const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
         const result = await resource.getRootContainerFromStorageDescription();
         expect(result.type).toBe("SolidContainer");
         if (result.type !== "SolidContainer") return;
+        await result.readIfUnfetched();
         expect(result.uri).toBe(ROOT_CONTAINER);
         expect(result.isRootContainer()).toBe(true);
+      }
+
+      it("finds the root container", async () => {
+        await testSuccess();
+      });
+
+      it("caches the result", async () => {
+        s.fetchMock.mockClear();
+        await testSuccess();
+        expect(s.fetchMock).toHaveBeenCalled();
+        s.fetchMock.mockClear();
+        await testSuccess();
+        expect(s.fetchMock).not.toHaveBeenCalled();
       });
     });
 

@@ -51,9 +51,13 @@ import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
 import type { DatasetChanges } from "@ldo/rdf-utils";
 import type { UpdateResult } from "../requester/requests/updateDataResource";
 import {
-  getRootContainerFromStorageDescription,
-  getStorageDescriptionUris,
+  getRootContainerByStorageDescriptionUri,
+  type GetRootContainerFromStorageDescriptionError,
+  getStorageDescriptionUri,
+  type GetStorageDescriptionUriError,
+  type GetStorageDescriptionUriResult,
 } from "../requester/requests/getStorageDescription.js";
+import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess.js";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -133,6 +137,22 @@ export abstract class SolidResource
    * Indicates that resources are not errors
    */
   public readonly isError: false = false as const;
+
+  /**
+   * @internal
+   * If a storage description URI was fetched, it is cached here
+   *
+   * https://solidproject.org/TR/protocol#server-storage-description
+   */
+  protected storageDescriptionUri?: SolidLeafUri;
+
+  /**
+   * @internal
+   * If a root container uri as fetched from storage description, it is cached here
+   *
+   * https://solidproject.org/TR/protocol#storage-description-statements
+   */
+  protected rootContainerFromStorageDescriptionUri?: SolidContainerUri;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
@@ -577,6 +597,37 @@ export abstract class SolidResource
    */
 
   /**
+   * Retrieves the URI for the storage description of this resource
+   * @param options - set the "ignoreCache" field to true to ignore cached URI
+   * @returns results, containing SolidLeafUri when successful
+   *
+   * note: this is based on this.getWacUri method
+   */
+  protected async getStorageDescriptionUri(options?: {
+    ignoreCache: boolean;
+  }): Promise<GetStorageDescriptionUriResult<SolidLeaf | SolidContainer>> {
+    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
+    // Get the storage description if not already present
+    if (!options?.ignoreCache && this.storageDescriptionUri) {
+      return new GetStorageDescriptionUriSuccess(
+        thisAsLeafOrContainer,
+        this.storageDescriptionUri,
+      );
+    }
+
+    const storageDescriptionUriResult = await getStorageDescriptionUri(
+      thisAsLeafOrContainer,
+      { fetch: this.context.solid.fetch },
+    );
+    if (storageDescriptionUriResult.isError) {
+      return storageDescriptionUriResult;
+    }
+    this.storageDescriptionUri =
+      storageDescriptionUriResult.storageDescriptionUri;
+    return storageDescriptionUriResult;
+  }
+
+  /**
    * Gets the root container for this resource.
    * @returns The root container for this resource
    *
@@ -600,41 +651,72 @@ export abstract class SolidResource
   > {
     const result = await this.getRootContainerFromStorageDescription();
 
-    if (!result.isError) return result;
+    if (!result.isError) {
+      // some dependencies may assume that the root container has been fetched
+      // so we make sure it is, to avoid a breaking change
+      await result.readIfUnfetched();
+      return result;
+    }
 
     // if root container has not been found from storage description, fall back to traversal
     return await this.getRootContainerByTraversal();
   }
 
-  abstract getParentContainer(): Promise<
-    SolidContainer | CheckRootResultError | undefined
-  >;
+  /**
+   * Gets the root container from this resource's storage description
+   * https://solidproject.org/TR/protocol#server-storage-description
+   *
+   * @param options - Options object
+   * @param options.ignoreCache {boolean} - ignore cached storage resource URI and root container values
+   *
+   * @returns SolidContainer or error objects
+   */
+  async getRootContainerFromStorageDescription(options?: {
+    ignoreCache: boolean;
+  }): Promise<
+    | SolidContainer
+    | GetStorageDescriptionUriError<SolidContainer | SolidLeaf>
+    | GetRootContainerFromStorageDescriptionError<SolidContainer | SolidLeaf>
+  > {
+    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
 
-  async getRootContainerFromStorageDescription() {
-    const storageDescriptionResult = await getStorageDescriptionUris(
-      this,
-      this.context.solid,
-    );
-    if (storageDescriptionResult.isError) return storageDescriptionResult;
-    const result = await getRootContainerFromStorageDescription(
-      storageDescriptionResult.storageDescriptionUri,
-      this,
-      this.context.solid,
-    );
-    if (result.isError) return result;
+    let rootContainerUri: SolidContainerUri;
 
-    const rootContainer = this.context.dataset.getResource(
-      result.rootContainerUri,
-    );
-    // some dependencies assume that the root container has been fetched
-    await rootContainer.readIfUnfetched();
+    // Return the root container if it's already cached
+    if (!options?.ignoreCache && this.rootContainerFromStorageDescriptionUri) {
+      rootContainerUri = this.rootContainerFromStorageDescriptionUri;
+    } else {
+      // Get storage description URI
+      const storageDescriptionUriResult =
+        await this.getStorageDescriptionUri(options);
+      if (storageDescriptionUriResult.isError)
+        return storageDescriptionUriResult;
+
+      // Get root container from storage description URI
+      const result = await getRootContainerByStorageDescriptionUri(
+        storageDescriptionUriResult.storageDescriptionUri,
+        thisAsLeafOrContainer,
+        this.context.solid,
+      );
+      if (result.isError) return result;
+      this.rootContainerFromStorageDescriptionUri = result.rootContainerUri;
+      rootContainerUri = result.rootContainerUri;
+    }
+    const rootContainer = this.context.dataset.getResource(rootContainerUri);
     return rootContainer;
   }
 
+  /**
+   * https://solidproject.org/TR/protocol#client-storage-disovery
+   */
   abstract getRootContainerByTraversal(): Promise<
     | SolidContainer
     | CheckRootResultError
     | NoRootContainerError<SolidLeaf | SolidContainer>
+  >;
+
+  abstract getParentContainer(): Promise<
+    SolidContainer | CheckRootResultError | undefined
   >;
 
   /**
