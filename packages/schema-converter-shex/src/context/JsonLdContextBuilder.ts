@@ -1,7 +1,8 @@
 import type { Annotation, valueSetValue } from "shexj";
-import type { ExpandedTermDefinition } from "jsonld";
+import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 import { hashValueSetValue } from "./util/hashValueSetValue";
+import type { TypeingReturn } from "../typing/shexjToTyping.js";
 
 /**
  * Name functions
@@ -67,6 +68,11 @@ export class JsonLdContextBuilder {
     ExpandedTermDefinition | JsonLdContextBuilder
   > = {};
   protected generatedNames: Record<string, string> | undefined;
+
+  public imports: Record<
+    string,
+    { typings: TypeingReturn; context: ContextDefinition }
+  > = {};
 
   private getRelevantBuilder(rdfType?: string): JsonLdContextBuilder {
     if (!rdfType) return this;
@@ -162,6 +168,10 @@ export class JsonLdContextBuilder {
     });
   }
 
+  addImport(path: string, typings: TypeingReturn, context: ContextDefinition) {
+    this.imports[path] = { typings, context };
+  }
+
   generateNames(): Record<string, string> {
     const generatedNames: Record<string, string> = {};
     const claimedNames: Set<string> = new Set();
@@ -210,6 +220,7 @@ export class JsonLdContextBuilder {
     if (!relevantBuilder.generatedNames) {
       relevantBuilder.generatedNames = relevantBuilder.generateNames();
     }
+
     if (relevantBuilder.generatedNames[iri]) {
       return relevantBuilder.generatedNames[iri];
     } else {
@@ -220,6 +231,7 @@ export class JsonLdContextBuilder {
   generateJsonldContext(): LdoJsonldContext {
     const contextDefnition: LdoJsonldContext = {};
     const namesMap = this.generateNames();
+
     Object.entries(namesMap).forEach(([iri, name]) => {
       if (this.iriTypes[iri]) {
         let subContext: ExpandedTermDefinition = {

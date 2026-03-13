@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import path from "path";
 import type { Schema } from "shexj";
 import parser from "@shexjs/parser";
@@ -6,6 +5,7 @@ import schemaConverterShex from "@ldo/schema-converter-shex";
 import { renderFile } from "ejs";
 import prettier from "prettier";
 import loading from "loading-cli";
+import fs from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { forAllShapes } from "./util/forAllShapes.js";
@@ -19,21 +19,34 @@ interface BuildOptions {
   output: string;
 }
 
+async function exists(filename: string) {
+  try {
+    await fs.stat(filename);
+    return true;
+  } catch (e) {
+    if (e instanceof Error && (e as NodeJS.ErrnoException).code === "ENOENT")
+      return false;
+
+    throw e;
+  }
+}
+
 export async function build(options: BuildOptions) {
   const load = loading("Preparing Environment");
   load.start();
   // Prepare new folder by clearing/and/or creating it
-  if (fs.existsSync(options.output)) {
-    await fs.promises.rm(options.output, { recursive: true });
+  if (await exists(options.output)) {
+    await fs.rm(options.output, { recursive: true });
   }
-  await fs.promises.mkdir(options.output);
+  await fs.mkdir(options.output, { recursive: true });
 
   load.text = "Generating LDO Documents";
   await forAllShapes(options.input, async (fileName, shexC) => {
     // Convert to ShexJ
     let schema: Schema;
     try {
-      schema = parser.construct("https://ldo.js.org/").parse(shexC);
+      schema = parser.construct(options.input).parse(shexC);
+      console.log(JSON.stringify(schema, null, 2));
     } catch (err) {
       const errMessage =
         err instanceof Error
@@ -46,6 +59,9 @@ export async function build(options: BuildOptions) {
     }
     // Convert the content to types
     const [typings, context] = await schemaConverterShex(schema);
+
+    // console.log(typings, context);
+
     await Promise.all(
       ["context", "schema", "shapeTypes", "typings"].map(
         async (templateName) => {
@@ -58,8 +74,9 @@ export async function build(options: BuildOptions) {
               context: JSON.stringify(context, null, 2),
             },
           );
+          // console.log(fileName, templateName, finalContent);
           // Save conversion to document
-          await fs.promises.writeFile(
+          await fs.writeFile(
             path.join(options.output, `${fileName}.${templateName}.ts`),
             await prettier.format(finalContent, { parser: "typescript" }),
           );

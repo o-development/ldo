@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs/promises";
 import path from "path";
 import { shaclStoreToShexSchema, writeShexSchema } from "@jeswr/shacl2shex";
 import { dereferenceToStore } from "rdf-dereference-store";
@@ -22,7 +22,7 @@ export async function forAllShapes(
   shapePath: string,
   callback: (filename: string, shape: string) => Promise<void>,
 ): Promise<void> {
-  const shapeDir = await fs.promises.readdir(shapePath, {
+  const shapeDir = await fs.readdir(shapePath, {
     withFileTypes: true,
   });
   // Filter out non-shex documents
@@ -33,10 +33,7 @@ export async function forAllShapes(
     shexFiles.map(async (file) => {
       const fileName = path.parse(file.name).name;
       // Get the content of each document
-      const shexC = await fs.promises.readFile(
-        path.join(shapePath, file.name),
-        "utf8",
-      );
+      const shexC = await fs.readFile(path.join(shapePath, file.name), "utf8");
       await callback(fileName, shexC);
     }),
   );

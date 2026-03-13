@@ -37,6 +37,7 @@
     "@types/prompts": "^2.4.9",
     "@types/shexj": "^2.1.4",
     "copyfiles": "^2.4.1",
+    "memfs": "^4.56.11",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
