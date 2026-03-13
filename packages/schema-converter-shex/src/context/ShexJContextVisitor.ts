@@ -1,6 +1,9 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
 import type { JsonLdContextBuilder } from "./JsonLdContextBuilder";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
+import fs from "node:fs/promises";
+import { shexjToTyping } from "../typing/shexjToTyping.js";
+import parser from "@shexjs/parser";
 
 /**
  * Visitor
@@ -9,6 +12,18 @@ export const ShexJNameVisitor =
   ShexJTraverser.createVisitor<JsonLdContextBuilder>({
     Shape: {
       visitor: async (_shape, _context) => {},
+    },
+    Schema: {
+      visitor: async (originalData, node, context) => {
+        if (!originalData.imports) return;
+        for (const path of originalData.imports) {
+          const result = await fs.readFile(path, "utf8");
+          const shexj = parser.construct(path).parse(result);
+          const [typings, ctx] = await shexjToTyping(shexj);
+          console.log(typings, ctx);
+          context.addImport(path, typings, ctx);
+        }
+      },
     },
     TripleConstraint: {
       visitor: async (tripleConstraint, node, context) => {
@@ -23,6 +38,18 @@ export const ShexJNameVisitor =
               tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
             if (typeof tripleConstraint.valueExpr === "string") {
               // TOOD handle string value expr
+              context.addPredicate(
+                tripleConstraint.predicate,
+                { "@type": "@id" },
+                isContainer,
+                rdfType,
+                tripleConstraint.annotations,
+              );
+              context.addSubject(
+                tripleConstraint.valueExpr,
+                rdfType,
+                // tripleConstraint.annotations,
+              );
             } else if (tripleConstraint.valueExpr.type === "NodeConstraint") {
               if (tripleConstraint.valueExpr.datatype) {
                 context.addPredicate(
@@ -100,4 +127,7 @@ export const ShexJNameVisitor =
         context.addSubject(iriStem.stem);
       },
     },
+    // shapeDeclLabel: async (originalData, node, context) => {
+    //   context.addSubject(originalData);
+    // },
   });

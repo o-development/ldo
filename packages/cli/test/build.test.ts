@@ -92,4 +92,57 @@ ex:Person EXTRA a {
       console.log(result);
     }
   });
+
+  it.only("import ShEx from other file", async () => {
+    await fs.promises.mkdir("shapes/", { recursive: true });
+    await fs.promises.writeFile(
+      "shapes/person.shex",
+      `
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX ex: <https://example.com/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+IMPORT <./address.shex>
+
+ex:Person EXTRA a {
+  a [foaf:Person] ;
+  foaf:knows @ex:Person *;
+  foaf:address @ex:Address *;
+  foaf:name xsd:string ;
+  foaf:homepage IRI ;
+}`,
+    );
+    await fs.promises.writeFile(
+      "shapes/address.shex",
+      `
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX ex: <https://example.com/>
+
+ex:Address EXTRA a {
+  a [foaf:Address] ;
+}`,
+    );
+    await expect(
+      async () => await fs.promises.readdir("output/"),
+    ).rejects.toThrowError();
+
+    await build({ input: "shapes/", output: "output/" });
+
+    const outputAfter = await fs.promises.readdir("output/");
+    expect(outputAfter).toHaveLength(8);
+
+    console.log(Object.keys(vol.toJSON()));
+
+    const result = await fs.promises.readFile(
+      "output/person.typings.ts",
+      "utf8",
+    );
+
+    console.log(result);
+  });
+
+  it.todo("Import ShEx from other files (nested)");
+
+  it.todo("Import ShEx from other files (circular)");
+
+  it.todo("Import ShEx from web");
 });

@@ -39,14 +39,15 @@ export async function build(options: BuildOptions) {
   if (await exists(options.output)) {
     await fs.rm(options.output, { recursive: true });
   }
-  await fs.mkdir(options.output);
+  await fs.mkdir(options.output, { recursive: true });
 
   load.text = "Generating LDO Documents";
   await forAllShapes(options.input, async (fileName, shexC) => {
     // Convert to ShexJ
     let schema: Schema;
     try {
-      schema = parser.construct("https://ldo.js.org/").parse(shexC);
+      schema = parser.construct(options.input).parse(shexC);
+      console.log(JSON.stringify(schema, null, 2));
     } catch (err) {
       const errMessage =
         err instanceof Error
@@ -75,6 +76,7 @@ export async function build(options: BuildOptions) {
               context: JSON.stringify(context, null, 2),
             },
           );
+          // console.log(fileName, templateName, finalContent);
           // Save conversion to document
           await fs.writeFile(
             path.join(options.output, `${fileName}.${templateName}.ts`),

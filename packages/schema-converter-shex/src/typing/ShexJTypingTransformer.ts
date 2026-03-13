@@ -5,9 +5,16 @@ import { nameFromObject } from "../context/JsonLdContextBuilder";
 import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
 import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers";
+import path from "node:path";
+import type { TypeingReturn } from "./shexjToTyping.js";
+import type { ContextDefinition } from "jsonld";
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string, rdfType?: string) => string;
+  imports: Record<
+    string,
+    { typings: TypeingReturn; context: ContextDefinition }
+  >;
 }
 
 export function commentFromAnnotations(
@@ -62,11 +69,35 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
 >({
   Schema: {
     transformer: async (
-      _schema,
+      schema,
       getTransformedChildren,
+      setReturnPointer,
+      node,
+      context,
     ): Promise<dom.TopLevelDeclaration[]> => {
       const transformedChildren = await getTransformedChildren();
       const interfaces: dom.TopLevelDeclaration[] = [];
+
+      schema.imports?.forEach((importPath) => {
+        for (const typing of context.imports[importPath].typings.typings) {
+          if (
+            typing.dts.kind === "interface" &&
+            "shapeId" in typing.dts &&
+            typeof typing.dts.shapeId === "string"
+          ) {
+            if (!("shapeId" in typing.dts)) continue;
+            const variableName = context.getNameFromIri(typing.dts.shapeId);
+            interfaces.push(
+              dom.create.importNamed(
+                typing.dts.name,
+                variableName,
+                // TODO reuse this method
+                `${path.parse(importPath).name}.typings.js`,
+              ),
+            );
+          }
+        }
+      });
       transformedChildren.shapes?.forEach((shape) => {
         if (
           typeof shape !== "string" &&
@@ -204,6 +235,16 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       return objectType;
     },
   },
+  // shapeDeclLabel: async (
+  //   originalData,
+  //   getTransformedChildren,
+  //   setReturnPointer,
+  //   node,
+  //   context,
+  // ) => {
+  //   const name = context.getNameFromIri(originalData);
+  //   return name;
+  // },
   TripleConstraint: {
     transformer: async (
       tripleConstraint,
@@ -222,6 +263,8 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         tripleConstraint.predicate,
         rdfTypes[0],
       );
+      context;
+      propertyName;
       const isSet =
         (tripleConstraint.max !== undefined && tripleConstraint.max !== 1) ||
         tripleConstraint.predicate ===
@@ -230,6 +273,13 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       let type: dom.Type = dom.type.any;
       if (transformedChildren.valueExpr) {
         type = transformedChildren.valueExpr as dom.Type;
+
+        if (typeof transformedChildren.valueExpr === "string") {
+          type = context.getNameFromIri(
+            transformedChildren.valueExpr,
+            rdfTypes[0],
+          ) as dom.Type;
+        }
       }
 
       const propertyDeclaration = dom.create.property(

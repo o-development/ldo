@@ -25,6 +25,7 @@ export async function shexjToTyping(
     },
     "SCHEMA",
   )) as unknown as Schema;
+
   const jsonLdContextBuilder = new JsonLdContextBuilder();
   await ShexJNameVisitor.visit(processedShexj, "Schema", jsonLdContextBuilder);
 
@@ -34,8 +35,10 @@ export async function shexjToTyping(
     {
       getNameFromIri:
         jsonLdContextBuilder.getNameFromIri.bind(jsonLdContextBuilder),
+      imports: jsonLdContextBuilder.imports,
     },
   );
+
   const typings = declarations.map((declaration) => {
     return {
       typingString: dom
@@ -46,8 +49,9 @@ export async function shexjToTyping(
       dts: declaration,
     };
   });
+
   const typingsString =
-    `import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\n` +
+    `import type { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\n` +
     typings.map((typing) => `export ${typing.typingString}`).join("");
 
   const typeingReturn: TypeingReturn = {
