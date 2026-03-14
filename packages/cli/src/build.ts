@@ -60,7 +60,7 @@ export async function build(options: BuildOptions) {
     const [typings, context] = await schemaConverterShex(shapeData.shexJ, {
       getImportPaths: (importIri) => {
         const fileName = path.parse(importIri).name;
-        return { typings: `./${fileName}.typings.ts` };
+        return { typings: `./${fileName}.typings.js` };
       },
       imports,
     });
