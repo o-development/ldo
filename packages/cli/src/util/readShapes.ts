@@ -25,6 +25,9 @@ export async function readShapeDeep(
   fileUrl: URL,
   shapeMap: ShapeMap = new Map(),
 ): Promise<ShapeMap> {
+  // stop if already importing
+  if (shapeMap.has(fileUrl.toString())) return shapeMap;
+
   // signal that the processing has already started
   shapeMap.set(fileUrl.toString(), undefined);
 
