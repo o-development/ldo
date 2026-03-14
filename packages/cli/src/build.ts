@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "path";
 import type { Schema } from "shexj";
-import parser from "@shexjs/parser";
 import schemaConverterShex from "@ldo/schema-converter-shex";
 import toCamelCase from "camelcase";
 import { renderFile } from "ejs";
@@ -9,7 +8,7 @@ import prettier from "prettier";
 import loading from "loading-cli";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { forAllShapes } from "./util/forAllShapes.js";
+import { readShapesDeep } from "./util/readShapes.js";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -42,24 +41,32 @@ export async function build(options: BuildOptions) {
   await fs.mkdir(options.output, { recursive: true });
 
   load.text = "Generating LDO Documents";
-  await forAllShapes(options.input, async (fileName, shexC) => {
-    // Convert to ShexJ
-    let schema: Schema;
-    try {
-      schema = parser.construct(options.input).parse(shexC);
-      console.log(JSON.stringify(schema, null, 2));
-    } catch (err) {
-      const errMessage =
-        err instanceof Error
-          ? err.message
-          : typeof err === "string"
-          ? err
-          : "Unknown Error";
-      console.error(`Error processing ${fileName}: ${errMessage}`);
-      return;
+
+  // first, fetch the shex files and their dependencies
+  // It is a map of path or URL, and shape
+  const shapeMap = await readShapesDeep(options.input);
+
+  for (const [uri, shapeData] of shapeMap) {
+    if (!shapeData) continue;
+
+    const imports = new Map<string, Schema>();
+    for (const importUri of shapeData.shexJ.imports ?? []) {
+      const shexJ = shapeMap.get(importUri)?.shexJ;
+      if (shexJ === undefined) continue;
+      imports.set(importUri, shexJ);
     }
+
     // Convert the content to types
-    const [typings, context] = await schemaConverterShex(schema);
+    const [typings, context] = await schemaConverterShex(shapeData.shexJ, {
+      getImportPaths: (importIri) => {
+        const fileName = path.parse(importIri).name;
+        return { typings: `./${fileName}.typings.ts` };
+      },
+      imports,
+    });
+
+    // TODO maybe uri should be converted
+    const fileName = path.parse(uri).name;
 
     const shapeName = toCamelCase(fileName);
 
@@ -72,7 +79,7 @@ export async function build(options: BuildOptions) {
               typings: typings.typings,
               fileName,
               shapeName,
-              schema: JSON.stringify(schema, null, 2),
+              schema: JSON.stringify(shapeData.shexJ, null, 2),
               context: JSON.stringify(context, null, 2),
             },
           );
@@ -85,7 +92,52 @@ export async function build(options: BuildOptions) {
         },
       ),
     );
-  });
+  }
+
+  // await forAllShapes(options.input, async (fileName, shexC) => {
+  //   // Convert to ShexJ
+  //   let schema: Schema;
+  //   try {
+  //     schema = parser.construct(options.input).parse(shexC);
+  //     console.log(JSON.stringify(schema, null, 2));
+  //   } catch (err) {
+  //     const errMessage =
+  //       err instanceof Error
+  //         ? err.message
+  //         : typeof err === "string"
+  //         ? err
+  //         : "Unknown Error";
+  //     console.error(`Error processing ${fileName}: ${errMessage}`);
+  //     return;
+  //   }
+
+  //   // Convert the content to types
+  //   const [typings, context] = await schemaConverterShex(schema);
+
+  //   // console.log(typings, context);
+
+  //   await Promise.all(
+  //     ["context", "schema", "shapeTypes", "typings"].map(
+  //       async (templateName) => {
+  //         const finalContent = await renderFile(
+  //           path.join(__dirname, "./templates", `${templateName}.ejs`),
+  //           {
+  //             typings: typings.typings,
+  //             fileName,
+  //             schema: JSON.stringify(schema, null, 2),
+  //             context: JSON.stringify(context, null, 2),
+  //           },
+  //         );
+  //         // console.log(fileName, templateName, finalContent);
+  //         // Save conversion to document
+  //         await fs.writeFile(
+  //           path.join(options.output, `${fileName}.${templateName}.ts`),
+  //           await prettier.format(finalContent, { parser: "typescript" }),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // });
 
   load.stop();
 }
