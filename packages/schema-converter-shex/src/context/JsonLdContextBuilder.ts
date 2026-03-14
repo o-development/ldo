@@ -1,8 +1,7 @@
 import type { Annotation, valueSetValue } from "shexj";
-import type { ContextDefinition, ExpandedTermDefinition } from "jsonld";
+import type { ExpandedTermDefinition } from "jsonld";
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 import { hashValueSetValue } from "./util/hashValueSetValue";
-import type { TypeingReturn } from "../typing/shexjToTyping.js";
 
 /**
  * Name functions
@@ -69,10 +68,10 @@ export class JsonLdContextBuilder {
   > = {};
   protected generatedNames: Record<string, string> | undefined;
 
-  public imports: Record<
-    string,
-    { typings: TypeingReturn; context: ContextDefinition }
-  > = {};
+  // shex imports
+  imports: Set<string> = new Set();
+  // IRIs that we may need to find in shex imports (not defined locally)
+  refsToImport: Set<string> = new Set();
 
   private getRelevantBuilder(rdfType?: string): JsonLdContextBuilder {
     if (!rdfType) return this;
@@ -168,8 +167,20 @@ export class JsonLdContextBuilder {
     });
   }
 
-  addImport(path: string, typings: TypeingReturn, context: ContextDefinition) {
-    this.imports[path] = { typings, context };
+  /**
+   * Add IRI that we might need to search in shex imports
+   * @param iri
+   */
+  addIriToImport(iri: string) {
+    this.refsToImport.add(iri);
+  }
+
+  /**
+   * Add shex import
+   * @param iri
+   */
+  addImport(iri: string) {
+    this.imports.add(iri);
   }
 
   generateNames(): Record<string, string> {

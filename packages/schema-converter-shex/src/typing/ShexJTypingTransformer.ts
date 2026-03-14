@@ -5,16 +5,16 @@ import { nameFromObject } from "../context/JsonLdContextBuilder";
 import type { ShapeInterfaceDeclaration } from "./ShapeInterfaceDeclaration";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
 import { dedupeObjectTypeMembers } from "./util/dedupeObjectTypeMembers";
-import path from "node:path";
 import type { TypeingReturn } from "./shexjToTyping.js";
 import type { ContextDefinition } from "jsonld";
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string, rdfType?: string) => string;
-  imports: Record<
-    string,
-    { typings: TypeingReturn; context: ContextDefinition }
-  >;
+  getImportTypings: (
+    importIri: string,
+  ) => Promise<[TypeingReturn, ContextDefinition] | undefined>;
+  refsToImport: Set<string>;
+  getImportPath: (importIri: string) => string;
 }
 
 export function commentFromAnnotations(
@@ -71,33 +71,60 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
     transformer: async (
       schema,
       getTransformedChildren,
-      setReturnPointer,
-      node,
+      _setReturnPointer,
+      _node,
       context,
     ): Promise<dom.TopLevelDeclaration[]> => {
       const transformedChildren = await getTransformedChildren();
       const interfaces: dom.TopLevelDeclaration[] = [];
 
-      schema.imports?.forEach((importPath) => {
-        for (const typing of context.imports[importPath].typings.typings) {
+      // take care of imports
+      const importTypings = new Map<
+        string,
+        [TypeingReturn, ContextDefinition]
+      >();
+
+      if (schema.imports) {
+        for (const importIri of schema.imports) {
+          const typings = await context.getImportTypings(importIri);
+          if (typings) importTypings.set(importIri, typings);
+        }
+      }
+
+      const importedIris = new Map<string, string>();
+
+      for (const [importIri, importTyping] of importTypings) {
+        for (const typing of importTyping[0].typings) {
+          // this might not cover all cases
           if (
             typing.dts.kind === "interface" &&
             "shapeId" in typing.dts &&
-            typeof typing.dts.shapeId === "string"
+            typeof typing.dts.shapeId === "string" &&
+            context.refsToImport.has(typing.dts.shapeId)
           ) {
-            if (!("shapeId" in typing.dts)) continue;
-            const variableName = context.getNameFromIri(typing.dts.shapeId);
-            interfaces.push(
-              dom.create.importNamed(
-                typing.dts.name,
-                variableName,
-                // TODO reuse this method
-                `${path.parse(importPath).name}.typings.js`,
-              ),
-            );
+            const shapeId = typing.dts.shapeId;
+
+            // It is an error if A and B share any labels for shape expressions or triple expressions or if schema B has a startActs member.
+            // http://shex.io/shex-semantics/#import
+            if (importedIris.has(shapeId)) {
+              throw new Error(
+                `Shape "${shapeId}" is exported by multiple imports: "${importedIris.get(
+                  shapeId,
+                )}" and "${importIri}"`,
+              );
+            }
+            importedIris.set(shapeId, importIri);
+
+            const name = typing.dts.name; // imported name
+            const as = context.getNameFromIri(shapeId); // local rename
+            const from = context.getImportPath(importIri); // relative import path
+
+            // add import to interfaces
+            interfaces.push(dom.create.importNamed(name, as, from));
           }
         }
-      });
+      }
+
       transformedChildren.shapes?.forEach((shape) => {
         if (
           typeof shape !== "string" &&
