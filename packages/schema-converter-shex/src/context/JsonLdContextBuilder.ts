@@ -68,6 +68,11 @@ export class JsonLdContextBuilder {
   > = {};
   protected generatedNames: Record<string, string> | undefined;
 
+  // shex imports
+  imports: Set<string> = new Set();
+  // IRIs that we may need to find in shex imports (not defined locally)
+  refsToImport: Set<string> = new Set();
+
   private getRelevantBuilder(rdfType?: string): JsonLdContextBuilder {
     if (!rdfType) return this;
     if (
@@ -162,6 +167,22 @@ export class JsonLdContextBuilder {
     });
   }
 
+  /**
+   * Add IRI that we might need to search in shex imports
+   * @param iri
+   */
+  addIriToImport(iri: string) {
+    this.refsToImport.add(iri);
+  }
+
+  /**
+   * Add shex import
+   * @param iri
+   */
+  addImport(iri: string) {
+    this.imports.add(iri);
+  }
+
   generateNames(): Record<string, string> {
     const generatedNames: Record<string, string> = {};
     const claimedNames: Set<string> = new Set();
@@ -210,6 +231,7 @@ export class JsonLdContextBuilder {
     if (!relevantBuilder.generatedNames) {
       relevantBuilder.generatedNames = relevantBuilder.generateNames();
     }
+
     if (relevantBuilder.generatedNames[iri]) {
       return relevantBuilder.generatedNames[iri];
     } else {
@@ -220,6 +242,7 @@ export class JsonLdContextBuilder {
   generateJsonldContext(): LdoJsonldContext {
     const contextDefnition: LdoJsonldContext = {};
     const namesMap = this.generateNames();
+
     Object.entries(namesMap).forEach(([iri, name]) => {
       if (this.iriTypes[iri]) {
         let subContext: ExpandedTermDefinition = {
