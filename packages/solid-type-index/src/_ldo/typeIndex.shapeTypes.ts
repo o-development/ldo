@@ -1,7 +1,7 @@
-import { ShapeType } from "@ldo/ldo";
+import type { ShapeType } from "@ldo/ldo";
 import { typeIndexSchema } from "./typeIndex.schema";
 import { typeIndexContext } from "./typeIndex.context";
-import { TypeIndexDocument, TypeRegistration } from "./typeIndex.typings";
+import type { TypeIndexDocument, TypeRegistration } from "./typeIndex.typings";
 
 /**
  * =============================================================================

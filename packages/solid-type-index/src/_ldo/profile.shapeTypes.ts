@@ -1,7 +1,7 @@
-import { ShapeType } from "@ldo/ldo";
+import type { ShapeType } from "@ldo/ldo";
 import { profileSchema } from "./profile.schema";
 import { profileContext } from "./profile.context";
-import { TypeIndexProfile } from "./profile.typings";
+import type { TypeIndexProfile } from "./profile.typings";
 
 /**
  * =============================================================================
