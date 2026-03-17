@@ -111,6 +111,15 @@ const SAMPLE_PROFILE_TTL = `
 <${SAMPLE_PROFILE_URI}> pim:storage <https://example.com/A/>, <https://example.com/B/> .
 `;
 
+const REDIRECT_RESOURCE_SOURCE_URI =
+  `https://source.local/profile` as SolidLeafUri;
+const REDIRECT_RESOURCE_TARGET_URI =
+  `https://target.local/profile` as SolidLeafUri;
+const REDIRECT_RESOURCE_TTL = `
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+<#me> a foaf:Person.
+`;
+
 const resourceInfo: ResourceInfo = {
   slug: TEST_CONTAINER_SLUG,
   isContainer: true,
@@ -202,6 +211,18 @@ async function testRequestLoads<ReturnVal>(
     })(),
   ]);
   return returnVal;
+}
+
+class MockResponse extends Response {
+  constructor(
+    body?: BodyInit | null,
+    init?: ResponseInit & { url?: string; redirected?: boolean },
+  ) {
+    super(body, init);
+    if (init?.url) Object.defineProperty(this, "url", { value: init.url });
+    if (init?.redirected)
+      Object.defineProperty(this, "redirected", { value: init.redirected });
+  }
 }
 
 describe("Integration", () => {
@@ -358,7 +379,11 @@ describe("Integration", () => {
 
     it("Returns a NoncompliantPod error when no content type is returned", async () => {
       s.fetchMock.mockResolvedValueOnce(
-        new Response(undefined, { status: 200, headers: {} }),
+        new MockResponse(undefined, {
+          status: 200,
+          headers: {},
+          url: SAMPLE2_DATA_URI,
+        }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
       const result = await testRequestLoads(() => resource.read(), resource, {
@@ -376,9 +401,10 @@ describe("Integration", () => {
 
     it("Returns a NoncompliantPod error if invalid turtle is provided", async () => {
       s.fetchMock.mockResolvedValueOnce(
-        new Response("Error", {
+        new MockResponse("Error", {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
+          url: SAMPLE2_DATA_URI,
         }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
@@ -397,9 +423,10 @@ describe("Integration", () => {
 
     it("Parses Turtle even when the content type contains parameters", async () => {
       s.fetchMock.mockResolvedValueOnce(
-        new Response(SPIDER_MAN_TTL, {
+        new MockResponse(SPIDER_MAN_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle;charset=utf-8" }),
+          url: SAMPLE_DATA_URI,
         }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
@@ -429,9 +456,10 @@ describe("Integration", () => {
 
     it("Does not return an error if there is no link header for a container request", async () => {
       s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
+        new MockResponse(TEST_CONTAINER_TTL, {
           status: 200,
           headers: new Headers({ "content-type": "text/turtle" }),
+          url: TEST_CONTAINER_URI,
         }),
       );
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
@@ -476,6 +504,30 @@ describe("Integration", () => {
       expect(s.fetchMock).toHaveBeenCalledTimes(3);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
+    });
+
+    it("reads a redirected resource using base url of the final resource", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new MockResponse(REDIRECT_RESOURCE_TTL, {
+          status: 200,
+          headers: { "content-type": "text/turtle" },
+          url: REDIRECT_RESOURCE_TARGET_URI,
+          redirected: true,
+        }),
+      );
+
+      const resource = solidLdoDataset.getResource(
+        REDIRECT_RESOURCE_SOURCE_URI,
+      );
+      const result = await resource.read();
+      expect(result.type).toBe("dataReadSuccess");
+      expect(
+        solidLdoDataset.match(
+          namedNode(`${REDIRECT_RESOURCE_TARGET_URI}#me`),
+          namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+          namedNode("http://xmlns.com/foaf/0.1/Person"),
+        ).size,
+      ).toBe(1);
     });
   });
 

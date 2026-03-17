@@ -86,7 +86,7 @@ export async function readResource(
           undefined,
           undefined,
           undefined,
-          namedNode(resource.uri),
+          namedNode(response.url),
         );
       }
 
@@ -102,7 +102,7 @@ export async function readResource(
 
     // Add this resource to the container
     if (options?.dataset) {
-      addResourceRdfToContainer(resource.uri, options.dataset);
+      addResourceRdfToContainer(response.url, options.dataset);
     }
 
     const contentType = response.headers.get("content-type");
@@ -122,7 +122,7 @@ export async function readResource(
         const result = await addRawTurtleToDataset(
           rawTurtle,
           options.dataset,
-          resource.uri,
+          response.url,
         );
         if (result)
           return new NoncompliantPodError(resource, result.message) as
