@@ -20,6 +20,12 @@ The LDO monorepo contains the following
  - [@ldo/traverser-shexj](./packages/traverser-shexj/)
  - [@ldo/type-traverser](./packages/type-traverser/)
 
+## AI Coding Contribution Policy
+
+All contributors to this project should follow the guidelines on Generative AI contriubtions set forth by NLNet (https://nlnet.nl/foundation/policies/generativeAI/#development) and may disclose the use of AI in pull requests.
+
+DO NOT use AI agents to design interfaces and general architecture, as the latest models (as of March of 2026) are currently unable to meet LDO's architectural requirements and tend not to write DRY code. Instead, you may set up scaffolding and prompt a coding agent to fill in the logic.
+
 ## Sponsorship
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
