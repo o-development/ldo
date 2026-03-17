@@ -10,6 +10,18 @@ export const ShexJNameVisitor =
     Shape: {
       visitor: async (_shape, _context) => {},
     },
+    // Schema: {
+    //   visitor: async (originalData, node, context) => {
+    //     if (!originalData.imports) return;
+    //     for (const path of originalData.imports) {
+    //       const result = await fs.readFile(path, "utf8");
+    //       const shexj = parser.construct(path).parse(result);
+    //       const [typings, ctx] = await shexjToTyping(shexj);
+    //       console.log(typings, ctx);
+    //       context.addImport(path, typings, ctx);
+    //     }
+    //   },
+    // },
     TripleConstraint: {
       visitor: async (tripleConstraint, node, context) => {
         // Check that there's a triple constraint that is a type at the
@@ -22,7 +34,19 @@ export const ShexJNameVisitor =
             const isContainer =
               tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
             if (typeof tripleConstraint.valueExpr === "string") {
-              // TOOD handle string value expr
+              context.addPredicate(
+                tripleConstraint.predicate,
+                { "@type": "@id" },
+                isContainer,
+                rdfType,
+                tripleConstraint.annotations,
+              );
+              context.addSubject(
+                tripleConstraint.valueExpr,
+                rdfType,
+                // tripleConstraint.annotations,
+              );
+              context.addIriToImport(tripleConstraint.valueExpr);
             } else if (tripleConstraint.valueExpr.type === "NodeConstraint") {
               if (tripleConstraint.valueExpr.datatype) {
                 context.addPredicate(
@@ -100,4 +124,7 @@ export const ShexJNameVisitor =
         context.addSubject(iriStem.stem);
       },
     },
+    // shapeDeclLabel: async (originalData, node, context) => {
+    //   context.addSubject(originalData);
+    // },
   });
