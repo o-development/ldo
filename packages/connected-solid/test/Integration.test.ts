@@ -576,7 +576,7 @@ describe("Integration", () => {
    */
   describe("rootContainer", () => {
     [SAMPLE2_BINARY_URI, SAMPLE_BINARY_URI].forEach((resourceUri) => {
-      it("Finds the root container", async () => {
+      it(`Finds the root container for ${resourceUri}`, async () => {
         const resource = solidLdoDataset.getResource(resourceUri);
         const result = await resource.getRootContainer();
         expect(result.type).toBe("SolidContainer");
