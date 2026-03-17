@@ -1,0 +1,22 @@
+name: CI - Lint
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: npm ci --include=optional
+
+      - name: Check lint
+        run: npx lerna run lint:check --ignore @ldo/svelte
+
+      - name: Check formatting
+        run: npx prettier . --check

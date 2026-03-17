@@ -25,7 +25,8 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest --watch",
     "prepublishOnly": "npm run build",
-    "lint": "eslint src/** --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint src/** --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "remove-dist": "rimraf dist/"
   },
   "repository": {

@@ -8,10 +8,7 @@ import type {
   AggregateSuccess,
   SuccessResult,
 } from "./results/success/SuccessResult";
-import type {
-  AggregateError,
-  ErrorResult,
-} from "./results/error/ErrorResult";
+import type { AggregateError, ErrorResult } from "./results/error/ErrorResult";
 
 /**
  * Begins tracking changes to eventually commit.

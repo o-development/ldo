@@ -26,7 +26,8 @@
     "dev:app": "vite --config vite.config.example.ts",
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
     "test": "vitest run --coverage",
-    "lint": "eslint . --ext .js,.ts,.svelte --fix --no-error-on-unmatched-pattern",
+    "lint:check": "eslint . --ext .js,.ts,.svelte --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:check -- --fix",
     "format": "prettier --write .",
     "prepublishOnly": "npm run build",
     "remove-dist": "rimraf dist/"

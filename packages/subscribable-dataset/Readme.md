@@ -3,6 +3,7 @@ A library of RDFJS Datasets that have many uses including subscribing to node ch
 This library follows the [RDFJS spec for a Dataset](https://rdf.js.org/dataset-spec/).
 
 ## Installation
+
 ```bash
 npm i @ldo/subscribable-dataset
 ```
@@ -10,15 +11,18 @@ npm i @ldo/subscribable-dataset
 ## Simple Example
 
 ```typescript
-import { createSubscribableDataset, DatasetChanges } from "@ldo/subscribable-dataset";
+import {
+  createSubscribableDataset,
+  DatasetChanges,
+} from "@ldo/subscribable-dataset";
 import { Dataset } from "@rdfjs/types";
-import { quad, namedNode }from '@ldo/rdf-utils';
+import { quad, namedNode } from "@ldo/rdf-utils";
 
 const subscribableDataset = createSubscribableDataset([
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-    namedNode("http://example.org/cartoons#Firebender")
+    namedNode("http://example.org/cartoons#Firebender"),
   ),
 ]);
 subscribableDataset.on(
@@ -27,7 +31,7 @@ subscribableDataset.on(
     console.log(currentQuads.toString());
     console.log("--------");
     console.log(changes.added?.toString());
-  }
+  },
 );
 /*
 Prints:
@@ -40,15 +44,18 @@ subscribableDataset.add(
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://example.org/cartoons#name"),
-    literal("Zuko")
-  )
+    literal("Zuko"),
+  ),
 );
 ```
 
 ## Loading from Serialized Data
 
 ```typescript
-import { serializedToDataset, serializedToSubscribableDataset } from "@ldo/subscribable-dataset";
+import {
+  serializedToDataset,
+  serializedToSubscribableDataset,
+} from "@ldo/subscribable-dataset";
 
 async function run(): Promise<void> {
   // Create an ExtendedDataset using Turtle
@@ -87,7 +94,7 @@ async function run(): Promise<void> {
       baseIRI:
         "https://jackson.solidcommunity.net/IndividualChats/jackson.solidcommunity.net/index.ttl#",
       format: "application/ld+json",
-    }
+    },
   );
   // Returns true because the input data describes the same triple.
   console.log(turtleDataset.equals(jsonLdDataset));
@@ -98,8 +105,11 @@ run();
 ## Advanced Example
 
 ```typescript
-import { createSubscribableDataset, DatasetChanges } from "@ldo/subscribable-dataset";
-import { quad, namedNode, literal } from '@ldo/rdf-utils';
+import {
+  createSubscribableDataset,
+  DatasetChanges,
+} from "@ldo/subscribable-dataset";
+import { quad, namedNode, literal } from "@ldo/rdf-utils";
 import { Dataset } from "@rdfjs/types";
 
 // Create an empty subscribable dataset
@@ -110,13 +120,13 @@ subscribableDataset.addAll([
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
     namedNode("http://example.org/cartoons#Firebender"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://example.org/cartoons#name"),
     literal("Zuko"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
 ]);
 // Set up listeners
@@ -132,7 +142,7 @@ subscribableDataset.on(
     console.log("Removed Quads:");
     console.log(changes.removed?.toString());
     console.log("\n\n");
-  }
+  },
 );
 // Listener that will trigger whenever a quad containing the named
 // node "http://example.org/cartoons" is added or removed. This is
@@ -147,7 +157,7 @@ subscribableDataset.on(
     console.log("Removed Quads:");
     console.log(changes.removed?.toString());
     console.log("\n\n");
-  }
+  },
 );
 
 // Modify the dataset
@@ -171,13 +181,13 @@ subscribableDataset.addAll([
     namedNode("http://example.org/cartoons#Katara"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
     namedNode("http://example.org/cartoons#Waterbender"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
   quad(
     namedNode("http://example.org/cartoons#Katara"),
     namedNode("http://example.org/cartoons#name"),
     literal("Katara"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
 ]);
 
@@ -217,13 +227,13 @@ subscribableDataset.addAll([
     namedNode("http://example.org/cartoons#Katara"),
     namedNode("http://example.org/cartoons#hasEnemy"),
     namedNode("http://example.org/cartoons#Zuko"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://example.org/cartoons#hasEnemy"),
     namedNode("http://example.org/cartoons#Katara"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
 ]);
 
@@ -235,7 +245,7 @@ transactionalDataset.deleteMatches(
   undefined,
   namedNode("http://example.org/cartoons#hasEnemy"),
   undefined,
-  undefined
+  undefined,
 );
 // Add "hasFrient" predicate
 transactionalDataset.addAll([
@@ -243,13 +253,13 @@ transactionalDataset.addAll([
     namedNode("http://example.org/cartoons#Katara"),
     namedNode("http://example.org/cartoons#hasFriend"),
     namedNode("http://example.org/cartoons#Zuko"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://example.org/cartoons#hasFriend"),
     namedNode("http://example.org/cartoons#Katara"),
-    namedNode("http://example.org/cartoons")
+    namedNode("http://example.org/cartoons"),
   ),
 ]);
 /*
@@ -289,10 +299,12 @@ transactionalDataset.commit();
 ```
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT

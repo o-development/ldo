@@ -1,7 +1,14 @@
 import { ShapeType } from "@ldo/ldo";
 import { solidProfileSchema } from "./solidProfile.schema.js";
 import { solidProfileContext } from "./solidProfile.context.js";
-import { AddressShape, EmailShape, PhoneNumberShape, RSAPublicKeyShape, SolidProfileShape, TrustedAppShape } from "./solidProfile.typings.js";
+import {
+  AddressShape,
+  EmailShape,
+  PhoneNumberShape,
+  RSAPublicKeyShape,
+  SolidProfileShape,
+  TrustedAppShape,
+} from "./solidProfile.typings.js";
 
 /**
  * =============================================================================

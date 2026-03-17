@@ -4,11 +4,7 @@
     "outDir": "./dist/esm",
     "rootDir": "./src",
     "declarationDir": "./dist/types",
-    "types": [
-      "jest"
-    ]
+    "types": ["jest"]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

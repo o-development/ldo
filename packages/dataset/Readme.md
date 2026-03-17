@@ -14,14 +14,14 @@ npm i @ldo/dataset
 import { createDataset } from "@ldo/dataset";
 import { quad, namedNode } from "@ldo/rdf-utils";
 
-imports: quad, namedNode as MyNamedNode
+imports: quad, namedNode as MyNamedNode;
 const dataset = createDataset();
 dataset.add(
   quad(
     namedNode("http://example.org/cartoons#Zuko"),
     namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-    namedNode("http://example.org/cartoons#Firebender")
-  )
+    namedNode("http://example.org/cartoons#Firebender"),
+  ),
 );
 /*
 Prints:
@@ -35,6 +35,7 @@ console.log(dataset.toString());
 The extended dataset implements all the [additional methods](https://rdf.js.org/dataset-spec/#dataset-interface) of the RDFJS dataset spec.
 
 Usage:
+
 ```typescript
 import { createDataset } from "@ldo/dataset";
 import { quad, namedNode, literal } as rdfdm from '@ldo/rdf-utils';
@@ -101,10 +102,12 @@ console.log(differenceDataset.equals(defaultDataset));
 ```
 
 ## Sponsorship
+
 This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn more on the [NLnet project page](https://nlnet.nl/project/SolidUsableApps/).
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
 ## Liscense
+
 MIT
