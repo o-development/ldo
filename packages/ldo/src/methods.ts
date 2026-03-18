@@ -1,10 +1,5 @@
 import type { JsonLdDocument } from "jsonld";
-import type {
-  GraphNode,
-  DatasetChanges,
-  SubjectNode,
-  ObjectNode,
-} from "@ldo/rdf-utils";
+import type { GraphNode, DatasetChanges, SubjectNode } from "@ldo/rdf-utils";
 import type { InteractOptions } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
@@ -348,7 +343,7 @@ export function getDataset(ldo: LdoBase): Dataset {
  * console.log(profileNode.value);
  * ```
  */
-export function getRdfNode(ldo: LdoBase): SubjectNode | ObjectNode {
+export function getRdfNode(ldo: LdoBase): SubjectNode {
   const proxy = getProxyFromObject(ldo);
   return proxy[_getUnderlyingNode];
 }
