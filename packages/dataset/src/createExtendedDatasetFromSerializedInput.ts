@@ -1,8 +1,8 @@
-import type { Quad } from "@rdfjs/types";
 import type { ParserOptions } from "@ldo/rdf-utils";
-import createDatasetFromSerializedInput from "./createDatasetFromSerializedInput";
+import type { Quad } from "@rdfjs/types";
+import { createDatasetFromSerializedInput } from "./createDatasetFromSerializedInput";
 import { createExtendedDatasetFactory } from "./createExtendedDataset";
-import type ExtendedDataset from "./ExtendedDataset";
+import type { ExtendedDataset } from "./ExtendedDataset";
 
 /**
  * Creates an ExtendedDataset with a string input that could be JSON-LD, Turtle, N-Triples, TriG, RDF*, or N3.
@@ -15,7 +15,7 @@ import type ExtendedDataset from "./ExtendedDataset";
  * }
  * @returns A dataset
  */
-export default async function createExtendedDatasetFromSerializedInput(
+export async function createExtendedDatasetFromSerializedInput(
   data: string,
   options?: ParserOptions,
 ): Promise<ExtendedDataset<Quad>> {
