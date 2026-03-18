@@ -1,4 +1,4 @@
-import { namedNode } from "@ldo/rdf-utils";
+import { blankNode, namedNode } from "@ldo/rdf-utils";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
@@ -13,6 +13,7 @@ import {
   commitTransaction,
   createLdoDataset,
   getDataset,
+  getRdfNode,
   serialize,
   startTransaction,
   toJsonLd,
@@ -25,6 +26,7 @@ import {
   languagesOf,
 } from "../src/index";
 import type { ILdoDataset } from "../src/types";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("methods", () => {
   let dataset: ILdoDataset;
@@ -129,6 +131,21 @@ describe("methods", () => {
   it("returns the underlying dataset", () => {
     const underlyingDataset = getDataset(profile);
     expect(typeof underlyingDataset.add).toBe("function");
+  });
+
+  it("returns the underlying named node", () => {
+    const node = getRdfNode(profile);
+    expect(node.termType).toBe("NamedNode");
+    expect(node.value).toBe("https://example.com/item");
+  });
+
+  it("returns the underlying blank node", () => {
+    const blankProfile = dataset
+      .usingType(ProfileShapeType)
+      .fromSubject(blankNode("person"));
+    const node = getRdfNode(blankProfile);
+    expect(node.termType).toBe("BlankNode");
+    expect(node.value).toBe("person");
   });
 
   it("sets a write graph", () => {

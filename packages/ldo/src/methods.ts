@@ -1,11 +1,17 @@
 import type { JsonLdDocument } from "jsonld";
-import type { GraphNode, DatasetChanges } from "@ldo/rdf-utils";
+import type {
+  GraphNode,
+  DatasetChanges,
+  SubjectNode,
+  ObjectNode,
+} from "@ldo/rdf-utils";
 import type { InteractOptions } from "@ldo/jsonld-dataset-proxy";
 import {
   getProxyFromObject,
   _getUnderlyingDataset,
   _proxyContext,
   write as writeDependency,
+  _getUnderlyingNode,
 } from "@ldo/jsonld-dataset-proxy";
 import type { SubscribableDataset } from "@ldo/subscribable-dataset";
 import type { WriterOptions } from "@ldo/rdf-utils";
@@ -325,6 +331,26 @@ export function transactionChanges(ldo: LdoBase): DatasetChanges<Quad> {
 export function getDataset(ldo: LdoBase): Dataset {
   const proxy = getProxyFromObject(ldo);
   return proxy[_getUnderlyingDataset];
+}
+
+/**
+ * Returns the Linked Data Object's underlying rdf node (namedNode, blankNode).
+ *
+ * @param ldo - The Linked Data Object from which the underlying node should be extracted.
+ *
+ * @returns An RDF node
+ *
+ * @example
+ * ```typescript
+ * import { getRdfNode } from "@ldo/ldo"
+ * const profileNode = getRdfNode(profile);
+ * // Logs: https://example.com/profile/card#me
+ * console.log(profileNode.value);
+ * ```
+ */
+export function getRdfNode(ldo: LdoBase): SubjectNode | ObjectNode {
+  const proxy = getProxyFromObject(ldo);
+  return proxy[_getUnderlyingNode];
 }
 
 /**
