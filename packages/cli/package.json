@@ -1,6 +1,6 @@
 {
   "name": "@ldo/cli",
-  "version": "1.0.0-alpha.39",
+  "version": "1.0.0-alpha.40",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@jeswr/shacl2shex": "^1.1.0",
-    "@ldo/ldo": "^1.0.0-alpha.39",
-    "@ldo/schema-converter-shex": "^1.0.0-alpha.39",
+    "@ldo/ldo": "^1.0.0-alpha.40",
+    "@ldo/schema-converter-shex": "^1.0.0-alpha.40",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
@@ -64,5 +64,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
+  "gitHead": "c8cabc3efbcae753c45177d52e2a25bf00544938"
 }
