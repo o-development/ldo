@@ -1,6 +1,6 @@
 {
   "name": "@ldo/test-solid-server",
-  "version": "1.0.0-alpha.42",
+  "version": "1.0.0-alpha.43",
   "description": "A solid server to be used in jest tests",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -49,5 +49,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "c8cabc3efbcae753c45177d52e2a25bf00544938"
+  "gitHead": "a808983ac608173ae9eb7f8b636806da1dea6466"
 }
