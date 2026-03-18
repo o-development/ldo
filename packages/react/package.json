@@ -1,6 +1,6 @@
 {
   "name": "@ldo/react",
-  "version": "1.0.0-alpha.40",
+  "version": "1.0.0-alpha.41",
   "description": "A React library for LDO.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -47,11 +47,11 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.40",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.40",
-    "@ldo/ldo": "^1.0.0-alpha.40",
-    "@ldo/rdf-utils": "^1.0.0-alpha.40",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.40",
+    "@ldo/connected": "^1.0.0-alpha.41",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.41",
+    "@ldo/ldo": "^1.0.0-alpha.41",
+    "@ldo/rdf-utils": "^1.0.0-alpha.41",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.41",
     "cross-fetch": "^3.1.6"
   },
   "files": [

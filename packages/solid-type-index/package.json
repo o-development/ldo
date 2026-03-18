@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-type-index",
-  "version": "1.0.0-alpha.40",
+  "version": "1.0.0-alpha.41",
   "description": "Solid Type Index support for LDO",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -39,17 +39,17 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-react#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.40",
+    "@ldo/test-solid-server": "^1.0.0-alpha.41",
     "@testing-library/react": "^14.1.2",
     "start-server-and-test": "^2.0.3",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.40",
-    "@ldo/connected-solid": "^1.0.0-alpha.40",
-    "@ldo/ldo": "^1.0.0-alpha.40",
-    "@ldo/rdf-utils": "^1.0.0-alpha.40",
-    "@ldo/solid-react": "^1.0.0-alpha.40",
+    "@ldo/connected": "^1.0.0-alpha.41",
+    "@ldo/connected-solid": "^1.0.0-alpha.41",
+    "@ldo/ldo": "^1.0.0-alpha.41",
+    "@ldo/rdf-utils": "^1.0.0-alpha.41",
+    "@ldo/solid-react": "^1.0.0-alpha.41",
     "@rdfjs/types": "^1.0.1"
   },
   "files": [
