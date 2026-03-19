@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { serializedToDataset } from "../src/index";
 import { turtleData, jsonLdData, turtleData2 } from "./sampleData";
 
