@@ -227,6 +227,9 @@ export class SolidContainer extends SolidResource {
   /**
    * Gets the root container of this container. If this container is the root
    * container, this function returns itself.
+   *
+   * Consider getRootContainer() instead, which tries multiple discovery strategies.
+   *
    * @returns The root container for this container or undefined if there is no
    * root container.
    *

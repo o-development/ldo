@@ -587,12 +587,12 @@ describe("Integration", () => {
     });
 
     describe("Root container from storage description", async () => {
-      async function testSuccess() {
-        const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      async function testSuccess(resourceUri = SAMPLE_BINARY_URI) {
+        const resource = solidLdoDataset.getResource(resourceUri);
         const result = await resource.getRootContainerFromStorageDescription();
         expect(result.type).toBe("SolidContainer");
         if (result.type !== "SolidContainer") return;
-        await result.readIfUnfetched();
+        await result.read();
         expect(result.uri).toBe(ROOT_CONTAINER);
         expect(result.isRootContainer()).toBe(true);
       }
@@ -604,10 +604,26 @@ describe("Integration", () => {
       it("caches the result", async () => {
         s.fetchMock.mockClear();
         await testSuccess();
-        expect(s.fetchMock).toHaveBeenCalled();
+        expect(s.fetchMock).toHaveBeenCalledTimes(3);
         s.fetchMock.mockClear();
         await testSuccess();
-        expect(s.fetchMock).not.toHaveBeenCalled();
+        expect(s.fetchMock).toHaveBeenCalledTimes(1);
+      });
+
+      it("caches storage description resource", async () => {
+        // find a root container of first resource
+        s.fetchMock.mockClear();
+        expect(s.fetchMock.mock.calls).toHaveLength(0);
+        await testSuccess(SAMPLE_DATA_URI);
+        const callsUncached = s.fetchMock.mock.calls;
+
+        // find a root container of second resource within the same storage
+        s.fetchMock.mockClear();
+        expect(s.fetchMock.mock.calls).toHaveLength(0);
+        await testSuccess(SAMPLE_BINARY_URI);
+        const callsCached = s.fetchMock.mock.calls;
+        // now, one call should not happen
+        expect(callsCached.length).toEqual(callsUncached.length - 1);
       });
     });
 

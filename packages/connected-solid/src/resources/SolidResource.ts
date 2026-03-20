@@ -48,11 +48,9 @@ import type { SolidNotificationMessage } from "../notifications/SolidNotificatio
 import type { CreateSuccess } from "../requester/results/success/CreateSuccess";
 import { GetWacUriSuccess } from "../wac/results/GetWacUriSuccess";
 import { GetWacRuleSuccess } from "../wac/results/GetWacRuleSuccess";
-import type { DatasetChanges } from "@ldo/rdf-utils";
+import { type DatasetChanges, namedNode } from "@ldo/rdf-utils";
 import type { UpdateResult } from "../requester/requests/updateDataResource";
 import {
-  getRootContainerByStorageDescriptionUri,
-  type GetRootContainerFromStorageDescriptionError,
   getStorageDescriptionUri,
   type GetStorageDescriptionUriError,
   type GetStorageDescriptionUriResult,
@@ -666,6 +664,8 @@ export abstract class SolidResource
    * Gets the root container from this resource's storage description
    * https://solidproject.org/TR/protocol#server-storage-description
    *
+   * Consider getRootContainer() instead, which tries multiple discovery strategies.
+   *
    * @param options - Options object
    * @param options.ignoreCache {boolean} - ignore cached storage resource URI and root container values
    *
@@ -674,12 +674,8 @@ export abstract class SolidResource
   async getRootContainerFromStorageDescription(options?: {
     ignoreCache: boolean;
   }): Promise<
-    | SolidContainer
-    | GetStorageDescriptionUriError<SolidContainer | SolidLeaf>
-    | GetRootContainerFromStorageDescriptionError<SolidContainer | SolidLeaf>
+    SolidContainer | GetStorageDescriptionUriError<SolidContainer | SolidLeaf>
   > {
-    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
-
     let rootContainerUri: SolidContainerUri;
 
     // Return the root container if it's already cached
@@ -692,15 +688,30 @@ export abstract class SolidResource
       if (storageDescriptionUriResult.isError)
         return storageDescriptionUriResult;
 
-      // Get root container from storage description URI
-      const result = await getRootContainerByStorageDescriptionUri(
+      // // Get root container from storage description URI
+      const storageDescriptionResource = this.context.dataset.getResource(
         storageDescriptionUriResult.storageDescriptionUri,
-        thisAsLeafOrContainer,
-        this.context.solid,
       );
+      const result = await storageDescriptionResource.readIfUnfetched();
       if (result.isError) return result;
-      this.rootContainerFromStorageDescriptionUri = result.rootContainerUri;
-      rootContainerUri = result.rootContainerUri;
+
+      const rootContainerQuads = this.context.dataset.match(
+        null,
+        namedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+        namedNode("http://www.w3.org/ns/pim/space#Storage"),
+        namedNode(storageDescriptionUriResult.storageDescriptionUri),
+      );
+
+      // https://solidproject.org/TR/protocol#storage-description-statements
+      if (rootContainerQuads.size !== 1) {
+        return new NoncompliantPodError(
+          storageDescriptionResource, // storage description, or this resource?
+          "There should be one storage listed in storage description resource.",
+        );
+      }
+
+      rootContainerUri = rootContainerQuads.toArray()[0].subject
+        .value as SolidContainerUri;
     }
     const rootContainer = this.context.dataset.getResource(rootContainerUri);
     return rootContainer;
