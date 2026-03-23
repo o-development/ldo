@@ -2,6 +2,7 @@ import { quad, namedNode, literal } from "@ldo/rdf-utils";
 import type { BaseQuad, Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { SubjectNode, ObjectNode, PredicateNode } from "@ldo/rdf-utils";
 import { Readable } from "stream";
+import { describe, beforeEach, it, expect, vi } from "vitest";
 
 export default function testDataset(
   datasetFactory: DatasetFactory<Quad>,
@@ -565,7 +566,7 @@ export default function testDataset(
       initializeDataset();
       return new Promise<void>((resolve, reject) => {
         const stream = dataset.toStream();
-        const onDataFunc = jest.fn();
+        const onDataFunc = vi.fn();
         stream.on("data", onDataFunc);
         stream.on("error", reject);
         stream.on("end", () => {

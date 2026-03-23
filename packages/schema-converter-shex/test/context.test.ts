@@ -2,6 +2,7 @@ import { testData } from "./testData/testData";
 import { shexjToContext } from "../src/context/shexjToContext";
 import parser from "@shexjs/parser";
 import type { Schema } from "shexj";
+import { describe, it, expect } from "vitest";
 
 console.warn = () => {};
 
