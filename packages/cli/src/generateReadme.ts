@@ -1,6 +1,6 @@
 import { getPackageJson } from "./util/modifyPackageJson.js";
 import { forAllShapes } from "./util/forAllShapes.js";
-import { promises as fs } from "fs";
+import fs from "node:fs/promises";
 import path from "path";
 import { Project } from "ts-morph";
 import { renderFile } from "ejs";

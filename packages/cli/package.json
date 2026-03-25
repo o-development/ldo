@@ -33,7 +33,6 @@
   "devDependencies": {
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
-    "@types/fs-extra": "^9.0.13",
     "@types/jsonld": "^1.5.15",
     "@types/prompts": "^2.4.9",
     "@types/shexj": "^2.1.4",
@@ -48,7 +47,6 @@
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",
-    "fs-extra": "^10.1.0",
     "loading-cli": "^1.1.0",
     "prettier": "^3.0.3",
     "prompts": "^2.4.2",
