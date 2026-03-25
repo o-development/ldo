@@ -39,21 +39,21 @@ export function createBrowserSolidReactMethods(
         window.localStorage.setItem(PRE_REDIRECT_URI, window.location.href);
       }
 
-      await handleIncomingRedirect({
+      const sessionInfo = await handleIncomingRedirect({
         restorePreviousSession: true,
       });
-      // Set timout to ensure this happens after the redirect
-      setTimeout(() => {
-        setSession({ ...getDefaultSession().info });
-        window.history.replaceState(
-          {},
-          "",
-          window.localStorage.getItem(PRE_REDIRECT_URI),
-        );
-        window.localStorage.removeItem(PRE_REDIRECT_URI);
 
-        setRanInitialAuthCheck(true);
-      }, 0);
+      if (!sessionInfo) return;
+
+      setSession(sessionInfo);
+      window.history.replaceState(
+        {},
+        "",
+        window.localStorage.getItem(PRE_REDIRECT_URI),
+      );
+      window.localStorage.removeItem(PRE_REDIRECT_URI);
+
+      setRanInitialAuthCheck(true);
     }, []);
 
     const login = useCallback(
@@ -69,7 +69,7 @@ export function createBrowserSolidReactMethods(
         };
         window.localStorage.setItem(PRE_REDIRECT_URI, window.location.href);
         await libraryLogin(fullOptions);
-        setSession({ ...getDefaultSession().info });
+        // user should be redirected away from the app
       },
       [],
     );
