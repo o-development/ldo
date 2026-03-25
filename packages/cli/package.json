@@ -45,6 +45,7 @@
     "@ldo/ldo": "^1.0.0-alpha.38",
     "@ldo/schema-converter-shex": "^1.0.0-alpha.38",
     "@shexjs/parser": "^1.0.0-alpha.24",
+    "camelcase": "^9.0.0",
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",
