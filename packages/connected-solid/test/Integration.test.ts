@@ -575,78 +575,132 @@ describe("Integration", () => {
    * Get Root Container
    */
   describe("rootContainer", () => {
-    it("Finds the root container", async () => {
-      const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
-      const result = await resource.getRootContainer();
-      expect(result.type).toBe("SolidContainer");
-      if (result.type !== "SolidContainer") return;
-      expect(result.uri).toBe(ROOT_CONTAINER);
-      expect(result.isRootContainer()).toBe(true);
+    [SAMPLE2_BINARY_URI, SAMPLE_BINARY_URI].forEach((resourceUri) => {
+      it(`Finds the root container for ${resourceUri}`, async () => {
+        const resource = solidLdoDataset.getResource(resourceUri);
+        const result = await resource.getRootContainer();
+        expect(result.type).toBe("SolidContainer");
+        if (result.type !== "SolidContainer") return;
+        expect(result.uri).toBe(ROOT_CONTAINER);
+        expect(result.isRootContainer()).toBe(true);
+      });
     });
 
-    it("Returns an error if there is no root container", async () => {
-      s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
-          status: 200,
-          headers: new Headers({ "content-type": "text/turtle" }),
-        }),
-      );
-      s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
-          status: 200,
-          headers: new Headers({ "content-type": "text/turtle" }),
-        }),
-      );
-      s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
-          status: 200,
-          headers: new Headers({ "content-type": "text/turtle" }),
-        }),
-      );
-      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const result = await resource.getRootContainer();
-      expect(result.isError).toBe(true);
-      if (!result.isError) return;
-      expect(result.type).toBe("noRootContainerError");
-      expect(result.message).toMatch(/\.* has not root container\./);
+    describe("Root container from storage description", async () => {
+      async function testSuccess(resourceUri = SAMPLE_BINARY_URI) {
+        const resource = solidLdoDataset.getResource(resourceUri);
+        const result = await resource.getRootContainerFromStorageDescription();
+        expect(result.type).toBe("SolidContainer");
+        if (result.type !== "SolidContainer") return;
+        await result.read();
+        expect(result.uri).toBe(ROOT_CONTAINER);
+        expect(result.isRootContainer()).toBe(true);
+      }
+
+      it("finds the root container", async () => {
+        await testSuccess();
+      });
+
+      it("caches the result", async () => {
+        s.fetchMock.mockClear();
+        await testSuccess();
+        expect(s.fetchMock).toHaveBeenCalledTimes(3);
+        s.fetchMock.mockClear();
+        await testSuccess();
+        expect(s.fetchMock).toHaveBeenCalledTimes(1);
+      });
+
+      it("caches storage description resource", async () => {
+        // find a root container of first resource
+        s.fetchMock.mockClear();
+        expect(s.fetchMock.mock.calls).toHaveLength(0);
+        await testSuccess(SAMPLE_DATA_URI);
+        const callsUncached = s.fetchMock.mock.calls;
+
+        // find a root container of second resource within the same storage
+        s.fetchMock.mockClear();
+        expect(s.fetchMock.mock.calls).toHaveLength(0);
+        await testSuccess(SAMPLE_BINARY_URI);
+        const callsCached = s.fetchMock.mock.calls;
+        // now, one call should not happen
+        expect(callsCached.length).toEqual(callsUncached.length - 1);
+      });
     });
 
-    it("An error to be returned if a common http error is encountered", async () => {
-      s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
-          status: 500,
-        }),
-      );
-      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const result = await resource.getRootContainer();
-      expect(result.isError).toBe(true);
-      expect(result.type).toBe("serverError");
-    });
+    describe("Root container by traversal", async () => {
+      it("Finds the root container", async () => {
+        const resource = solidLdoDataset.getResource(SAMPLE2_BINARY_URI);
+        const result = await resource.getRootContainerByTraversal();
+        expect(result.type).toBe("SolidContainer");
+        if (result.type !== "SolidContainer") return;
+        expect(result.uri).toBe(ROOT_CONTAINER);
+        expect(result.isRootContainer()).toBe(true);
+      });
 
-    it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
-      s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
-      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const result = await resource.getRootContainer();
-      expect(result.isError).toBe(true);
-      if (!result.isError) return;
-      expect(result.type).toBe("unexpectedResourceError");
-      expect(result.message).toBe("Something happened.");
-    });
-
-    it("returns a NonCompliantPodError when there is no root", async () => {
-      s.fetchMock.mockResolvedValueOnce(
-        new Response(TEST_CONTAINER_TTL, {
-          status: 200,
-          headers: new Headers({
-            "content-type": "text/turtle",
-            link: '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+      it("Returns an error if there is no root container", async () => {
+        s.fetchMock.mockResolvedValueOnce(
+          new Response(TEST_CONTAINER_TTL, {
+            status: 200,
+            headers: new Headers({ "content-type": "text/turtle" }),
           }),
-        }),
-      );
-      const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
-      const result = await resource.getRootContainer();
-      expect(result.isError).toBe(true);
-      expect(result.type).toBe("noRootContainerError");
+        );
+        s.fetchMock.mockResolvedValueOnce(
+          new Response(TEST_CONTAINER_TTL, {
+            status: 200,
+            headers: new Headers({ "content-type": "text/turtle" }),
+          }),
+        );
+        s.fetchMock.mockResolvedValueOnce(
+          new Response(TEST_CONTAINER_TTL, {
+            status: 200,
+            headers: new Headers({ "content-type": "text/turtle" }),
+          }),
+        );
+        const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+        const result = await resource.getRootContainerByTraversal();
+        expect(result.isError).toBe(true);
+        if (!result.isError) return;
+        expect(result.type).toBe("noRootContainerError");
+        expect(result.message).toMatch(/\.* has not root container\./);
+      });
+
+      it("An error to be returned if a common http error is encountered", async () => {
+        s.fetchMock.mockResolvedValueOnce(
+          new Response(TEST_CONTAINER_TTL, {
+            status: 500,
+          }),
+        );
+        const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+        const result = await resource.getRootContainerByTraversal();
+        expect(result.isError).toBe(true);
+        expect(result.type).toBe("serverError");
+      });
+
+      it("Returns an UnexpectedResourceError if an unknown error is triggered", async () => {
+        s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
+        const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+        const result = await resource.getRootContainerByTraversal();
+        expect(result.isError).toBe(true);
+        if (!result.isError) return;
+        expect(result.type).toBe("unexpectedResourceError");
+        expect(result.message).toBe("Something happened.");
+      });
+
+      it("returns a NonCompliantPodError when there is no root", async () => {
+        s.fetchMock.mockResolvedValueOnce(
+          new Response(TEST_CONTAINER_TTL, {
+            status: 200,
+            headers: new Headers({
+              "content-type": "text/turtle",
+              link: '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+            }),
+          }),
+        );
+        const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
+        const result = await resource.getRootContainerByTraversal();
+        expect(result.isError).toBe(true);
+        expect(result.type).toBe("noRootContainerError");
+      });
     });
   });
 
@@ -691,6 +745,7 @@ describe("Integration", () => {
     });
 
     it("Passes any errors returned from the getRootContainer method", async () => {
+      s.fetchMock.mockResolvedValueOnce(new Response(""));
       s.fetchMock.mockResolvedValueOnce(new Response(""));
       s.fetchMock.mockRejectedValueOnce(new Error("Something happened."));
       const result = await getStorageFromWebId(
