@@ -831,6 +831,6 @@ This project was made possible by a grant from NGI Zero Entrust via nlnet. Learn
 [<img src="https://nlnet.nl/logo/banner.png" alt="nlnet foundation logo" width="300" />](https://nlnet.nl/)
 [<img src="https://nlnet.nl/image/logos/NGI0Entrust_tag.svg" alt="NGI Zero Entrust Logo" width="300" />](https://nlnet.nl/)
 
-## Liscense
+## License
 
 MIT
