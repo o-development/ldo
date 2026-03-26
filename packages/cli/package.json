@@ -33,6 +33,7 @@
   "devDependencies": {
     "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
+    "@types/eslint": "^8.56.12",
     "@types/jsonld": "^1.5.15",
     "@types/prompts": "^2.4.9",
     "@types/shexj": "^2.1.4",
@@ -49,6 +50,7 @@
     "child-process-promise": "^2.2.1",
     "commander": "^9.3.0",
     "ejs": "^3.1.8",
+    "eslint": "^8.57.1",
     "loading-cli": "^1.1.0",
     "prettier": "^3.0.3",
     "prompts": "^2.4.2",

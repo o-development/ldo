@@ -140,7 +140,7 @@ ex:Address EXTRA a {
     console.log(result);
 
     expect(result).toContain(
-      'import { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address } from "./address.typings.js"',
     );
   });
 
@@ -157,7 +157,7 @@ IMPORT <./address.shex>
 ex:Person EXTRA a {
   a [foaf:Person] ;
   foaf:knows @ex:Person *;
-  #foaf:address @ex:Address *;
+  foaf:address @ex:Address *;
   foaf:name xsd:string ;
   foaf:homepage IRI ;
 }`,
@@ -218,11 +218,11 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     console.log(cityTypings);
 
     expect(personTypings).toContain(
-      'import { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address } from "./address.typings.js"',
     );
 
     expect(addressTypings).toContain(
-      'import { City as City } from "./city.typings.js"',
+      'import type { City as City } from "./city.typings.js"',
     );
   });
 
@@ -303,15 +303,15 @@ IMPORT <../person.shex>
     console.log(cityTypings);
 
     expect(personTypings).toContain(
-      'import { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address } from "./address.typings.js"',
     );
 
     expect(addressTypings).toContain(
-      'import { City as City } from "./city.typings.js"',
+      'import type { City as City } from "./city.typings.js"',
     );
 
     expect(cityTypings).toContain(
-      'import { Person as Person } from "./person.typings.js"',
+      'import type { Person as Person } from "./person.typings.js"',
     );
   });
 

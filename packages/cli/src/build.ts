@@ -9,6 +9,9 @@ import loading from "loading-cli";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readShapesDeep } from "./util/readShapes.js";
+import { ESLint } from "eslint";
+
+const eslint = new ESLint({ fix: true });
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -73,6 +76,11 @@ export async function build(options: BuildOptions) {
     await Promise.all(
       ["context", "schema", "shapeTypes", "typings"].map(
         async (templateName) => {
+          const filePath = path.join(
+            options.output,
+            `${fileName}.${templateName}.ts`,
+          );
+
           const finalContent = await renderFile(
             path.join(__dirname, "./templates", `${templateName}.ejs`),
             {
@@ -83,11 +91,16 @@ export async function build(options: BuildOptions) {
               context: JSON.stringify(context, null, 2),
             },
           );
+
+          const lintedContent = await eslint.lintText(finalContent, {
+            filePath,
+          });
+          const fixedContent = lintedContent[0].output ?? finalContent;
           // console.log(fileName, templateName, finalContent);
           // Save conversion to document
           await fs.writeFile(
-            path.join(options.output, `${fileName}.${templateName}.ts`),
-            await prettier.format(finalContent, { parser: "typescript" }),
+            filePath,
+            await prettier.format(fixedContent, { parser: "typescript" }),
           );
         },
       ),
