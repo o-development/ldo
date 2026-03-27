@@ -66,12 +66,16 @@ export class JsonLdContextBuilder {
     string,
     ExpandedTermDefinition | JsonLdContextBuilder
   > = {};
-  protected generatedNames: Record<string, string> | undefined;
+  generatedNames: Record<string, string> | undefined;
 
   // shex imports
   imports: Set<string> = new Set();
   // IRIs that we may need to find in shex imports (not defined locally)
   refsToImport: Set<string> = new Set();
+
+  constructor(initialNames?: Record<string, string>) {
+    if (initialNames) this.generatedNames = { ...initialNames };
+  }
 
   private getRelevantBuilder(rdfType?: string): JsonLdContextBuilder {
     if (!rdfType) return this;
@@ -184,9 +188,10 @@ export class JsonLdContextBuilder {
   }
 
   generateNames(): Record<string, string> {
-    const generatedNames: Record<string, string> = {};
-    const claimedNames: Set<string> = new Set();
+    const generatedNames: Record<string, string> = { ...this.generatedNames };
+    const claimedNames: Set<string> = new Set(Object.values(generatedNames));
     Object.entries(this.iriAnnotations).forEach(([iri, annotations]) => {
+      if (generatedNames[iri]) return;
       let potentialName: string | undefined;
       if (annotations.length > 0) {
         const labelAnnotationObject = annotations.find(
@@ -228,9 +233,9 @@ export class JsonLdContextBuilder {
 
   getNameFromIri(iri: string, rdfType?: string) {
     const relevantBuilder = this.getRelevantBuilder(rdfType);
-    if (!relevantBuilder.generatedNames) {
-      relevantBuilder.generatedNames = relevantBuilder.generateNames();
-    }
+    // if (!relevantBuilder.generatedNames) {
+    relevantBuilder.generatedNames = relevantBuilder.generateNames();
+    // }
 
     if (relevantBuilder.generatedNames[iri]) {
       return relevantBuilder.generatedNames[iri];
@@ -244,6 +249,9 @@ export class JsonLdContextBuilder {
     const namesMap = this.generateNames();
 
     Object.entries(namesMap).forEach(([iri, name]) => {
+      // FIX: Only output if the IRI was actually declared in this file
+      if (!this.iriAnnotations[iri]) return;
+
       if (this.iriTypes[iri]) {
         let subContext: ExpandedTermDefinition = {
           "@id":

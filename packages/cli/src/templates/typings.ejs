@@ -1,4 +1,9 @@
+<% const interfaces = typings.filter(t => t.dts.kind === "interface"); -%>
+<% const imports = typings.filter(t => t.dts.kind.startsWith("import")); -%>
 import type { LdoJsonldContext, LdSet } from "@ldo/ldo";
+<% imports.forEach((imp) => { -%>
+<%- imp.typingString -%>
+<% }) -%>
 
 /**
  * =============================================================================
@@ -6,7 +11,7 @@ import type { LdoJsonldContext, LdSet } from "@ldo/ldo";
  * =============================================================================
  */
 
-<% typings.forEach((typing) => { -%>
+<% interfaces.forEach((typing) => { -%>
 /**
  * <%- typing.dts.name %> Type
  */

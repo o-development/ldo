@@ -1,9 +1,9 @@
 <% const shapeName = camelCase(fileName); -%>
-import type { Schema } from "shexj";
+import type { LdoJsonldContext } from "@ldo/ldo";
 
 /**
  * =============================================================================
- * <%- shapeName %>Schema: ShexJ Schema for <%- fileName %>
+ * <%- shapeName %>Context: JSONLD Context for <%- fileName %>
  * =============================================================================
  */
-export const <%- shapeName %>Schema: Schema = <%- schema %>;
+export const <%- shapeName %>ContextPartial: LdoJsonldContext = <%- context %>;

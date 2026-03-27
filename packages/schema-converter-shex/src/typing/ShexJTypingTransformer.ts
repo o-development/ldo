@@ -93,6 +93,8 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
 
       const importedIris = new Map<string, string>();
 
+      // console.log(importTypings.keys(), "****");
+
       for (const [importIri, importTyping] of importTypings) {
         for (const typing of importTyping[0].typings) {
           // this might not cover all cases
@@ -283,6 +285,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
       const transformedChildren = await getTransformedChildren();
 
       const rdfTypes = getRdfTypesForTripleConstraint(node);
+      // console.log(rdfTypes, node);
 
       // HACK: Selecting only one RDFType might cause edge cases children in the
       // heirarchy that have different predicate names.
@@ -304,7 +307,7 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         if (typeof transformedChildren.valueExpr === "string") {
           type = context.getNameFromIri(
             transformedChildren.valueExpr,
-            rdfTypes[0],
+            // rdfTypes[0],
           ) as dom.Type;
         }
       }

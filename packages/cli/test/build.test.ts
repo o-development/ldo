@@ -3,6 +3,8 @@ import { exec, type ExecException } from "node:child_process";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { build } from "../src/build.js";
 
+const FILES_PER_SHAPE = 5;
+
 const _runCli = (args: string) => {
   return new Promise<{
     error: ExecException | null;
@@ -48,7 +50,7 @@ ex:Person EXTRA a {
     await build({ input: "shapes/", output: "output/" });
 
     const outputAfter = await fs.promises.readdir("output/");
-    expect(outputAfter).toHaveLength(4);
+    expect(outputAfter).toHaveLength(1 * FILES_PER_SHAPE);
 
     const result = await fs.promises.readFile(
       "output/person.context.ts",
@@ -78,7 +80,7 @@ ex:Person EXTRA a {
     await build({ input: "shapes/", output: "output/" });
 
     const outputAfter = await fs.promises.readdir("output/");
-    expect(outputAfter).toHaveLength(4);
+    expect(outputAfter).toHaveLength(1 * FILES_PER_SHAPE);
 
     // if we got here, the build has not failed, good!
 
@@ -128,7 +130,7 @@ ex:Address EXTRA a {
     await build({ input: "shapes/", output: "output/" });
 
     const outputAfter = await fs.promises.readdir("output/");
-    expect(outputAfter).toHaveLength(8);
+    expect(outputAfter).toHaveLength(2 * FILES_PER_SHAPE);
 
     console.log(Object.keys(vol.toJSON()));
 
@@ -140,7 +142,7 @@ ex:Address EXTRA a {
     console.log(result);
 
     expect(result).toContain(
-      'import type { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address2 } from "./address.typings.js"',
     );
   });
 
@@ -194,7 +196,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     await build({ input: "shapes/", output: "output/" });
 
     const outputAfter = await fs.promises.readdir("output/");
-    expect(outputAfter).toHaveLength(12);
+    expect(outputAfter).toHaveLength(3 * FILES_PER_SHAPE);
 
     console.log(Object.keys(vol.toJSON()));
 
@@ -218,7 +220,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     console.log(cityTypings);
 
     expect(personTypings).toContain(
-      'import type { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address2 } from "./address.typings.js"',
     );
 
     expect(addressTypings).toContain(
@@ -279,7 +281,7 @@ IMPORT <../person.shex>
     await build({ input: "shapes/", output: "output/" });
 
     const outputAfter = await fs.promises.readdir("output/");
-    expect(outputAfter).toHaveLength(12);
+    expect(outputAfter).toHaveLength(3 * FILES_PER_SHAPE);
 
     console.log(Object.keys(vol.toJSON()));
 
@@ -303,7 +305,7 @@ IMPORT <../person.shex>
     console.log(cityTypings);
 
     expect(personTypings).toContain(
-      'import type { Address as Address } from "./address.typings.js"',
+      'import type { Address as Address2 } from "./address.typings.js"',
     );
 
     expect(addressTypings).toContain(

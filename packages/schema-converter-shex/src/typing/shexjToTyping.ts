@@ -14,16 +14,20 @@ export interface TypeingReturn {
   }[];
 }
 
+export type IriNameMap = Record<string, string>;
+
 export async function shexjToTyping(
   shexj: Schema,
   {
     imports = new Map(),
     getImportPaths,
+    nameMap,
   }: {
     imports?: Map<string, Schema>;
     getImportPaths: (importIri: string) => { typings: string };
+    nameMap?: Record<string, string>;
   },
-): Promise<[TypeingReturn, ContextDefinition]> {
+): Promise<[TypeingReturn, ContextDefinition, IriNameMap | undefined]> {
   const processedShexj: Schema = (await jsonld2graphobject(
     {
       ...shexj,
@@ -33,7 +37,7 @@ export async function shexjToTyping(
     "SCHEMA",
   )) as unknown as Schema;
 
-  const jsonLdContextBuilder = new JsonLdContextBuilder();
+  const jsonLdContextBuilder = new JsonLdContextBuilder(nameMap);
   await ShexJNameVisitor.visit(processedShexj, "Schema", jsonLdContextBuilder);
 
   const declarations = await ShexJTypingTransformer.transform(
@@ -45,8 +49,11 @@ export async function shexjToTyping(
       async getImportTypings(importIri: string) {
         const shexJ = imports.get(importIri);
         if (!shexJ) return undefined;
-        const importTypings = await shexjToTyping(shexJ, { getImportPaths });
-        return importTypings;
+        const importTypings = await shexjToTyping(shexJ, {
+          getImportPaths,
+          nameMap,
+        });
+        return [importTypings[0], importTypings[1]];
       },
       refsToImport: jsonLdContextBuilder.refsToImport,
       getImportPath: (importIri: string) => getImportPaths(importIri).typings,
@@ -73,5 +80,9 @@ export async function shexjToTyping(
     typings,
   };
 
-  return [typeingReturn, jsonLdContextBuilder.generateJsonldContext()];
+  return [
+    typeingReturn,
+    jsonLdContextBuilder.generateJsonldContext(),
+    jsonLdContextBuilder.generatedNames,
+  ];
 }
