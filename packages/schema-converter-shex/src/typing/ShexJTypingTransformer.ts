@@ -14,7 +14,7 @@ export interface ShexJTypeTransformerContext {
     importIri: string,
   ) => Promise<[TypeingReturn, ContextDefinition] | undefined>;
   refsToImport: Set<string>;
-  getImportPath: (importIri: string) => string;
+  getImportPath: (importIri: string) => string | undefined;
 }
 
 export function commentFromAnnotations(
@@ -121,8 +121,9 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
             const as = context.getNameFromIri(shapeId); // local rename
             const from = context.getImportPath(importIri); // relative import path
 
-            // add import to interfaces
-            interfaces.push(dom.create.importNamed(name, as, from));
+            if (name && as && from)
+              // add import to interfaces
+              interfaces.push(dom.create.importNamed(name, as, from));
           }
         }
       }

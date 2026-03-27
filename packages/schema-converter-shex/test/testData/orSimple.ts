@@ -76,5 +76,5 @@ export const orSimple: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainer {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "MediaContainer";\n    }>;\n    primaryMedia: Video | Image;\n    media?: LdSet<Video | Image>;\n}\n\nexport interface Video {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Video";\n    }>;\n}\n\nexport interface Image {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Image";\n    }>;\n}\n\n',
+    'import type { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface MediaContainer {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "MediaContainer";\n    }>;\n    primaryMedia: Video | Image;\n    media?: LdSet<Video | Image>;\n}\n\nexport interface Video {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Video";\n    }>;\n}\n\nexport interface Image {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type: LdSet<{\n        "@id": "Image";\n    }>;\n}\n\n',
 };

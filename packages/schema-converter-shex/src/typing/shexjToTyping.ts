@@ -24,9 +24,9 @@ export async function shexjToTyping(
     nameMap,
   }: {
     imports?: Map<string, Schema>;
-    getImportPaths: (importIri: string) => { typings: string };
+    getImportPaths?: (importIri: string) => { typings: string };
     nameMap?: Record<string, string>;
-  },
+  } = {},
 ): Promise<[TypeingReturn, ContextDefinition, IriNameMap | undefined]> {
   const processedShexj: Schema = (await jsonld2graphobject(
     {
@@ -56,7 +56,7 @@ export async function shexjToTyping(
         return [importTypings[0], importTypings[1]];
       },
       refsToImport: jsonLdContextBuilder.refsToImport,
-      getImportPath: (importIri: string) => getImportPaths(importIri).typings,
+      getImportPath: (importIri: string) => getImportPaths?.(importIri).typings,
     },
   );
 
