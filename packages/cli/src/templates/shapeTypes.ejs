@@ -1,6 +1,6 @@
 import type { ShapeType } from "@ldo/ldo";
-import { <%- fileName %>Schema } from "./<%- fileName %>.schema";
-import { <%- fileName %>Context } from "./<%- fileName %>.context";
+import { <%- shapeName %>Schema } from "./<%- fileName %>.schema";
+import { <%- shapeName %>Context } from "./<%- fileName %>.context";
 import type {
 <% typings.forEach((typing) => { -%>
   <%- typing.dts.name %>,
@@ -17,8 +17,8 @@ import type {
  * <%- typing.dts.name %> ShapeType
  */
 export const <%- typing.dts.name %>ShapeType: ShapeType<<%- typing.dts.name %>> = {
-  schema: <%- fileName %>Schema,
+  schema: <%- shapeName %>Schema,
   shape: "<%- typing.dts.shapeId %>",
-  context: <%- fileName %>Context,
+  context: <%- shapeName %>Context,
 };
 <% }); -%>

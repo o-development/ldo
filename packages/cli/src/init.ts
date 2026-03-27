@@ -1,5 +1,5 @@
 import { exec } from "child-process-promise";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
 import path from "path";
 import { renderFile } from "ejs";
 import { modifyPackageJson } from "./util/modifyPackageJson.js";
@@ -22,7 +22,7 @@ export async function init(directory?: string) {
   let parentDirectory = projectDirectory;
   parentDirectory = "./";
   const allDirectories = (
-    await fs.promises.readdir("./", {
+    await fs.readdir("./", {
       withFileTypes: true,
     })
   ).filter((file) => file.isDirectory());
@@ -43,8 +43,8 @@ export async function init(directory?: string) {
 
   // Create "shapes" folder
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
-  await fs.promises.mkdir(shapesFolderPath);
-  const defaultShapePaths = await fs.promises.readdir(
+  await fs.mkdir(shapesFolderPath);
+  const defaultShapePaths = await fs.readdir(
     path.join(__dirname, "./templates/defaultShapes"),
   );
   await Promise.all(
@@ -53,7 +53,7 @@ export async function init(directory?: string) {
         path.join(__dirname, "./templates/defaultShapes", shapePath),
         {},
       );
-      await fs.promises.writeFile(
+      await fs.writeFile(
         path.join(shapesFolderPath, `${path.parse(shapePath).name}.shex`),
         shapeContent,
       );
