@@ -18,58 +18,59 @@ function hasMatch(store: Store, predicate: string, object: string) {
   return false;
 }
 
+function isShaclStore(store: Store) {
+  return (
+    hasMatch(store, rdf.type, "http://www.w3.org/ns/shacl#NodeShape") ||
+    hasMatch(store, rdf.type, "http://www.w3.org/ns/shacl#PropertyShape")
+  );
+}
+
 export async function forAllShapes(
   shapePath: string,
   callback: (filename: string, shape: string) => Promise<void>,
 ): Promise<void> {
-  const shapeDir = await fs.readdir(shapePath, {
-    withFileTypes: true,
-  });
-  // Filter out non-shex documents
-  const shexFiles = shapeDir.filter(
-    (file) => file.isFile() && file.name.endsWith(".shex"),
-  );
-  const shexPromise = Promise.all(
-    shexFiles.map(async (file) => {
+  const shapeDir = await fs.readdir(shapePath, { withFileTypes: true });
+
+  await Promise.all(
+    shapeDir.map(async (file) => {
+      if (!file.isFile()) return;
+
+      // file name without extension
       const fileName = path.parse(file.name).name;
-      // Get the content of each document
-      const shexC = await fs.readFile(path.join(shapePath, file.name), "utf8");
+      // file content as shex or undefined
+      const shexC = await readFileAsShex(path.join(shapePath, file.name));
+
+      if (shexC === undefined) return;
+
       await callback(fileName, shexC);
     }),
   );
+}
 
-  const shaclPromise = Promise.all(
-    shapeDir.map(async (file) => {
-      if (file.isFile()) {
-        let store: Awaited<ReturnType<typeof dereferenceToStore>>;
-        try {
-          store = await dereferenceToStore(path.join(shapePath, file.name), {
-            localFiles: true,
-          });
-        } catch (e) {
-          return;
-        }
-        // Make sure the RDF file contains a SHACL shape
-        if (
-          hasMatch(
-            store.store,
-            rdf.type,
-            "http://www.w3.org/ns/shacl#NodeShape",
-          ) ||
-          hasMatch(
-            store.store,
-            rdf.type,
-            "http://www.w3.org/ns/shacl#PropertyShape",
-          )
-        ) {
-          const shex = await writeShexSchema(
-            await shaclStoreToShexSchema(store.store),
-            store.prefixes,
-          );
-          await callback(path.parse(file.name).name, shex);
-        }
+/**
+ * Read shex or shacl shape file, and return it as shex.
+ * @param {string} filePath - path to the shape (TODO URI)
+ * @return {Promise<string|undefined>} content of the file as shexC, or undefined if it's not a shape
+ *
+ * @todo maybe throw error instead of returning undefined
+ */
+export async function readFileAsShex(
+  filePath: string,
+): Promise<string | undefined> {
+  if (filePath.endsWith(".shex")) {
+    // read shex
+    return await fs.readFile(filePath, "utf8");
+  } else {
+    // try to read shacl
+    try {
+      const store = await dereferenceToStore(filePath, { localFiles: true });
+      // Make sure the RDF file contains a SHACL shape
+      if (isShaclStore(store.store)) {
+        return await writeShexSchema(
+          await shaclStoreToShexSchema(store.store),
+          store.prefixes,
+        );
       }
-    }),
-  );
-  await Promise.all([shexPromise, shaclPromise]);
+    } catch (e) {}
+  }
 }

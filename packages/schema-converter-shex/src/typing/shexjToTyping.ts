@@ -1,10 +1,10 @@
+import * as dom from "dts-dom";
 import type { ContextDefinition } from "jsonld";
+import { jsonld2graphobject } from "jsonld2graphobject";
 import type { Schema } from "shexj";
 import { JsonLdContextBuilder } from "../context/JsonLdContextBuilder";
 import { ShexJNameVisitor } from "../context/ShexJContextVisitor";
-import { jsonld2graphobject } from "jsonld2graphobject";
 import { ShexJTypingTransformer } from "./ShexJTypingTransformer";
-import * as dom from "dts-dom";
 
 export interface TypeingReturn {
   typingsString: string;
@@ -14,9 +14,20 @@ export interface TypeingReturn {
   }[];
 }
 
+export type IriNameMap = Record<string, string>;
+
 export async function shexjToTyping(
   shexj: Schema,
-): Promise<[TypeingReturn, ContextDefinition]> {
+  {
+    imports = new Map(),
+    getImportPaths,
+    nameMap,
+  }: {
+    imports?: Map<string, Schema>;
+    getImportPaths?: (importIri: string) => { typings: string };
+    nameMap?: Record<string, string>;
+  } = {},
+): Promise<[TypeingReturn, ContextDefinition, IriNameMap | undefined]> {
   const processedShexj: Schema = (await jsonld2graphobject(
     {
       ...shexj,
@@ -25,7 +36,8 @@ export async function shexjToTyping(
     },
     "SCHEMA",
   )) as unknown as Schema;
-  const jsonLdContextBuilder = new JsonLdContextBuilder();
+
+  const jsonLdContextBuilder = new JsonLdContextBuilder(nameMap);
   await ShexJNameVisitor.visit(processedShexj, "Schema", jsonLdContextBuilder);
 
   const declarations = await ShexJTypingTransformer.transform(
@@ -34,8 +46,20 @@ export async function shexjToTyping(
     {
       getNameFromIri:
         jsonLdContextBuilder.getNameFromIri.bind(jsonLdContextBuilder),
+      async getImportTypings(importIri: string) {
+        const shexJ = imports.get(importIri);
+        if (!shexJ) return undefined;
+        const importTypings = await shexjToTyping(shexJ, {
+          getImportPaths,
+          nameMap,
+        });
+        return [importTypings[0], importTypings[1]];
+      },
+      refsToImport: jsonLdContextBuilder.refsToImport,
+      getImportPath: (importIri: string) => getImportPaths?.(importIri).typings,
     },
   );
+
   const typings = declarations.map((declaration) => {
     return {
       typingString: dom
@@ -46,8 +70,9 @@ export async function shexjToTyping(
       dts: declaration,
     };
   });
+
   const typingsString =
-    `import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\n` +
+    `import type { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\n` +
     typings.map((typing) => `export ${typing.typingString}`).join("");
 
   const typeingReturn: TypeingReturn = {
@@ -55,5 +80,9 @@ export async function shexjToTyping(
     typings,
   };
 
-  return [typeingReturn, jsonLdContextBuilder.generateJsonldContext()];
+  return [
+    typeingReturn,
+    jsonLdContextBuilder.generateJsonldContext(),
+    jsonLdContextBuilder.generatedNames,
+  ];
 }

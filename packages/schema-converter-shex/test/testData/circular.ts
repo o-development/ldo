@@ -71,5 +71,5 @@ export const circular: TestData = {
     },
   },
   successfulTypings:
-    'import { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface Parent {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Parent";\n    }>;\n    hasChild: Child;\n}\n\nexport interface Child {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Child";\n    }>;\n    hasParent: Parent;\n}\n\n',
+    'import type { LdSet, LdoJsonldContext } from "@ldo/ldo"\n\nexport interface Parent {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Parent";\n    }>;\n    hasChild: Child;\n}\n\nexport interface Child {\n    "@id"?: string;\n    "@context"?: LdoJsonldContext;\n    type?: LdSet<{\n        "@id": "Child";\n    }>;\n    hasParent: Parent;\n}\n\n',
 };

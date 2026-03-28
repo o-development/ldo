@@ -1,8 +1,11 @@
+<% const shapeName = camelCase(fileName); -%>
+<% const interfaces = typings.filter(t => t.dts.kind === "interface"); -%>
+
 import type { ShapeType } from "@ldo/ldo";
 import { <%- shapeName %>Schema } from "./<%- fileName %>.schema";
 import { <%- shapeName %>Context } from "./<%- fileName %>.context";
 import type {
-<% typings.forEach((typing) => { -%>
+<% interfaces.forEach((typing) => { -%>
   <%- typing.dts.name %>,
 <% }); -%>} from "./<%- fileName %>.typings";
 
@@ -11,7 +14,7 @@ import type {
  * LDO ShapeTypes <%- fileName %>
  * =============================================================================
  */
-<% typings.forEach((typing) => { -%>
+<% interfaces.forEach((typing) => { -%>
 
 /**
  * <%- typing.dts.name %> ShapeType
