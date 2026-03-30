@@ -7,17 +7,33 @@
 # You can create your own shape to fit your needs using SHACL (https://www.w3.org/TR/shacl/)
 ex:PersonShape
   a sh:NodeShape ;
+  sh:codeIdentifier "Person" ;
   sh:targetClass ex:Person ;
   sh:property [
+    sh:codeIdentifier "ssn" ;
     sh:path ex:ssn ;
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
     sh:pattern "^\\d{3}-\\d{2}-\\d{4}$" ;
   ] ;
   sh:property [
+    sh:codeIdentifier "worksFor" ;
     sh:path ex:worksFor ;
     sh:class ex:Company ;
     sh:nodeKind sh:IRI ;
+  ] ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) .
+
+ex:CompanyShape
+  a sh:NodeShape ;
+  sh:codeIdentifier "Company" ;
+  sh:targetClass ex:Company ;
+  sh:property [
+    sh:codeIdentifier "name" ;
+    sh:path ex:name ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
   ] ;
   sh:closed true ;
   sh:ignoredProperties ( rdf:type ) .
