@@ -41,6 +41,7 @@
     "rimraf": "^3.0.2"
   },
   "dependencies": {
+    "@jeswr/shacl2object": "^1.0.0",
     "@jeswr/shacl2shex": "^1.1.0",
     "@ldo/ldo": "^1.0.0-alpha.38",
     "@ldo/schema-converter-shex": "^1.0.0-alpha.38",

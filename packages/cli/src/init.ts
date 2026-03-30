@@ -54,7 +54,7 @@ export async function init(directory?: string) {
         {},
       );
       await fs.writeFile(
-        path.join(shapesFolderPath, `${path.parse(shapePath).name}.shex`),
+        path.join(shapesFolderPath, `${path.parse(shapePath).name}.shacl`),
         shapeContent,
       );
     }),
@@ -74,5 +74,5 @@ export async function init(directory?: string) {
   });
 
   // Build LDO
-  await exec(`cd ${projectDirectory} && npm run build:ldo`);
+  // await exec(`cd ${projectDirectory} && npm run build:ldo`);
 }
