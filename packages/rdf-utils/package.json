@@ -1,6 +1,6 @@
 {
   "name": "@ldo/rdf-utils",
-  "version": "1.0.0-alpha.38",
+  "version": "1.0.0-alpha.39",
   "description": "Some RDF Utilities to support LDO librariers",
   "type": "module",
   "main": "./dist/index.cjs",
