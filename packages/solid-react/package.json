@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
+    "dev": "vite --config dev/vite.config.ts --host 127.0.0.1",
     "test": "vitest run --coverage",
     "prepublishOnly": "npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",

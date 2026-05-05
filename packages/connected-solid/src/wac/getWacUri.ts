@@ -4,7 +4,7 @@ import {
 } from "../requester/results/error/HttpErrorResult";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 import { GetWacUriSuccess } from "./results/GetWacUriSuccess";
-import * as httpLinkHeader from "http-link-header";
+import LinkHeader from "http-link-header";
 import { UnexpectedResourceError } from "@ldo/connected";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { SolidContainer } from "../resources/SolidContainer";
@@ -12,9 +12,6 @@ import type { SolidLeaf } from "../resources/SolidLeaf";
 import type { BasicRequestOptions } from "../requester/requests/requestOptions";
 import { guaranteeFetch } from "../util/guaranteeFetch";
 import type { SolidLeafUri } from "../types";
-
-const parseLinkHeader: (typeof httpLinkHeader)["default"]["parse"] =
-  httpLinkHeader.default.parse;
 
 export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
   | HttpErrorResultType<ResourceType>
@@ -57,7 +54,7 @@ export async function getWacUri(
         "No link header present in request.",
       );
     }
-    const parsedLinkHeader = parseLinkHeader(linkHeader);
+    const parsedLinkHeader = LinkHeader.parse(linkHeader);
     const aclUris = parsedLinkHeader.get("rel", "acl");
     if (aclUris.length !== 1) {
       return new NoncompliantPodError(

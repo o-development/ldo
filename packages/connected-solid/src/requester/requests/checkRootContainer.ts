@@ -1,5 +1,5 @@
 import type { BasicRequestOptions } from "./requestOptions";
-import * as httpLinkHeader from "http-link-header";
+import LinkHeader from "http-link-header";
 import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
 import type {
   HttpErrorResultType,
@@ -9,9 +9,6 @@ import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { SolidContainer } from "../../resources/SolidContainer";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
-
-const parseLinkHeader: (typeof httpLinkHeader)["default"]["parse"] =
-  httpLinkHeader.default.parse;
 
 /**
  * checkRootContainer result
@@ -43,7 +40,7 @@ export function checkHeadersForRootContainer(
   if (!linkHeader) {
     return new CheckRootContainerSuccess(resource, false);
   }
-  const parsedLinkHeader = parseLinkHeader(linkHeader);
+  const parsedLinkHeader = LinkHeader.parse(linkHeader);
   const types = parsedLinkHeader.get("rel", "type");
   const isRootContainer = types.some(
     (type) => type.uri === "http://www.w3.org/ns/pim/space#Storage",
