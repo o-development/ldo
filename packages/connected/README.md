@@ -68,6 +68,7 @@ async function main() {
     nextGraphConnectedPlugin,
   ]);
   // Set context to be able to make authenticated requests
+  // Note that any auth library with an authenticated fetch function works here.
   connectedLdoDataset.setContext("solid", { fetch });
   const session = await ng.session_in_memory_start(
     openedWallet.V0.wallet_id,

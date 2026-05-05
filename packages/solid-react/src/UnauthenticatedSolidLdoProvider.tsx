@@ -1,17 +1,10 @@
 /* istanbul ignore file */
 import React, { useCallback, useMemo } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
-import type { LoginOptions, SessionInfo } from "./SolidAuthContext";
+import { SessionCore } from "@uvdsl/solid-oidc-client-browser/core";
+import type { SolidAuthFunctions } from "./SolidAuthContext";
 import { SolidAuthContext } from "./SolidAuthContext";
 import libraryFetch from "cross-fetch";
-
-const DUMMY_SESSION: SessionInfo = {
-  isLoggedIn: false,
-  webId: undefined,
-  clientAppId: undefined,
-  sessionId: "no_session",
-  expirationDate: undefined,
-};
 
 /**
  * A provider for interacting with Solid Pods without authenticating
@@ -19,41 +12,31 @@ const DUMMY_SESSION: SessionInfo = {
 export const UnauthenticatedSolidLdoProvider: FunctionComponent<
   PropsWithChildren
 > = ({ children }) => {
-  const login = useCallback(
-    async (_issuer: string, _options?: LoginOptions) => {
-      throw new Error(
-        "login is not available for a UnauthenticatedSolidLdoProvider",
-      );
-    },
-    [],
-  );
-
-  const logout = useCallback(async () => {
+  const session = useMemo(() => new SessionCore(), []);
+  const login = useCallback<SolidAuthFunctions["login"]>(async () => {
+    throw new Error(
+      "login is not available for a UnauthenticatedSolidLdoProvider",
+    );
+  }, []);
+  const logout = useCallback<SolidAuthFunctions["logout"]>(async () => {
     throw new Error(
       "logout is not available for a UnauthenticatedSolidLdoProvider",
     );
   }, []);
+  const fetch = useCallback<SolidAuthFunctions["fetch"]>((input, init) => {
+    return libraryFetch(input, init);
+  }, []);
 
-  const signUp = useCallback(
-    async (_issuer: string, _options?: LoginOptions) => {
-      throw new Error(
-        "signUp is not available for a UnauthenticatedSolidLdoProvider",
-      );
-    },
-    [],
-  );
-
-  const solidAuthFunctions = useMemo(
+  const solidAuthFunctions = useMemo<SolidAuthFunctions>(
     () => ({
-      runInitialAuthCheck: () => {},
       login,
       logout,
-      signUp,
-      session: DUMMY_SESSION,
+      signUp: login,
+      fetch,
+      session,
       ranInitialAuthCheck: true,
-      fetch: libraryFetch,
     }),
-    [login, logout, signUp],
+    [fetch, login, logout, session],
   );
 
   return (
