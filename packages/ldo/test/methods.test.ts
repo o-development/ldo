@@ -26,7 +26,7 @@ import {
   languagesOf,
 } from "../src/index";
 import type { ILdoDataset } from "../src/types";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, beforeEach, it, expect } from "vitest";
 
 describe("methods", () => {
   let dataset: ILdoDataset;

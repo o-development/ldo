@@ -1,14 +1,12 @@
 import type { PackageJson } from "type-fest";
-import fs from "fs-extra";
+import fs from "node:fs/promises";
 import path from "path";
 
 export async function getPackageJson(
   projectFolder: string,
 ): Promise<PackageJson> {
   return JSON.parse(
-    (
-      await fs.promises.readFile(path.join(projectFolder, "./package.json"))
-    ).toString(),
+    (await fs.readFile(path.join(projectFolder, "./package.json"))).toString(),
   );
 }
 
@@ -16,8 +14,8 @@ export async function savePackageJson(
   projectFolder: string,
   packageJson: PackageJson,
 ): Promise<void> {
-  await fs.promises.mkdir(projectFolder, { recursive: true });
-  await fs.promises.writeFile(
+  await fs.mkdir(projectFolder, { recursive: true });
+  await fs.writeFile(
     path.join(projectFolder, "./package.json"),
     JSON.stringify(packageJson, null, 2),
   );

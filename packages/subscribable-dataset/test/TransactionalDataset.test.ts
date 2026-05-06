@@ -13,6 +13,7 @@ import {
   createTransactionDatasetFactory,
 } from "../src/index";
 import datasetCoreFactory from "@rdfjs/dataset";
+import { describe, beforeEach, it, expect, vi } from "vitest";
 
 describe("TransactionDataset", () => {
   let parentDataset: ISubscribableDataset<Quad>;
@@ -307,7 +308,7 @@ describe("TransactionDataset", () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const mockParent: ISubscribableDataset<Quad> = {
-      bulk: jest.fn(),
+      bulk: vi.fn(),
       has: (curQuad) => parentDataset.has(curQuad),
       [Symbol.iterator]: () => parentDataset[Symbol.iterator](),
     };

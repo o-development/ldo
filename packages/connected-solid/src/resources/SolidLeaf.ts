@@ -321,21 +321,21 @@ export class SolidLeaf extends SolidResource {
    * ```typescript
    * const leaf = ldoSolidDataset
    *   .getResource("https://example.com/container/resource.ttl");
-   * const rootContainer = await leaf.getRootContainer();
+   * const rootContainer = await leaf.getRootContainerByTraversal();
    * if (!rootContainer.isError) {
    *   // logs "https://example.com/"
    *   console.log(rootContainer.uri);
    * }
    * ```
    */
-  async getRootContainer(): Promise<
+  async getRootContainerByTraversal(): Promise<
     SolidContainer | CheckRootResultError | NoRootContainerError<SolidContainer>
   > {
     // Check to see if this document has a pim:storage if so, use that
 
     // If not, traverse the tree
     const parent = await this.getParentContainer();
-    return parent.getRootContainer();
+    return parent.getRootContainerByTraversal();
   }
 
   /**

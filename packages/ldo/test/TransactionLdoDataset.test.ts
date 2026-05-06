@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { createLdoDataset } from "../src/createLdoDataset";
 import { ProfileShapeType } from "./profileData";
 

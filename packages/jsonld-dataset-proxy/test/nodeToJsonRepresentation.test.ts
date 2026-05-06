@@ -3,6 +3,7 @@ import { ContextUtil } from "../src/ContextUtil";
 import { nodeToJsonldRepresentation } from "../src/util/nodeToJsonldRepresentation";
 import { defaultGraph, literal } from "@ldo/rdf-utils";
 import { ProxyContext } from "../src/index";
+import { describe, it, expect } from "vitest";
 
 describe("objectToJsonRepresentation", () => {
   const extraParams: ProxyContext = new ProxyContext({

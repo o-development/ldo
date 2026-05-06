@@ -2,6 +2,7 @@ import parser from "@shexjs/parser";
 import { testData } from "./testData/testData";
 import { shexjToTyping } from "../src/typing/shexjToTyping";
 import type { Schema } from "shexj";
+import { describe, it, expect } from "vitest";
 
 console.warn = () => {};
 

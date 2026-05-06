@@ -19,7 +19,7 @@ export class CheckRootContainerSuccess extends ResourceSuccess<SolidContainer> {
 }
 
 /**
- * Indicates that the storage container has been successfully retireved from the
+ * Indicates that the storage container has been successfully retrieved from the
  * webId. Call `GetStorageContainerFromWebIdSuccess.storageContainers` for a
  * list of storage containers retrieved.
  */

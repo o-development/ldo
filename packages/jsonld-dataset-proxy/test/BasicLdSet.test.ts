@@ -4,6 +4,7 @@ import jsonldDatasetProxy, {
   _getUnderlyingNode,
 } from "../src/index";
 import { createDataset } from "@ldo/dataset";
+import { describe, test, expect, vi } from "vitest";
 
 describe("BasicLdSet", () => {
   describe("constructor and add", () => {
@@ -150,7 +151,7 @@ describe("BasicLdSet", () => {
 
     test("forEach should call the callback for each element", () => {
       const set = new BasicLdSet<number>([1, 2, 3]);
-      const mockFn = jest.fn();
+      const mockFn = vi.fn();
       set.forEach((value, value2, collection) => {
         expect(collection).toBe(set);
         expect(value).toBe(value2);

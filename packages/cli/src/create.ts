@@ -8,7 +8,7 @@ import path from "path";
 import prompts from "prompts";
 import type { PackageJson } from "type-fest";
 import loading from "loading-cli";
-import { promises as fs } from "fs";
+import fs from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 

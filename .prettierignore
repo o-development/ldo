@@ -1,2 +1,3 @@
 **/*.hbs
 packages/*/dist
+**/*.ejs

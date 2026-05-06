@@ -13,6 +13,7 @@ import {
 import { sampleJsonld, sampleTurtle } from "./sampleData";
 import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
 import { _proxyContext } from "@ldo/jsonld-dataset-proxy";
+import { describe, beforeEach, it, expect } from "vitest";
 
 describe("LdoDataset", () => {
   let ldoDataset: LdoDataset;

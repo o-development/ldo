@@ -47,6 +47,7 @@ import {
   type Bender,
 } from "./scopedExampleData";
 import { WildcardSubjectSetProxy } from "../src/setProxy/WildcardSubjectSetProxy";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
 global.console.warn = () => {};
 
@@ -1506,7 +1507,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         true,
       );
 
-      const callbackMock = jest.fn();
+      const callbackMock = vi.fn();
       enSet.forEach(callbackMock);
       expect(callbackMock).toHaveBeenCalledTimes(2);
       expect(callbackMock).toHaveBeenCalledWith("John", "John", enSet);

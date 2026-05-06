@@ -1,3 +1,4 @@
+import { describe, it, expect } from "vitest";
 import { createDataset } from "../src/index";
 import { quad, namedNode } from "@ldo/rdf-utils";
 
