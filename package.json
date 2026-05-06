@@ -11,7 +11,7 @@
     "lint:check": "lerna run lint:check",
     "format": "prettier . --write",
     "clean": "lerna clean --yes && lerna run remove-dist && rimraf node_modules",
-    "publish": "lerna publish from-package --no-private",
+    "publish": "lerna publish --no-private",
     "release:preflight": "npm run lint && npm run test && npm run build",
     "release:version": "lerna version --no-private",
     "release": "npm run release:preflight && npm run release:version"
