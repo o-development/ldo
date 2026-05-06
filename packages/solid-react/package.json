@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "1.0.0-alpha.40",
+  "version": "1.0.0-alpha.46",
   "description": "A React library for LDO and Solid",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
-    "@ldo/rdf-utils": "^1.0.0-alpha.40",
+    "@ldo/rdf-utils": "^1.0.0-alpha.46",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "remove-dist": "rimraf dist/",
@@ -49,10 +49,10 @@
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.40",
-    "@ldo/connected-solid": "^1.0.0-alpha.40",
-    "@ldo/react": "^1.0.0-alpha.40",
-    "@uvdsl/solid-oidc-client-browser": "^0.2.2",
+    "@inrupt/solid-client-authn-browser": "^3.0.0",
+    "@ldo/connected": "^1.0.0-alpha.46",
+    "@ldo/connected-solid": "^1.0.0-alpha.46",
+    "@ldo/react": "^1.0.0-alpha.46",
     "cross-fetch": "^3.1.6"
   },
   "files": [
@@ -62,5 +62,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
+  "gitHead": "8361d7cc3c6827e77b9b4e5f432f86a8ba196474"
 }
