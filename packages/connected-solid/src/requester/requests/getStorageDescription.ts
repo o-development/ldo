@@ -1,5 +1,5 @@
 import { UnexpectedResourceError } from "@ldo/connected";
-import { parse as parseLinkHeader } from "http-link-header";
+import LinkHeader from "http-link-header";
 import type { SolidLeafUri } from "../../types";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import {
@@ -60,7 +60,7 @@ export async function getStorageDescriptionUri(
         "No link header present in request.",
       );
     }
-    const parsedLinkHeader = parseLinkHeader(linkHeader);
+    const parsedLinkHeader = LinkHeader.parse(linkHeader);
     const storageDescriptionLinks = parsedLinkHeader.get(
       "rel",
       "http://www.w3.org/ns/solid/terms#storageDescription",

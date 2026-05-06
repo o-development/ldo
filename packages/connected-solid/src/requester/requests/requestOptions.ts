@@ -6,7 +6,7 @@ import type { Quad } from "@rdfjs/types";
  */
 export interface BasicRequestOptions {
   /**
-   * A fetch function usually imported from @inrupt/solid-client-authn-js
+   * A fetch function, usually an authenticated Solid OIDC fetch.
    */
   fetch?: typeof fetch;
 }
