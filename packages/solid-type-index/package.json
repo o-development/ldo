@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-type-index",
-  "version": "1.0.0-alpha.48",
+  "version": "1.0.0-alpha.49",
   "description": "Solid Type Index support for LDO",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -49,7 +49,7 @@
     "@ldo/connected-solid": "^1.0.0-alpha.48",
     "@ldo/ldo": "^1.0.0-alpha.48",
     "@ldo/rdf-utils": "^1.0.0-alpha.48",
-    "@ldo/solid-react": "^1.0.0-alpha.48",
+    "@ldo/solid-react": "^1.0.0-alpha.49",
     "@rdfjs/types": "^1.0.1"
   },
   "files": [
