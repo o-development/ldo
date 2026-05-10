@@ -1,7 +1,7 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: ["src/index.ts", "src/react-native.ts"],
   format: ["esm", "cjs"],
   target: "es2021",
   unbundle: true,
