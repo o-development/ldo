@@ -1,18 +1,13 @@
 {
   "name": "@ldo/solid-react",
-  "version": "1.0.0-alpha.50",
+  "version": "1.0.0-alpha.48",
   "description": "A React library for LDO and Solid",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "react-native": "./dist/react-native.cjs",
   "exports": {
     ".": {
-      "react-native": {
-        "types": "./dist/react-native.d.cts",
-        "default": "./dist/react-native.cjs"
-      },
       "import": {
         "types": "./dist/index.d.mts",
         "default": "./dist/index.mjs"
@@ -46,7 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
-    "@ldo/rdf-utils": "^1.0.0-alpha.50",
+    "@ldo/rdf-utils": "^1.0.0-alpha.48",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "remove-dist": "rimraf dist/",
@@ -54,9 +49,9 @@
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.50",
-    "@ldo/connected-solid": "^1.0.0-alpha.50",
-    "@ldo/react": "^1.0.0-alpha.50",
+    "@ldo/connected": "^1.0.0-alpha.48",
+    "@ldo/connected-solid": "^1.0.0-alpha.48",
+    "@ldo/react": "^1.0.0-alpha.48",
     "@uvdsl/solid-oidc-client-browser": "^0.2.2",
     "cross-fetch": "^3.1.6"
   },
@@ -67,5 +62,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "7277a6694f01cdb776495a3028a625d8386c4887"
+  "gitHead": "53d9084eca49d9d8c55fca9892483a07636250f5"
 }
