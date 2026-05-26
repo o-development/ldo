@@ -7,6 +7,7 @@ import type { SolidConnectedPlugin } from "@ldo/connected-solid";
 import { createUseRootContainerFor } from "./useRootContainerFor";
 import { createUseResource } from "@ldo/react";
 import libraryFetch from "cross-fetch";
+import { SessionCore } from "@uvdsl/solid-oidc-client-browser/core";
 
 type SolidOidcBrowserSession = InstanceType<typeof SolidOidcSession>;
 type BrowserSolidLdoProviderProps = PropsWithChildren<{
@@ -52,6 +53,7 @@ export function createBrowserSolidReactMethods(
     const [version, setVersion] = useState(0);
     const [ranInitialAuthCheck, setRanInitialAuthCheck] = useState(false);
     const [session] = useState(() => {
+      if (typeof SharedWorker === "undefined") return new SessionCore();
       const solidSession = bindSessionMethods(
         new SolidOidcSession(clientDetails, {
           ...sessionOptions,
