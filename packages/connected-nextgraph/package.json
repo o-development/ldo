@@ -45,7 +45,7 @@
     "@inrupt/solid-client-authn-core": "^3.0.0",
     "@ldo/cli": "^1.0.0-alpha.50",
     "@solid-notifications/types": "^0.1.2",
-    "@solid/community-server": "8.0.0-alpha.0",
+    "@solid/community-server": "8.0.0-alpha.3",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "jest-rdf": "^1.8.0",
