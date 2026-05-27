@@ -4,6 +4,10 @@ import styles from "./page.module.css";
 import { SubmitEventHandler, useEffect, useState } from "react";
 import { useResource, useSolidAuth } from "@ldo/solid-react";
 
+/**
+ * This component's functionality has been copied from
+ * https://github.com/o-development/ldo/tree/f68a842d7c40076ce270f70142e0444a7fdd1b92/packages/solid-react/dev
+ */
 export default function Home() {
   const { fetch, login, logout, ranInitialAuthCheck, session } = useSolidAuth();
   const [issuer, setIssuer] = useState("https://solidcommunity.net/");
@@ -32,7 +36,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <h1>solid-react auth test</h1>
+      <h1>solid-react auth test with Next.js</h1>
 
       <p>checked: {ranInitialAuthCheck ? "yes" : "no"}</p>
       <p>active: {session.isActive ? "yes" : "no"}</p>
