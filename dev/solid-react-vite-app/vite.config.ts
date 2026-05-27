@@ -11,16 +11,12 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "@ldo/solid-react",
-        replacement: path.resolve(__dirname, "../src/index.ts"),
-      },
-      {
         find: /^@ldo\/([^/]+)$/,
-        replacement: path.resolve(__dirname, "../../$1/src/index.ts"),
+        replacement: path.resolve(__dirname, "../../packages/$1/src/index.ts"),
       },
       {
         find: /^@ldo\/([^/]+)\/(.*)$/,
-        replacement: path.resolve(__dirname, "../../$1/$2"),
+        replacement: path.resolve(__dirname, "../../packages/$1/$2"),
       },
     ],
   },
