@@ -1,10 +1,14 @@
-import { exec } from "child-process-promise";
+import { exec as execCallback } from "node:child_process";
+import { promisify } from "node:util";
 import fs from "node:fs/promises";
 import path from "path";
 import { renderFile } from "ejs";
 import { modifyPackageJson } from "./util/modifyPackageJson.js";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// promisify Node's child_process.exec
+const exec = promisify(execCallback);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
