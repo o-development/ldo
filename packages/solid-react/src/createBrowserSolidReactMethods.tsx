@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import type { FunctionComponent, PropsWithChildren } from "react";
 import { SolidAuthContext, useSolidAuth } from "./SolidAuthContext";
 import { Session as SolidOidcSession } from "@uvdsl/solid-oidc-client-browser";
@@ -73,24 +73,23 @@ export function createBrowserSolidReactMethods(
       return solidSession;
     });
 
+    const initialized = useRef(false);
     useEffect(() => {
-      let isMounted = true;
+      if (initialized.current) return;
+      initialized.current = true;
 
       async function initializeSession() {
         await session.handleRedirectFromLogin();
         if (!session.isActive) {
           await session.restore().catch(() => undefined);
         }
-        if (isMounted) {
-          setRanInitialAuthCheck(true);
-          setVersion((currentVersion) => currentVersion + 1);
-        }
+        setRanInitialAuthCheck(true);
+        setVersion((currentVersion) => currentVersion + 1);
       }
 
       initializeSession();
 
       return () => {
-        isMounted = false;
         if (currentSession === session) {
           currentSession = undefined;
         }
