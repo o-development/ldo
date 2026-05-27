@@ -43,7 +43,7 @@
     "@inrupt/solid-client-authn-core": "^3.0.0",
     "@ldo/cli": "^1.0.0-alpha.50",
     "@ldo/test-solid-server": "^1.0.0-alpha.50",
-    "@solid/community-server": "8.0.0-alpha.0",
+    "@solid/community-server": "8.0.0-alpha.3",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
     "typed-emitter": "^2.1.0",
