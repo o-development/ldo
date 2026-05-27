@@ -1,4 +1,4 @@
 **/*.hbs
 packages/**/dist
 **/*.ejs
-examples/**/.next
+dev/**/.next
