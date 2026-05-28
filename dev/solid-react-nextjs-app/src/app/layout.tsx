@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { BrowserSolidLdoProvider } from "@ldo/solid-react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Solid React Nextjs Example",
@@ -16,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* @ts-expect-error React types dependency mismatch (TODO fix) */}
         <BrowserSolidLdoProvider>{children}</BrowserSolidLdoProvider>
       </body>
     </html>
