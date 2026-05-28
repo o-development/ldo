@@ -48,6 +48,7 @@ import { getStorageFromWebId } from "../src/getStorageFromWebId";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { LdoBase, getDataset } from "@ldo/ldo";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -1674,6 +1675,95 @@ describe("Integration", () => {
           ),
         ),
       ).toBe(true);
+    });
+
+    it("updates only the current resource", async () => {
+      // root is a Container
+      const root = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      // create a subfolder of root
+      const postContainer = root.child(`post/`);
+      const result1 = await postContainer.createIfAbsent();
+      if (result1.isError) throw result1;
+
+      // create a resource in the subfolder
+      const postResource = postContainer.child("post");
+      const result2 = await postResource.createIfAbsent();
+      if (result2.isError) throw result2;
+
+      const post = solidLdoDataset.createData(
+        PostShShapeType,
+        postResource.uri + "#post",
+        postResource,
+      );
+      post.type = { "@id": "CreativeWork" };
+      post.articleBody = "contentMain";
+
+      function printDatasetChanges(post: LdoBase) {
+        const transactionDataset = getDataset(
+          post,
+        ) as ConnectedLdoTransactionDataset<[]>;
+
+        // console.log(post, transactionDataset);
+        console.log("........................");
+        // @ts-expect-error accessing private property
+        console.log(transactionDataset.datasetChanges?.added?.toArray());
+        console.log("________________________");
+        // @ts-expect-error accessing private property
+        console.log(transactionDataset.datasetChanges?.removed?.toArray());
+        console.log("........................");
+      }
+
+      printDatasetChanges(post);
+
+      const result3 = await commitData(post);
+      if (result3.isError) throw result3;
+
+      printDatasetChanges(post);
+
+      // the size of the main resource should be 2
+      expect(
+        solidLdoDataset.match(null, null, null, namedNode(postResource.uri))
+          .size,
+      ).toBe(2);
+
+      // create extended resource for the same post
+      const postExtendedResource = postContainer.child("extended");
+      const result4 = await postExtendedResource.createIfAbsent();
+      if (result4.isError) throw result4;
+
+      const postEx = solidLdoDataset.createData(
+        PostShShapeType,
+        postResource.uri + "#post",
+        postExtendedResource,
+      );
+
+      // set up the same properties with cardinality 1 as in the main resource
+      postEx.type = { "@id": "SocialMediaPosting" };
+      postEx.articleBody = "contentEx";
+
+      // These edits should NOT overwrite triples in the other resources
+
+      printDatasetChanges(postEx);
+
+      const result5 = await commitData(postEx);
+      if (result5.isError) throw result5;
+
+      // the size of the extended resource should be 2
+      expect(
+        solidLdoDataset.match(
+          null,
+          null,
+          null,
+          namedNode(postExtendedResource.uri),
+        ).size,
+      ).toBe(2);
+      // the size of the main resource should remain 2
+      expect(
+        solidLdoDataset.match(null, null, null, namedNode(postResource.uri))
+          .size,
+      ).toBe(2);
+
+      // We could also test specific triples
     });
   });
 
