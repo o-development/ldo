@@ -48,6 +48,7 @@ import { getStorageFromWebId } from "../src/getStorageFromWebId";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import assert from "node:assert/strict";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -111,6 +112,34 @@ const SAMPLE_PROFILE_TTL = `
 <${SAMPLE_PROFILE_URI}> pim:storage <https://example.com/A/>, <https://example.com/B/> .
 `;
 
+const OTHER_CONTAINER_SLUG = "other_container/";
+const OTHER_CONTAINER_URI =
+  `${TEST_CONTAINER_URI}${OTHER_CONTAINER_SLUG}` as SolidContainerUri;
+const OTHER_CONTAINER_ACL = `
+  @prefix acl: <http://www.w3.org/ns/auth/acl#>.
+  @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+  <#owner> a acl:Authorization;
+    acl:accessTo <./>;
+    acl:default <./>;
+    acl:agent <${WEB_ID}>;
+    acl:mode acl:Read, acl:Write, acl:Append, acl:Control.
+
+  <#public> a acl:Authorization;
+    acl:accessTo <./>;
+    acl:agentClass foaf:Agent;
+    acl:mode acl:Read, acl:Write.
+
+  <#public-inherited> a acl:Authorization;
+    acl:default <./>;
+    acl:agentClass foaf:Agent;
+    acl:mode acl:Read, acl:Control.
+`;
+
+const OTHER_RESOURCE_SLUG = "resource.ttl";
+const OTHER_RESOURCE_URI =
+  `${OTHER_CONTAINER_URI}${OTHER_RESOURCE_SLUG}` as SolidLeafUri;
+
 const resourceInfo: ResourceInfo = {
   slug: TEST_CONTAINER_SLUG,
   isContainer: true,
@@ -158,6 +187,24 @@ const resourceInfo: ResourceInfo = {
       shouldNotInit: true,
       mimeType: "text/plain",
       data: "",
+    },
+    {
+      slug: OTHER_CONTAINER_SLUG,
+      isContainer: true,
+      contains: [
+        {
+          slug: ".acl",
+          isContainer: false,
+          mimeType: "text/turtle",
+          data: OTHER_CONTAINER_ACL,
+        },
+        {
+          slug: OTHER_RESOURCE_SLUG,
+          isContainer: false,
+          mimeType: "text/turtle",
+          data: "<#this> a <#Test>.",
+        },
+      ],
     },
   ],
 };
@@ -281,7 +328,7 @@ describe("Integration", () => {
         isDoingInitialFetch: true,
       });
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(3);
+      expect(resource.children().length).toBe(4);
     });
 
     it("Reads a binary leaf", async () => {
@@ -495,7 +542,7 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(3);
+      expect(resource.children().length).toBe(4);
     });
 
     it("reads an unfetched leaf", async () => {
@@ -526,7 +573,7 @@ describe("Integration", () => {
       const result = await resource.readIfUnfetched();
       expect(s.fetchMock).not.toHaveBeenCalled();
       expect(result.type).toBe("containerReadSuccess");
-      expect(resource.children().length).toBe(3);
+      expect(resource.children().length).toBe(4);
     });
 
     it("returns a cached existing data leaf", async () => {
@@ -1847,6 +1894,63 @@ describe("Integration", () => {
         write: true,
         append: true,
         control: true,
+      });
+    });
+
+    [true, false].forEach((ignoreCache) => {
+      it(`[${
+        ignoreCache ? "not cached" : "cached"
+      }] Handle rule inheritance correctly, distinguish acl:accessTo (direct) and acl:default (inherited)`, async () => {
+        const container = solidLdoDataset.getResource(OTHER_CONTAINER_URI);
+
+        const containerWacResult = await container.getWac({ ignoreCache });
+        expect(containerWacResult.isError).toBe(false);
+        // node:assert narrows types
+        assert.ok(!containerWacResult.isError);
+
+        expect(containerWacResult.wacRule.agent[WEB_ID]).toEqual({
+          read: true,
+          write: true,
+          append: true,
+          control: true,
+        });
+
+        expect(containerWacResult.wacRule.public).toEqual({
+          read: true,
+          write: true,
+          append: false,
+          control: false,
+        });
+
+        const resource = solidLdoDataset.getResource(OTHER_RESOURCE_URI);
+        const result = await resource.read();
+        assert.ok(!result.isError);
+
+        const resourceWacResult = await resource.getWac({ ignoreCache });
+        assert.ok(!resourceWacResult.isError);
+
+        expect(resourceWacResult.wacRule.agent[WEB_ID]).toEqual({
+          read: true,
+          write: true,
+          append: true,
+          control: true,
+        });
+
+        expect(resourceWacResult.wacRule.public).toEqual({
+          read: true,
+          write: false,
+          append: false,
+          control: true,
+        });
+
+        const finalContainerWacResult = await container.getWac({ ignoreCache });
+        assert.ok(!finalContainerWacResult.isError);
+        expect(finalContainerWacResult.wacRule.public).toEqual({
+          read: true,
+          write: true,
+          append: false,
+          control: false,
+        });
       });
     });
 

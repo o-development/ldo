@@ -25,6 +25,9 @@ export type GetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
   | GetWacRuleError<ResourceType>
   | WacRuleAbsent<ResourceType>;
 
+type GetWacRuleOptions<ResourceType extends SolidContainer | SolidLeaf> =
+  ResourceType extends SolidContainer ? { inheritable?: boolean } : never;
+
 /**
  * Given the URI of an ACL document, return the Web Access Control (WAC) rules
  * @param aclUri: The URI for the ACL document
@@ -34,22 +37,22 @@ export type GetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
 export async function getWacRuleWithAclUri(
   aclUri: string,
   resource: SolidContainer,
-  options?: BasicRequestOptions,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidContainer>,
 ): Promise<GetWacRuleResult<SolidContainer>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
   resource: SolidLeaf,
-  options?: BasicRequestOptions,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf>,
 ): Promise<GetWacRuleResult<SolidLeaf>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
   resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
 ): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
   resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
 ): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>> {
   const fetch = guaranteeFetch(options?.fetch);
   const response = await fetch(aclUri);
@@ -72,6 +75,13 @@ export async function getWacRuleWithAclUri(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
       "http://www.w3.org/ns/auth/acl#Authorization",
     );
+
+  const explicitAuthorizations = authorizations.filter(
+    (a) => a.accessTo?.["@id"] === resource.uri,
+  );
+  const inheritableAuthorizations = authorizations.filter(
+    (a) => a.default?.["@id"] === resource.uri,
+  );
 
   const wacRule: WacRule = {
     public: {
@@ -98,7 +108,11 @@ export async function getWacRuleWithAclUri(
     });
   }
 
-  authorizations.forEach((authorization) => {
+  const effectiveAuthorizations = options?.inheritable
+    ? inheritableAuthorizations
+    : explicitAuthorizations;
+
+  effectiveAuthorizations.forEach((authorization) => {
     if (
       authorization.agentClass?.some(
         (agentClass) => agentClass["@id"] === "Agent",

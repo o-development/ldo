@@ -124,6 +124,12 @@ export abstract class SolidResource
 
   /**
    * @internal
+   * If an acl:default wac rule was fetched, it is cached here
+   */
+  protected inheritableWacRule?: WacRule;
+
+  /**
+   * @internal
    * Handles notification subscriptions
    */
   protected notificationSubscription: NotificationSubscription<
@@ -743,7 +749,7 @@ export abstract class SolidResource
    * @returns WAC Rules results
    */
   protected async getWacUri(options?: {
-    ignoreCache: boolean;
+    ignoreCache?: boolean;
   }): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
     const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Get the wacUri if not already present
@@ -789,8 +795,13 @@ export abstract class SolidResource
    * }
    * ```
    */
-  async getWac(options?: {
-    ignoreCache: boolean;
+  async getWac(options?: { ignoreCache?: boolean }) {
+    return await this._getWac(options);
+  }
+
+  private async _getWac(options?: {
+    ignoreCache?: boolean;
+    inheritable?: boolean;
   }): Promise<
     | GetWacUriError<SolidContainer | SolidLeaf>
     | GetWacRuleError<SolidContainer | SolidLeaf>
@@ -798,8 +809,11 @@ export abstract class SolidResource
   > {
     const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Return the wac rule if it's already cached
-    if (!options?.ignoreCache && this.wacRule) {
-      return new GetWacRuleSuccess(thisAsLeafOrContainer, this.wacRule);
+    const cachedRule = options?.inheritable
+      ? this.inheritableWacRule
+      : this.wacRule;
+    if (!options?.ignoreCache && cachedRule) {
+      return new GetWacRuleSuccess(thisAsLeafOrContainer, cachedRule);
     }
 
     // Get the wac uri
@@ -812,12 +826,17 @@ export abstract class SolidResource
       thisAsLeafOrContainer,
       {
         fetch: this.context.solid.fetch,
+        inheritable: options?.inheritable,
       },
     );
     if (wacResult.isError) return wacResult;
     // If the wac rules was successfully found
     if (wacResult.type === "getWacRuleSuccess") {
-      this.wacRule = wacResult.wacRule;
+      if (options?.inheritable) {
+        this.inheritableWacRule = wacResult.wacRule;
+      } else {
+        this.wacRule = wacResult.wacRule;
+      }
       return wacResult;
     }
 
@@ -830,7 +849,7 @@ export abstract class SolidResource
         `Resource "${this.uri}" has no Effective ACL resource`,
       );
     }
-    return parentResource.getWac();
+    return parentResource._getWac({ ...options, inheritable: true });
   }
 
   /**
@@ -888,7 +907,11 @@ export abstract class SolidResource
       this.emit("update");
       return result;
     }
+    // update cache
     this.wacRule = result.wacRule;
+    // clear default rule cache
+    // to simplify logic
+    this.inheritableWacRule = undefined;
     return result;
   }
 
