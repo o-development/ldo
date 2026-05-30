@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/cli#readme",
   "devDependencies": {
-    "@types/child-process-promise": "^2.2.2",
     "@types/ejs": "^3.1.1",
     "@types/jsonld": "^1.5.15",
     "@types/prompts": "^2.4.9",

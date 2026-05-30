@@ -1,4 +1,4 @@
-import { Schema } from "shexj";
+import type { Schema } from "shexj";
 
 /**
  * =============================================================================

@@ -43,23 +43,18 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/svelte#readme",
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.50",
     "@sveltejs/vite-plugin-svelte": "^2.5.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.7",
     "@tsconfig/svelte": "^5.0.4",
     "concurrently": "^9.1.2",
-    "deepmerge": "^4.3.1",
     "eslint-plugin-svelte3": "^4.0.0",
-    "identity-obj-proxy": "^3.0.0",
     "rimraf": "^5.0.10",
     "svelte": "^3.59.2",
     "svelte-preprocess": "^5.1.4",
-    "tslib": "^2.8.1",
     "typescript": "^5.8.3",
     "vite": "^4.5.0",
-    "vite-node": "^3.1.4",
-    "vite-plugin-dts": "^3.8.1"
+    "vite-node": "^3.1.4"
   },
   "peerDependencies": {
     "svelte": "^3.50.0"
