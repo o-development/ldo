@@ -40,7 +40,8 @@
   "dependencies": {
     "@inrupt/solid-client-authn-core": "3.0.0",
     "@solid/community-server": "8.0.0-alpha.3",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "cross-fetch": "^4.1.0"
   },
   "files": [
     "dist",

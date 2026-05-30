@@ -56,8 +56,7 @@
     "@ldo/dataset": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@ldo/subscribable-dataset": "^1.0.0-alpha.50",
-    "@rdfjs/types": "^1.1.0",
-    "jsonld2graphobject": "^0.0.4"
+    "@rdfjs/types": "^1.1.0"
   },
   "publishConfig": {
     "access": "public"

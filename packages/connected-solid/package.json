@@ -52,7 +52,6 @@
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.50",
-    "@ldo/connected-solid": "^1.0.0-alpha.46",
     "@ldo/dataset": "^1.0.0-alpha.50",
     "@ldo/ldo": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
@@ -60,8 +59,10 @@
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/subscription": "^0.1.2",
     "@solid-notifications/types": "^0.1.2",
+    "@types/shexj": "^2.1.7",
     "cross-fetch": "^3.1.6",
     "http-link-header": "^1.1.1",
+    "uuid": "^14.0.0",
     "ws": "^8.18.0"
   },
   "files": [

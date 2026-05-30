@@ -66,11 +66,9 @@
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.50",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.50",
     "@ldo/ldo": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.50",
-    "tsx": "^4.19.4"
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.50"
   },
   "files": [
     "dist",
