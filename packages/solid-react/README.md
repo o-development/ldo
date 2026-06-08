@@ -64,11 +64,11 @@ const Login: FunctionComponent = () => {
   const onLogin = useCallback(() => {
     const issuer = prompt("What is your Solid IDP?");
     // Call the "login" function to initiate login
-    if (issuer) login(issuer);
-  }, []);
+    if (issuer) login(issuer, window.location.href);
+  }, [login]);
 
-  // You can use session.isLoggedIn to check if the user is logged in
-  if (session.isLoggedIn) {
+  // You can use session.isActive to check if the user is logged in
+  if (session.isActive) {
     return (
       <div>
         {/* Get the user's webId from session.webId */}

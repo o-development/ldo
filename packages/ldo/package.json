@@ -1,6 +1,6 @@
 {
   "name": "@ldo/ldo",
-  "version": "1.0.0-alpha.38",
+  "version": "1.0.0-alpha.50",
   "description": "",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -49,10 +49,10 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/dataset": "^1.0.0-alpha.38",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.38",
-    "@ldo/rdf-utils": "^1.0.0-alpha.38",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.38",
+    "@ldo/dataset": "^1.0.0-alpha.50",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.50",
+    "@ldo/rdf-utils": "^1.0.0-alpha.50",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.50",
     "@rdfjs/types": "^1.0.1",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
@@ -67,5 +67,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
+  "gitHead": "7277a6694f01cdb776495a3028a625d8386c4887"
 }

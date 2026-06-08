@@ -1,6 +1,6 @@
 {
   "name": "@ldo/test-solid-server",
-  "version": "1.0.0-alpha.38",
+  "version": "1.0.0-alpha.50",
   "description": "A solid server to be used in jest tests",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "dependencies": {
     "@inrupt/solid-client-authn-core": "3.0.0",
-    "@solid/community-server": "8.0.0-alpha.0",
+    "@solid/community-server": "8.0.0-alpha.3",
     "cross-env": "^7.0.3"
   },
   "files": [
@@ -49,5 +49,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "a14830aeb2e7cca8b35434bc46d3bd25ea5e40c3"
+  "gitHead": "7277a6694f01cdb776495a3028a625d8386c4887"
 }
