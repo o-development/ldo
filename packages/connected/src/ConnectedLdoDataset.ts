@@ -273,7 +273,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Sets conetext for a specific plugin
+   * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin

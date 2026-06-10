@@ -924,7 +924,7 @@ export abstract class SolidResource
   /**
    * Activates Websocket subscriptions on this resource. Updates, deletions,
    * and creations on this resource will be tracked and all changes will be
-   * relected in LDO's resources and graph.
+   * reflected in LDO's resources and graph.
    *
    * @param onNotificationError - A callback function if there is an error
    * with notifications.
@@ -965,7 +965,7 @@ export abstract class SolidResource
 
   /**
    * @internal
-   * Function that triggers whenever a notification is recieved.
+   * Function that triggers whenever a notification is received.
    */
   protected async onNotification(
     message: SolidNotificationMessage,

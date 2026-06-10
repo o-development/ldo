@@ -30,8 +30,8 @@ export type ISubscribableDatasetFactory<
 >;
 
 /**
- * Dataset that allows developers to subscribe to a sepecific term and be alerted
- * if a quad is added or removed containing that term. It's methods follow the
+ * Dataset that allows developers to subscribe to a specific term and be alerted
+ * if a quad is added or removed containing that term. Its methods follow the
  * EventEmitter interface except take in namedNodes as keys.
  */
 export interface ISubscribableDataset<InAndOutQuad extends BaseQuad = BaseQuad>
