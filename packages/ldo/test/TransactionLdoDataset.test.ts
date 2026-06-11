@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { createLdoDataset } from "../src/createLdoDataset";
-import { ProfileShapeType } from "./profileData";
+import { SolidProfile } from "./profileData";
 
 describe("TransactionLdoDataset", () => {
   it("Uses transactions with an LdoBuilder", () => {
     const ldoDataset = createLdoDataset();
     const transaction = ldoDataset.startTransaction();
     const profile = transaction
-      .usingType(ProfileShapeType)
+      .usingType(SolidProfile)
       .fromSubject("https://example.com/Person1");
     profile.fn = "John Doe";
     expect(transaction.getChanges().added?.toString()).toBe(

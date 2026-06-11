@@ -1,94 +1,55 @@
-import { blankNode, namedNode } from "@ldo/rdf-utils";
-import type { SubjectProxy } from "@ldo/jsonld-dataset-proxy";
+import { blankNode, namedNode, quad, literal } from "@ldo/rdf-utils";
+import type { LdoBuilder } from "../src/index";
 import {
-  getProxyFromObject,
-  graphOf,
-  _getUnderlyingDataset,
-  _proxyContext,
-} from "@ldo/jsonld-dataset-proxy";
-import { createDataset } from "@ldo/dataset";
-import type { SolidProfileShape } from "./profileData";
-import { ProfileShapeType } from "./profileData";
-import {
-  commitTransaction,
   createLdoDataset,
   getDataset,
   getRdfNode,
   serialize,
-  startTransaction,
   toJsonLd,
   toNTriples,
-  toSparqlUpdate,
   toTurtle,
-  transactionChanges,
-  write,
-  setLanguagePreferences,
-  languagesOf,
+  graphOf,
 } from "../src/index";
-import type { ILdoDataset } from "../src/types";
+import { SolidProfile } from "./profileData";
 import { describe, beforeEach, it, expect } from "vitest";
 
 describe("methods", () => {
-  let dataset: ILdoDataset;
-  let profile: SolidProfileShape;
+  let ldoDataset: ReturnType<typeof createLdoDataset>;
+  let builder: LdoBuilder<SolidProfile>;
+  let profile: SolidProfile;
+
   beforeEach(() => {
-    dataset = createLdoDataset();
-    profile = dataset
-      .usingType(ProfileShapeType)
-      .fromSubject(namedNode("https://example.com/item"));
+    ldoDataset = createLdoDataset();
+    builder = ldoDataset.usingType(SolidProfile);
+    profile = builder.fromSubject("https://example.com/item");
   });
 
-  it("Records changes in a transaction", () => {
-    startTransaction(profile);
-    profile.name = "Beeboo";
-    const changes = transactionChanges(profile);
-    expect(changes.added?.size).toBe(1);
-    expect(changes.removed).toBe(undefined);
-  });
-
-  it("throws when called with startTransaction if an underlying dataset is not a subscribable dataset", () => {
-    const proxy = getProxyFromObject(profile);
-    proxy[_proxyContext] = proxy[_proxyContext].duplicate({
-      dataset: createDataset(),
-    });
-    expect(() => startTransaction(profile)).toThrow(
-      "Object is not transactable.",
+  it("getDataset returns the actual LdoDataset, not the GraphWriteDataset view", () => {
+    const ds = getDataset(profile);
+    // Must be the same object as the LdoDataset we created, not the view
+    expect(ds).toBe(ldoDataset);
+    // Cross-check: quads added directly to the returned dataset are visible through the profile
+    ds.add(
+      quad(
+        namedNode("https://example.com/item"),
+        namedNode("http://xmlns.com/foaf/0.1/name"),
+        literal("Direct"),
+      ),
     );
+    expect(profile.name).toBe("Direct");
   });
 
-  it("Commits changes", () => {
-    startTransaction(profile);
-    profile.name = "Joey";
-    expect(dataset.size).toBe(0);
-    commitTransaction(profile);
-    expect(dataset.size).toBe(1);
-    expect(profile.name).toBe("Joey");
+  it("returns the underlying named node", () => {
+    const node = getRdfNode(profile);
+    expect(node.termType).toBe("NamedNode");
+    expect(node.value).toBe("https://example.com/item");
   });
 
-  it("throws an error if transaction dependent functions are called without a transaction", async () => {
-    expect(() => transactionChanges(profile)).toThrow(
-      "Object is not currently in a transaction",
-    );
-    expect(() => commitTransaction(profile)).toThrow(
-      "Object is not currently in a transaction",
-    );
-    await expect(async () => toSparqlUpdate(profile)).rejects.toThrow(
-      "Object is not currently in a transaction",
-    );
-  });
-
-  it("provides the correct sparql update", async () => {
-    profile.name = "Mr. Cool Dude";
-    startTransaction(profile);
-    profile.name = "Captain of Coolness";
-    expect(await toSparqlUpdate(profile)).toBe(
-      `DELETE DATA { <https://example.com/item> <http://xmlns.com/foaf/0.1/name> "Mr. Cool Dude" .  }; INSERT DATA { <https://example.com/item> <http://xmlns.com/foaf/0.1/name> "Captain of Coolness" .  }`,
-    );
-  });
-
-  it("provides a sparql update when nothing has been changed", async () => {
-    startTransaction(profile);
-    expect(await toSparqlUpdate(profile)).toBe("");
+  it("returns the underlying blank node", () => {
+    const blankProfile = builder.fromSubject(blankNode("person"));
+    const node = getRdfNode(blankProfile);
+    expect(node.termType).toBe("BlankNode");
+    expect(node.value).toBe("person");
   });
 
   it("translates into turtle", async () => {
@@ -128,41 +89,12 @@ describe("methods", () => {
     );
   });
 
-  it("returns the underlying dataset", () => {
-    const underlyingDataset = getDataset(profile);
-    expect(typeof underlyingDataset.add).toBe("function");
-  });
-
-  it("returns the underlying named node", () => {
-    const node = getRdfNode(profile);
-    expect(node.termType).toBe("NamedNode");
-    expect(node.value).toBe("https://example.com/item");
-  });
-
-  it("returns the underlying blank node", () => {
-    const blankProfile = dataset
-      .usingType(ProfileShapeType)
-      .fromSubject(blankNode("person"));
-    const node = getRdfNode(blankProfile);
-    expect(node.termType).toBe("BlankNode");
-    expect(node.value).toBe("person");
-  });
-
-  it("sets a write graph", () => {
-    write("https://graphname.com").using(profile);
-    profile.name = "Jackson";
-    expect(graphOf(profile, "name")[0].value).toBe("https://graphname.com");
-  });
-
-  it("sets the language preferences", () => {
-    setLanguagePreferences("@none", "en").using(profile);
-    expect(
-      (profile as unknown as SubjectProxy)[_proxyContext].languageOrdering,
-    ).toEqual(["@none", "en"]);
-  });
-
-  it("uses languagesOf", () => {
-    const result = languagesOf(profile, "name");
-    expect(result).toEqual({});
+  it("returns named graphs where a predicate is stored", () => {
+    const profileInGraph = builder
+      .write("https://graphname.com")
+      .fromSubject("https://example.com/item");
+    profileInGraph.name = "Jackson";
+    const graphs = graphOf(profileInGraph, "http://xmlns.com/foaf/0.1/name");
+    expect(graphs[0].value).toBe("https://graphname.com");
   });
 });
