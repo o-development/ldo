@@ -1,12 +1,7 @@
 import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
-import type {
-  LanguageOrdering,
-  JsonldDatasetProxyBuilder,
-  LdSet,
-} from "@ldo/jsonld-dataset-proxy";
-import type { ShapeType } from "./ShapeType";
-import type { LdoBase } from "./util";
+import { defaultGraph } from "@ldo/rdf-utils";
 import { normalizeNodeName, normalizeNodeNames } from "./util";
+import type { TermWrapper } from "@rdfjs/wrapper";
 
 /**
  * An LdoBuilder contains utility methods for building a Linked Data Object for a certain type.
@@ -27,12 +22,12 @@ import { normalizeNodeName, normalizeNodeNames } from "./util";
  *   .fromSubject("https://example.com/profile#me");
  * ```
  */
-export class LdoBuilder<Type extends LdoBase> {
+export class LdoBuilder<Type extends TermWrapper> {
   /**
    * @internal
    */
-  protected jsonldDatasetProxyBuilder: JsonldDatasetProxyBuilder;
-  protected shapeType: ShapeType<Type>;
+  protected writeGraphs: GraphNode[];
+  protected termWrapperClass: new () => Type;
 
   /**
    * Initializes the LdoBuilder
@@ -41,11 +36,11 @@ export class LdoBuilder<Type extends LdoBase> {
    * @param shapeType - The ShapeType for this builder
    */
   constructor(
-    jsonldDatasetProxyBuilder: JsonldDatasetProxyBuilder,
-    shapeType: ShapeType<Type>,
+    termWrapperClass: new () => Type,
+    config?: { writeGraphs: GraphNode[] },
   ) {
-    this.jsonldDatasetProxyBuilder = jsonldDatasetProxyBuilder;
-    this.shapeType = shapeType;
+    this.termWrapperClass = termWrapperClass;
+    this.writeGraphs = config?.writeGraphs ?? [defaultGraph()];
   }
 
   /**
@@ -173,38 +168,8 @@ export class LdoBuilder<Type extends LdoBase> {
    * ```
    */
   write(...graphs: (GraphNode | string)[]): LdoBuilder<Type> {
-    return new LdoBuilder(
-      this.jsonldDatasetProxyBuilder.write(...normalizeNodeNames(graphs)),
-      this.shapeType,
-    );
-  }
-
-  /**
-   * Sets the order of language preferences for Language Strings. Acceptable values are EITF language tags, "@none" and "@other"
-   *
-   * @param languageOrdering - The order languages will be selected. Acceptable values are EITF language tags, "@none" and "@other".
-   *
-   * @returns An LdoBuilder for constructor chaining
-   *
-   * @example
-   * ```typescript
-   * // Read Spansih first, then Korean, then language strings with no language
-   * // New writes are in Spanish
-   * ["es", "ko", "@none"]
-   *
-   * // Read any language other than french, then french
-   * // New writes are in French
-   * ["@other", "fr"]
-   * ```
-   */
-  setLanguagePreferences(
-    ...languageOrdering: LanguageOrdering
-  ): LdoBuilder<Type> {
-    return new LdoBuilder(
-      this.jsonldDatasetProxyBuilder.setLanguagePreferences(
-        ...languageOrdering,
-      ),
-      this.shapeType,
-    );
+    return new LdoBuilder(this.termWrapperClass, {
+      writeGraphs: [...normalizeNodeNames(graphs)],
+    });
   }
 }
