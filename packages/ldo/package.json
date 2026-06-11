@@ -50,10 +50,10 @@
   },
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.50",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@ldo/subscribable-dataset": "^1.0.0-alpha.50",
     "@rdfjs/types": "^1.0.1",
+    "@rdfjs/wrapper": "^0.34.0",
     "buffer": "^6.0.3",
     "readable-stream": "^4.3.0"
   },
