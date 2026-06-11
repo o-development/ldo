@@ -1,19 +1,17 @@
 import { TransactionDataset } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
+import type { ITermWrapperConstructor, TermWrapper } from "@rdfjs/wrapper";
 import type { ILdoDataset } from "./types";
 import { LdoBuilder } from "./LdoBuilder";
-import type { ShapeType } from "./ShapeType";
-import type { LdoBase } from "./util";
-import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
+import { dataFactory } from "./dataFactory";
 
 export class LdoTransactionDataset
   extends TransactionDataset<Quad>
   implements ILdoDataset
 {
-  usingType<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+  usingType<Type extends TermWrapper>(
+    termWrapperClass: ITermWrapperConstructor<Type>,
   ): LdoBuilder<Type> {
-    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
-    return new LdoBuilder(proxyBuilder, shapeType);
+    return new LdoBuilder(termWrapperClass, this, dataFactory);
   }
 }

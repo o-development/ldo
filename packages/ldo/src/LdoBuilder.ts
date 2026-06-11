@@ -1,12 +1,16 @@
+import type { DataFactory, DatasetCore, Quad_Graph } from "@rdfjs/types";
+import type { ITermWrapperConstructor, TermWrapper } from "@rdfjs/wrapper";
 import type { GraphNode, QuadMatch, SubjectNode } from "@ldo/rdf-utils";
 import { defaultGraph } from "@ldo/rdf-utils";
-import { normalizeNodeName, normalizeNodeNames } from "./util";
-import type { TermWrapper } from "@rdfjs/wrapper";
+import { normalizeNodeName, normalizeNodeNames } from "./util.js";
+import { GraphWriteDataset } from "./GraphWriteDataset.js";
+import { MatchingSet } from "./MatchingSet.js";
 
 /**
  * An LdoBuilder contains utility methods for building a Linked Data Object for a certain type.
  *
- * It is not recommended to instantiate an LdoDataset. Instead use the {@link createLdoDataset} function.
+ * It is not recommended to instantiate an LdoBuilder directly. Instead use
+ * {@link LdoDataset.usingType} or {@link createLdoDataset}.
  *
  * @typeParam Type - The TypeScript type of the eventual Linked Data Object.
  *
@@ -27,27 +31,34 @@ export class LdoBuilder<Type extends TermWrapper> {
    * @internal
    */
   protected writeGraphs: GraphNode[];
-  protected termWrapperClass: new () => Type;
 
-  /**
-   * Initializes the LdoBuilder
-   *
-   * @param jsonldDatasetProxyBuilder - A base JsonldDatasetProxyBuilder that thios LdoBuilder wraps
-   * @param shapeType - The ShapeType for this builder
-   */
   constructor(
-    termWrapperClass: new () => Type,
+    protected readonly termWrapperClass: ITermWrapperConstructor<Type>,
+    protected readonly dataset: DatasetCore,
+    protected readonly factory: DataFactory,
     config?: { writeGraphs: GraphNode[] },
   ) {
-    this.termWrapperClass = termWrapperClass;
     this.writeGraphs = config?.writeGraphs ?? [defaultGraph()];
   }
 
   /**
-   * `fromSubject` lets you define a an `entryNode`, the place of entry for the graph. The object returned by `jsonldDatasetProxy` will represent the given node. This parameter accepts both `namedNode`s and `blankNode`s. `fromSubject` takes a generic type representing the typescript type of the given subject.
+   * Returns a GraphWriteDataset view that routes writes to the configured graphs
+   * while reading and deleting across all graphs in the base dataset.
+   */
+  protected get view(): GraphWriteDataset {
+    return new GraphWriteDataset(
+      this.dataset,
+      this.writeGraphs as Quad_Graph[],
+      this.factory,
+    );
+  }
+
+  /**
+   * `fromSubject` creates a Linked Data Object entry point at the given subject node.
+   * The returned wrapper reads from all graphs but writes only to the configured
+   * write graphs (see {@link write}).
    *
-   * @param subject - The node to match
-   *
+   * @param subject - A named node, blank node, or string IRI.
    * @returns A Linked Data Object for the provided subject.
    *
    * @example
@@ -58,19 +69,27 @@ export class LdoBuilder<Type extends TermWrapper> {
    * ```
    */
   fromSubject(subject: SubjectNode | string): Type {
-    return this.jsonldDatasetProxyBuilder.fromSubject<Type>(
+    return new this.termWrapperClass(
       normalizeNodeName(subject),
+      this.view,
+      this.factory,
     );
   }
 
   /**
-   * `matchSubject` returns a Jsonld Dataset Proxy representing all subjects in the dataset matching the given predicate, object, and graph.
+   * `matchSubject` returns a live `Set<Type>` whose elements are all distinct subjects
+   * in the dataset matching the given predicate, object, and graph.
+   *
+   * The set is live: iteration and size always reflect the current dataset state.
+   * Membership uses RDF term equality (not JS reference equality).
+   * Wrappers yielded from the set read from all graphs and write to the configured
+   * write graphs.
    *
    * @param predicate - A valid Predicate Node (NamedNode) or a string URI.
    * @param object - A valid object node (NamedNode, Blank Node, or Literal) or a string URI.
    * @param graph - A valid graph node (NamedNode or DefaultGraph) or a string URI.
    *
-   * @returns A Linked Data Object Array with all subjects the match the provided nodes.
+   * @returns A live Set of Linked Data Objects whose subjects match the provided pattern.
    *
    * @example
    * ```typescript
@@ -89,72 +108,77 @@ export class LdoBuilder<Type extends TermWrapper> {
     predicate: QuadMatch[1] | string,
     object?: QuadMatch[2] | string,
     graph?: QuadMatch[3] | string,
-  ): LdSet<Type> {
-    return this.jsonldDatasetProxyBuilder.matchSubject<Type>(
-      predicate != undefined ? normalizeNodeName(predicate) : undefined,
-      object != undefined ? normalizeNodeName(object) : undefined,
-      graph != undefined ? normalizeNodeName(graph) : undefined,
+  ): Set<Type> {
+    return new MatchingSet(
+      "subject",
+      {
+        predicate:
+          predicate != undefined ? normalizeNodeName(predicate) : undefined,
+        object: object != undefined ? normalizeNodeName(object) : undefined,
+        graph: graph != undefined ? normalizeNodeName(graph) : undefined,
+      },
+      this.termWrapperClass,
+      this.view,
+      this.factory,
     );
   }
 
   /**
-   * `matchObject` returns a Jsonld Dataset Proxy representing all objects in the dataset matching the given subject, predicate, and graph.
+   * `matchObject` returns a live `Set<Type>` whose elements are all distinct objects
+   * in the dataset matching the given subject, predicate, and graph.
+   *
+   * The set is live: iteration and size always reflect the current dataset state.
+   * Membership uses RDF term equality (not JS reference equality).
+   * Wrappers yielded from the set read from all graphs and write to the configured
+   * write graphs.
    *
    * @param subject - A valid object node (NamedNode or Blank Node) or a string URI.
    * @param predicate - A valid Predicate Node (NamedNode) or a string URI.
    * @param graph - A valid graph node (NamedNode or DefaultGraph) or a string URI.
    *
-   * @returns  A Linked Data Object Array with all objects the match the provided nodes.
+   * @returns A live Set of Linked Data Objects whose terms match the provided pattern.
    *
    * @example
    * ```typescript
-   * matchObject(
-   *   subject?: SubjectNode | string,
-   *   predicate?: PredicateNode | string,
-   *   graph?: GraphNode | string,
-   * ): Type[]
+   * const profiles = ldoDataset
+   *   .usingType(FoafProfileShapeType)
+   *   .matchObject(
+   *     null,
+   *     "http://xmlns.com/foaf/0.1/primaryTopic"
+   *   );
    * ```
    */
   matchObject(
     subject?: QuadMatch[0] | string,
     predicate?: QuadMatch[1] | string,
     graph?: QuadMatch[3] | string,
-  ): LdSet<Type> {
-    return this.jsonldDatasetProxyBuilder.matchObject<Type>(
-      subject != undefined ? normalizeNodeName(subject) : undefined,
-      predicate != undefined ? normalizeNodeName(predicate) : undefined,
-      graph != undefined ? normalizeNodeName(graph) : undefined,
+  ): Set<Type> {
+    return new MatchingSet(
+      "object",
+      {
+        subject: subject != undefined ? normalizeNodeName(subject) : undefined,
+        predicate:
+          predicate != undefined ? normalizeNodeName(predicate) : undefined,
+        graph: graph != undefined ? normalizeNodeName(graph) : undefined,
+      },
+      this.termWrapperClass,
+      this.view,
+      this.factory,
     );
   }
 
   /**
-   * `fromJson` will take any regular Json, add the information to the dataset, and return a Jsonld Dataset Proxy representing the given data.
+   * Designates that all Linked Data Objects created from this builder should write
+   * new triples only to the specified graphs. Reads and deletes always span all graphs.
    *
-   * @param inputData - Initial data matching the type
-   * @returns A linked data object or linked data object array depending on the input
+   * NOTE: These operations only dictate the graph for new triples. Any operations
+   * that delete triples will delete triples regardless of their graph.
    *
-   * @example
-   * ```typescript
-   * const person2 = ldoDataset
-   *   .usingType(FoafProfileShapeType)
-   *   .fromJson({
-   *     "@id": "http://example.com/Person2",
-   *     fn: ["Jane Doe"],
-   *   });
-   * ```
-   */
-  fromJson(inputData: Type): Type {
-    return this.jsonldDatasetProxyBuilder.fromJson<Type>(inputData);
-  }
-
-  /**
-   * Designates that all Linked Data Objects created should write to the specified graphs. By default, all new quads are added to the default graph, but you can change the graph to which new quads are added.
+   * Returns a new LdoBuilder; the original builder's write graphs are unchanged.
    *
-   * NOTE: These operations only dictate the graph for new triples. Any operations that delete triples will delete triples regardless of their graph.
+   * @param graphs - Graph Nodes or string URIs that all add operations will target.
    *
-   * @param graphs - any number of Graph Nodes or string URIs that all add operations will be put in.
-   *
-   * @returns An LdoBuilder for constructor chaining
+   * @returns A new LdoBuilder with the given write graphs.
    *
    * @example
    * ```typescript
@@ -168,7 +192,7 @@ export class LdoBuilder<Type extends TermWrapper> {
    * ```
    */
   write(...graphs: (GraphNode | string)[]): LdoBuilder<Type> {
-    return new LdoBuilder(this.termWrapperClass, {
+    return new LdoBuilder(this.termWrapperClass, this.dataset, this.factory, {
       writeGraphs: [...normalizeNodeNames(graphs)],
     });
   }
