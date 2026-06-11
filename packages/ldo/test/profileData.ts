@@ -1,6 +1,19 @@
 import type { Schema } from "shexj";
 import type { ContextDefinition } from "jsonld";
-import type { LdSet, ShapeType } from "../src/index";
+import {
+  RequiredFrom,
+  RequiredAs,
+  OptionalFrom,
+  OptionalAs,
+  SetFrom,
+  LiteralAs,
+  LiteralFrom,
+  NamedNodeAs,
+  NamedNodeFrom,
+  TermAs,
+  TermFrom,
+} from "@rdfjs/wrapper";
+import { LdoTermWrapper } from "../src/LdoTermWrapper";
 
 export const profileShex: Schema = {
   type: "Schema",
@@ -886,230 +899,6 @@ export const profileContext: ContextDefinition = {
   },
 };
 
-export interface AddressShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The name of the user's country of residence
-   */
-  countryName?: string;
-  /**r
-   * The name of the user's locality (City, Town etc.) of residencer
-   */
-  locality?: string;
-  /**
-   * The user's postal code
-   */
-  postalCode?: string;
-  /**
-   * The name of the user's region (State, Province etc.) of residence
-   */
-  region?: string;
-  /**
-   * The user's street address
-   */
-  streetAddress?: string;
-}
-
-export interface EmailShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The type of email.
-   */
-  type?:
-    | { "@id": "Dom" }
-    | { "@id": "Home" }
-    | { "@id": "ISDN" }
-    | { "@id": "Internet" }
-    | { "@id": "Intl" }
-    | { "@id": "Label" }
-    | { "@id": "Parcel" }
-    | { "@id": "Postal" }
-    | { "@id": "Pref" }
-    | { "@id": "Work" }
-    | { "@id": "X400" };
-  /**
-   * The value of an email as a mailto link (Example <mailto:jane@example.com>)
-   */
-  value: string;
-}
-
-export interface PhoneNumberShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * They type of Phone Number
-   */
-  type?:
-    | { "@id": "Dom" }
-    | { "@id": "Home" }
-    | { "@id": "ISDN" }
-    | { "@id": "Internet" }
-    | { "@id": "Intl" }
-    | { "@id": "Label" }
-    | { "@id": "Parcel" }
-    | { "@id": "Postal" }
-    | { "@id": "Pref" }
-    | { "@id": "Work" }
-    | { "@id": "X400" };
-  /**
-   * The value of a phone number as a tel link (Example <tel:555-555-5555>)
-   */
-  value: string;
-}
-
-export interface RSAPublicKeyShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * RSA Modulus
-   */
-  modulus: string;
-  /**
-   * RSA Exponent
-   */
-  exponent: number;
-}
-
-export interface SolidProfileShape {
-  "@id"?: string;
-  /**
-   * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)
-   */
-  type: LdSet<{ "@id": "Person" } | { "@id": "Person2" }>;
-  /**
-   * The formatted name of a person. Example: John Smith
-   */
-  fn?: string;
-  /**
-   * An alternate way to define a person's name.
-   */
-  name?: string;
-  /**
-   * The person's street address.
-   */
-  hasAddress?: LdSet<AddressShape>;
-  /**
-   * The person's email.
-   */
-  hasEmail?: LdSet<EmailShape>;
-  /**
-   * A link to the person's photo
-   */
-  hasPhoto?: string;
-  /**
-     * Photo link but in string form
-     *
-    img?: string;
-    /**
-     * Person's telephone number
-     */
-  hasTelephone?: LdSet<PhoneNumberShape>;
-  /**
-   * An alternative way to define a person's telephone number using a string
-   */
-  phone?: string;
-  /**
-   * The name of the organization with which the person is affiliated
-   */
-  organizationName?: string;
-  /**
-   * The name of the person's role in their organization
-   */
-  role?: string;
-  /**
-   * A list of app origins that are trusted by this user
-   */
-  trustedApp?: LdSet<TrustedAppShape>;
-  /**
-   * A list of RSA public keys that are associated with private keys the user holds.
-   */
-  key?: LdSet<RSAPublicKeyShape>;
-  /**
-   * The user's LDP inbox to which apps can post notifications
-   */
-  inbox: { "@id": string };
-  /**
-   * The user's preferences
-   */
-  preferencesFile?: string;
-  /**
-   * The location of a Solid storage server related to this WebId
-   */
-  storage?: LdSet<string>;
-  /**
-   * The user's account
-   */
-  account?: string;
-  /**
-   * A registry of all types used on the user's Pod (for private access only)
-   */
-  privateTypeIndex?: LdSet<string>;
-  /**
-   * A registry of all types used on the user's Pod (for public access)
-   */
-  publicTypeIndex?: LdSet<string>;
-  /**
-   * A list of WebIds for all the people this user knows.
-   */
-  knows?: LdSet<SolidProfileShape>;
-}
-
-export interface TrustedAppShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The level of access provided to this origin
-   */
-  mode: LdSet<
-    | { "@id": "Append" }
-    | { "@id": "Control" }
-    | { "@id": "Read" }
-    | { "@id": "Write" }
-  >;
-  /**
-   * The app origin the user trusts
-   */
-  origin: string;
-}
-
-export const ProfileShapeType: ShapeType<SolidProfileShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#SolidProfileShape",
-  context: profileContext,
-};
-
-export const TrustedAppShapeType: ShapeType<TrustedAppShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#TrustedAppShape",
-  context: profileContext,
-};
-
-export const AddressShapeType: ShapeType<AddressShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#AddressShape",
-  context: profileContext,
-};
-
-export const EmailShapeType: ShapeType<EmailShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#EmailShape",
-  context: profileContext,
-};
-
-export const PhoneNumberShapeType: ShapeType<PhoneNumberShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#PhoneNumberShape",
-  context: profileContext,
-};
-
-export const RSAPublicKeyShapeType: ShapeType<RSAPublicKeyShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#RSAPublicKeyShape",
-  context: profileContext,
-};
-
 /**
  * RDF/JS Wrapper classes for the Solid Profile ShEx shape.
  *
@@ -1124,21 +913,6 @@ export const RSAPublicKeyShapeType: ShapeType<RSAPublicKeyShape> = {
  *   - IRI (nodeKind: iri) -> NamedNodeAs.string / NamedNodeFrom.string  (IRI as a JS string)
  *   - nested shape        -> TermAs.instance(Class) / TermFrom.instance
  */
-
-import {
-  TermWrapper,
-  RequiredFrom,
-  RequiredAs,
-  OptionalFrom,
-  OptionalAs,
-  SetFrom,
-  LiteralAs,
-  LiteralFrom,
-  NamedNodeAs,
-  NamedNodeFrom,
-  TermAs,
-  TermFrom,
-} from "@rdfjs/wrapper";
 
 // ---------------------------------------------------------------------------
 // Vocabulary / predicate IRIs
@@ -1157,7 +931,7 @@ const SOLID = "http://www.w3.org/ns/solid/terms#";
 // AddressShape  -> all five fields are optional strings
 // ---------------------------------------------------------------------------
 
-export class Address extends TermWrapper {
+export class Address extends LdoTermWrapper {
   get countryName(): string | undefined {
     return OptionalFrom.subjectPredicate(
       this,
@@ -1223,7 +997,7 @@ export class Address extends TermWrapper {
 // EmailShape  -> optional `type` (IRI kind) + required `value` (mailto IRI)
 // ---------------------------------------------------------------------------
 
-export class Email extends TermWrapper {
+export class Email extends LdoTermWrapper {
   /** vcard kind, e.g. vcard:Home / vcard:Work (IRI). */
   get kind(): string | undefined {
     return OptionalFrom.subjectPredicate(
@@ -1253,7 +1027,7 @@ export class Email extends TermWrapper {
 // PhoneNumberShape  -> optional `type` (IRI kind) + required `value` (tel IRI)
 // ---------------------------------------------------------------------------
 
-export class PhoneNumber extends TermWrapper {
+export class PhoneNumber extends LdoTermWrapper {
   get kind(): string | undefined {
     return OptionalFrom.subjectPredicate(
       this,
@@ -1282,7 +1056,7 @@ export class PhoneNumber extends TermWrapper {
 // TrustedAppShape  -> set of acl:mode IRIs (min 1) + required acl:origin IRI
 // ---------------------------------------------------------------------------
 
-export class TrustedApp extends TermWrapper {
+export class TrustedApp extends LdoTermWrapper {
   /** Access modes (acl:Read / acl:Write / acl:Append / acl:Control). 1..* */
   get modes(): Set<string> {
     return SetFrom.subjectPredicate(
@@ -1310,7 +1084,7 @@ export class TrustedApp extends TermWrapper {
 // RSAPublicKeyShape  -> required modulus (string) + required exponent (integer)
 // ---------------------------------------------------------------------------
 
-export class RSAPublicKey extends TermWrapper {
+export class RSAPublicKey extends LdoTermWrapper {
   get modulus(): string {
     return RequiredFrom.subjectPredicate(
       this,
@@ -1338,7 +1112,7 @@ export class RSAPublicKey extends TermWrapper {
 // SolidProfileShape
 // ---------------------------------------------------------------------------
 
-export class SolidProfile extends TermWrapper {
+export class SolidProfile extends LdoTermWrapper {
   // --- rdf:type values (schema:Person, foaf:Person, ...) as a mutable set ---
   get types(): Set<string> {
     return SetFrom.subjectPredicate(
