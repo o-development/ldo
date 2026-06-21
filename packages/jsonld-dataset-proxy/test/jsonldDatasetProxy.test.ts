@@ -216,7 +216,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         "http://example.com/Patient1",
       );
       expect(observation?.subject?.age).toBe(35);
-      expect(observation?.subject?.birthdate).toBe("1986-01-01");
+      expect(observation?.subject?.birthdate).toEqual(new Date("1986-01-01"));
       expect(observation?.subject?.isHappy).toBe(true);
     });
 
@@ -332,7 +332,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(obj.name).toContain("Garrett");
       expect(obj.name).toContain("Bobby");
       expect(obj.name).toContain("Ferguson");
-      expect(obj.birthdate).toEqual("1986-01-01");
+      expect(obj.birthdate).toEqual(new Date("1986-01-01"));
       expect(obj.age).toEqual(35);
       expect(obj.isHappy).toEqual(true);
       const entries = Object.entries(obj);
@@ -345,7 +345,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(entries[2][1]).toContain("Bobby");
       expect(entries[2][1]).toContain("Ferguson");
       expect(entries[3][0]).toBe("birthdate");
-      expect(entries[3][1]).toBe("1986-01-01");
+      expect(entries[3][1]).toEqual(new Date("1986-01-01"));
       expect(entries[4][0]).toBe("age");
       expect(entries[4][1]).toBe(35);
       expect(entries[5][0]).toBe("isHappy");
@@ -366,7 +366,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(values[2]).toContain("Garrett");
       expect(values[2]).toContain("Bobby");
       expect(values[2]).toContain("Ferguson");
-      expect(values[3]).toEqual("1986-01-01");
+      expect(values[3]).toEqual(new Date("1986-01-01"));
       expect(values[4]).toEqual(35);
       expect(values[5]).toEqual(true);
     });
@@ -376,7 +376,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const obj = observation.subject!.roommate!.toArray()[1];
       expect(obj.toString()).toBe("[object Object]");
       expect(JSON.stringify(obj)).toBe(
-        `{"@id":"http://example.com/Patient3","type":{"@id":"Patient"},"name":["Amy"],"birthdate":"1988-01-01","age":33,"isHappy":true}`,
+        `{"@id":"http://example.com/Patient3","type":{"@id":"Patient"},"name":["Amy"],"birthdate":"1988-01-01T00:00:00.000Z","age":33,"isHappy":true}`,
       );
     });
 
@@ -473,6 +473,26 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       patient.isHappy = true;
       expect(dataset.toString()).toBe(
         '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/age> "35"^^<http://www.w3.org/2001/XMLSchema#integer> .\n<http://example.com/Patient1> <http://hl7.org/fhir/isHappy> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .\n',
+      );
+    });
+
+    it("sets a Date value to a date field", async () => {
+      const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
+      patient.birthdate = new Date("2024-06-15T14:30:00Z");
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2024-06-15"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
+      );
+    });
+
+    it("serializes Date to xsd:date using UTC date component", async () => {
+      const [dataset, patient] = await getEmptyPatientDataset();
+      patient.type = { "@id": "Patient" };
+      // This date is 2024-06-14 23:00:00 UTC, which could be June 15 in some timezones
+      // but should serialize as 2024-06-14 since we use UTC
+      patient.birthdate = new Date("2024-06-14T23:00:00Z");
+      expect(dataset.toString()).toBe(
+        '<http://example.com/Patient1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://hl7.org/fhir/Patient> .\n<http://example.com/Patient1> <http://hl7.org/fhir/birthdate> "2024-06-14"^^<http://www.w3.org/2001/XMLSchema#date> .\n',
       );
     });
 
@@ -1121,7 +1141,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(hodgePodge.size).toBe(5);
       expect(hodgePodge.toArray()[0]["@id"]).toBe("Patient");
       expect(hodgePodge.toArray()[1]).toBe("Amy");
-      expect(hodgePodge.toArray()[2]).toBe("1988-01-01");
+      expect(hodgePodge.toArray()[2]).toEqual(new Date("1988-01-01"));
       expect(hodgePodge.toArray()[3]).toBe(33);
       expect(hodgePodge.toArray()[4]).toBe(true);
     });
@@ -1149,7 +1169,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       const patient = builder.fromJson<PatientShape>({
         type: { "@id": "Patient" },
         name: set("Jack", "Horner"),
-        birthdate: "1725/11/03",
+        birthdate: "1725-11-03",
         age: 298,
         roommate: set({
           type: { "@id": "Patient" },
@@ -1158,7 +1178,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       });
       expect(patient.name).toContain("Jack");
       expect(patient.name).toContain("Horner");
-      expect(patient.birthdate).toBe("1725/11/03");
+      expect(patient.birthdate).toEqual(new Date("1725-11-03"));
       expect(patient.age).toBe(298);
       expect(patient.roommate?.toArray()[0].name).toContain("Ethical");
       expect(patient.roommate?.toArray()[0].name).toContain("Bug");
@@ -1170,7 +1190,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
         "@id": "http://example.com/Patient13",
         type: { "@id": "Patient" },
         name: set("Jack", "Horner"),
-        birthdate: "1725/11/03",
+        birthdate: "1725-11-03",
         age: 298,
         roommate: set({
           type: { "@id": "Patient" },
@@ -1180,7 +1200,7 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
       expect(patient["@id"]).toBe("http://example.com/Patient13");
       expect(patient.name).toContain("Jack");
       expect(patient.name).toContain("Horner");
-      expect(patient.birthdate).toBe("1725/11/03");
+      expect(patient.birthdate).toEqual(new Date("1725-11-03"));
       expect(patient.age).toBe(298);
       expect(patient.roommate?.toArray()[0].name).toContain("Ethical");
       expect(patient.roommate?.toArray()[0].name).toContain("Bug");
