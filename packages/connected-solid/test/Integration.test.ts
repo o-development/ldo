@@ -9,14 +9,13 @@ import { PostShShapeType } from "./_ldo/post.shapeTypes";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { wait } from "./utils.helper";
 import path from "path";
-import type { GetWacRuleSuccess, WacRule } from "../src/index";
-import {
-  createSolidLdoDataset,
-  type SolidConnectedPlugin,
-  type SolidContainer,
-  type SolidContainerUri,
-  type SolidLeaf,
-  type SolidLeafUri,
+import type { WacRule } from "../src/index";
+import type {
+  SolidConnectedPlugin,
+  SolidContainer,
+  SolidContainerUri,
+  SolidLeaf,
+  SolidLeafUri,
 } from "../src/index";
 import type {
   AggregateSuccess,
@@ -34,7 +33,7 @@ import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
-import type { wacResourceCapability } from "@ldo/wac";
+import { type wacResourceCapability, createSolidLdoDataset } from "@ldo/wac";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";

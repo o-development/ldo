@@ -17,7 +17,7 @@ import {
 } from "../src/setTypeIndex";
 import { TypeIndexProfileShapeType } from "../src/_ldo/profile.shapeTypes";
 import { INSTANCE } from "../src/constants";
-import { createSolidLdoDataset } from "@ldo/connected-solid";
+import { createSolidLdoDataset } from "@ldo/wac";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { setupServer } from "@ldo/test-solid-server";

@@ -42,7 +42,15 @@
     "src"
   ],
   "dependencies": {
+    "@types/jsonld": "^1.5.15",
     "http-link-header": "^1.1.3",
     "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.22.3",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.12.0",
+    "vitest": "^4.1.9"
   }
 }

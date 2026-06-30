@@ -8,3 +8,4 @@ export * from "./results/GetWacRuleSuccess.js";
 export * from "./results/GetWacUriSuccess.js";
 export * from "./results/SetWacRuleSuccess.js";
 export * from "./results/WacRuleAbsent.js";
+export * from "./createSolidLdoDataset.js";

@@ -1,6 +1,5 @@
-import type { SolidLeaf, SolidResource } from "@ldo/connected-solid";
+import type { SolidResource } from "@ldo/connected-solid";
 import { WacNamespaceImpl } from "./WacNamespace";
-import type { ApplyCapabilities } from "@ldo/connected";
 
 // export type WacResourceCapability = ResourceCapability<
 //   "wac",
@@ -27,8 +26,3 @@ import type { ApplyCapabilities } from "@ldo/connected";
 export const wacResourceCapability = function (resource: SolidResource<any[]>) {
   return new WacNamespaceImpl(resource);
 };
-
-type T1 = ApplyCapabilities<
-  SolidLeaf<[]>,
-  [{ namespace: "wac"; capability: typeof wacResourceCapability }]
->;
