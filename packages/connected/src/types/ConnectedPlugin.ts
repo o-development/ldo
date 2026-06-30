@@ -66,18 +66,18 @@ export interface ConnectedPlugin<
     createResourceOptions: CreateResourceOptions;
   };
 
-  extendResource<
-    C extends Capability<any>,
-    Namespace extends string,
-    NewContext,
-  >(
-    capability: C,
-    namespace: Namespace,
-  ): ConnectedPlugin<
-    Name,
-    UriType,
-    ApplyCapability<ResourceType, { capability: C; namespace: Namespace }>,
-    NewContext,
-    CreateResourceOptions
-  >;
+  // extendResource<
+  //   C extends Capability<any>,
+  //   Namespace extends string,
+  //   NewContext,
+  // >(
+  //   capability: C,
+  //   namespace: Namespace,
+  // ): ConnectedPlugin<
+  //   Name,
+  //   UriType,
+  //   ApplyCapability<ResourceType, { capability: C; namespace: Namespace }>,
+  //   NewContext,
+  //   CreateResourceOptions
+  // >;
 }

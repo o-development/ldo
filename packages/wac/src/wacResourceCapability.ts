@@ -28,6 +28,6 @@ export const wacResourceCapability = function (resource: SolidResource) {
 };
 
 type T1 = ApplyCapabilities<
-  SolidLeaf,
+  SolidLeaf<[]>,
   [{ namespace: "wac"; capability: typeof wacResourceCapability }]
 >;

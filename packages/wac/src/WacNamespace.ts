@@ -19,16 +19,16 @@ export interface WacNamespace {
   getWac(options?: {
     ignoreCache?: boolean;
   }): Promise<
-    | GetWacUriError<SolidContainer | SolidLeaf>
-    | GetWacRuleError<SolidContainer | SolidLeaf>
-    | GetWacRuleSuccess<SolidContainer | SolidLeaf>
+    | GetWacUriError<SolidContainer<[]> | SolidLeaf<[]>>
+    | GetWacRuleError<SolidContainer<[]> | SolidLeaf<[]>>
+    | GetWacRuleSuccess<SolidContainer<[]> | SolidLeaf<[]>>
   >;
 
   setWac(
     wacRule: WacRule,
   ): Promise<
-    | GetWacUriError<SolidLeaf | SolidContainer>
-    | SetWacRuleResult<SolidLeaf | SolidContainer>
+    | GetWacUriError<SolidLeaf<[]> | SolidContainer<[]>>
+    | SetWacRuleResult<SolidLeaf<[]> | SolidContainer<[]>>
   >;
 }
 
@@ -68,10 +68,10 @@ export class WacNamespaceImpl {
    */
   protected async getWacUri(options?: {
     ignoreCache?: boolean;
-  }): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
+  }): Promise<GetWacUriResult<SolidLeaf<[]> | SolidContainer<[]>>> {
     const resourceAsLeafOrContainer = this.resource as unknown as
-      | SolidLeaf
-      | SolidContainer;
+      | SolidLeaf<[]>
+      | SolidContainer<[]>;
     // Get the wacUri if not already present
     if (!options?.ignoreCache && this.wacUri) {
       return new GetWacUriSuccess(resourceAsLeafOrContainer, this.wacUri);
@@ -123,13 +123,13 @@ export class WacNamespaceImpl {
     ignoreCache?: boolean;
     inheritable?: boolean;
   }): Promise<
-    | GetWacUriError<SolidContainer | SolidLeaf>
-    | GetWacRuleError<SolidContainer | SolidLeaf>
-    | GetWacRuleSuccess<SolidContainer | SolidLeaf>
+    | GetWacUriError<SolidContainer<[]> | SolidLeaf<[]>>
+    | GetWacRuleError<SolidContainer<[]> | SolidLeaf<[]>>
+    | GetWacRuleSuccess<SolidContainer<[]> | SolidLeaf<[]>>
   > {
     const resourceAsLeafOrContainer = this.resource as unknown as
-      | SolidLeaf
-      | SolidContainer;
+      | SolidLeaf<[]>
+      | SolidContainer<[]>;
     // Return the wac rule if it's already cached
     const cachedRule = options?.inheritable
       ? this.inheritableWacRule
@@ -173,7 +173,7 @@ export class WacNamespaceImpl {
     }
     return (
       (
-        parentResource as SolidContainer & {
+        parentResource as SolidContainer<[]> & {
           wac: WacNamespace;
         }
       ).wac as WacNamespaceImpl
@@ -216,12 +216,12 @@ export class WacNamespaceImpl {
   async setWac(
     wacRule: WacRule,
   ): Promise<
-    | GetWacUriError<SolidLeaf | SolidContainer>
-    | SetWacRuleResult<SolidLeaf | SolidContainer>
+    | GetWacUriError<SolidLeaf<[]> | SolidContainer<[]>>
+    | SetWacRuleResult<SolidLeaf<[]> | SolidContainer<[]>>
   > {
     const resourceAsLeafOrContainer = this.resource as unknown as
-      | SolidLeaf
-      | SolidContainer;
+      | SolidLeaf<[]>
+      | SolidContainer<[]>;
     const wacUriResult = await this.getWacUri();
     if (wacUriResult.isError) return wacUriResult;
 

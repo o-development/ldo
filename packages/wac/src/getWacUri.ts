@@ -15,14 +15,16 @@ import { GetWacUriSuccess } from "./results/GetWacUriSuccess";
 import LinkHeader from "http-link-header";
 import { UnexpectedResourceError } from "@ldo/connected";
 
-export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
+export type GetWacUriError<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> =
   | HttpErrorResultType<ResourceType>
   | NotFoundHttpError<ResourceType>
   | NoncompliantPodError<ResourceType>
   | UnexpectedResourceError<ResourceType>;
-export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
-  | GetWacUriSuccess<ResourceType>
-  | GetWacUriError<ResourceType>;
+export type GetWacUriResult<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> = GetWacUriSuccess<ResourceType> | GetWacUriError<ResourceType>;
 
 /**
  * Get the URI for the WAC rules of a specific resource
@@ -31,9 +33,9 @@ export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
  * @returns GetWacUriResult
  */
 export async function getWacUri(
-  resource: SolidLeaf | SolidContainer,
+  resource: SolidLeaf<[]> | SolidContainer<[]>,
   options?: BasicRequestOptions,
-): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
+): Promise<GetWacUriResult<SolidLeaf<[]> | SolidContainer<[]>>> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
     const response = await fetch(resource.uri, {

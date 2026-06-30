@@ -29,7 +29,12 @@ import type {
   SolidContainerUri,
   SolidLeafSlug,
 } from "../types";
-import type { ReadSuccess } from "@ldo/connected";
+import type {
+  ApplyCapabilities,
+  ReadSuccess,
+  Resource,
+  ResourceCapability,
+} from "@ldo/connected";
 import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
@@ -51,7 +56,10 @@ import type { DatasetChanges } from "@ldo/rdf-utils";
  *   .getResource("https://example.com/container/");
  * ```
  */
-export class SolidContainer extends SolidResource {
+export class SolidContainer<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends SolidResource {
   /**
    * The URI of the container
    */
@@ -95,7 +103,7 @@ export class SolidContainer extends SolidResource {
    */
   constructor(
     uri: SolidContainerUri,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
   ) {
     super(context);
     this.uri = uri;
@@ -247,7 +255,9 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async getRootContainerByTraversal(): Promise<
-    SolidContainer | CheckRootResultError | NoRootContainerError<SolidContainer>
+    | SolidContainer<Capabilities>
+    | CheckRootResultError
+    | NoRootContainerError<SolidContainer<Capabilities>>
   > {
     const parentContainerResult = await this.getParentContainer();
     if (parentContainerResult?.isError) return parentContainerResult;
@@ -279,7 +289,9 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async getParentContainer(): Promise<
-    SolidContainer | CheckRootResultError | undefined
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+    | CheckRootResultError
+    | undefined
   > {
     if (this.rootContainer === undefined) {
       const checkResult = await this.checkIfIsRootContainer();
@@ -307,7 +319,7 @@ export class SolidContainer extends SolidResource {
    * }
    * ```
    */
-  children(): (SolidContainer | SolidLeaf)[] {
+  children(): (SolidContainer<Capabilities> | SolidLeaf<Capabilities>)[] {
     const childQuads = this.context.dataset.match(
       namedNode(this.uri),
       ldpContains,
@@ -316,8 +328,8 @@ export class SolidContainer extends SolidResource {
     );
     return childQuads.toArray().map((childQuad) => {
       return this.context.dataset.getResource(childQuad.object.value) as
-        | SolidContainer
-        | SolidLeaf;
+        | SolidContainer<Capabilities>
+        | SolidLeaf<Capabilities>;
     });
   }
 
@@ -338,13 +350,13 @@ export class SolidContainer extends SolidResource {
    * console.log(resource.uri);
    * ```
    */
-  child(slug: SolidContainerSlug): SolidContainer;
-  child(slug: SolidLeafSlug): SolidLeaf;
-  child(slug: string): SolidLeaf | SolidContainer;
-  child(slug: string): SolidLeaf | SolidContainer {
+  child(slug: SolidContainerSlug): SolidContainer<Capabilities>;
+  child(slug: SolidLeafSlug): SolidLeaf<Capabilities>;
+  child(slug: string): SolidLeaf<Capabilities> | SolidContainer<Capabilities>;
+  child(slug: string): SolidLeaf<Capabilities> | SolidContainer<Capabilities> {
     return this.context.dataset.getResource(`${this.uri}${slug}`) as
-      | SolidLeaf
-      | SolidContainer;
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
   }
 
   /**
@@ -488,10 +500,16 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async clear(): Promise<
-    | AggregateSuccess<DeleteSuccess<SolidContainer | SolidLeaf>>
+    | AggregateSuccess<
+        DeleteSuccess<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
+      >
     | AggregateError<
-        | DeleteResultError<SolidContainer | SolidLeaf>
-        | ReadResultError<SolidContainer | SolidLeaf>
+        | DeleteResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
+        | ReadResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
       >
   > {
     const readResult = await this.read();
@@ -510,7 +528,9 @@ export class SolidContainer extends SolidResource {
       return new AggregateError(errors);
     }
     return new AggregateSuccess(
-      results as DeleteSuccess<SolidContainer | SolidLeaf>[],
+      results as DeleteSuccess<
+        SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+      >[],
     );
   }
 
@@ -528,8 +548,12 @@ export class SolidContainer extends SolidResource {
   async delete(): Promise<
     | DeleteResult<this>
     | AggregateError<
-        | DeleteResultError<SolidContainer | SolidLeaf>
-        | ReadResultError<SolidContainer | SolidLeaf>
+        | DeleteResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
+        | ReadResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
       >
   > {
     const clearResult = await this.clear();

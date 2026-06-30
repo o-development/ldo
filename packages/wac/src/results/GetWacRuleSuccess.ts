@@ -6,7 +6,7 @@ import type { WacRule } from "../WacRule";
  * Returned when a WAC rule is successfully retrieved
  */
 export class GetWacRuleSuccess<
-  ResourceType extends SolidLeaf | SolidContainer,
+  ResourceType extends SolidLeaf<[]> | SolidContainer<[]>,
 > extends ResourceSuccess<ResourceType> {
   type = "getWacRuleSuccess" as const;
   /**

@@ -1,4 +1,7 @@
-import { createConnectedLdoDataset } from "@ldo/connected";
+import {
+  type GetResourceReturnType,
+  createConnectedLdoDataset,
+} from "@ldo/connected";
 import {
   type GetWacRuleSuccess,
   type SolidContainer,
@@ -185,9 +188,8 @@ describe("Web Access Control resource capability", () => {
       type T = typeof container;
       const wacResult = await container.wac.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -212,9 +214,8 @@ describe("Web Access Control resource capability", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -299,9 +300,8 @@ describe("Web Access Control resource capability", () => {
       await resource.wac.getWac();
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -346,10 +346,10 @@ describe("Web Access Control resource capability", () => {
       );
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(true);
+      assert(wacResult.isError);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: No link header present in request.`,
       );
     });
@@ -365,9 +365,8 @@ describe("Web Access Control resource capability", () => {
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: There must be one link with a rel="acl"`,
       );
     });
@@ -412,9 +411,8 @@ describe("Web Access Control resource capability", () => {
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from http://localhost:3001/test_ldo/sample.ttl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "BAD" on line 1.\nBAD TURTLE`,
       );
     });
@@ -446,9 +444,8 @@ describe("Web Access Control resource capability", () => {
       const wacResult = await resource.wac.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${ROOT_CONTAINER} is not compliant with the Solid Specification: Resource "${ROOT_CONTAINER}" has no Effective ACL resource`,
       );
     });
@@ -475,10 +472,9 @@ describe("Web Access Control resource capability", () => {
       expect(result.type).toBe("setWacRuleSuccess");
       const readResult = await resource.wac.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
+      assert(!readResult.isError);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      const rules = readResult.wacRule;
       expect(rules).toEqual(newRules);
     });
 
@@ -489,10 +485,9 @@ describe("Web Access Control resource capability", () => {
       expect(result.type).toBe("setWacRuleSuccess");
       const readResult = await resource.wac.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
+      assert(!readResult.isError);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      const rules = readResult.wacRule;
       expect(rules).toEqual(newRules);
     });
 
@@ -507,10 +502,9 @@ describe("Web Access Control resource capability", () => {
       expect(result.type).toBe("setWacRuleSuccess");
       const readResult = await resource.wac.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
+      assert(!readResult.isError);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      const rules = readResult.wacRule;
       expect(rules).toEqual(moreRules);
     });
 
@@ -545,5 +539,7 @@ describe("Web Access Control resource capability", () => {
     const parent = await resource.getParentContainer();
     assert.ok(parent && !parent?.isError);
     console.log(await parent.wac.getWac());
+
+    const grandparent = await parent.getParentContainer();
   });
 });

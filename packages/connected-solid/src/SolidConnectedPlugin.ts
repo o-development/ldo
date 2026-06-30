@@ -1,4 +1,5 @@
 import type {
+  ApplyCapability,
   ConnectedContext,
   ConnectedPlugin,
   Resource,
@@ -11,6 +12,7 @@ import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
 import type { ResourceCapability } from "@ldo/connected";
 import type { SolidResource } from "./resources/SolidResource.js";
 import type { ApplyCapabilities } from "@ldo/connected";
+import { wacResourceCapability } from "@ldo/wac";
 
 /**
  * The Type of the SolidConnectedContext
@@ -23,8 +25,11 @@ export interface SolidConnectedPlugin<
 > extends ConnectedPlugin<
     "solid",
     SolidUri,
-    ApplyCapabilities<SolidLeaf | SolidContainer, Capabilities>,
-    // | ApplyCapabilities<SolidContainer, Capabilities>,
+    ApplyCapabilities<
+      SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
+      Capabilities
+    >,
+    // | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>,
     SolidConnectedContext,
     undefined
   > {
@@ -33,11 +38,11 @@ export interface SolidConnectedPlugin<
     | ((
         uri: SolidLeafUri,
         context: ConnectedContext<this[]>,
-      ) => ApplyCapabilities<SolidLeaf, Capabilities>)
+      ) => ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>)
     | ((
         uri: SolidContainerUri,
         context: ConnectedContext<this[]>,
-      ) => ApplyCapabilities<SolidContainer, Capabilities>);
+      ) => ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>);
   // getResource(uri: SolidLeafUri, context: ConnectedContext<this[]>): SolidLeaf;
   // getResource(
   //   uri: SolidContainerUri,
@@ -58,12 +63,18 @@ export interface SolidConnectedPlugin<
   // ): Uri extends SolidContainerUri ? SolidContainer : SolidLeaf;
   createResource(
     context: ConnectedContext<this[]>,
-  ): Promise<ApplyCapabilities<SolidLeaf, Capabilities>>;
+  ): Promise<ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>>;
 
-  // extendResource<Cap extends ResourceCapability<string, SolidResource>>(
-  //   capability: Cap["capability"],
-  //   namespace: Cap["namespace"],
-  // ): SolidConnectedPlugin<[...Capabilities, Cap]>;
+  extendResource<
+    Namespace extends string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Capability extends (resource: any) => unknown,
+  >(
+    capability: Capability,
+    namespace: Namespace,
+  ): SolidConnectedPlugin<
+    [...Capabilities, { namespace: Namespace; capability: Capability }]
+  >;
 }
 
 function getResourceFactory<
@@ -73,33 +84,32 @@ function getResourceFactory<
   function getResource(
     uri: SolidLeafUri,
     context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
-  ): UnwrapExtension<ApplyCapabilities<SolidLeaf, Capabilities>, SolidLeaf>;
-  function getResource<
-    Capabilities extends ResourceCapability<string, Resource>[],
-  >(
+  ): ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>;
+  function getResource(
     uri: SolidContainerUri,
     context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
-  ): UnwrapExtension<
-    ApplyCapabilities<SolidContainer, Capabilities>,
-    SolidContainer
-  >;
-  function getResource<
-    Capabilities extends ResourceCapability<string, Resource>[],
-  >(
+  ): ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>;
+  function getResource(
     uri: SolidLeafUri | SolidContainerUri,
     context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
-  ): ApplyCapabilities<SolidLeaf | SolidContainer, Capabilities> {
+  ): ApplyCapabilities<
+    SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
+    Capabilities
+  > {
     if (isSolidContainerUri(uri)) {
       return applyCapabilities(
         new SolidContainer(uri, context),
         capabilities,
-      ) as unknown as ApplyCapabilities<SolidContainer, Capabilities>;
+      ) as unknown as ApplyCapabilities<
+        SolidContainer<Capabilities>,
+        Capabilities
+      >;
     } else {
       return applyCapabilities(
         new SolidLeaf(uri, context),
         capabilities,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ) as unknown as ApplyCapabilities<SolidLeaf, Capabilities>;
+      ) as unknown as ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>;
     }
   }
 
@@ -146,7 +156,7 @@ const createSolidConnectedPlugin = <
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Capabilities extends ResourceCapability<string, Resource<any>>[],
 >(
-  capabilities: Capabilities = [] as unknown as Capabilities,
+  capabilities: Capabilities,
 ): SolidConnectedPlugin<Capabilities> => ({
   name: "solid",
 
@@ -190,4 +200,22 @@ const createSolidConnectedPlugin = <
   },
 });
 
-export const solidConnectedPlugin = createSolidConnectedPlugin();
+export const solidConnectedPlugin = createSolidConnectedPlugin([] as []);
+
+const plugin = solidConnectedPlugin.extendResource(
+  wacResourceCapability,
+  "wac",
+);
+
+type P = typeof plugin;
+
+type T = ReturnType<typeof plugin.getResource>;
+
+interface WacCapability {
+  namespace: "www";
+  capability: typeof wacResourceCapability;
+}
+
+type RC = ApplyCapabilities<SolidLeaf<[WacCapability]>, [WacCapability]>;
+
+type T1 = [...[], [1, 2, 3]];

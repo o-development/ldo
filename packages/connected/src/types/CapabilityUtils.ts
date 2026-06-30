@@ -23,7 +23,7 @@ export type ApplyCapability<
 
 export type ApplyCapabilities<
   R extends Resource,
-  Capabilities extends unknown[],
+  Capabilities extends readonly unknown[],
 > = Capabilities extends [
   infer Head extends { namespace: string; capability: Capability<any> },
   ...infer Tail,
@@ -61,7 +61,7 @@ type CapabilityTest = {
 
 type CapabilityTest2 = {
   namespace: "t2";
-  capability: (resource: SolidLeaf) => {
+  capability: (resource: SolidLeaf<any>) => {
     a: 1;
     b: 2;
     c: 3;
@@ -89,12 +89,20 @@ type RCTest1 = GetResourceCapabilityResource<CapabilityTest2>;
 //     : never;
 // };
 
-type Test1 = ApplyCapability<SolidContainer | SolidLeaf, CapabilityTest>;
+type Test1 = ApplyCapability<
+  SolidContainer<[]> | SolidLeaf<[]>,
+  CapabilityTest
+>;
 type Test2 = ApplyCapability<Test1, CapabilityTest2>;
 
-type Test3 = ApplyCapabilities<SolidLeaf, [CapabilityTest, CapabilityTest2]>;
+type Test3 = ApplyCapabilities<
+  SolidLeaf<[CapabilityTest, CapabilityTest2]>,
+  [CapabilityTest, CapabilityTest2]
+>;
 
-type T3 = UnwrapExtension<Test2, SolidContainer | SolidLeaf>;
+type T5 = Awaited<ReturnType<Test3["getParentContainer"]>>;
+
+type T3 = UnwrapExtension<Test2, SolidContainer<[]> | SolidLeaf<[]>>;
 
 // export type ApplyCapabilities<
 //   R extends Resource,
