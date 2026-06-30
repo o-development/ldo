@@ -128,7 +128,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Retireves a representation of a Resource at the given URI. This resource
+   * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
    * fetched or in the process of fetching as well as some information about it.
    *
@@ -149,6 +149,8 @@ export class ConnectedLdoDataset<
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(uri: UriType, pluginName?: Name): GetResourceReturnType<Plugin, UriType> {
+    console.log("GETTING RESOURCE");
+
     const plugin = this.getValidPlugin(uri, pluginName);
     if (!plugin) return new InvalidIdentifierResource(uri) as any;
     const normalizedUri = plugin.normalizeUri?.(uri) ?? uri;

@@ -70,10 +70,9 @@ export abstract class SolidResource
   implements Resource<SolidLeafUri | SolidContainerUri>
 {
   /**
-   * @internal
    * The ConnectedContext from the Parent Dataset
    */
-  protected readonly context: ConnectedContext<SolidConnectedPlugin[]>;
+  readonly context: ConnectedContext<SolidConnectedPlugin[]>;
 
   /**
    * The uri of the resource

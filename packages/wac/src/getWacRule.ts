@@ -1,0 +1,145 @@
+import { GetWacRuleSuccess } from "./results/GetWacRuleSuccess";
+import { AuthorizationShapeType } from "./_ldo/wac.shapeTypes";
+import type { AccessModeList, WacRule } from "./WacRule";
+import type { Authorization } from "./_ldo/wac.typings";
+import { WacRuleAbsent } from "./results/WacRuleAbsent";
+import {
+  HttpErrorResult,
+  type HttpErrorResultType,
+  NoncompliantPodError,
+  guaranteeFetch,
+  type BasicRequestOptions,
+  type SolidLeaf,
+  type SolidContainer,
+  rawTurtleToDataset,
+} from "@ldo/connected-solid";
+import type { UnexpectedResourceError } from "@ldo/connected";
+
+export type GetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
+  | HttpErrorResultType<ResourceType>
+  | NoncompliantPodError<ResourceType>
+  | UnexpectedResourceError<ResourceType>;
+
+export type GetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
+  | GetWacRuleSuccess<ResourceType>
+  | GetWacRuleError<ResourceType>
+  | WacRuleAbsent<ResourceType>;
+
+type GetWacRuleOptions<ResourceType extends SolidContainer | SolidLeaf> =
+  ResourceType extends SolidContainer ? { inheritable?: boolean } : never;
+
+/**
+ * Given the URI of an ACL document, return the Web Access Control (WAC) rules
+ * @param aclUri: The URI for the ACL document
+ * @param options: Options object to include an authenticated fetch function
+ * @returns GetWacRuleResult
+ */
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidContainer,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidContainer>,
+): Promise<GetWacRuleResult<SolidContainer>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf>,
+): Promise<GetWacRuleResult<SolidLeaf>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf | SolidContainer,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
+): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>>;
+export async function getWacRuleWithAclUri(
+  aclUri: string,
+  resource: SolidLeaf | SolidContainer,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
+): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>> {
+  const fetch = guaranteeFetch(options?.fetch);
+  const response = await fetch(aclUri);
+  const errorResult = HttpErrorResult.checkResponse(resource, response);
+  if (errorResult) return errorResult;
+
+  if (response.status === 404) {
+    return new WacRuleAbsent(resource);
+  }
+
+  // Parse Turtle
+  const rawTurtle = await response.text();
+  const rawTurtleResult = await rawTurtleToDataset(rawTurtle, aclUri);
+  if (rawTurtleResult instanceof Error)
+    return new NoncompliantPodError(resource, rawTurtleResult.message);
+  const dataset = rawTurtleResult;
+  const authorizations = dataset
+    .usingType(AuthorizationShapeType)
+    .matchSubject(
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "http://www.w3.org/ns/auth/acl#Authorization",
+    );
+
+  const explicitAuthorizations = authorizations.filter(
+    (a) => a.accessTo?.["@id"] === resource.uri,
+  );
+  const inheritableAuthorizations = authorizations.filter(
+    (a) => a.default?.["@id"] === resource.uri,
+  );
+
+  const wacRule: WacRule = {
+    public: {
+      read: false,
+      write: false,
+      append: false,
+      control: false,
+    },
+    authenticated: {
+      read: false,
+      write: false,
+      append: false,
+      control: false,
+    },
+    agent: {},
+  };
+
+  function applyAccessModesToList(
+    accessModeList: AccessModeList,
+    authorization: Authorization,
+  ): void {
+    authorization.mode?.forEach((mode) => {
+      accessModeList[mode["@id"].toLowerCase()] = true;
+    });
+  }
+
+  const effectiveAuthorizations = options?.inheritable
+    ? inheritableAuthorizations
+    : explicitAuthorizations;
+
+  effectiveAuthorizations.forEach((authorization) => {
+    if (
+      authorization.agentClass?.some(
+        (agentClass) => agentClass["@id"] === "Agent",
+      )
+    ) {
+      applyAccessModesToList(wacRule.public, authorization);
+      applyAccessModesToList(wacRule.authenticated, authorization);
+    }
+    if (
+      authorization.agentClass?.some(
+        (agentClass) => agentClass["@id"] === "AuthenticatedAgent",
+      )
+    ) {
+      applyAccessModesToList(wacRule.authenticated, authorization);
+    }
+    authorization.agent?.forEach((agent) => {
+      if (!wacRule.agent[agent["@id"]]) {
+        wacRule.agent[agent["@id"]] = {
+          read: false,
+          write: false,
+          append: false,
+          control: false,
+        };
+      }
+      applyAccessModesToList(wacRule.agent[agent["@id"]], authorization);
+    });
+  });
+
+  return new GetWacRuleSuccess(resource, wacRule);
+}

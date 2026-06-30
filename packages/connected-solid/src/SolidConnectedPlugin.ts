@@ -1,8 +1,16 @@
-import type { ConnectedContext, ConnectedPlugin } from "@ldo/connected";
+import type {
+  ConnectedContext,
+  ConnectedPlugin,
+  Resource,
+  UnwrapExtension,
+} from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri, SolidUri } from "./types";
 import { SolidLeaf } from "./resources/SolidLeaf";
 import { SolidContainer } from "./resources/SolidContainer";
 import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
+import type { ResourceCapability } from "@ldo/connected";
+import type { SolidResource } from "./resources/SolidResource.js";
+import type { ApplyCapabilities } from "@ldo/connected";
 
 /**
  * The Type of the SolidConnectedContext
@@ -10,41 +18,114 @@ import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
 export interface SolidConnectedContext {
   fetch?: typeof fetch;
 }
-export interface SolidConnectedPlugin
-  extends ConnectedPlugin<
+export interface SolidConnectedPlugin<
+  Capabilities extends ResourceCapability<string, SolidResource>[],
+> extends ConnectedPlugin<
     "solid",
     SolidUri,
-    SolidLeaf | SolidContainer,
+    ApplyCapabilities<SolidLeaf | SolidContainer, Capabilities>,
+    // | ApplyCapabilities<SolidContainer, Capabilities>,
     SolidConnectedContext,
     undefined
   > {
   name: "solid";
   getResource:
-    | ((uri: SolidLeafUri, context: ConnectedContext<this[]>) => SolidLeaf)
+    | ((
+        uri: SolidLeafUri,
+        context: ConnectedContext<this[]>,
+      ) => ApplyCapabilities<SolidLeaf, Capabilities>)
     | ((
         uri: SolidContainerUri,
         context: ConnectedContext<this[]>,
-      ) => SolidContainer);
-  createResource(context: ConnectedContext<this[]>): Promise<SolidLeaf>;
+      ) => ApplyCapabilities<SolidContainer, Capabilities>);
+  // getResource(uri: SolidLeafUri, context: ConnectedContext<this[]>): SolidLeaf;
+  // getResource(
+  //   uri: SolidContainerUri,
+  //   context: ConnectedContext<this[]>,
+  // ): SolidContainer;
+  // getResource(
+  //   uri: SolidContainerUri,
+  //   context: ConnectedContext<this[]>,
+  // ): SolidContainer;
+  // getResource(uri: SolidLeafUri, context: ConnectedContext<this[]>): SolidLeaf;
+  // getResource(
+  //   uri: SolidLeafUri | SolidContainerUri,
+  //   context: ConnectedContext<this[]>,
+  // ): SolidLeaf | SolidContainer;
+  // getResource<Uri extends SolidLeafUri | SolidContainerUri>(
+  //   uri: Uri,
+  //   context: ConnectedContext<this[]>,
+  // ): Uri extends SolidContainerUri ? SolidContainer : SolidLeaf;
+  createResource(
+    context: ConnectedContext<this[]>,
+  ): Promise<ApplyCapabilities<SolidLeaf, Capabilities>>;
+
+  // extendResource<Cap extends ResourceCapability<string, SolidResource>>(
+  //   capability: Cap["capability"],
+  //   namespace: Cap["namespace"],
+  // ): SolidConnectedPlugin<[...Capabilities, Cap]>;
 }
 
-function getResource(
-  uri: SolidLeafUri,
-  context: ConnectedContext<SolidConnectedPlugin[]>,
-): SolidLeaf;
-function getResource(
-  uri: SolidContainerUri,
-  context: ConnectedContext<SolidConnectedPlugin[]>,
-): SolidContainer;
-function getResource(
-  uri: SolidLeafUri | SolidContainerUri,
-  context: ConnectedContext<SolidConnectedPlugin[]>,
-): SolidLeaf | SolidContainer {
-  if (isSolidContainerUri(uri)) {
-    return new SolidContainer(uri, context);
-  } else {
-    return new SolidLeaf(uri, context);
+function getResourceFactory<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, Resource<any>>[],
+>(capabilities: Capabilities) {
+  function getResource(
+    uri: SolidLeafUri,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
+  ): UnwrapExtension<ApplyCapabilities<SolidLeaf, Capabilities>, SolidLeaf>;
+  function getResource<
+    Capabilities extends ResourceCapability<string, Resource>[],
+  >(
+    uri: SolidContainerUri,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
+  ): UnwrapExtension<
+    ApplyCapabilities<SolidContainer, Capabilities>,
+    SolidContainer
+  >;
+  function getResource<
+    Capabilities extends ResourceCapability<string, Resource>[],
+  >(
+    uri: SolidLeafUri | SolidContainerUri,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
+  ): ApplyCapabilities<SolidLeaf | SolidContainer, Capabilities> {
+    if (isSolidContainerUri(uri)) {
+      return applyCapabilities(
+        new SolidContainer(uri, context),
+        capabilities,
+      ) as unknown as ApplyCapabilities<SolidContainer, Capabilities>;
+    } else {
+      return applyCapabilities(
+        new SolidLeaf(uri, context),
+        capabilities,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as unknown as ApplyCapabilities<SolidLeaf, Capabilities>;
+    }
   }
+
+  return getResource;
+}
+
+function applyCapabilities<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  R extends SolidResource,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Cs extends ResourceCapability<string, SolidResource>[],
+>(resource: R, capabilities: Cs): ApplyCapabilities<R, Cs> {
+  if (capabilities.length === 0) return resource as ApplyCapabilities<R, Cs>;
+
+  const [capability, ...otherCapabilities] = capabilities;
+
+  const applied = applyCapabilities(
+    Object.assign(resource, {
+      [capability.namespace]: capability.capability(resource),
+    }),
+    otherCapabilities,
+  );
+
+  return applied as ApplyCapabilities<R, Cs>;
+
+  // return {} as unknown as ApplyCapabilities<R, Cs>;
 }
 
 /**
@@ -61,12 +142,19 @@ function getResource(
  * ]);
  * ```
  */
-export const solidConnectedPlugin: SolidConnectedPlugin = {
+const createSolidConnectedPlugin = <
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, Resource<any>>[],
+>(
+  capabilities: Capabilities = [] as unknown as Capabilities,
+): SolidConnectedPlugin<Capabilities> => ({
   name: "solid",
 
-  getResource,
+  getResource: getResourceFactory(
+    capabilities,
+  ) as SolidConnectedPlugin<Capabilities>["getResource"],
 
-  createResource: function (): Promise<SolidLeaf> {
+  createResource: function () {
     throw new Error("Function not implemented.");
   },
 
@@ -87,4 +175,19 @@ export const solidConnectedPlugin: SolidConnectedPlugin = {
     url.search = "";
     return url.toString() as SolidUri;
   },
-};
+
+  extendResource(capability, namespace) {
+    return createSolidConnectedPlugin([
+      ...capabilities,
+      { capability, namespace },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ]) as any /*SolidConnectedPlugin<
+      [
+        ...Capabilities,
+        { capability: typeof capability; namespace: typeof namespace },
+      ]
+    >*/;
+  },
+});
+
+export const solidConnectedPlugin = createSolidConnectedPlugin();
