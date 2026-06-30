@@ -4,14 +4,14 @@ import type { SolidConnectedPlugin } from "@ldo/connected-solid";
 import { createSolidLdoDataset, guaranteeFetch } from "@ldo/connected-solid";
 
 export interface Options {
-  solidLdoDataset?: IConnectedLdoDataset<SolidConnectedPlugin[]>;
+  solidLdoDataset?: IConnectedLdoDataset<SolidConnectedPlugin<any[]>[]>;
   fetch?: typeof fetch;
 }
 
 export function guaranteeOptions(options?: Options) {
   const fetch = guaranteeFetch(options?.fetch);
   const dataset = (options?.solidLdoDataset ??
-    createSolidLdoDataset()) as ConnectedLdoDataset<SolidConnectedPlugin[]>;
+    createSolidLdoDataset()) as ReturnType<typeof createSolidLdoDataset>;
   dataset.setContext("solid", { fetch });
   return { fetch, dataset };
 }

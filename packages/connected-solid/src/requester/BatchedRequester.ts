@@ -1,5 +1,5 @@
 import { ANY_KEY, RequestBatcher } from "../util/RequestBatcher";
-import type { ConnectedContext } from "@ldo/connected";
+import type { ConnectedContext, ResourceCapability } from "@ldo/connected";
 import type {
   ContainerCreateAndOverwriteResult,
   ContainerCreateIfAbsentResult,
@@ -29,7 +29,9 @@ const DELETE_KEY = "delete";
  * A singleton for handling batched requests
  */
 export abstract class BatchedRequester<
-  ResourceType extends SolidContainer | SolidLeaf,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+  ResourceType extends SolidContainer<Capabilities> | SolidLeaf<Capabilities>,
 > {
   /**
    * @internal
@@ -46,12 +48,12 @@ export abstract class BatchedRequester<
    * @internal
    * ConnectedContext for the parent Dataset
    */
-  protected context: ConnectedContext<SolidConnectedPlugin[]>;
+  protected context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>;
 
   /**
    * @param context - SolidLdoDatasetContext for the parent SolidLdoDataset
    */
-  constructor(context: ConnectedContext<SolidConnectedPlugin[]>) {
+  constructor(context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>) {
     this.context = context;
   }
 
@@ -143,25 +145,31 @@ export abstract class BatchedRequester<
    */
   createDataResource(
     overwrite: true,
-  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult>;
+  ): Promise<
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+  >;
   createDataResource(
     overwrite?: false,
-  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult>;
+  ): Promise<
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+  >;
   createDataResource(
     overwrite?: boolean,
   ): Promise<
-    | ContainerCreateAndOverwriteResult
-    | LeafCreateAndOverwriteResult
-    | ContainerCreateIfAbsentResult
-    | LeafCreateIfAbsentResult
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
   >;
   async createDataResource(
     overwrite?: boolean,
   ): Promise<
-    | ContainerCreateAndOverwriteResult
-    | LeafCreateAndOverwriteResult
-    | ContainerCreateIfAbsentResult
-    | LeafCreateIfAbsentResult
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
   > {
     const transaction = this.context.dataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
@@ -198,6 +206,7 @@ export abstract class BatchedRequester<
         }
       },
     });
-    return result;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return result as any;
   }
 }

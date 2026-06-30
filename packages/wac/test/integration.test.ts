@@ -1,15 +1,8 @@
+import { createConnectedLdoDataset } from "@ldo/connected";
 import {
-  type GetResourceReturnType,
-  createConnectedLdoDataset,
-} from "@ldo/connected";
-import {
-  type GetWacRuleSuccess,
-  type SolidContainer,
   type SolidContainerUri,
-  type SolidLeaf,
   type SolidLeafUri,
   solidConnectedPlugin,
-  type NoncompliantPodError,
   type WacRule,
 } from "@ldo/connected-solid";
 import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
@@ -541,5 +534,7 @@ describe("Web Access Control resource capability", () => {
     console.log(await parent.wac.getWac());
 
     const grandparent = await parent.getParentContainer();
+    assert(!grandparent?.isError);
+    grandparent?.wac.getWac();
   });
 });

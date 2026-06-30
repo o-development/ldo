@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UnexpectedResourceError } from "@ldo/connected";
 import LinkHeader from "http-link-header";
 import type { SolidLeafUri } from "../../types";
@@ -14,14 +15,14 @@ import type { SolidContainer } from "../../resources/SolidContainer.js";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 
 export type GetStorageDescriptionUriError<
-  ResourceType extends SolidContainer | SolidLeaf,
+  ResourceType extends SolidContainer<any[]> | SolidLeaf<any[]>,
 > =
   | HttpErrorResultType<ResourceType>
   | NotFoundHttpError<ResourceType>
   | NoncompliantPodError<ResourceType>
   | UnexpectedResourceError<ResourceType>;
 export type GetStorageDescriptionUriResult<
-  ResourceType extends SolidContainer | SolidLeaf,
+  ResourceType extends SolidContainer<any[]> | SolidLeaf<any[]>,
 > =
   | GetStorageDescriptionUriSuccess
   | GetStorageDescriptionUriError<ResourceType>;
@@ -37,9 +38,11 @@ export type GetStorageDescriptionUriResult<
  * https://solidproject.org/TR/protocol#server-storage-description
  */
 export async function getStorageDescriptionUri(
-  resource: SolidLeaf | SolidContainer,
+  resource: SolidLeaf<any[]> | SolidContainer<any[]>,
   options?: BasicRequestOptions,
-): Promise<GetStorageDescriptionUriResult<SolidLeaf | SolidContainer>> {
+): Promise<
+  GetStorageDescriptionUriResult<SolidLeaf<any[]> | SolidContainer<any[]>>
+> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
     const response = await fetch(resource.uri, { method: "HEAD" });

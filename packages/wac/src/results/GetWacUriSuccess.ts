@@ -9,7 +9,7 @@ import type {
  * Returned when the URI for a resources ACL document was successfully retried
  */
 export class GetWacUriSuccess<
-  ResourceType extends SolidContainer | SolidLeaf,
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
 > extends ResourceSuccess<ResourceType> {
   type = "getWacUriSuccess" as const;
   /**

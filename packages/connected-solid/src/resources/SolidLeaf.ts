@@ -43,7 +43,7 @@ import type { SolidContainer } from "./SolidContainer";
 export class SolidLeaf<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Capabilities extends ResourceCapability<string, any>[],
-> extends SolidResource {
+> extends SolidResource<Capabilities> {
   /**
    * The URI of the leaf
    */
@@ -53,7 +53,7 @@ export class SolidLeaf<
    * @internal
    * Batched Requester for the Leaf
    */
-  protected requester: LeafBatchedRequester;
+  protected requester: LeafBatchedRequester<Capabilities>;
 
   /**
    * Indicates that this resource is a leaf resource
@@ -71,8 +71,8 @@ export class SolidLeaf<
   status:
     | SharedStatuses<SolidLeaf<Capabilities>>
     | ReadLeafResult
-    | LeafCreateAndOverwriteResult
-    | LeafCreateIfAbsentResult
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
     | UpdateResult<SolidLeaf<Capabilities>>;
 
   /**
@@ -339,7 +339,7 @@ export class SolidLeaf<
    * ```
    */
   async getRootContainerByTraversal(): Promise<
-    | SolidContainer<Capabilities>
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
     | CheckRootResultError
     | NoRootContainerError<SolidContainer<Capabilities>>
   > {
@@ -414,11 +414,19 @@ export class SolidLeaf<
    * }
    * ```
    */
-  async createAndOverwrite(): Promise<LeafCreateAndOverwriteResult> {
+  async createAndOverwrite(): Promise<
+    LeafCreateAndOverwriteResult<Capabilities>
+  > {
     const createResult =
-      (await this.handleCreateAndOverwrite()) as LeafCreateAndOverwriteResult;
+      (await this.handleCreateAndOverwrite()) as LeafCreateAndOverwriteResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    return {
+      ...createResult,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -433,11 +441,17 @@ export class SolidLeaf<
    * }
    * ```
    */
-  async createIfAbsent(): Promise<LeafCreateIfAbsentResult> {
+  async createIfAbsent(): Promise<LeafCreateIfAbsentResult<Capabilities>> {
     const createResult =
-      (await this.handleCreateIfAbsent()) as LeafCreateIfAbsentResult;
+      (await this.handleCreateIfAbsent()) as LeafCreateIfAbsentResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    return {
+      ...createResult,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -468,7 +482,7 @@ export class SolidLeaf<
   async uploadAndOverwrite(
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateAndOverwriteResult> {
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>> {
     const result = await this.requester.upload(blob, mimeType, true);
     this.status = result;
     if (result.isError) {
@@ -478,7 +492,13 @@ export class SolidLeaf<
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
-    return { ...result, resource: this };
+    return {
+      ...result,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -503,7 +523,7 @@ export class SolidLeaf<
   async uploadIfAbsent(
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateIfAbsentResult> {
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>> {
     const result = await this.requester.upload(blob, mimeType);
     this.status = result;
     if (result.isError) {
@@ -513,7 +533,13 @@ export class SolidLeaf<
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
-    return { ...result, resource: this };
+    return {
+      ...result,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**

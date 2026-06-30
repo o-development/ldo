@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { BasicRequestOptions } from "./requestOptions";
 import LinkHeader from "http-link-header";
 import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
@@ -19,9 +20,9 @@ export type CheckRootResult = CheckRootContainerSuccess | CheckRootResultError;
  * All possible errors checkRootResult can return
  */
 export type CheckRootResultError =
-  | HttpErrorResultType<SolidContainer>
-  | UnexpectedHttpError<SolidContainer>
-  | UnexpectedResourceError<SolidContainer>;
+  | HttpErrorResultType<SolidContainer<any[]>>
+  | UnexpectedHttpError<SolidContainer<any[]>>
+  | UnexpectedResourceError<SolidContainer<any[]>>;
 
 /**
  * @internal
@@ -33,7 +34,7 @@ export type CheckRootResultError =
  * @returns CheckRootContainerSuccess if there is not error
  */
 export function checkHeadersForRootContainer(
-  resource: SolidContainer,
+  resource: SolidContainer<any[]>,
   headers: Headers,
 ): CheckRootContainerSuccess {
   const linkHeader = headers.get("link");
@@ -59,7 +60,7 @@ export function checkHeadersForRootContainer(
  * @returns CheckResourceSuccess if there is no error
  */
 export async function checkRootContainer(
-  resource: SolidContainer,
+  resource: SolidContainer<any[]>,
   options?: BasicRequestOptions,
 ): Promise<CheckRootResult> {
   try {

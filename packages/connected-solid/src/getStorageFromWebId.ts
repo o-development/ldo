@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type {
+  ConnectedLdoDataset,
+  ConnectedPlugin,
+  ResourceCapability,
+} from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "./types";
 import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
 import type { CheckRootResultError } from "./requester/requests/checkRootContainer";
@@ -28,16 +32,20 @@ import { ProfileWithStorageShapeType } from "./_ldo/solid.shapeTypes";
  * console.log(result.storageContainer[0].uri);
  * ```
  */
-export async function getStorageFromWebId(
+export async function getStorageFromWebId<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
   webId: SolidLeafUri,
-  dataset: ConnectedLdoDataset<(SolidConnectedPlugin | ConnectedPlugin)[]>,
+  dataset: ConnectedLdoDataset<
+    (SolidConnectedPlugin<Capabilities> | ConnectedPlugin)[]
+  >,
 ): Promise<
-  | GetStorageContainerFromWebIdSuccess
+  | GetStorageContainerFromWebIdSuccess<Capabilities>
   | CheckRootResultError
-  | ReadResultError<SolidLeaf | SolidContainer>
-  | NoRootContainerError<SolidContainer>
+  | ReadResultError<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
+  | NoRootContainerError<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
 > {
-  const webIdResource = dataset.getResource(webId) as SolidLeaf;
+  const webIdResource = dataset.getResource(webId) as SolidLeaf<Capabilities>;
   const readResult = await webIdResource.readIfUnfetched();
   if (readResult.isError) return readResult;
   const profile = dataset
@@ -48,7 +56,7 @@ export async function getStorageFromWebId(
       .map((storageNode) =>
         dataset.getResource(storageNode["@id"] as SolidContainerUri),
       )
-      .filter((container): container is SolidContainer => {
+      .filter((container): container is SolidContainer<Capabilities> => {
         return container.type === "SolidContainer";
       });
 

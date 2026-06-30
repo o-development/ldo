@@ -15,18 +15,23 @@ import {
 } from "@ldo/connected-solid";
 import type { UnexpectedResourceError } from "@ldo/connected";
 
-export type GetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
+export type GetWacRuleError<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> =
   | HttpErrorResultType<ResourceType>
   | NoncompliantPodError<ResourceType>
   | UnexpectedResourceError<ResourceType>;
 
-export type GetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
+export type GetWacRuleResult<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> =
   | GetWacRuleSuccess<ResourceType>
   | GetWacRuleError<ResourceType>
   | WacRuleAbsent<ResourceType>;
 
-type GetWacRuleOptions<ResourceType extends SolidContainer | SolidLeaf> =
-  ResourceType extends SolidContainer ? { inheritable?: boolean } : never;
+type GetWacRuleOptions<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> = ResourceType extends SolidContainer<[]> ? { inheritable?: boolean } : never;
 
 /**
  * Given the URI of an ACL document, return the Web Access Control (WAC) rules
@@ -36,24 +41,26 @@ type GetWacRuleOptions<ResourceType extends SolidContainer | SolidLeaf> =
  */
 export async function getWacRuleWithAclUri(
   aclUri: string,
-  resource: SolidContainer,
-  options?: BasicRequestOptions & GetWacRuleOptions<SolidContainer>,
-): Promise<GetWacRuleResult<SolidContainer>>;
+  resource: SolidContainer<[]>,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidContainer<[]>>,
+): Promise<GetWacRuleResult<SolidContainer<[]>>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
-  resource: SolidLeaf,
-  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf>,
-): Promise<GetWacRuleResult<SolidLeaf>>;
+  resource: SolidLeaf<[]>,
+  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf<[]>>,
+): Promise<GetWacRuleResult<SolidLeaf<[]>>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
-  resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
-): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>>;
+  resource: SolidLeaf<[]> | SolidContainer<[]>,
+  options?: BasicRequestOptions &
+    GetWacRuleOptions<SolidLeaf<[]> | SolidContainer<[]>>,
+): Promise<GetWacRuleResult<SolidLeaf<[]> | SolidContainer<[]>>>;
 export async function getWacRuleWithAclUri(
   aclUri: string,
-  resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions & GetWacRuleOptions<SolidLeaf | SolidContainer>,
-): Promise<GetWacRuleResult<SolidLeaf | SolidContainer>> {
+  resource: SolidLeaf<[]> | SolidContainer<[]>,
+  options?: BasicRequestOptions &
+    GetWacRuleOptions<SolidLeaf<[]> | SolidContainer<[]>>,
+): Promise<GetWacRuleResult<SolidLeaf<[]> | SolidContainer<[]>>> {
   const fetch = guaranteeFetch(options?.fetch);
   const response = await fetch(aclUri);
   const errorResult = HttpErrorResult.checkResponse(resource, response);

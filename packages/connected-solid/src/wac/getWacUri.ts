@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   HttpErrorResult,
   NotFoundHttpError,
@@ -13,14 +14,16 @@ import type { BasicRequestOptions } from "../requester/requests/requestOptions";
 import { guaranteeFetch } from "../util/guaranteeFetch";
 import type { SolidLeafUri } from "../types";
 
-export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
+export type GetWacUriError<
+  ResourceType extends SolidContainer<any[]> | SolidLeaf<any[]>,
+> =
   | HttpErrorResultType<ResourceType>
   | NotFoundHttpError<ResourceType>
   | NoncompliantPodError<ResourceType>
   | UnexpectedResourceError<ResourceType>;
-export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
-  | GetWacUriSuccess<ResourceType>
-  | GetWacUriError<ResourceType>;
+export type GetWacUriResult<
+  ResourceType extends SolidContainer<any[]> | SolidLeaf<any[]>,
+> = GetWacUriSuccess<ResourceType> | GetWacUriError<ResourceType>;
 
 /**
  * Get the URI for the WAC rules of a specific resource
@@ -29,9 +32,9 @@ export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
  * @returns GetWacUriResult
  */
 export async function getWacUri(
-  resource: SolidLeaf | SolidContainer,
+  resource: SolidLeaf<any[]> | SolidContainer<any[]>,
   options?: BasicRequestOptions,
-): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
+): Promise<GetWacUriResult<SolidLeaf<any[]> | SolidContainer<any[]>>> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
     const response = await fetch(resource.uri, {

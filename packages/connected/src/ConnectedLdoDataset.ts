@@ -149,8 +149,6 @@ export class ConnectedLdoDataset<
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(uri: UriType, pluginName?: Name): GetResourceReturnType<Plugin, UriType> {
-    console.log("GETTING RESOURCE");
-
     const plugin = this.getValidPlugin(uri, pluginName);
     if (!plugin) return new InvalidIdentifierResource(uri) as any;
     const normalizedUri = plugin.normalizeUri?.(uri) ?? uri;

@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type {
+  ApplyCapabilities,
+  ConnectedLdoDataset,
+  ConnectedPlugin,
+  ResourceCapability,
+} from "@ldo/connected";
 import type {
   SolidConnectedPlugin,
   SolidContainer,
@@ -13,8 +18,12 @@ import type { UseResourceOptions, createUseResource } from "@ldo/react";
  *
  * Creates a useRootContainerFor function
  */
-export function createUseRootContainerFor(
-  dataset: ConnectedLdoDataset<SolidConnectedPlugin[]>,
+export function createUseRootContainerFor<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dataset: ConnectedLdoDataset<SolidConnectedPlugin<Capabilities>[]>,
   useResource: ReturnType<typeof createUseResource<ConnectedPlugin[]>>,
 ) {
   /**
@@ -23,7 +32,7 @@ export function createUseRootContainerFor(
   return function useRootContainerFor(
     uri?: SolidContainerUri | SolidLeafUri,
     options?: UseResourceOptions<"solid">,
-  ): SolidContainer | undefined {
+  ): ApplyCapabilities<SolidContainer<Capabilities>, Capabilities> | undefined {
     const [rootContainerUri, setRootContainerUri] = useState<
       SolidContainerUri | undefined
     >(undefined);
@@ -41,6 +50,8 @@ export function createUseRootContainerFor(
       }
     }, [uri]);
 
-    return useResource(rootContainerUri, options) as SolidContainer | undefined;
+    return useResource(rootContainerUri, options) as
+      | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+      | undefined;
   };
 }

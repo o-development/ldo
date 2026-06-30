@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SubscriptionClient } from "@solid-notifications/subscription";
 import { WebSocket } from "ws";
 import {
@@ -25,7 +26,7 @@ const CHANNEL_TYPE =
  * An implementation of the Websocket2023 notifiction spec
  */
 export class Websocket2023NotificationSubscription extends NotificationSubscription<
-  SolidConnectedPlugin,
+  SolidConnectedPlugin<any[]>,
   SolidNotificationMessage
 > {
   private socket: WebSocket | undefined;
@@ -42,9 +43,9 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
   private maxReconnectAttempts = 6;
 
   constructor(
-    resource: SolidLeaf | SolidContainer,
+    resource: SolidLeaf<any[]> | SolidContainer<any[]>,
     parentSubscription: (message: SolidNotificationMessage) => void,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    context: ConnectedContext<SolidConnectedPlugin<any[]>[]>,
     createWebsocket?: (address: string) => WebSocket,
   ) {
     super(resource, parentSubscription, context);

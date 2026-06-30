@@ -1,9 +1,7 @@
 import type {
-  ApplyCapability,
   ConnectedContext,
   ConnectedPlugin,
   Resource,
-  UnwrapExtension,
 } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri, SolidUri } from "./types";
 import { SolidLeaf } from "./resources/SolidLeaf";
@@ -12,7 +10,6 @@ import { isSolidContainerUri, isSolidUri } from "./util/isSolidUri";
 import type { ResourceCapability } from "@ldo/connected";
 import type { SolidResource } from "./resources/SolidResource.js";
 import type { ApplyCapabilities } from "@ldo/connected";
-import { wacResourceCapability } from "@ldo/wac";
 
 /**
  * The Type of the SolidConnectedContext
@@ -21,7 +18,8 @@ export interface SolidConnectedContext {
   fetch?: typeof fetch;
 }
 export interface SolidConnectedPlugin<
-  Capabilities extends ResourceCapability<string, SolidResource>[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, SolidResource<any[]>>[],
 > extends ConnectedPlugin<
     "solid",
     SolidUri,
@@ -118,9 +116,9 @@ function getResourceFactory<
 
 function applyCapabilities<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  R extends SolidResource,
+  R extends SolidResource<Cs>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Cs extends ResourceCapability<string, SolidResource>[],
+  Cs extends ResourceCapability<string, SolidResource<Cs>>[],
 >(resource: R, capabilities: Cs): ApplyCapabilities<R, Cs> {
   if (capabilities.length === 0) return resource as ApplyCapabilities<R, Cs>;
 
@@ -134,8 +132,6 @@ function applyCapabilities<
   );
 
   return applied as ApplyCapabilities<R, Cs>;
-
-  // return {} as unknown as ApplyCapabilities<R, Cs>;
 }
 
 /**
@@ -201,21 +197,3 @@ const createSolidConnectedPlugin = <
 });
 
 export const solidConnectedPlugin = createSolidConnectedPlugin([] as []);
-
-const plugin = solidConnectedPlugin.extendResource(
-  wacResourceCapability,
-  "wac",
-);
-
-type P = typeof plugin;
-
-type T = ReturnType<typeof plugin.getResource>;
-
-interface WacCapability {
-  namespace: "www";
-  capability: typeof wacResourceCapability;
-}
-
-type RC = ApplyCapabilities<SolidLeaf<[WacCapability]>, [WacCapability]>;
-
-type T1 = [...[], [1, 2, 3]];

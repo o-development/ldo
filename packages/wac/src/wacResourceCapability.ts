@@ -23,7 +23,8 @@ import type { ApplyCapabilities } from "@ldo/connected";
 //   },
 // };
 
-export const wacResourceCapability = function (resource: SolidResource) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const wacResourceCapability = function (resource: SolidResource<any[]>) {
   return new WacNamespaceImpl(resource);
 };
 

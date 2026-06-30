@@ -18,12 +18,12 @@ import {
   type SolidLeaf,
 } from "@ldo/connected-solid";
 
-export type SetWacRuleError<ResourceType extends SolidContainer | SolidLeaf> =
-  | HttpErrorResultType<ResourceType>
-  | UnexpectedResourceError<ResourceType>;
-export type SetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
-  | SetWacRuleSuccess<ResourceType>
-  | SetWacRuleError<ResourceType>;
+export type SetWacRuleError<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> = HttpErrorResultType<ResourceType> | UnexpectedResourceError<ResourceType>;
+export type SetWacRuleResult<
+  ResourceType extends SolidContainer<[]> | SolidLeaf<[]>,
+> = SetWacRuleSuccess<ResourceType> | SetWacRuleError<ResourceType>;
 
 /**
  * Given the URI of an ACL document and some WAC rules, set the WAC rules of
@@ -37,27 +37,27 @@ export type SetWacRuleResult<ResourceType extends SolidContainer | SolidLeaf> =
 export async function setWacRuleForAclUri(
   aclUri: SolidLeafUri,
   newRule: WacRule,
-  resource: SolidContainer,
+  resource: SolidContainer<[]>,
   options?: BasicRequestOptions,
-): Promise<SetWacRuleResult<SolidContainer>>;
+): Promise<SetWacRuleResult<SolidContainer<[]>>>;
 export async function setWacRuleForAclUri(
   aclUri: SolidLeafUri,
   newRule: WacRule,
-  resource: SolidLeaf,
+  resource: SolidLeaf<[]>,
   options?: BasicRequestOptions,
-): Promise<SetWacRuleResult<SolidLeaf>>;
+): Promise<SetWacRuleResult<SolidLeaf<[]>>>;
 export async function setWacRuleForAclUri(
   aclUri: SolidLeafUri,
   newRule: WacRule,
-  resource: SolidContainer | SolidLeaf,
+  resource: SolidContainer<[]> | SolidLeaf<[]>,
   options?: BasicRequestOptions,
-): Promise<SetWacRuleResult<SolidContainer | SolidLeaf>>;
+): Promise<SetWacRuleResult<SolidContainer<[]> | SolidLeaf<[]>>>;
 export async function setWacRuleForAclUri(
   aclUri: SolidLeafUri,
   newRule: WacRule,
-  resource: SolidContainer | SolidLeaf,
+  resource: SolidContainer<[]> | SolidLeaf<[]>,
   options?: BasicRequestOptions,
-): Promise<SetWacRuleResult<SolidContainer | SolidLeaf>> {
+): Promise<SetWacRuleResult<SolidContainer<[]> | SolidLeaf<[]>>> {
   const fetch = guaranteeFetch(options?.fetch);
   // The rule map keeps track of all the rules that are currently being used
   // so that similar rules can be grouped together
