@@ -388,7 +388,7 @@ describe("Web Access Control resource capability", () => {
       expect(wacResult.type).toBe("serverError");
     });
 
-    it("Returns a non-compliant error if the root uri has no ACL", () => {});
+    it.todo("Returns a non-compliant error if the root uri has no ACL");
 
     it("Returns an error if the request to the ACL resource returns invalid turtle", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);

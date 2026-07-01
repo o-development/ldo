@@ -22,7 +22,7 @@ export async function createApp(
   }
   const appRunner = new AppRunner();
 
-  return appRunner.create({
+  return await appRunner.create({
     loaderProperties: {
       mainModulePath: resolveModulePath(""),
       typeChecking: false,

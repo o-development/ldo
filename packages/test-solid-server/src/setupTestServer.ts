@@ -52,6 +52,9 @@ export function setupServer(
     // Start up the server
     data.app = await createApp(port, customConfigPath);
     await data.app.start();
+    // because a CI error (Premature close), let's wait a little bit for the connection to be usable
+    if (process.env.CI === "true")
+      await new Promise((resolve) => setTimeout(resolve, 100));
     data.authFetch = skipAuthentication ? fetch : await generateAuthFetch(port);
   });
 
