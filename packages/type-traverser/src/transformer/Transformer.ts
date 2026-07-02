@@ -34,7 +34,6 @@ import { InstanceGraph } from "../instanceGraph/InstanceGraph";
 // but if I ever feel so inclined, I should fix this in the future.
 
 export class Transformer<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Types extends TraverserTypes<any>,
   InputReturnTypes extends TransformerInputReturnTypes<Types>,
   Context = undefined,
