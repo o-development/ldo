@@ -19,6 +19,7 @@ import { SolidResource } from "./SolidResource";
 import type { SolidLeafUri } from "../types";
 import type {
   ApplyCapabilities,
+  ExtractCapabilities,
   Resource,
   ResourceCapability,
   ResourceSuccess,

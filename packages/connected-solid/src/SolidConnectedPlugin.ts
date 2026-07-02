@@ -106,7 +106,6 @@ function getResourceFactory<
       return applyCapabilities(
         new SolidLeaf(uri, context),
         capabilities,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ) as unknown as ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>;
     }
   }
