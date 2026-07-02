@@ -26,7 +26,6 @@
   },
   "scripts": {
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
-    "dev": "vite --config dev/vite.config.ts --host 127.0.0.1",
     "test": "vitest run --coverage",
     "prepublishOnly": "npm run build",
     "build:ldo": "ldo build --input src/shapes --output src/ldo",
@@ -49,7 +48,7 @@
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
-    "remove-dist": "rimraf dist/",
+    "@types/react": "^18.3.29",
     "start-server-and-test": "^2.0.3",
     "whatwg-fetch": "^3.6.20"
   },
@@ -59,6 +58,9 @@
     "@ldo/react": "^1.0.0-alpha.50",
     "@uvdsl/solid-oidc-client-browser": "^0.2.2",
     "cross-fetch": "^3.1.6"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
   },
   "files": [
     "dist",

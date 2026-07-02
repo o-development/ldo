@@ -50,7 +50,9 @@
     "@ldo/ldo": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@ldo/solid-react": "^1.0.0-alpha.50",
-    "@rdfjs/types": "^1.0.1"
+    "@rdfjs/types": "^1.0.1",
+    "@types/shexj": "^2.1.7",
+    "uuid": "^14.0.0"
   },
   "files": [
     "dist",

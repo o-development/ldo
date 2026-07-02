@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { v4 } from "uuid";
 import { FOR_CLASS, RDF_TYPE, TYPE_REGISTRATION } from "./constants";
 import { guaranteeOptions, type Options } from "./util/Options";
 import { namedNode, quad } from "@ldo/rdf-utils";
@@ -19,11 +18,12 @@ import {
   TypeIndexDocumentShapeType,
   TypeRegistrationShapeType,
 } from "./_ldo/typeIndex.shapeTypes";
+import { v4 } from "uuid";
 
 /**
  * =============================================================================
  * INITIALIZERS
- * =============================================================================
+ * =============================================```================================
  */
 export async function initTypeIndex(
   webId: string,
