@@ -21,7 +21,7 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  *
  * @example
  * `methods.ts`
- * ```tyepscript
+ * ```typescript
  * import { solidConnectedPlugin } from "@ldo/connected-solid";
  * import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
  * import { createLdoReactMethods } from "@ldo/react";

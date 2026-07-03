@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { namedNode } from "@ldo/rdf-utils";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { deleteResourceRdfFromContainer } from "../../util/rdfUtils";
@@ -37,21 +38,21 @@ export type DeleteResultError<ResourceType extends Resource> =
  * @returns a DeleteResult
  */
 export async function deleteResource(
-  resource: SolidContainer,
+  resource: SolidContainer<any[]>,
   options?: DatasetRequestOptions,
-): Promise<DeleteResult<SolidContainer>>;
+): Promise<DeleteResult<SolidContainer<any[]>>>;
 export async function deleteResource(
-  resource: SolidLeaf,
+  resource: SolidLeaf<any[]>,
   options?: DatasetRequestOptions,
-): Promise<DeleteResult<SolidLeaf>>;
+): Promise<DeleteResult<SolidLeaf<any[]>>>;
 export async function deleteResource(
-  resource: SolidContainer | SolidLeaf,
+  resource: SolidContainer<any[]> | SolidLeaf<any[]>,
   options?: DatasetRequestOptions,
-): Promise<DeleteResult<SolidContainer | SolidLeaf>>;
+): Promise<DeleteResult<SolidContainer<any[]> | SolidLeaf<any[]>>>;
 export async function deleteResource(
-  resource: SolidContainer | SolidLeaf,
+  resource: SolidContainer<any[]> | SolidLeaf<any[]>,
   options?: DatasetRequestOptions,
-): Promise<DeleteResult<SolidContainer | SolidLeaf>> {
+): Promise<DeleteResult<SolidContainer<any[]> | SolidLeaf<any[]>>> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
     const response = await fetch(resource.uri, {

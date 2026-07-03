@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { guaranteeFetch } from "../../util/guaranteeFetch";
-import type { AbsentReadSuccess, Resource } from "@ldo/connected";
+import type {
+  AbsentReadSuccess,
+  ApplyCapabilities,
+  Resource,
+  ResourceCapability,
+} from "@ldo/connected";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
@@ -25,32 +30,40 @@ import {
 /**
  * All possible return values when creating and overwriting a container
  */
-export type ContainerCreateAndOverwriteResult =
-  | CreateSuccess<SolidContainer>
-  | CreateAndOverwriteResultErrors<SolidContainer>;
+export type ContainerCreateAndOverwriteResult<
+  Capabilities extends ResourceCapability<string, any>[],
+> =
+  | CreateSuccess<ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>>
+  | CreateAndOverwriteResultErrors<SolidContainer<any[]>>;
 
 /**
  * All possible return values when creating and overwriting a leaf
  */
-export type LeafCreateAndOverwriteResult =
-  | CreateSuccess<SolidLeaf>
-  | CreateAndOverwriteResultErrors<SolidLeaf>;
+export type LeafCreateAndOverwriteResult<
+  Capabilities extends ResourceCapability<string, any>[],
+> =
+  | CreateSuccess<ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>>
+  | CreateAndOverwriteResultErrors<SolidLeaf<Capabilities>>;
 
 /**
  * All possible return values when creating a container if absent
  */
-export type ContainerCreateIfAbsentResult =
-  | CreateSuccess<SolidContainer>
+export type ContainerCreateIfAbsentResult<
+  Capabilities extends ResourceCapability<string, any>[],
+> =
+  | CreateSuccess<ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>>
   | Exclude<ReadContainerResult, AbsentReadSuccess<any>>
-  | CreateIfAbsentResultErrors<SolidContainer>;
+  | CreateIfAbsentResultErrors<SolidContainer<any[]>>;
 
 /**
  * All possible return values when creating a leaf if absent
  */
-export type LeafCreateIfAbsentResult =
-  | CreateSuccess<SolidLeaf>
+export type LeafCreateIfAbsentResult<
+  Capabilities extends ResourceCapability<string, any>[],
+> =
+  | CreateSuccess<ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>>
   | Exclude<ReadLeafResult, AbsentReadSuccess<any>>
-  | CreateIfAbsentResultErrors<SolidLeaf>;
+  | CreateIfAbsentResultErrors<SolidLeaf<any[]>>;
 
 /**
  * All possible errors returned by creating and overwriting a resource
@@ -85,65 +98,97 @@ export type CreateErrors<ResourceType extends Resource> =
  * update.
  * @returns One of many create results depending on the input
  */
-export function createDataResource(
-  resource: SolidLeaf,
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   overwrite: true,
   options?: DatasetRequestOptions,
-): Promise<ContainerCreateAndOverwriteResult>;
-export function createDataResource(
-  resouce: SolidLeaf,
+): Promise<ContainerCreateAndOverwriteResult<Capabilities>>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   overwrite: true,
   options?: DatasetRequestOptions,
-): Promise<LeafCreateAndOverwriteResult>;
-export function createDataResource(
-  resouce: SolidContainer,
+): Promise<LeafCreateAndOverwriteResult<Capabilities>>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities>,
   overwrite?: false,
   options?: DatasetRequestOptions,
-): Promise<ContainerCreateIfAbsentResult>;
-export function createDataResource(
-  resouce: SolidLeaf,
+): Promise<ContainerCreateIfAbsentResult<Capabilities>>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   overwrite?: false,
   options?: DatasetRequestOptions,
-): Promise<LeafCreateIfAbsentResult>;
-export function createDataResource(
-  resouce: SolidContainer,
-  overwrite?: boolean,
-  options?: DatasetRequestOptions,
-): Promise<ContainerCreateIfAbsentResult | ContainerCreateAndOverwriteResult>;
-export function createDataResource(
-  resouce: SolidLeaf,
-  overwrite?: boolean,
-  options?: DatasetRequestOptions,
-): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult>;
-export function createDataResource(
-  resource: SolidContainer | SolidLeaf,
-  overwrite: true,
-  options?: DatasetRequestOptions,
-): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult>;
-export function createDataResource(
-  resource: SolidContainer | SolidLeaf,
-  overwrite?: false,
-  options?: DatasetRequestOptions,
-): Promise<LeafCreateIfAbsentResult | LeafCreateIfAbsentResult>;
-export function createDataResource(
-  resource: SolidContainer | SolidLeaf,
+): Promise<LeafCreateIfAbsentResult<Capabilities>>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities>,
   overwrite?: boolean,
   options?: DatasetRequestOptions,
 ): Promise<
-  | ContainerCreateAndOverwriteResult
-  | LeafCreateAndOverwriteResult
-  | ContainerCreateIfAbsentResult
-  | LeafCreateIfAbsentResult
+  | ContainerCreateIfAbsentResult<Capabilities>
+  | ContainerCreateAndOverwriteResult<Capabilities>
 >;
-export async function createDataResource(
-  resource: SolidContainer | SolidLeaf,
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   overwrite?: boolean,
   options?: DatasetRequestOptions,
 ): Promise<
-  | ContainerCreateAndOverwriteResult
-  | LeafCreateAndOverwriteResult
-  | ContainerCreateIfAbsentResult
-  | LeafCreateIfAbsentResult
+  | LeafCreateIfAbsentResult<Capabilities>
+  | LeafCreateAndOverwriteResult<Capabilities>
+>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities> | SolidLeaf<Capabilities>,
+  overwrite: true,
+  options?: DatasetRequestOptions,
+): Promise<
+  | ContainerCreateAndOverwriteResult<Capabilities>
+  | LeafCreateAndOverwriteResult<Capabilities>
+>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities> | SolidLeaf<Capabilities>,
+  overwrite?: false,
+  options?: DatasetRequestOptions,
+): Promise<
+  | LeafCreateIfAbsentResult<Capabilities>
+  | LeafCreateIfAbsentResult<Capabilities>
+>;
+export function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities> | SolidLeaf<Capabilities>,
+  overwrite?: boolean,
+  options?: DatasetRequestOptions,
+): Promise<
+  | ContainerCreateAndOverwriteResult<Capabilities>
+  | LeafCreateAndOverwriteResult<Capabilities>
+  | ContainerCreateIfAbsentResult<Capabilities>
+  | LeafCreateIfAbsentResult<Capabilities>
+>;
+export async function createDataResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities> | SolidLeaf<Capabilities>,
+  overwrite?: boolean,
+  options?: DatasetRequestOptions,
+): Promise<
+  | ContainerCreateAndOverwriteResult<Capabilities>
+  | LeafCreateAndOverwriteResult<Capabilities>
+  | ContainerCreateIfAbsentResult<Capabilities>
+  | LeafCreateIfAbsentResult<Capabilities>
 > {
   try {
     const fetch = guaranteeFetch(options?.fetch);
@@ -153,8 +198,8 @@ export async function createDataResource(
       // Return if it wasn't deleted
       if (deleteResult.isError)
         return deleteResult as
-          | DeleteResultError<SolidLeaf>
-          | DeleteResultError<SolidContainer>;
+          | DeleteResultError<SolidLeaf<Capabilities>>
+          | DeleteResultError<SolidContainer<Capabilities>>;
       didOverwrite = deleteResult.resourceExisted;
     } else {
       // Perform a read to check if it exists
@@ -182,18 +227,20 @@ export async function createDataResource(
     const httpError = HttpErrorResult.checkResponse(resource, response);
     if (httpError)
       return httpError as
-        | HttpErrorResultType<SolidContainer>
-        | HttpErrorResultType<SolidLeaf>;
+        | HttpErrorResultType<SolidContainer<any[]>>
+        | HttpErrorResultType<SolidLeaf<any[]>>;
 
     if (options?.dataset) {
       addResourceRdfToContainer(resource.uri, options.dataset);
     }
     return new CreateSuccess(resource, didOverwrite) as
-      | CreateSuccess<SolidLeaf>
-      | CreateSuccess<SolidContainer>;
+      | CreateSuccess<ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>>
+      | CreateSuccess<
+          ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+        >;
   } catch (err) {
     return UnexpectedResourceError.fromThrown(resource, err) as
-      | UnexpectedResourceError<SolidContainer>
-      | UnexpectedResourceError<SolidLeaf>;
+      | UnexpectedResourceError<SolidContainer<any[]>>
+      | UnexpectedResourceError<SolidLeaf<any[]>>;
   }
 }

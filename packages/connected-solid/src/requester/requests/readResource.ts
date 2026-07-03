@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { UnexpectedHttpError } from "../results/error/HttpErrorResult";
 import {
   HttpErrorResult,
@@ -11,7 +12,7 @@ import {
 import { ContainerReadSuccess } from "../results/success/SolidReadSuccess";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
-import type { Resource } from "@ldo/connected";
+import type { Resource, ResourceCapability } from "@ldo/connected";
 import { UnexpectedResourceError, AbsentReadSuccess } from "@ldo/connected";
 import { checkHeadersForRootContainer } from "./checkRootContainer";
 import { namedNode } from "@ldo/rdf-utils";
@@ -28,16 +29,16 @@ import {
 export type ReadLeafResult =
   | BinaryReadSuccess
   | DataReadSuccess
-  | AbsentReadSuccess<SolidLeaf>
-  | ReadResultError<SolidLeaf>;
+  | AbsentReadSuccess<SolidLeaf<any[]>>
+  | ReadResultError<SolidLeaf<any[]>>;
 
 /**
  * All possible return values for reading a container
  */
 export type ReadContainerResult =
-  | ContainerReadSuccess
-  | AbsentReadSuccess<SolidContainer>
-  | ReadResultError<SolidContainer>;
+  | ContainerReadSuccess<any[]>
+  | AbsentReadSuccess<SolidContainer<any[]>>
+  | ReadResultError<SolidContainer<any[]>>;
 
 /**
  * All possible errors the readResource function can return
@@ -57,20 +58,28 @@ export type ReadResultError<ResourceType extends Resource> =
  * update.
  * @returns ReadResult
  */
-export async function readResource(
-  resource: SolidLeaf,
+export async function readResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   options?: DatasetRequestOptions,
 ): Promise<ReadLeafResult>;
-export async function readResource(
-  resource: SolidContainer,
+export async function readResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities>,
   options?: DatasetRequestOptions,
 ): Promise<ReadContainerResult>;
-export async function readResource(
-  resource: SolidLeaf | SolidContainer,
+export async function readResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
   options?: DatasetRequestOptions,
 ): Promise<ReadLeafResult | ReadContainerResult>;
-export async function readResource(
-  resource: SolidLeaf | SolidContainer,
+export async function readResource<
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
   options?: DatasetRequestOptions,
 ): Promise<ReadLeafResult | ReadContainerResult> {
   try {
@@ -91,14 +100,14 @@ export async function readResource(
       }
 
       return new AbsentReadSuccess(resource, false) as
-        | AbsentReadSuccess<SolidLeaf>
-        | AbsentReadSuccess<SolidContainer>;
+        | AbsentReadSuccess<SolidLeaf<Capabilities>>
+        | AbsentReadSuccess<SolidContainer<Capabilities>>;
     }
     const httpErrorResult = HttpErrorResult.checkResponse(resource, response);
     if (httpErrorResult)
       return httpErrorResult as
-        | HttpErrorResultType<SolidLeaf>
-        | HttpErrorResultType<SolidContainer>;
+        | HttpErrorResultType<SolidLeaf<Capabilities>>
+        | HttpErrorResultType<SolidContainer<Capabilities>>;
 
     // Add this resource to the container
     if (options?.dataset) {
@@ -111,8 +120,8 @@ export async function readResource(
         resource,
         "Resource requests must return a content-type header.",
       ) as
-        | NoncompliantPodError<SolidContainer>
-        | NoncompliantPodError<SolidLeaf>;
+        | NoncompliantPodError<SolidContainer<Capabilities>>
+        | NoncompliantPodError<SolidLeaf<Capabilities>>;
     }
 
     if (contentType.startsWith("text/turtle")) {
@@ -126,8 +135,8 @@ export async function readResource(
         );
         if (result)
           return new NoncompliantPodError(resource, result.message) as
-            | NoncompliantPodError<SolidLeaf>
-            | NoncompliantPodError<SolidContainer>;
+            | NoncompliantPodError<SolidLeaf<Capabilities>>
+            | NoncompliantPodError<SolidContainer<Capabilities>>;
       }
       if (resource.type === "SolidContainer") {
         const result = checkHeadersForRootContainer(resource, response.headers);
@@ -137,12 +146,12 @@ export async function readResource(
           result.isRootContainer,
         );
       }
-      return new DataReadSuccess(resource as SolidLeaf, false);
+      return new DataReadSuccess(resource as SolidLeaf<Capabilities>, false);
     } else {
       // Load Blob
       const blob = await response.blob();
       return new BinaryReadSuccess(
-        resource as SolidLeaf,
+        resource as SolidLeaf<Capabilities>,
         false,
         blob,
         contentType,
@@ -150,7 +159,7 @@ export async function readResource(
     }
   } catch (err) {
     return UnexpectedResourceError.fromThrown(resource, err) as
-      | UnexpectedResourceError<SolidLeaf>
-      | UnexpectedResourceError<SolidContainer>;
+      | UnexpectedResourceError<SolidLeaf<Capabilities>>
+      | UnexpectedResourceError<SolidContainer<Capabilities>>;
   }
 }

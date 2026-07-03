@@ -7,7 +7,8 @@ import type { SolidLeaf } from "../../resources/SolidLeaf";
  * Returned when the URI for a resources ACL document was successfully retried
  */
 export class GetWacUriSuccess<
-  ResourceType extends SolidContainer | SolidLeaf,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ResourceType extends SolidContainer<any[]> | SolidLeaf<any[]>,
 > extends ResourceSuccess<ResourceType> {
   type = "getWacUriSuccess" as const;
   /**

@@ -1,4 +1,5 @@
-import type { ConnectedResult } from "@ldo/connected";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ConnectedResult, ResourceCapability } from "@ldo/connected";
 import { ReadSuccess, type Resource } from "@ldo/connected";
 import type { SolidLeaf } from "../../../resources/SolidLeaf";
 import type { SolidContainer } from "../../../resources/SolidContainer";
@@ -7,7 +8,8 @@ import type { SolidContainer } from "../../../resources/SolidContainer";
  * Indicates that the read request was successful and that the resource
  * retrieved was a binary resource.
  */
-export class BinaryReadSuccess extends ReadSuccess<SolidLeaf> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class BinaryReadSuccess extends ReadSuccess<SolidLeaf<any[]>> {
   type = "binaryReadSuccess" as const;
   /**
    * The raw data for the binary resource
@@ -19,7 +21,7 @@ export class BinaryReadSuccess extends ReadSuccess<SolidLeaf> {
   mimeType: string;
 
   constructor(
-    resource: SolidLeaf,
+    resource: SolidLeaf<any[]>,
     recalledFromMemory: boolean,
     blob: Blob,
     mimeType: string,
@@ -34,7 +36,7 @@ export class BinaryReadSuccess extends ReadSuccess<SolidLeaf> {
  * Indicates that the read request was successful and that the resource
  * retrieved was a data (RDF) resource.
  */
-export class DataReadSuccess extends ReadSuccess<SolidLeaf> {
+export class DataReadSuccess extends ReadSuccess<SolidLeaf<any[]>> {
   type = "dataReadSuccess" as const;
 }
 
@@ -42,7 +44,10 @@ export class DataReadSuccess extends ReadSuccess<SolidLeaf> {
  * Indicates that the read request was successful and that the resource
  * retrieved was a container resource.
  */
-export class ContainerReadSuccess extends ReadSuccess<SolidContainer> {
+export class ContainerReadSuccess<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends ReadSuccess<SolidContainer<Capabilities>> {
   type = "containerReadSuccess" as const;
   /**
    * True if this container is a root container
@@ -50,7 +55,7 @@ export class ContainerReadSuccess extends ReadSuccess<SolidContainer> {
   isRootContainer: boolean;
 
   constructor(
-    resource: SolidContainer,
+    resource: SolidContainer<Capabilities>,
     recalledFromMemory: boolean,
     isRootContainer: boolean,
   ) {

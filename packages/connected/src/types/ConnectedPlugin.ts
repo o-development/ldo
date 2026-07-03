@@ -2,6 +2,8 @@
 import type { ConnectedContext } from "./ConnectedContext";
 import type { Resource } from "../Resource";
 import type { ErrorResult } from "../results/error/ErrorResult";
+import type { Capability } from "../ResourceCapability.js";
+import type { ApplyCapability } from "./CapabilityUtils.js";
 
 /**
  * A ConnectedPlugin can be passed to a ConnectedDataset to allow it to connect
@@ -63,4 +65,19 @@ export interface ConnectedPlugin<
     resource: ResourceType;
     createResourceOptions: CreateResourceOptions;
   };
+
+  // extendResource<
+  //   C extends Capability<any>,
+  //   Namespace extends string,
+  //   NewContext,
+  // >(
+  //   capability: C,
+  //   namespace: Namespace,
+  // ): ConnectedPlugin<
+  //   Name,
+  //   UriType,
+  //   ApplyCapability<ResourceType, { capability: C; namespace: Namespace }>,
+  //   NewContext,
+  //   CreateResourceOptions
+  // >;
 }

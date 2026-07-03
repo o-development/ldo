@@ -7,7 +7,8 @@ import type { SolidContainer } from "../../resources/SolidContainer";
  * Returned when a WAC rule is successfully retrieved
  */
 export class GetWacRuleSuccess<
-  ResourceType extends SolidLeaf | SolidContainer,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ResourceType extends SolidLeaf<any[]> | SolidContainer<any[]>,
 > extends ResourceSuccess<ResourceType> {
   type = "getWacRuleSuccess" as const;
   /**

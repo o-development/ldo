@@ -29,7 +29,11 @@ import type {
   SolidContainerUri,
   SolidLeafSlug,
 } from "../types";
-import type { ReadSuccess } from "@ldo/connected";
+import type {
+  ApplyCapabilities,
+  ReadSuccess,
+  ResourceCapability,
+} from "@ldo/connected";
 import { AggregateSuccess, IgnoredInvalidUpdateSuccess } from "@ldo/connected";
 import {
   Unfetched,
@@ -51,7 +55,10 @@ import type { DatasetChanges } from "@ldo/rdf-utils";
  *   .getResource("https://example.com/container/");
  * ```
  */
-export class SolidContainer extends SolidResource {
+export class SolidContainer<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends SolidResource<Capabilities> {
   /**
    * The URI of the container
    */
@@ -61,7 +68,7 @@ export class SolidContainer extends SolidResource {
    * @internal
    * Batched Requester for the Container
    */
-  protected requester: ContainerBatchedRequester;
+  protected requester: ContainerBatchedRequester<Capabilities>;
 
   /**
    * @internal
@@ -85,8 +92,8 @@ export class SolidContainer extends SolidResource {
   status:
     | SharedStatuses<this>
     | ReadContainerResult
-    | ContainerCreateAndOverwriteResult
-    | ContainerCreateIfAbsentResult
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | ContainerCreateIfAbsentResult<Capabilities>
     | CheckRootResult;
 
   /**
@@ -95,7 +102,7 @@ export class SolidContainer extends SolidResource {
    */
   constructor(
     uri: SolidContainerUri,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
   ) {
     super(context);
     this.uri = uri;
@@ -135,11 +142,13 @@ export class SolidContainer extends SolidResource {
    * @param result - the result of the read success
    */
   protected updateWithReadSuccess(
-    result: ReadSuccess<this> | ContainerReadSuccess,
+    result: ReadSuccess<this> | ContainerReadSuccess<Capabilities>,
   ): void {
     super.updateWithReadSuccess(result);
     if (result.type === "containerReadSuccess") {
-      this.rootContainer = (result as ContainerReadSuccess).isRootContainer;
+      this.rootContainer = (
+        result as ContainerReadSuccess<Capabilities>
+      ).isRootContainer;
     }
   }
 
@@ -247,12 +256,19 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async getRootContainerByTraversal(): Promise<
-    SolidContainer | CheckRootResultError | NoRootContainerError<SolidContainer>
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+    | CheckRootResultError
+    | NoRootContainerError<SolidContainer<Capabilities>>
   > {
     const parentContainerResult = await this.getParentContainer();
     if (parentContainerResult?.isError) return parentContainerResult;
     if (!parentContainerResult) {
-      return this.isRootContainer() ? this : new NoRootContainerError(this);
+      return this.isRootContainer()
+        ? (this as ApplyCapabilities<
+            SolidContainer<Capabilities>,
+            Capabilities
+          >)
+        : new NoRootContainerError(this);
     }
     return parentContainerResult.getRootContainerByTraversal();
   }
@@ -279,7 +295,9 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async getParentContainer(): Promise<
-    SolidContainer | CheckRootResultError | undefined
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+    | CheckRootResultError
+    | undefined
   > {
     if (this.rootContainer === undefined) {
       const checkResult = await this.checkIfIsRootContainer();
@@ -307,7 +325,7 @@ export class SolidContainer extends SolidResource {
    * }
    * ```
    */
-  children(): (SolidContainer | SolidLeaf)[] {
+  children(): (SolidContainer<Capabilities> | SolidLeaf<Capabilities>)[] {
     const childQuads = this.context.dataset.match(
       namedNode(this.uri),
       ldpContains,
@@ -316,8 +334,8 @@ export class SolidContainer extends SolidResource {
     );
     return childQuads.toArray().map((childQuad) => {
       return this.context.dataset.getResource(childQuad.object.value) as
-        | SolidContainer
-        | SolidLeaf;
+        | SolidContainer<Capabilities>
+        | SolidLeaf<Capabilities>;
     });
   }
 
@@ -338,13 +356,13 @@ export class SolidContainer extends SolidResource {
    * console.log(resource.uri);
    * ```
    */
-  child(slug: SolidContainerSlug): SolidContainer;
-  child(slug: SolidLeafSlug): SolidLeaf;
-  child(slug: string): SolidLeaf | SolidContainer;
-  child(slug: string): SolidLeaf | SolidContainer {
+  child(slug: SolidContainerSlug): SolidContainer<Capabilities>;
+  child(slug: SolidLeafSlug): SolidLeaf<Capabilities>;
+  child(slug: string): SolidLeaf<Capabilities> | SolidContainer<Capabilities>;
+  child(slug: string): SolidLeaf<Capabilities> | SolidContainer<Capabilities> {
     return this.context.dataset.getResource(`${this.uri}${slug}`) as
-      | SolidLeaf
-      | SolidContainer;
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
   }
 
   /**
@@ -372,16 +390,22 @@ export class SolidContainer extends SolidResource {
    */
   createChildAndOverwrite(
     slug: SolidContainerSlug,
-  ): Promise<ContainerCreateAndOverwriteResult>;
+  ): Promise<ContainerCreateAndOverwriteResult<Capabilities>>;
   createChildAndOverwrite(
     slug: SolidLeafSlug,
-  ): Promise<LeafCreateAndOverwriteResult>;
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>>;
   createChildAndOverwrite(
     slug: string,
-  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult>;
+  ): Promise<
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+  >;
   createChildAndOverwrite(
     slug: string,
-  ): Promise<ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult> {
+  ): Promise<
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+  > {
     return this.child(slug).createAndOverwrite();
   }
 
@@ -396,7 +420,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.createChildIfAbsent("resource.ttl");
+   * const result = await container.createChildIfAbsent("resource.ttl");
    * if (!result.isError) {
    *   // Do something
    * }
@@ -404,14 +428,22 @@ export class SolidContainer extends SolidResource {
    */
   createChildIfAbsent(
     slug: SolidContainerSlug,
-  ): Promise<ContainerCreateIfAbsentResult>;
-  createChildIfAbsent(slug: SolidLeafSlug): Promise<LeafCreateIfAbsentResult>;
+  ): Promise<ContainerCreateIfAbsentResult<Capabilities>>;
+  createChildIfAbsent(
+    slug: SolidLeafSlug,
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>>;
   createChildIfAbsent(
     slug: string,
-  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult>;
+  ): Promise<
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+  >;
   createChildIfAbsent(
     slug: string,
-  ): Promise<ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult> {
+  ): Promise<
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+  > {
     return this.child(slug).createIfAbsent();
   }
 
@@ -440,7 +472,7 @@ export class SolidContainer extends SolidResource {
     slug: SolidLeafSlug,
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateAndOverwriteResult> {
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>> {
     return this.child(slug).uploadAndOverwrite(blob, mimeType);
   }
 
@@ -455,7 +487,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.uploadChildIfAbsent(
+   * const result = await container.uploadChildIfAbsent(
    *   "resource.txt",
    *   new Blob("some text."),
    *   "text/txt",
@@ -469,7 +501,7 @@ export class SolidContainer extends SolidResource {
     slug: SolidLeafSlug,
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateIfAbsentResult> {
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>> {
     return this.child(slug).uploadIfAbsent(blob, mimeType);
   }
 
@@ -488,10 +520,16 @@ export class SolidContainer extends SolidResource {
    * ```
    */
   async clear(): Promise<
-    | AggregateSuccess<DeleteSuccess<SolidContainer | SolidLeaf>>
+    | AggregateSuccess<
+        DeleteSuccess<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
+      >
     | AggregateError<
-        | DeleteResultError<SolidContainer | SolidLeaf>
-        | ReadResultError<SolidContainer | SolidLeaf>
+        | DeleteResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
+        | ReadResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
       >
   > {
     const readResult = await this.read();
@@ -510,7 +548,9 @@ export class SolidContainer extends SolidResource {
       return new AggregateError(errors);
     }
     return new AggregateSuccess(
-      results as DeleteSuccess<SolidContainer | SolidLeaf>[],
+      results as DeleteSuccess<
+        SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+      >[],
     );
   }
 
@@ -528,8 +568,12 @@ export class SolidContainer extends SolidResource {
   async delete(): Promise<
     | DeleteResult<this>
     | AggregateError<
-        | DeleteResultError<SolidContainer | SolidLeaf>
-        | ReadResultError<SolidContainer | SolidLeaf>
+        | DeleteResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
+        | ReadResultError<
+            SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+          >
       >
   > {
     const clearResult = await this.clear();
@@ -555,11 +599,19 @@ export class SolidContainer extends SolidResource {
    * }
    * ```
    */
-  async createAndOverwrite(): Promise<ContainerCreateAndOverwriteResult> {
+  async createAndOverwrite(): Promise<
+    ContainerCreateAndOverwriteResult<Capabilities>
+  > {
     const createResult =
-      (await this.handleCreateAndOverwrite()) as ContainerCreateAndOverwriteResult;
+      (await this.handleCreateAndOverwrite()) as ContainerCreateAndOverwriteResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    return {
+      ...createResult,
+      resource: this as ApplyCapabilities<
+        SolidContainer<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -574,11 +626,12 @@ export class SolidContainer extends SolidResource {
    * }
    * ```
    */
-  async createIfAbsent(): Promise<ContainerCreateIfAbsentResult> {
+  async createIfAbsent(): Promise<ContainerCreateIfAbsentResult<Capabilities>> {
     const createResult =
-      (await this.handleCreateIfAbsent()) as ContainerCreateIfAbsentResult;
+      (await this.handleCreateIfAbsent()) as ContainerCreateIfAbsentResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return { ...createResult, resource: this as any };
   }
 
   /**

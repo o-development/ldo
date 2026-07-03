@@ -11,7 +11,7 @@ import type { UpdateResult } from "./requests/updateDataResource";
 import { updateDataResource } from "./requests/updateDataResource";
 import { uploadResource } from "./requests/uploadResource";
 import type { SolidLeaf } from "../resources/SolidLeaf";
-import type { ConnectedContext } from "@ldo/connected";
+import type { ConnectedContext, ResourceCapability } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 
 export const UPDATE_KEY = "update";
@@ -22,19 +22,22 @@ export const UPLOAD_KEY = "upload";
  *
  *  A singleton to handle batched requests for leafs
  */
-export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
+export class LeafBatchedRequester<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends BatchedRequester<Capabilities, SolidLeaf<Capabilities>> {
   /**
    * The URI of the leaf
    */
-  readonly resource: SolidLeaf;
+  readonly resource: SolidLeaf<Capabilities>;
 
   /**
    * @param uri - the URI of the leaf
    * @param context - SolidLdoDatasetContext of the parent dataset
    */
   constructor(
-    resource: SolidLeaf,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    resource: SolidLeaf<Capabilities>,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
   ) {
     super(context);
     this.resource = resource;
@@ -69,16 +72,27 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
    * @param overwrite - If true, this will orverwrite the resource if it already
    * exists
    */
-  createDataResource(overwrite: true): Promise<LeafCreateAndOverwriteResult>;
-  createDataResource(overwrite?: false): Promise<LeafCreateIfAbsentResult>;
+  createDataResource(
+    overwrite: true,
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>>;
+  createDataResource(
+    overwrite?: false,
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>>;
   createDataResource(
     overwrite?: boolean,
-  ): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult>;
+  ): Promise<
+    | LeafCreateIfAbsentResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+  >;
   createDataResource(
     overwrite?: boolean,
-  ): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult> {
+  ): Promise<
+    | LeafCreateIfAbsentResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
+  > {
     return super.createDataResource(overwrite) as Promise<
-      LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult
+      | LeafCreateIfAbsentResult<Capabilities>
+      | LeafCreateAndOverwriteResult<Capabilities>
     >;
   }
 
@@ -88,7 +102,7 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
    */
   async updateDataResource(
     changes: DatasetChanges<Quad>,
-  ): Promise<UpdateResult<SolidLeaf>> {
+  ): Promise<UpdateResult<SolidLeaf<Capabilities>>> {
     const result = await this.requestBatcher.queueProcess({
       name: UPDATE_KEY,
       args: [
@@ -110,7 +124,7 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
         return undefined;
       },
     });
-    return result as UpdateResult<SolidLeaf>;
+    return result as UpdateResult<SolidLeaf<Capabilities>>;
   }
 
   /**
@@ -123,22 +137,28 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
     blob: Blob,
     mimeType: string,
     overwrite: true,
-  ): Promise<LeafCreateAndOverwriteResult>;
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>>;
   upload(
     blob: Blob,
     mimeType: string,
     overwrite?: false,
-  ): Promise<LeafCreateIfAbsentResult>;
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>>;
   upload(
     blob: Blob,
     mimeType: string,
     overwrite?: boolean,
-  ): Promise<LeafCreateAndOverwriteResult | LeafCreateIfAbsentResult>;
+  ): Promise<
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+  >;
   async upload(
     blob: Blob,
     mimeType: string,
     overwrite?: boolean,
-  ): Promise<LeafCreateAndOverwriteResult | LeafCreateIfAbsentResult> {
+  ): Promise<
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+  > {
     const transaction = this.context.dataset.startTransaction();
     const result = await this.requestBatcher.queueProcess({
       name: UPLOAD_KEY,
@@ -175,6 +195,7 @@ export class LeafBatchedRequester extends BatchedRequester<SolidLeaf> {
         }
       },
     });
-    return result;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return result as any;
   }
 }

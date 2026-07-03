@@ -1,9 +1,11 @@
 import type {
+  ApplyCapabilities,
   ConnectedContext,
   ConnectedResult,
   IgnoredInvalidUpdateSuccess,
   ReadSuccess,
   Resource,
+  ResourceCapability,
   ResourceEventEmitter,
   ResourceSuccess,
   SubscriptionCallbacks,
@@ -60,20 +62,25 @@ import { GetStorageDescriptionUriSuccess } from "../requester/results/success/St
 /**
  * Statuses shared between both Leaf and Container
  */
-export type SharedStatuses<ResourceType extends SolidLeaf | SolidContainer> =
+export type SharedStatuses<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ResourceType extends SolidLeaf<any[]> | SolidContainer<any[]>,
+> =
   | Unfetched<ResourceType>
   | DeleteResult<ResourceType>
   | CreateSuccess<ResourceType>;
 
-export abstract class SolidResource
+export abstract class SolidResource<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Capabilities extends ResourceCapability<string, any>[],
+  >
   extends (EventEmitter as new () => ResourceEventEmitter)
   implements Resource<SolidLeafUri | SolidContainerUri>
 {
   /**
-   * @internal
    * The ConnectedContext from the Parent Dataset
    */
-  protected readonly context: ConnectedContext<SolidConnectedPlugin[]>;
+  readonly context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>;
 
   /**
    * The uri of the resource
@@ -95,7 +102,8 @@ export abstract class SolidResource
    * Batched Requester for the Resource
    */
   protected abstract readonly requester: BatchedRequester<
-    SolidLeaf | SolidContainer
+    Capabilities,
+    SolidLeaf<Capabilities> | SolidContainer<Capabilities>
   >;
 
   /**
@@ -133,7 +141,7 @@ export abstract class SolidResource
    * Handles notification subscriptions
    */
   protected notificationSubscription: NotificationSubscription<
-    SolidConnectedPlugin,
+    SolidConnectedPlugin<Capabilities>,
     SolidNotificationMessage
   >;
 
@@ -161,14 +169,15 @@ export abstract class SolidResource
   /**
    * @param context - SolidLdoDatasetContext for the parent dataset
    */
-  constructor(context: ConnectedContext<SolidConnectedPlugin[]>) {
+  constructor(context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>) {
     super();
     this.context = context;
     this.notificationSubscription = new Websocket2023NotificationSubscription(
-      this as unknown as SolidLeaf | SolidContainer,
+      this as unknown as SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
       this.onNotification.bind(this),
       this.context,
-    );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ) as any;
   }
 
   /**
@@ -471,7 +480,13 @@ export abstract class SolidResource
    * A helper method updates this resource's internal state upon delete success
    * @param result - the result of the delete success
    */
-  public updateWithDeleteSuccess(_result: DeleteSuccess<SolidResource>) {
+  public updateWithDeleteSuccess(
+    _result: DeleteSuccess<
+      | SolidResource<Capabilities>
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>
+    >,
+  ) {
     this.absent = true;
     this.didInitialFetch = true;
   }
@@ -482,7 +497,7 @@ export abstract class SolidResource
    * @returns DeleteResult
    */
   protected async handleDelete(): Promise<
-    DeleteResult<SolidLeaf | SolidContainer>
+    DeleteResult<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
   > {
     const result = await this.requester.delete();
     this.status = result;
@@ -526,7 +541,8 @@ export abstract class SolidResource
    * ```
    */
   abstract createAndOverwrite(): Promise<
-    ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
   >;
 
   /**
@@ -536,7 +552,8 @@ export abstract class SolidResource
    * @returns DeleteResult
    */
   protected async handleCreateAndOverwrite(): Promise<
-    ContainerCreateAndOverwriteResult | LeafCreateAndOverwriteResult
+    | ContainerCreateAndOverwriteResult<Capabilities>
+    | LeafCreateAndOverwriteResult<Capabilities>
   > {
     const result = await this.requester.createDataResource(true);
     this.status = result;
@@ -562,7 +579,8 @@ export abstract class SolidResource
    * ```
    */
   abstract createIfAbsent(): Promise<
-    ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
   >;
 
   /**
@@ -572,7 +590,8 @@ export abstract class SolidResource
    * @returns DeleteResult
    */
   protected async handleCreateIfAbsent(): Promise<
-    ContainerCreateIfAbsentResult | LeafCreateIfAbsentResult
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
   > {
     const result = await this.requester.createDataResource();
     this.status = result;
@@ -591,7 +610,8 @@ export abstract class SolidResource
   abstract update(
     datasetChanges: DatasetChanges,
   ): Promise<
-    UpdateResult<SolidLeaf> | IgnoredInvalidUpdateSuccess<SolidContainer>
+    | UpdateResult<SolidLeaf<Capabilities>>
+    | IgnoredInvalidUpdateSuccess<SolidContainer<Capabilities>>
   >;
 
   /**
@@ -603,14 +623,20 @@ export abstract class SolidResource
   /**
    * Retrieves the URI for the storage description of this resource
    * @param options - set the "ignoreCache" field to true to ignore cached URI
-   * @returns results, containing SolidLeafUri when successful
+   * @returns results, containing SolidLeaf<Capabilities>Uri when successful
    *
    * note: this is based on this.getWacUri method
    */
   protected async getStorageDescriptionUri(options?: {
     ignoreCache: boolean;
-  }): Promise<GetStorageDescriptionUriResult<SolidLeaf | SolidContainer>> {
-    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
+  }): Promise<
+    GetStorageDescriptionUriResult<
+      SolidLeaf<Capabilities> | SolidContainer<Capabilities>
+    >
+  > {
+    const thisAsLeafOrContainer = this as unknown as
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
     // Get the storage description if not already present
     if (!options?.ignoreCache && this.storageDescriptionUri) {
       return new GetStorageDescriptionUriSuccess(
@@ -649,9 +675,11 @@ export abstract class SolidResource
    * ```
    */
   async getRootContainer(): Promise<
-    | SolidContainer
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
     | CheckRootResultError
-    | NoRootContainerError<SolidLeaf | SolidContainer>
+    | NoRootContainerError<
+        SolidLeaf<Capabilities> | SolidContainer<Capabilities>
+      >
   > {
     const result = await this.getRootContainerFromStorageDescription();
 
@@ -675,12 +703,15 @@ export abstract class SolidResource
    * @param options - Options object
    * @param options.ignoreCache {boolean} - ignore cached storage resource URI and root container values
    *
-   * @returns SolidContainer or error objects
+   * @returns SolidContainer<Capabilities> or error objects
    */
   async getRootContainerFromStorageDescription(options?: {
     ignoreCache: boolean;
   }): Promise<
-    SolidContainer | GetStorageDescriptionUriError<SolidContainer | SolidLeaf>
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+    | GetStorageDescriptionUriError<
+        SolidContainer<Capabilities> | SolidLeaf<Capabilities>
+      >
   > {
     let rootContainerUri: SolidContainerUri;
 
@@ -713,7 +744,8 @@ export abstract class SolidResource
         return new NoncompliantPodError(
           storageDescriptionResource, // storage description, or this resource?
           "There should be one storage listed in storage description resource.",
-        );
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ) as any; // lazy hack
       }
 
       rootContainerUri = rootContainerQuads.toArray()[0].subject
@@ -727,13 +759,15 @@ export abstract class SolidResource
    * https://solidproject.org/TR/protocol#client-storage-disovery
    */
   abstract getRootContainerByTraversal(): Promise<
-    | SolidContainer
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
     | CheckRootResultError
-    | NoRootContainerError<SolidLeaf | SolidContainer>
+    | NoRootContainerError<
+        SolidLeaf<Capabilities> | SolidContainer<Capabilities>
+      >
   >;
 
   abstract getParentContainer(): Promise<
-    SolidContainer | CheckRootResultError | undefined
+    SolidContainer<Capabilities> | CheckRootResultError | undefined
   >;
 
   /**
@@ -750,8 +784,12 @@ export abstract class SolidResource
    */
   protected async getWacUri(options?: {
     ignoreCache?: boolean;
-  }): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
-    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
+  }): Promise<
+    GetWacUriResult<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
+  > {
+    const thisAsLeafOrContainer = this as unknown as
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
     // Get the wacUri if not already present
     if (!options?.ignoreCache && this.wacUri) {
       return new GetWacUriSuccess(thisAsLeafOrContainer, this.wacUri);
@@ -803,11 +841,13 @@ export abstract class SolidResource
     ignoreCache?: boolean;
     inheritable?: boolean;
   }): Promise<
-    | GetWacUriError<SolidContainer | SolidLeaf>
-    | GetWacRuleError<SolidContainer | SolidLeaf>
-    | GetWacRuleSuccess<SolidContainer | SolidLeaf>
+    | GetWacUriError<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
+    | GetWacRuleError<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
+    | GetWacRuleSuccess<SolidContainer<Capabilities> | SolidLeaf<Capabilities>>
   > {
-    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
+    const thisAsLeafOrContainer = this as unknown as
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
     // Return the wac rule if it's already cached
     const cachedRule = options?.inheritable
       ? this.inheritableWacRule
@@ -888,10 +928,12 @@ export abstract class SolidResource
   async setWac(
     wacRule: WacRule,
   ): Promise<
-    | GetWacUriError<SolidLeaf | SolidContainer>
-    | SetWacRuleResult<SolidLeaf | SolidContainer>
+    | GetWacUriError<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
+    | SetWacRuleResult<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
   > {
-    const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
+    const thisAsLeafOrContainer = this as unknown as
+      | SolidLeaf<Capabilities>
+      | SolidContainer<Capabilities>;
     const wacUriResult = await this.getWacUri();
     if (wacUriResult.isError) return wacUriResult;
 
@@ -924,7 +966,7 @@ export abstract class SolidResource
   /**
    * Activates Websocket subscriptions on this resource. Updates, deletions,
    * and creations on this resource will be tracked and all changes will be
-   * relected in LDO's resources and graph.
+   * reflected in LDO's resources and graph.
    *
    * @param onNotificationError - A callback function if there is an error
    * with notifications.
@@ -965,7 +1007,7 @@ export abstract class SolidResource
 
   /**
    * @internal
-   * Function that triggers whenever a notification is recieved.
+   * Function that triggers whenever a notification is received.
    */
   protected async onNotification(
     message: SolidNotificationMessage,
@@ -984,7 +1026,8 @@ export abstract class SolidResource
           // Delete the resource without have to make an additional read request
           updateDatasetOnSuccessfulDelete(message.object, this.context.dataset);
           objectResource.updateWithDeleteSuccess(
-            new DeleteSuccess(objectResource, true),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            new DeleteSuccess<any>(objectResource, true),
           );
           return;
       }

@@ -35,7 +35,7 @@ function bindSessionMethods(
  * @returns { BrowserSolidLdoProvider, useSolidAuth, useRootContainerFor }
  */
 export function createBrowserSolidReactMethods(
-  dataset: ConnectedLdoDataset<(SolidConnectedPlugin | ConnectedPlugin)[]>,
+  dataset: ConnectedLdoDataset<(SolidConnectedPlugin<[]> | ConnectedPlugin)[]>,
 ) {
   let currentSession: SolidOidcBrowserSession | undefined;
   const authFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
@@ -121,7 +121,7 @@ export function createBrowserSolidReactMethods(
     BrowserSolidLdoProvider,
     useSolidAuth: useSolidAuth,
     useRootContainerFor: createUseRootContainerFor(
-      dataset as ConnectedLdoDataset<SolidConnectedPlugin[]>,
+      dataset as ConnectedLdoDataset<SolidConnectedPlugin<[]>[]>,
       createUseResource(dataset as ConnectedLdoDataset<ConnectedPlugin[]>),
     ),
   };

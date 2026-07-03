@@ -128,7 +128,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Retireves a representation of a Resource at the given URI. This resource
+   * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
    * fetched or in the process of fetching as well as some information about it.
    *
@@ -273,7 +273,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Sets conetext for a specific plugin
+   * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin

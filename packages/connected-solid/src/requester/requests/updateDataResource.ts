@@ -2,7 +2,7 @@ import type { DatasetChanges } from "@ldo/rdf-utils";
 import { changesToSparqlUpdate } from "@ldo/rdf-utils";
 import type { Quad } from "@rdfjs/types";
 import { guaranteeFetch } from "../../util/guaranteeFetch";
-import type { Resource } from "@ldo/connected";
+import type { Resource, ResourceCapability } from "@ldo/connected";
 import { UnexpectedResourceError, UpdateSuccess } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
@@ -34,26 +34,42 @@ export type UpdateResultError<ResourceType extends Resource> =
  * update.
  * @returns An UpdateResult
  */
-export async function updateDataResource(
-  resource: SolidLeaf,
+export async function updateDataResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   datasetChanges: DatasetChanges<Quad>,
   options?: DatasetRequestOptions,
-): Promise<UpdateResult<SolidLeaf>>;
-export async function updateDataResource(
-  resource: SolidContainer,
+): Promise<UpdateResult<SolidLeaf<Capabilities>>>;
+export async function updateDataResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidContainer<Capabilities>,
   datasetChanges: DatasetChanges<Quad>,
   options?: DatasetRequestOptions,
-): Promise<UpdateResult<SolidContainer>>;
-export async function updateDataResource(
-  resource: SolidLeaf | SolidContainer,
+): Promise<UpdateResult<SolidContainer<Capabilities>>>;
+export async function updateDataResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
   datasetChanges: DatasetChanges<Quad>,
   options?: DatasetRequestOptions,
-): Promise<UpdateResult<SolidLeaf | SolidContainer>>;
-export async function updateDataResource(
-  resource: SolidLeaf | SolidContainer,
+): Promise<
+  UpdateResult<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
+>;
+export async function updateDataResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities> | SolidContainer<Capabilities>,
   datasetChanges: DatasetChanges<Quad>,
   options?: DatasetRequestOptions,
-): Promise<UpdateResult<SolidLeaf | SolidContainer>> {
+): Promise<
+  UpdateResult<SolidLeaf<Capabilities> | SolidContainer<Capabilities>>
+> {
   try {
     // Optimistically add data
     options?.dataset?.bulk(datasetChanges);

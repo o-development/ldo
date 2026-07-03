@@ -14,11 +14,16 @@ import type {
   SolidContainerUri,
   SolidLeafUri,
 } from "@ldo/connected-solid";
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type {
+  ApplyCapabilities,
+  ConnectedLdoDataset,
+  ConnectedPlugin,
+} from "@ldo/connected";
 import {
   TypeIndexDocumentShapeType,
   TypeRegistrationShapeType,
 } from "./_ldo/typeIndex.shapeTypes";
+import type { wacResourceCapability } from "@ldo/wac";
 
 /**
  * =============================================================================
@@ -53,11 +58,18 @@ export async function initTypeIndex(
  * @param profileFolder
  * @param dataset
  */
-export async function createIndex(
+export async function createIndex<
+  Capabilities extends [
+    {
+      namespace: "wac";
+      capability: typeof wacResourceCapability;
+    },
+  ],
+>(
   webId,
-  profileFolder: SolidContainer,
+  profileFolder: ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>,
   dataset: ConnectedLdoDataset<
-    (SolidConnectedPlugin | ConnectedPlugin<any, any, any, any>)[]
+    (SolidConnectedPlugin<Capabilities> | ConnectedPlugin<any, any, any, any>)[]
   >,
   isPrivate: boolean,
 ) {
@@ -67,7 +79,7 @@ export async function createIndex(
   );
   if (createResult.isError) throw createResult;
   const indexResource = createResult.resource;
-  const wacResult = await indexResource.setWac({
+  const wacResult = await indexResource.wac.setWac({
     agent: {
       [webId]: { read: true, write: true, append: true, control: true },
     },

@@ -1,4 +1,4 @@
-import type { ConnectedContext } from "@ldo/connected";
+import type { ConnectedContext, ResourceCapability } from "@ldo/connected";
 import type { SolidContainer } from "../resources/SolidContainer";
 import { BatchedRequester } from "./BatchedRequester";
 import type { CheckRootResult } from "./requests/checkRootContainer";
@@ -18,19 +18,22 @@ export const IS_ROOT_CONTAINER_KEY = "isRootContainer";
  *
  * A singleton to handle batched requests for containers
  */
-export class ContainerBatchedRequester extends BatchedRequester<SolidContainer> {
+export class ContainerBatchedRequester<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends BatchedRequester<Capabilities, SolidContainer<Capabilities>> {
   /**
    * The URI of the container
    */
-  readonly resource: SolidContainer;
+  readonly resource: SolidContainer<Capabilities>;
 
   /**
    * @param uri - The URI of the container
    * @param context - ConnectedContext of the parent dataset
    */
   constructor(
-    resource: SolidContainer,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    resource: SolidContainer<Capabilities>,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
   ) {
     super(context);
     this.resource = resource;
@@ -51,18 +54,25 @@ export class ContainerBatchedRequester extends BatchedRequester<SolidContainer> 
    */
   createDataResource(
     overwrite: true,
-  ): Promise<ContainerCreateAndOverwriteResult>;
-  createDataResource(overwrite?: false): Promise<ContainerCreateIfAbsentResult>;
+  ): Promise<ContainerCreateAndOverwriteResult<Capabilities>>;
   createDataResource(
-    overwrite?: boolean,
-  ): Promise<ContainerCreateIfAbsentResult | ContainerCreateAndOverwriteResult>;
+    overwrite?: false,
+  ): Promise<ContainerCreateIfAbsentResult<Capabilities>>;
   createDataResource(
     overwrite?: boolean,
   ): Promise<
-    ContainerCreateIfAbsentResult | ContainerCreateAndOverwriteResult
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | ContainerCreateAndOverwriteResult<Capabilities>
+  >;
+  createDataResource(
+    overwrite?: boolean,
+  ): Promise<
+    | ContainerCreateIfAbsentResult<Capabilities>
+    | ContainerCreateAndOverwriteResult<Capabilities>
   > {
     return super.createDataResource(overwrite) as Promise<
-      ContainerCreateIfAbsentResult | ContainerCreateAndOverwriteResult
+      | ContainerCreateIfAbsentResult<Capabilities>
+      | ContainerCreateAndOverwriteResult<Capabilities>
     >;
   }
 

@@ -17,7 +17,13 @@ import type { NoRootContainerError } from "../requester/results/error/NoRootCont
 import type { SharedStatuses } from "./SolidResource";
 import { SolidResource } from "./SolidResource";
 import type { SolidLeafUri } from "../types";
-import type { ResourceSuccess } from "@ldo/connected";
+import type {
+  ApplyCapabilities,
+  ExtractCapabilities,
+  Resource,
+  ResourceCapability,
+  ResourceSuccess,
+} from "@ldo/connected";
 import {
   AbsentReadSuccess,
   Unfetched,
@@ -35,7 +41,10 @@ import type { SolidContainer } from "./SolidContainer";
  *   .getResource("https://example.com/container/resource.ttl");
  * ```
  */
-export class SolidLeaf extends SolidResource {
+export class SolidLeaf<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+> extends SolidResource<Capabilities> {
   /**
    * The URI of the leaf
    */
@@ -45,7 +54,7 @@ export class SolidLeaf extends SolidResource {
    * @internal
    * Batched Requester for the Leaf
    */
-  protected requester: LeafBatchedRequester;
+  protected requester: LeafBatchedRequester<Capabilities>;
 
   /**
    * Indicates that this resource is a leaf resource
@@ -61,11 +70,11 @@ export class SolidLeaf extends SolidResource {
    * The status of the last request made for this leaf
    */
   status:
-    | SharedStatuses<SolidLeaf>
+    | SharedStatuses<SolidLeaf<Capabilities>>
     | ReadLeafResult
-    | LeafCreateAndOverwriteResult
-    | LeafCreateIfAbsentResult
-    | UpdateResult<SolidLeaf>;
+    | LeafCreateAndOverwriteResult<Capabilities>
+    | LeafCreateIfAbsentResult<Capabilities>
+    | UpdateResult<SolidLeaf<Capabilities>>;
 
   /**
    * @internal
@@ -79,7 +88,7 @@ export class SolidLeaf extends SolidResource {
    */
   constructor(
     uri: SolidLeafUri,
-    context: ConnectedContext<SolidConnectedPlugin[]>,
+    context: ConnectedContext<SolidConnectedPlugin<Capabilities>[]>,
   ) {
     super(context);
     const uriObject = new URL(uri);
@@ -269,7 +278,7 @@ export class SolidLeaf extends SolidResource {
 
   /**
    * Makes a request to read this leaf if it hasn't been fetched yet. If it has,
-   * return the cached informtation
+   * return the cached information
    * @returns a ReadLeafResult
    *
    * @example
@@ -306,7 +315,9 @@ export class SolidLeaf extends SolidResource {
    * }
    * ```
    */
-  async getParentContainer(): Promise<SolidContainer> {
+  async getParentContainer(): Promise<
+    ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+  > {
     const parentUri = getParentUri(this.uri)!;
     return this.context.dataset.getResource(parentUri);
   }
@@ -329,7 +340,9 @@ export class SolidLeaf extends SolidResource {
    * ```
    */
   async getRootContainerByTraversal(): Promise<
-    SolidContainer | CheckRootResultError | NoRootContainerError<SolidContainer>
+    | ApplyCapabilities<SolidContainer<Capabilities>, Capabilities>
+    | CheckRootResultError
+    | NoRootContainerError<SolidContainer<Capabilities>>
   > {
     // Check to see if this document has a pim:storage if so, use that
 
@@ -402,11 +415,19 @@ export class SolidLeaf extends SolidResource {
    * }
    * ```
    */
-  async createAndOverwrite(): Promise<LeafCreateAndOverwriteResult> {
+  async createAndOverwrite(): Promise<
+    LeafCreateAndOverwriteResult<Capabilities>
+  > {
     const createResult =
-      (await this.handleCreateAndOverwrite()) as LeafCreateAndOverwriteResult;
+      (await this.handleCreateAndOverwrite()) as LeafCreateAndOverwriteResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    return {
+      ...createResult,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -421,11 +442,17 @@ export class SolidLeaf extends SolidResource {
    * }
    * ```
    */
-  async createIfAbsent(): Promise<LeafCreateIfAbsentResult> {
+  async createIfAbsent(): Promise<LeafCreateIfAbsentResult<Capabilities>> {
     const createResult =
-      (await this.handleCreateIfAbsent()) as LeafCreateIfAbsentResult;
+      (await this.handleCreateIfAbsent()) as LeafCreateIfAbsentResult<Capabilities>;
     if (createResult.isError) return createResult;
-    return { ...createResult, resource: this };
+    return {
+      ...createResult,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -456,7 +483,7 @@ export class SolidLeaf extends SolidResource {
   async uploadAndOverwrite(
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateAndOverwriteResult> {
+  ): Promise<LeafCreateAndOverwriteResult<Capabilities>> {
     const result = await this.requester.upload(blob, mimeType, true);
     this.status = result;
     if (result.isError) {
@@ -466,7 +493,13 @@ export class SolidLeaf extends SolidResource {
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
-    return { ...result, resource: this };
+    return {
+      ...result,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -491,7 +524,7 @@ export class SolidLeaf extends SolidResource {
   async uploadIfAbsent(
     blob: Blob,
     mimeType: string,
-  ): Promise<LeafCreateIfAbsentResult> {
+  ): Promise<LeafCreateIfAbsentResult<Capabilities>> {
     const result = await this.requester.upload(blob, mimeType);
     this.status = result;
     if (result.isError) {
@@ -501,7 +534,13 @@ export class SolidLeaf extends SolidResource {
     super.updateWithCreateSuccess(result);
     this.binaryData = { blob, mimeType };
     this.emitThisAndParent();
-    return { ...result, resource: this };
+    return {
+      ...result,
+      resource: this as ApplyCapabilities<
+        SolidLeaf<Capabilities>,
+        Capabilities
+      >,
+    };
   }
 
   /**
@@ -512,7 +551,7 @@ export class SolidLeaf extends SolidResource {
 
   /**
    * Updates a data resource with the changes provided
-   * @param changes - Dataset changes that will be applied to the resoruce
+   * @param changes - Dataset changes that will be applied to the resource
    * @returns An UpdateResult
    *
    * @example
@@ -530,7 +569,7 @@ export class SolidLeaf extends SolidResource {
    * const profile = solidLdoDataset
    *   .usingType(ProfileShapeType)
    *   .fromSubject("https://example.com/profile#me");
-   * cosnt resource = solidLdoDataset
+   * const resource = solidLdoDataset
    *   .getResource("https://example.com/profile");
    * // Create a transaction to change data
    * const cProfile = changeData(profile, resource);
@@ -538,12 +577,12 @@ export class SolidLeaf extends SolidResource {
    * // Get data in "DatasetChanges" form
    * const datasetChanges = transactionChanges(someLinkedDataObject);
    * // Use "update" to apply the changes
-   * cosnt result = resource.update(datasetChanges);
+   * const result = resource.update(datasetChanges);
    * ```
    */
   async update(
     changes: DatasetChanges<Quad>,
-  ): Promise<UpdateResult<SolidLeaf>> {
+  ): Promise<UpdateResult<SolidLeaf<Capabilities>>> {
     const result = await this.requester.updateDataResource(changes);
     this.status = result;
     if (result.isError) {

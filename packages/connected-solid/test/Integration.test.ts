@@ -4,37 +4,21 @@ import {
   literal,
   defaultGraph,
 } from "@ldo/rdf-utils";
-import type { CreateSuccess } from "../src/requester/results/success/CreateSuccess";
 import { Buffer } from "buffer";
 import { PostShShapeType } from "./_ldo/post.shapeTypes";
-import type {
-  ServerHttpError,
-  UnauthenticatedHttpError,
-  UnexpectedHttpError,
-} from "../src/requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { wait } from "./utils.helper";
 import path from "path";
+import type { WacRule } from "../src/index";
 import type {
-  GetWacRuleSuccess,
-  UpdateResultError,
-  WacRule,
-} from "../src/index";
-import {
-  createSolidLdoDataset,
-  type SolidConnectedPlugin,
-  type SolidContainer,
-  type SolidContainerUri,
-  type SolidLeaf,
-  type SolidLeafUri,
+  SolidConnectedPlugin,
+  SolidContainer,
+  SolidContainerUri,
+  SolidLeaf,
+  SolidLeafUri,
 } from "../src/index";
 import type {
-  AggregateError,
   AggregateSuccess,
-  IgnoredInvalidUpdateSuccess,
-  InvalidUriError,
-  UnexpectedResourceError,
   UpdateDefaultGraphSuccess,
   UpdateSuccess,
   ConnectedLdoDataset,
@@ -49,6 +33,7 @@ import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
+import { type wacResourceCapability, createSolidLdoDataset } from "@ldo/wac";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -211,7 +196,8 @@ const resourceInfo: ResourceInfo = {
 
 async function testRequestLoads<ReturnVal>(
   request: () => Promise<ReturnVal>,
-  loadingResource: SolidLeaf | SolidContainer,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loadingResource: SolidLeaf<any[]> | SolidContainer<any[]>,
   loadingValues: Partial<{
     isLoading: boolean;
     isCreating: boolean;
@@ -252,7 +238,11 @@ async function testRequestLoads<ReturnVal>(
 }
 
 describe("Integration", () => {
-  let solidLdoDataset: ConnectedLdoDataset<SolidConnectedPlugin[]>;
+  let solidLdoDataset: ConnectedLdoDataset<
+    SolidConnectedPlugin<
+      [{ namespace: "wac"; capability: typeof wacResourceCapability }]
+    >[]
+  >;
 
   const s = setupServer(3001, resourceInfo);
 
@@ -761,7 +751,8 @@ describe("Integration", () => {
         solidLdoDataset,
       );
       expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
-      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const realResult = result as GetStorageContainerFromWebIdSuccess<any[]>;
       expect(realResult.storageContainers.length).toBe(1);
       expect(realResult.storageContainers[0].uri).toBe(ROOT_CONTAINER);
     });
@@ -772,7 +763,8 @@ describe("Integration", () => {
         solidLdoDataset,
       );
       expect(result.type).toBe("getStorageContainerFromWebIdSuccess");
-      const realResult = result as GetStorageContainerFromWebIdSuccess;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const realResult = result as GetStorageContainerFromWebIdSuccess<any[]>;
       expect(realResult.storageContainers.length).toBe(2);
       expect(realResult.storageContainers[0].uri).toBe(
         "https://example.com/A/",
@@ -822,7 +814,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert(!result.isError);
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -851,7 +844,8 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert(!result.isError);
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(true);
       expect(
         solidLdoDataset.has(
@@ -880,7 +874,8 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidContainer>;
+      assert(!result.isError);
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -993,7 +988,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -1051,7 +1047,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidContainer>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -1150,13 +1147,8 @@ describe("Integration", () => {
       const result = await resource.delete();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        | ServerHttpError<SolidLeaf | SolidContainer>
-        | UnexpectedHttpError<SolidLeaf | SolidContainer>
-        | UnauthenticatedHttpError<SolidLeaf | SolidContainer>
-        | UnexpectedResourceError<SolidLeaf | SolidContainer>
-        | NoncompliantPodError<SolidLeaf | SolidContainer>
-      >;
+      assert.equal(result.type, "aggregateError");
+      const aggregateError = result;
       expect(aggregateError.errors[0].type).toBe("serverError");
     });
 
@@ -1173,13 +1165,8 @@ describe("Integration", () => {
       const result = await resource.delete();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        | ServerHttpError<SolidLeaf | SolidContainer>
-        | UnexpectedHttpError<SolidLeaf | SolidContainer>
-        | UnauthenticatedHttpError<SolidLeaf | SolidContainer>
-        | UnexpectedResourceError<SolidLeaf | SolidContainer>
-        | NoncompliantPodError<SolidLeaf | SolidContainer>
-      >;
+      assert.equal(result.type, "aggregateError");
+      const aggregateError = result;
       expect(aggregateError.errors[0].type).toBe("serverError");
     });
 
@@ -1232,9 +1219,8 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("aggregateSuccess");
-      const aggregateSuccess = result as AggregateSuccess<
-        UpdateSuccess<SolidLeaf>
-      >;
+      assert.equal(result.type, "aggregateSuccess");
+      const aggregateSuccess = result;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
       expect(solidLdoDataset.has(normanQuad)).toBe(true);
@@ -1255,9 +1241,8 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("aggregateSuccess");
-      const aggregateSuccess = result as AggregateSuccess<
-        UpdateSuccess<SolidLeaf>
-      >;
+      assert.equal(result.type, "aggregateSuccess");
+      const aggregateSuccess = result;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type === "updateSuccess").toBe(true);
       expect(solidLdoDataset.has(goblinQuad)).toBe(false);
@@ -1273,10 +1258,8 @@ describe("Integration", () => {
 
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        | UpdateResultError<SolidLeaf | SolidContainer>
-        | InvalidUriError<SolidLeaf | SolidContainer>
-      >;
+      assert.equal(result.type, "aggregateError");
+      const aggregateError = result;
       expect(aggregateError.errors.length).toBe(1);
       expect(aggregateError.errors[0].type).toBe("serverError");
     });
@@ -1291,10 +1274,8 @@ describe("Integration", () => {
       const result = await transaction.commitToRemote();
       expect(result.isError).toBe(true);
       expect(result.type).toBe("aggregateError");
-      const aggregateError = result as AggregateError<
-        | UpdateResultError<SolidLeaf | SolidContainer>
-        | InvalidUriError<SolidLeaf | SolidContainer>
-      >;
+      assert.equal(result.type, "aggregateError");
+      const aggregateError = result;
       expect(aggregateError.errors.length).toBe(1);
       expect(aggregateError.errors[0].type).toBe("unexpectedResourceError");
     });
@@ -1311,10 +1292,8 @@ describe("Integration", () => {
       const result = await transaction.commitToRemote();
       expect(result.isError).toBe(false);
       expect(result.type).toBe("aggregateSuccess");
-      const aggregateSuccess = result as AggregateSuccess<
-        | UpdateSuccess<SolidLeaf | SolidContainer>
-        | IgnoredInvalidUpdateSuccess<SolidLeaf | SolidContainer>
-      >;
+      assert.equal(result.type, "aggregateSuccess");
+      const aggregateSuccess = result;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type).toBe(
         "ignoredInvalidUpdateSuccess",
@@ -1333,7 +1312,8 @@ describe("Integration", () => {
       const result = await transaction.commitToRemote();
       expect(result.type).toBe("aggregateSuccess");
       const aggregateSuccess = result as AggregateSuccess<
-        UpdateSuccess<SolidLeaf | SolidContainer> | UpdateDefaultGraphSuccess
+        | UpdateSuccess<SolidLeaf<[]> | SolidContainer<[]>>
+        | UpdateDefaultGraphSuccess
       >;
       expect(aggregateSuccess.results.length).toBe(1);
       expect(aggregateSuccess.results[0].type).toBe(
@@ -1419,7 +1399,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -1455,7 +1436,8 @@ describe("Integration", () => {
         },
       );
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(true);
       expect(
         solidLdoDataset.has(
@@ -1581,7 +1563,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
         solidLdoDataset.has(
@@ -1741,7 +1724,8 @@ describe("Integration", () => {
       const result = await resource.createChildAndOverwrite(SAMPLE2_DATA_SLUG);
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.resource.uri).toBe(SAMPLE2_DATA_URI);
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
@@ -1764,7 +1748,8 @@ describe("Integration", () => {
       const result = await resource.createChildIfAbsent(SAMPLE2_DATA_SLUG);
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.resource.uri).toBe(SAMPLE2_DATA_URI);
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
@@ -1791,7 +1776,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.resource.uri).toBe(SAMPLE2_BINARY_URI);
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
@@ -1818,7 +1804,8 @@ describe("Integration", () => {
       );
 
       expect(result.type).toBe("createSuccess");
-      const createSuccess = result as CreateSuccess<SolidLeaf>;
+      assert.equal(result.type, "createSuccess");
+      const createSuccess = result;
       expect(createSuccess.resource.uri).toBe(SAMPLE2_BINARY_URI);
       expect(createSuccess.didOverwrite).toBe(false);
       expect(
@@ -1847,9 +1834,8 @@ describe("Integration", () => {
       const container = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       const wacResult = await container.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -1874,9 +1860,8 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -1959,9 +1944,8 @@ describe("Integration", () => {
       await resource.getWac();
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(false);
-      const wacSuccess = wacResult as GetWacRuleSuccess<
-        SolidLeaf | SolidContainer
-      >;
+      assert(!wacResult.isError);
+      const wacSuccess = wacResult;
       expect(wacSuccess.wacRule.public).toEqual({
         read: true,
         write: true,
@@ -2007,9 +1991,8 @@ describe("Integration", () => {
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: No link header present in request.`,
       );
     });
@@ -2025,9 +2008,8 @@ describe("Integration", () => {
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${SAMPLE_DATA_URI} is not compliant with the Solid Specification: There must be one link with a rel="acl"`,
       );
     });
@@ -2072,9 +2054,8 @@ describe("Integration", () => {
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from http://localhost:3001/test_ldo/sample.ttl is not compliant with the Solid Specification: Request returned noncompliant turtle: Unexpected "BAD" on line 1.\nBAD TURTLE`,
       );
     });
@@ -2106,9 +2087,8 @@ describe("Integration", () => {
       const wacResult = await resource.getWac();
       expect(wacResult.isError).toBe(true);
       expect(wacResult.type).toBe("noncompliantPodError");
-      expect(
-        (wacResult as NoncompliantPodError<SolidLeaf | SolidContainer>).message,
-      ).toBe(
+      assert.equal(wacResult.type, "noncompliantPodError");
+      expect(wacResult.message).toBe(
         `Response from ${ROOT_CONTAINER} is not compliant with the Solid Specification: Resource "${ROOT_CONTAINER}" has no Effective ACL resource`,
       );
     });
@@ -2136,9 +2116,8 @@ describe("Integration", () => {
       const readResult = await resource.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      assert.equal(readResult.type, "getWacRuleSuccess");
+      const rules = readResult.wacRule;
       expect(rules).toEqual(newRules);
     });
 
@@ -2150,9 +2129,8 @@ describe("Integration", () => {
       const readResult = await resource.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      assert.equal(readResult.type, "getWacRuleSuccess");
+      const rules = readResult.wacRule;
       expect(rules).toEqual(newRules);
     });
 
@@ -2168,9 +2146,8 @@ describe("Integration", () => {
       const readResult = await resource.getWac({ ignoreCache: true });
       expect(readResult.isError).toBe(false);
       expect(readResult.type).toBe("getWacRuleSuccess");
-      const rules = (
-        readResult as GetWacRuleSuccess<SolidLeaf | SolidContainer>
-      ).wacRule;
+      assert.equal(readResult.type, "getWacRuleSuccess");
+      const rules = readResult.wacRule;
       expect(rules).toEqual(moreRules);
     });
 

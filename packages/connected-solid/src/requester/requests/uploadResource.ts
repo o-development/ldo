@@ -1,6 +1,13 @@
 import { guaranteeFetch } from "../../util/guaranteeFetch";
-import { UnexpectedResourceError } from "@ldo/connected";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import {
+  type ResourceCapability,
+  UnexpectedResourceError,
+  type ApplyCapabilities,
+} from "@ldo/connected";
+import {
+  HttpErrorResult,
+  type HttpErrorResultType,
+} from "../results/error/HttpErrorResult";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
@@ -27,27 +34,40 @@ import {
  * update.
  * @returns One of many create results depending on the input
  */
-export function uploadResource(
-  resource: SolidLeaf,
+export function uploadResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   blob: Blob,
   mimeType: string,
   overwrite: true,
   options?: DatasetRequestOptions,
-): Promise<LeafCreateAndOverwriteResult>;
-export function uploadResource(
-  resource: SolidLeaf,
+): Promise<LeafCreateAndOverwriteResult<Capabilities>>;
+export function uploadResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: SolidLeaf<Capabilities>,
   blob: Blob,
   mimeType: string,
   overwrite?: false,
   options?: DatasetRequestOptions,
-): Promise<LeafCreateIfAbsentResult>;
-export async function uploadResource(
-  resource: SolidLeaf,
+): Promise<LeafCreateIfAbsentResult<Capabilities>>;
+export async function uploadResource<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Capabilities extends ResourceCapability<string, any>[],
+>(
+  resource: ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>,
   blob: Blob,
   mimeType: string,
   overwrite?: boolean,
   options?: DatasetRequestOptions,
-): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult> {
+): Promise<
+  | LeafCreateIfAbsentResult<Capabilities>
+  | LeafCreateAndOverwriteResult<Capabilities>
+> {
+  type ExtendedLeaf = ApplyCapabilities<SolidLeaf<Capabilities>, Capabilities>;
   try {
     const fetch = guaranteeFetch(options?.fetch);
     let didOverwrite = false;
@@ -76,14 +96,20 @@ export async function uploadResource(
     });
 
     const httpError = HttpErrorResult.checkResponse(resource, response);
-    if (httpError) return httpError;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (httpError) return httpError as HttpErrorResultType<ExtendedLeaf>;
 
     if (options?.dataset) {
       addResourceRdfToContainer(resource.uri, options.dataset);
     }
-    return new CreateSuccess(resource, didOverwrite);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new CreateSuccess(
+      resource,
+      didOverwrite,
+    ) as CreateSuccess<ExtendedLeaf>;
   } catch (err) {
     const thing = UnexpectedResourceError.fromThrown(resource, err);
-    return thing;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return thing as UnexpectedResourceError<ExtendedLeaf>;
   }
 }

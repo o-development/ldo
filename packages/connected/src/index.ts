@@ -6,12 +6,14 @@ export * from "./Resource";
 export * from "./InvalidIdentifierResource";
 export * from "./methods";
 export * from "./createConntectedLdoDataset";
+export * from "./ResourceCapability";
 
 export * from "./types/ConnectedContext";
 export * from "./types/ConnectedPlugin";
 export * from "./types/IConnectedLdoDataset";
 export * from "./types/IConnectedLdoBuilder";
 export * from "./types/ILinkQuery";
+export * from "./types/CapabilityUtils";
 
 export * from "./util/splitChangesByGraph";
 
