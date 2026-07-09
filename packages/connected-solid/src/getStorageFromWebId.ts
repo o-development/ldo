@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "./types";
 import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";

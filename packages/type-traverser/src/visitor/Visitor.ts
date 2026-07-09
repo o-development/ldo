@@ -23,11 +23,7 @@ import { visitorParentSubTraverser } from "./visitorSubTraversers/VisitorParentS
 // TODO: Lots of "any" in this file. I'm just done with fancy typescript,
 // but if I ever feel so inclined, I should fix this in the future.
 
-export class Visitor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Types extends TraverserTypes<any>,
-  Context = undefined,
-> {
+export class Visitor<Types extends TraverserTypes<any>, Context = undefined> {
   private traverserDefinition: TraverserDefinitions<Types>;
   private visitors: Visitors<Types, Context>;
 

@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class MultiMap<Key1, Key2, Value> {
   private map: Map<Key1, Map<Key2, Value>> = new Map();
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+
   private internalSize: number = 0;
 
   get(key1: Key1, key2: Key2): Value | undefined {
