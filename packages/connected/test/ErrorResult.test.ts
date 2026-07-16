@@ -18,7 +18,7 @@ describe("ErrorResult", () => {
       ).toBe("hello");
     });
 
-    it("returns an UnexpecteResourceError if an odd valud is provided", () => {
+    it("returns an UnexpectedResourceError if an odd value is provided", () => {
       expect(UnexpectedResourceError.fromThrown(mockResource, 5).message).toBe(
         "Error of type number thrown: 5",
       );
@@ -46,19 +46,19 @@ describe("ErrorResult", () => {
       readonly type = "concreteErrorResult" as const;
     }
 
-    it("ResourceError fallsback to a default message if none is provided", () => {
+    it("ResourceError falls back to a default message if none is provided", () => {
       expect(new ConcreteResourceError(mockResource).message).toBe(
-        "An unkown error for https://example.com/",
+        "An unknown error for https://example.com/",
       );
     });
 
-    it("ErrorResult fallsback to a default message if none is provided", () => {
+    it("ErrorResult falls back to a default message if none is provided", () => {
       expect(new ConcreteErrorResult().message).toBe(
-        "An unkown error was encountered.",
+        "An unknown error was encountered.",
       );
     });
 
-    it("InvalidUriError fallsback to a default message if none is provided", () => {
+    it("InvalidUriError falls back to a default message if none is provided", () => {
       expect(new InvalidUriError(mockResource).message).toBe(
         "https://example.com/ is an invalid uri.",
       );

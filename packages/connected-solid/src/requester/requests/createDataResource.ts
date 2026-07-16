@@ -5,8 +5,6 @@ import { UnexpectedResourceError } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
 import { HttpErrorResult } from "../results/error/HttpErrorResult";
 import { CreateSuccess } from "../results/success/CreateSuccess";
-import type { DeleteResultError } from "./deleteResource";
-import { deleteResource } from "./deleteResource";
 import type {
   ReadContainerResult,
   ReadLeafResult,
@@ -16,11 +14,8 @@ import { readResource } from "./readResource";
 import type { DatasetRequestOptions } from "./requestOptions";
 import type { SolidLeaf } from "../../resources/SolidLeaf";
 import type { SolidContainer } from "../../resources/SolidContainer";
-import {
-  addResourceRdfToContainer,
-  getParentUri,
-  getSlug,
-} from "../../util/rdfUtils";
+import { addResourceRdfToContainer } from "../../util/rdfUtils";
+import { NoncompliantPodError } from "../results/error/NoncompliantPodError.js";
 
 /**
  * All possible return values when creating and overwriting a container
@@ -56,8 +51,7 @@ export type LeafCreateIfAbsentResult =
  * All possible errors returned by creating and overwriting a resource
  */
 export type CreateAndOverwriteResultErrors<ResourceType extends Resource> =
-  | DeleteResultError<ResourceType>
-  | CreateErrors<ResourceType>;
+  CreateErrors<ResourceType>;
 
 /**
  * All possible errors returned by creating a resource if absent
@@ -91,27 +85,27 @@ export function createDataResource(
   options?: DatasetRequestOptions,
 ): Promise<ContainerCreateAndOverwriteResult>;
 export function createDataResource(
-  resouce: SolidLeaf,
+  resource: SolidLeaf,
   overwrite: true,
   options?: DatasetRequestOptions,
 ): Promise<LeafCreateAndOverwriteResult>;
 export function createDataResource(
-  resouce: SolidContainer,
+  resource: SolidContainer,
   overwrite?: false,
   options?: DatasetRequestOptions,
 ): Promise<ContainerCreateIfAbsentResult>;
 export function createDataResource(
-  resouce: SolidLeaf,
+  resource: SolidLeaf,
   overwrite?: false,
   options?: DatasetRequestOptions,
 ): Promise<LeafCreateIfAbsentResult>;
 export function createDataResource(
-  resouce: SolidContainer,
+  resource: SolidContainer,
   overwrite?: boolean,
   options?: DatasetRequestOptions,
 ): Promise<ContainerCreateIfAbsentResult | ContainerCreateAndOverwriteResult>;
 export function createDataResource(
-  resouce: SolidLeaf,
+  resource: SolidLeaf,
   overwrite?: boolean,
   options?: DatasetRequestOptions,
 ): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult>;
@@ -147,42 +141,45 @@ export async function createDataResource(
 > {
   try {
     const fetch = guaranteeFetch(options?.fetch);
-    let didOverwrite = false;
-    if (overwrite) {
-      const deleteResult = await deleteResource(resource, options);
-      // Return if it wasn't deleted
-      if (deleteResult.isError)
-        return deleteResult as
-          | DeleteResultError<SolidLeaf>
-          | DeleteResultError<SolidContainer>;
-      didOverwrite = deleteResult.resourceExisted;
-    } else {
-      // Perform a read to check if it exists
-      const readResult = await readResource(resource, options);
 
-      // If it does exist stop and return.
-      if (readResult.type !== "absentReadSuccess") {
-        return readResult;
-      }
-    }
     // Create the document
-    const parentUri = getParentUri(resource.uri)!;
     const headers: HeadersInit = {
       "content-type": "text/turtle",
     };
     if (resource.type === "SolidContainer") {
       headers.link = '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"';
     }
+    if (!overwrite) {
+      // https://solidproject.org/TR/protocol#conditional-update
+      // https://www.rfc-editor.org/info/rfc9110/#section-13.1.2
+      headers["If-None-Match"] = "*";
+    }
     const response = await fetch(resource.uri, {
       method: "PUT",
       headers,
     });
+
+    // Check whether If-None-Match: "*" precondition failed.
+    // That means we tried to overwrite existing resource when overwriting is forbidden.
+    if (response.status === 412) {
+      const result = await readResource(resource, options);
+      if (result.type === "absentReadSuccess")
+        return new NoncompliantPodError(
+          resource,
+          `Server returned conflicting states: Response status 412 implies the resource ${resource.uri} exists, but it is absent.`,
+        ) as
+          | NoncompliantPodError<SolidLeaf>
+          | NoncompliantPodError<SolidContainer>;
+      return result;
+    }
 
     const httpError = HttpErrorResult.checkResponse(resource, response);
     if (httpError)
       return httpError as
         | HttpErrorResultType<SolidContainer>
         | HttpErrorResultType<SolidLeaf>;
+
+    const didOverwrite = response.status !== 201;
 
     if (options?.dataset) {
       addResourceRdfToContainer(resource.uri, options.dataset);
