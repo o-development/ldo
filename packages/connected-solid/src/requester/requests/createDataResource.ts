@@ -169,13 +169,12 @@ export async function createDataResource(
     const parentUri = getParentUri(resource.uri)!;
     const headers: HeadersInit = {
       "content-type": "text/turtle",
-      slug: getSlug(resource.uri),
     };
     if (resource.type === "SolidContainer") {
       headers.link = '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"';
     }
-    const response = await fetch(parentUri, {
-      method: "post",
+    const response = await fetch(resource.uri, {
+      method: "PUT",
       headers,
     });
 

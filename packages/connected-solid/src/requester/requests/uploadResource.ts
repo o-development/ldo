@@ -65,13 +65,9 @@ export async function uploadResource(
       }
     }
     // Create the document
-    const parentUri = getParentUri(resource.uri)!;
-    const response = await fetch(parentUri, {
-      method: "post",
-      headers: {
-        "content-type": mimeType,
-        slug: getSlug(resource.uri),
-      },
+    const response = await fetch(resource.uri, {
+      method: "PUT",
+      headers: { "content-type": mimeType },
       body: blob,
     });
 
