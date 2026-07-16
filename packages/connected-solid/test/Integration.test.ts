@@ -1069,7 +1069,7 @@ describe("Integration", () => {
           .some((child) => child.uri === SAMPLE_CONTAINER_URI),
       ).toBe(true);
       const postRequest = s.fetchMock.mock.calls.find(
-        (call) => call[1]?.method?.toLowerCase() === "post",
+        (call) => call[1]?.method?.toLowerCase() === "put",
       );
       expect(postRequest?.[1]?.headers).toHaveProperty(
         "link",
