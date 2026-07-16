@@ -167,7 +167,7 @@ export async function createDataResource(
     }
     // Create the document
     const parentUri = getParentUri(resource.uri)!;
-    const headers: HeadersInit = {
+    const headers: RequestInit["headers"] = {
       "content-type": "text/turtle",
       slug: getSlug(resource.uri),
     };

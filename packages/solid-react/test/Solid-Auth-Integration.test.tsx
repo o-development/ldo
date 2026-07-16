@@ -6,7 +6,6 @@ import { dataset, useResource } from "../src/index";
 import { SessionCore } from "@uvdsl/solid-oidc-client-browser/core";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 import { setupServer } from "@ldo/test-solid-server";
-import fetch from "cross-fetch";
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
