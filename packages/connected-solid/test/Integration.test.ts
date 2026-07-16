@@ -520,7 +520,8 @@ describe("Integration", () => {
         resource.read(),
       ]);
 
-      expect(s.fetchMock).toHaveBeenCalledTimes(3);
+      // one for create, one for read
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
       expect(result.type).toBe("dataReadSuccess");
       expect(result1.type).toBe("dataReadSuccess");
     });
@@ -925,9 +926,6 @@ describe("Integration", () => {
 
     it("returns an error if the create fetch fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      s.fetchMock.mockImplementationOnce(async (...args) => {
-        return s.authFetch(...args);
-      });
       s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
@@ -940,9 +938,6 @@ describe("Integration", () => {
 
     it("returns an unexpected error if some unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      s.fetchMock.mockImplementationOnce(async (...args) => {
-        return s.authFetch(...args);
-      });
       s.fetchMock.mockImplementationOnce(async () => {
         throw new Error("Some Unknown");
       });
@@ -961,8 +956,8 @@ describe("Integration", () => {
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      // 1 for read, 1 for delete in createAndOverwrite, 1 for create
-      expect(s.fetchMock).toHaveBeenCalledTimes(3);
+      // 1 for read, 1 for create
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
     });
 
     it("batches the create request while waiting on a similar request", async () => {
@@ -974,8 +969,8 @@ describe("Integration", () => {
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      // 1 for delete in createAndOverwrite, 1 for create
-      expect(s.fetchMock).toHaveBeenCalledTimes(2);
+      // 1 for create or update with PUT
+      expect(s.fetchMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -1068,10 +1063,10 @@ describe("Integration", () => {
           .children()
           .some((child) => child.uri === SAMPLE_CONTAINER_URI),
       ).toBe(true);
-      const postRequest = s.fetchMock.mock.calls.find(
+      const putRequest = s.fetchMock.mock.calls.find(
         (call) => call[1]?.method?.toLowerCase() === "put",
       );
-      expect(postRequest?.[1]?.headers).toHaveProperty(
+      expect(putRequest?.[1]?.headers).toHaveProperty(
         "link",
         '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"',
       );
@@ -1489,9 +1484,6 @@ describe("Integration", () => {
 
     it("returns an error if the create fetch fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      s.fetchMock.mockImplementationOnce(async (...args) => {
-        return s.authFetch(...args);
-      });
       s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 500,
@@ -1507,9 +1499,6 @@ describe("Integration", () => {
 
     it("returns an unexpected error if some unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
-      s.fetchMock.mockImplementationOnce(async (...args) => {
-        return s.authFetch(...args);
-      });
       s.fetchMock.mockImplementationOnce(async () => {
         throw new Error("Some Unknown");
       });
@@ -1537,8 +1526,8 @@ describe("Integration", () => {
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      // 1 for read, 1 for delete in createAndOverwrite, 1 for create
-      expect(s.fetchMock).toHaveBeenCalledTimes(3);
+      // 1 for read, 1 for create
+      expect(s.fetchMock).toHaveBeenCalledTimes(2);
       expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
 
@@ -1557,8 +1546,8 @@ describe("Integration", () => {
 
       expect(result1.type).toBe("createSuccess");
       expect(result2.type).toBe("createSuccess");
-      // 1 for delete in createAndOverwrite, 1 for create
-      expect(s.fetchMock).toHaveBeenCalledTimes(2);
+      // 1 for create
+      expect(s.fetchMock).toHaveBeenCalledTimes(1);
       expect(resource.getBlob()?.toString()).toBe("some text 2.");
     });
   });

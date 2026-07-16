@@ -19,7 +19,7 @@ export abstract class ErrorResult extends Error implements ConnectedResult {
    * @param message - a custom message for the error
    */
   constructor(message?: string) {
-    super(message || "An unkown error was encountered.");
+    super(message || "An unknown error was encountered.");
   }
 }
 
@@ -44,7 +44,7 @@ export abstract class ResourceError<
    * @param message - A custom message for the error
    */
   constructor(resource: ResourceType, message?: string) {
-    super(message || `An unkown error for ${resource.uri}`);
+    super(message || `An unknown error for ${resource.uri}`);
     this.uri = resource.uri;
     this.resource = resource;
   }
