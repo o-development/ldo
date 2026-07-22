@@ -1085,8 +1085,8 @@ const testJsonldDatasetProxy = (patientContext: LdoJsonldContext) => () => {
     let dataset: Dataset;
 
     beforeEach(async () => {
-      const [recievedDataset, , receivedBuilder] = await getLoadedDataset();
-      dataset = recievedDataset;
+      const [receivedDataset, , receivedBuilder] = await getLoadedDataset();
+      dataset = receivedDataset;
       builder = receivedBuilder;
       patients = builder.matchObject<PatientShape>(
         null,

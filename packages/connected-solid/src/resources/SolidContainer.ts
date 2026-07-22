@@ -40,6 +40,7 @@ import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidLeaf } from "./SolidLeaf";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 import type { DatasetChanges } from "@ldo/rdf-utils";
+import type { GetLinkHeaderResult } from "../getLinkHeader.js";
 
 /**
  * Represents the current status of a specific container on a Pod as known by
@@ -188,7 +189,7 @@ export class SolidContainer extends SolidResource {
 
   /**
    * Makes a request to read this container if it hasn't been fetched yet. If it
-   * has, return the cached informtation
+   * has, return the cached information
    * @returns a ReadContainerResult
    *
    * @example
@@ -364,7 +365,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.createChildAndOverwrite("resource.ttl");
+   * const result = await container.createChildAndOverwrite("resource.ttl");
    * if (!result.isError) {
    *   // Do something
    * }
@@ -396,7 +397,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.createChildIfAbsent("resource.ttl");
+   * const result = await container.createChildIfAbsent("resource.ttl");
    * if (!result.isError) {
    *   // Do something
    * }
@@ -426,7 +427,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.uploadChildAndOverwrite(
+   * const result = await container.uploadChildAndOverwrite(
    *   "resource.txt",
    *   new Blob("some text."),
    *   "text/txt",
@@ -455,7 +456,7 @@ export class SolidContainer extends SolidResource {
    * ```typescript
    * const container = solidLdoDataset
    *   .getResource("https://example.com/container/");
-   * cosnt result = await container.uploadChildIfAbsent(
+   * const result = await container.uploadChildIfAbsent(
    *   "resource.txt",
    *   new Blob("some text."),
    *   "text/txt",
@@ -588,5 +589,13 @@ export class SolidContainer extends SolidResource {
     _datasetChanges: DatasetChanges,
   ): Promise<IgnoredInvalidUpdateSuccess<this>> {
     return new IgnoredInvalidUpdateSuccess(this);
+  }
+
+  async getLinkHeader(
+    ignoreCache?: boolean,
+  ): Promise<GetLinkHeaderResult<SolidContainer>> {
+    return super.getLinkHeader(
+      ignoreCache,
+    ) as unknown as GetLinkHeaderResult<SolidContainer>;
   }
 }
