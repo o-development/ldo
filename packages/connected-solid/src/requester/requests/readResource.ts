@@ -21,6 +21,8 @@ import {
   addRawTurtleToDataset,
   addResourceRdfToContainer,
 } from "../../util/rdfUtils";
+import { parseLinkHeader } from "../../getLinkHeader.js";
+import LinkHeader from "http-link-header";
 
 /**
  * All possible return values for reading a leaf
@@ -115,6 +117,10 @@ export async function readResource(
         | NoncompliantPodError<SolidLeaf>;
     }
 
+    // cache parsed link header
+    const linkHeader = parseLinkHeader(response.headers);
+    if (linkHeader) resource._setLinkHeader(linkHeader);
+
     if (contentType.startsWith("text/turtle")) {
       // Parse Turtle
       const rawTurtle = await response.text();
@@ -130,7 +136,10 @@ export async function readResource(
             | NoncompliantPodError<SolidContainer>;
       }
       if (resource.type === "SolidContainer") {
-        const result = checkHeadersForRootContainer(resource, response.headers);
+        const result = checkHeadersForRootContainer(
+          resource,
+          linkHeader || new LinkHeader(),
+        );
         return new ContainerReadSuccess(
           resource,
           false,

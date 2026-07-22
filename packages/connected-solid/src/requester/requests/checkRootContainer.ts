@@ -1,5 +1,5 @@
 import type { BasicRequestOptions } from "./requestOptions";
-import LinkHeader from "http-link-header";
+import type LinkHeader from "http-link-header";
 import { CheckRootContainerSuccess } from "../results/success/CheckRootContainerSuccess";
 import type {
   HttpErrorResultType,
@@ -34,14 +34,9 @@ export type CheckRootResultError =
  */
 export function checkHeadersForRootContainer(
   resource: SolidContainer,
-  headers: Headers,
+  linkHeader: LinkHeader,
 ): CheckRootContainerSuccess {
-  const linkHeader = headers.get("link");
-  if (!linkHeader) {
-    return new CheckRootContainerSuccess(resource, false);
-  }
-  const parsedLinkHeader = LinkHeader.parse(linkHeader);
-  const types = parsedLinkHeader.get("rel", "type");
+  const types = linkHeader.get("rel", "type");
   const isRootContainer = types.some(
     (type) => type.uri === "http://www.w3.org/ns/pim/space#Storage",
   );
@@ -60,22 +55,19 @@ export function checkHeadersForRootContainer(
  */
 export async function checkRootContainer(
   resource: SolidContainer,
-  options?: BasicRequestOptions,
 ): Promise<CheckRootResult> {
   try {
-    const fetch = guaranteeFetch(options?.fetch);
-    // Fetch options to determine the document type
-    // Note cache: "no-store": we don't want to depend on cached results because
-    // web browsers do not cache link headers
-    // https://github.com/CommunitySolidServer/CommunitySolidServer/issues/1959
-    const response = await fetch(resource.uri, {
-      method: "HEAD",
-      cache: "no-store",
-    });
-    const httpErrorResult = HttpErrorResult.checkResponse(resource, response);
-    if (httpErrorResult) return httpErrorResult;
+    const linkHeaderResult = await resource.getLinkHeader();
+    if (linkHeaderResult.isError) {
+      if (
+        linkHeaderResult.type === "noncompliantPodError" ||
+        linkHeaderResult.type === "notFoundError"
+      )
+        return new CheckRootContainerSuccess(resource, false);
+      return linkHeaderResult;
+    }
 
-    return checkHeadersForRootContainer(resource, response.headers);
+    return checkHeadersForRootContainer(resource, linkHeaderResult.linkHeader);
   } catch (err) {
     return UnexpectedResourceError.fromThrown(resource, err);
   }
