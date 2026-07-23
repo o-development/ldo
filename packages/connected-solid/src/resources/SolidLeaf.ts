@@ -25,6 +25,7 @@ import {
 } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidContainer } from "./SolidContainer";
+import type { GetLinkHeaderResult } from "../getLinkHeader.js";
 
 /**
  * Represents the current status of a specific Leaf on a Pod as known by LDO.
@@ -269,7 +270,7 @@ export class SolidLeaf extends SolidResource {
 
   /**
    * Makes a request to read this leaf if it hasn't been fetched yet. If it has,
-   * return the cached informtation
+   * return the cached information
    * @returns a ReadLeafResult
    *
    * @example
@@ -512,7 +513,7 @@ export class SolidLeaf extends SolidResource {
 
   /**
    * Updates a data resource with the changes provided
-   * @param changes - Dataset changes that will be applied to the resoruce
+   * @param changes - Dataset changes that will be applied to the resource
    * @returns An UpdateResult
    *
    * @example
@@ -530,7 +531,7 @@ export class SolidLeaf extends SolidResource {
    * const profile = solidLdoDataset
    *   .usingType(ProfileShapeType)
    *   .fromSubject("https://example.com/profile#me");
-   * cosnt resource = solidLdoDataset
+   * const resource = solidLdoDataset
    *   .getResource("https://example.com/profile");
    * // Create a transaction to change data
    * const cProfile = changeData(profile, resource);
@@ -538,7 +539,7 @@ export class SolidLeaf extends SolidResource {
    * // Get data in "DatasetChanges" form
    * const datasetChanges = transactionChanges(someLinkedDataObject);
    * // Use "update" to apply the changes
-   * cosnt result = resource.update(datasetChanges);
+   * const result = resource.update(datasetChanges);
    * ```
    */
   async update(
@@ -554,5 +555,13 @@ export class SolidLeaf extends SolidResource {
     this.absent = false;
     this.emitThisAndParent();
     return { ...result, resource: this };
+  }
+
+  async getLinkHeader(
+    ignoreCache?: boolean,
+  ): Promise<GetLinkHeaderResult<SolidLeaf>> {
+    return super.getLinkHeader(
+      ignoreCache,
+    ) as unknown as GetLinkHeaderResult<SolidLeaf>;
   }
 }

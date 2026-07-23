@@ -99,7 +99,7 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
-const _TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
+const TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
 const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://www.w3.org/ns/auth/acl#Authorization>;
 <http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
 <http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
@@ -2438,6 +2438,105 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.unsubscribeFromAllNotifications();
       expect(resource.isSubscribedToNotifications()).toBe(false);
+    });
+  });
+
+  describe("Access links from HTTP response Link header ", () => {
+    beforeEach(() => {
+      s.fetchMock.mockClear();
+    });
+
+    it("returns a success result with link headers of a Solid leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(false);
+      assert.equal(linkHeaderResult.isError, false);
+      expect(linkHeaderResult.linkHeader.get("rel", "acl")[0].uri).toEqual(
+        SAMPLE_DATA_URI + ".acl",
+      );
+    });
+
+    it("returns a success result with link headers of a Solid container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(false);
+      assert.equal(linkHeaderResult.isError, false);
+      expect(linkHeaderResult.linkHeader.get("rel", "acl")[0].uri).toEqual(
+        TEST_CONTAINER_ACL_URI,
+      );
+      console.log(linkHeaderResult.linkHeader.refs);
+      expect(linkHeaderResult.linkHeader.get("rel", "type"));
+    });
+
+    it("caches getLinks success result and uses cached results when available", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(false);
+      assert.equal(linkHeaderResult.isError, false); // assert narrows the type
+      expect(linkHeaderResult.recalledFromMemory).toBe(false);
+      expect(s.fetchMock.mock.calls).toHaveLength(1);
+
+      // fetch second time, this time the link headers should be cached
+      s.fetchMock.mockClear();
+      const linkHeaderResult2 = await resource.getLinkHeader();
+      expect(linkHeaderResult2.isError).toBe(false);
+      assert.equal(linkHeaderResult2.isError, false); // assert narrows the type
+      expect(linkHeaderResult2.recalledFromMemory).toBe(true);
+      expect(s.fetchMock.mock.calls).toHaveLength(0);
+    });
+
+    it("caches link headers after successful resource.read request", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      // read the resource
+      await resource.read();
+      expect(s.fetchMock.mock.calls).toHaveLength(1);
+      s.fetchMock.mockClear();
+
+      // then get the link headers and it is already cached
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(false);
+      assert.equal(linkHeaderResult.isError, false); // assert narrows the type
+      expect(linkHeaderResult.recalledFromMemory).toBe(true);
+      expect(s.fetchMock.mock.calls).toHaveLength(0);
+    });
+
+    it("returns error when resource doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(true);
+      assert.equal(linkHeaderResult.isError, true); // narrow result type
+      expect(linkHeaderResult.type).toEqual("notFoundError");
+    });
+
+    it("returns noncompliant pod error when resource doesn't have link headers", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, { status: 200 }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(true);
+      assert.equal(linkHeaderResult.isError, true); // narrow result type
+      expect(linkHeaderResult.type).toEqual("noncompliantPodError");
+    });
+
+    it("returns unexpected resource error when resource doesn't have link headers", async () => {
+      s.fetchMock.mockRejectedValueOnce(new Error("This is a failure."));
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      expect(linkHeaderResult.isError).toBe(true);
+      assert.equal(linkHeaderResult.isError, true); // narrow result type
+      expect(linkHeaderResult.type).toEqual("unexpectedResourceError");
+    });
+
+    it("clears cached link header after resource deletion", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const linkHeaderResult = await resource.getLinkHeader();
+      assert.equal(linkHeaderResult.isError, false); // assert narrows the type
+      const deletionResult = await resource.delete();
+      assert.equal(deletionResult.isError, false);
+      const linkHeaderResult2 = await resource.getLinkHeader();
+      assert.equal(linkHeaderResult2.isError, true);
+      assert.equal(linkHeaderResult2.type, "notFoundError");
     });
   });
 });

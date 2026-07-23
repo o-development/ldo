@@ -71,7 +71,7 @@ async function main() {
 
   // @ldo/solid will never throw an error. Instead, it will return errors. This
   // design decision was made to force you to handle any errors. It may seem a
-  // bit annoying at first, but it will result in more resiliant code. You can
+  // bit annoying at first, but it will result in more resilient code. You can
   // easily follow intellisense tooltips to see what kinds of errors each action
   // can throw.
   if (readResult.isError) {
@@ -175,7 +175,7 @@ async function main() {
   // We create data in a similar way to the way we modify data. We can use the
   // "createData" method.
   const cPost = solidLdoDataset.createData(
-    // An LDO ShapeType saying that this is a social media psot
+    // An LDO ShapeType saying that this is a social media post
     SocialMediaPostShapeType,
     // The URI of the post (in this case we'll make it the same as the resource)
     postResource.uri,

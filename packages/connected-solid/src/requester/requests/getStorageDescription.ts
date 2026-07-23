@@ -1,15 +1,11 @@
 import { UnexpectedResourceError } from "@ldo/connected";
-import LinkHeader from "http-link-header";
 import type { SolidLeafUri } from "../../types";
-import { guaranteeFetch } from "../../util/guaranteeFetch";
-import {
-  HttpErrorResult,
-  type HttpErrorResultType,
+import type {
+  HttpErrorResultType,
   NotFoundHttpError,
 } from "../results/error/HttpErrorResult";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { GetStorageDescriptionUriSuccess } from "../results/success/StorageDescriptionSuccess";
-import type { BasicRequestOptions } from "./requestOptions";
 import type { SolidContainer } from "../../resources/SolidContainer.js";
 import type { SolidLeaf } from "../../resources/SolidLeaf.js";
 
@@ -38,30 +34,12 @@ export type GetStorageDescriptionUriResult<
  */
 export async function getStorageDescriptionUri(
   resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions,
 ): Promise<GetStorageDescriptionUriResult<SolidLeaf | SolidContainer>> {
   try {
-    const fetch = guaranteeFetch(options?.fetch);
-    const response = await fetch(resource.uri, { method: "HEAD" });
-    const httpErrorResult = HttpErrorResult.checkResponse(resource, response);
-    if (httpErrorResult) return httpErrorResult;
-    if (NotFoundHttpError.is(response)) {
-      return new NotFoundHttpError(
-        resource,
-        response,
-        "Could not get storage description of the resource because the resource does not exist.",
-      );
-    }
+    const linkHeaderResult = await resource.getLinkHeader();
+    if (linkHeaderResult.isError) return linkHeaderResult;
 
-    const linkHeader = response.headers.get("link");
-    if (!linkHeader) {
-      return new NoncompliantPodError(
-        resource,
-        "No link header present in request.",
-      );
-    }
-    const parsedLinkHeader = LinkHeader.parse(linkHeader);
-    const storageDescriptionLinks = parsedLinkHeader.get(
+    const storageDescriptionLinks = linkHeaderResult.linkHeader.get(
       "rel",
       "http://www.w3.org/ns/solid/terms#storageDescription",
     );
