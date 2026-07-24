@@ -1,6 +1,5 @@
 import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 import type { ResourceInfo } from "@ldo/test-solid-server";
-import fetch from "cross-fetch";
 import type { MockedFunction } from "vitest";
 import { beforeAll, beforeEach, afterEach, vi } from "vitest";
 

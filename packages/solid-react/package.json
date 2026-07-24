@@ -56,8 +56,7 @@
     "@ldo/connected": "^1.0.0-alpha.50",
     "@ldo/connected-solid": "^1.0.0-alpha.50",
     "@ldo/react": "^1.0.0-alpha.50",
-    "@uvdsl/solid-oidc-client-browser": "^0.2.2",
-    "cross-fetch": "^3.1.6"
+    "@uvdsl/solid-oidc-client-browser": "^0.2.2"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"

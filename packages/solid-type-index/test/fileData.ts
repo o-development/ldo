@@ -1,4 +1,3 @@
-import type fetch from "cross-fetch";
 import type { ResourceInfo } from "@ldo/test-solid-server";
 
 export const SERVER_DOMAIN = process.env.SERVER || "http://localhost:3003/";
