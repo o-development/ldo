@@ -6,8 +6,8 @@ import type {
 } from "../results/error/HttpErrorResult";
 import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 import { GetStorageDescriptionUriSuccess } from "../results/success/StorageDescriptionSuccess";
-import type { SolidContainer } from "../../resources/SolidContainer.js";
-import type { SolidLeaf } from "../../resources/SolidLeaf.js";
+import type { SolidContainer } from "../../resources/SolidContainer";
+import type { SolidLeaf } from "../../resources/SolidLeaf";
 
 export type GetStorageDescriptionUriError<
   ResourceType extends SolidContainer | SolidLeaf,

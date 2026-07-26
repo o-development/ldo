@@ -73,7 +73,7 @@ export class ContainerBatchedRequester extends BatchedRequester<SolidContainer> 
   async isRootContainer(): Promise<CheckRootResult> {
     return this.requestBatcher.queueProcess({
       name: IS_ROOT_CONTAINER_KEY,
-      args: [this.resource, { fetch: this.context.solid.fetch }],
+      args: [this.resource],
       perform: checkRootContainer,
       modifyQueue: modifyQueueByMergingEventsWithTheSameKeys(
         IS_ROOT_CONTAINER_KEY,

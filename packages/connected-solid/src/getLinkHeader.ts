@@ -1,42 +1,28 @@
 import { ResourceSuccess, UnexpectedResourceError } from "@ldo/connected";
-import {
-  HttpErrorResult,
-  NotFoundHttpError,
-  type HttpErrorResultType,
-} from "./requester/results/error/HttpErrorResult.js";
+import { NotFoundHttpError } from "./requester/results/error/HttpErrorResult";
 import LinkHeader from "http-link-header";
-import type { BasicRequestOptions } from "./requester/requests/requestOptions.js";
-import { guaranteeFetch } from "./util/guaranteeFetch.js";
-import { NoncompliantPodError } from "./requester/results/error/NoncompliantPodError.js";
-import type { SolidResource } from "./resources/SolidResource.js";
+import { NoncompliantPodError } from "./requester/results/error/NoncompliantPodError";
+import type { SolidResource } from "./resources/SolidResource";
+import type { GetHeadersError } from "./getHeaders";
 
 export type GetLinkHeaderResult<ResourceType extends SolidResource> =
   | GetLinkHeaderError<ResourceType>
   | GetLinkHeaderSuccess<ResourceType>;
 
 export type GetLinkHeaderError<ResourceType extends SolidResource> =
-  | HttpErrorResultType<ResourceType>
-  | NotFoundHttpError<ResourceType>
-  | NoncompliantPodError<ResourceType>
-  | UnexpectedResourceError<ResourceType>;
+  | GetHeadersError<ResourceType>
+  | NoncompliantPodError<ResourceType>;
 
 export class GetLinkHeaderSuccess<
   ResourceType extends SolidResource,
 > extends ResourceSuccess<ResourceType> {
-  type = "getLinksSuccess" as const;
+  type = "getLinkHeaderSuccess" as const;
 
   linkHeader: LinkHeader;
 
-  recalledFromMemory: boolean;
-
-  constructor(
-    resource: ResourceType,
-    recalledFromMemory: boolean,
-    linkHeader: LinkHeader,
-  ) {
+  constructor(resource: ResourceType, linkHeader: LinkHeader) {
     super(resource);
     this.linkHeader = linkHeader;
-    this.recalledFromMemory = recalledFromMemory;
   }
 }
 
@@ -56,33 +42,21 @@ export function parseLinkHeader(headers: Headers): LinkHeader | undefined {
  */
 export async function getLinkHeader<ResourceType extends SolidResource>(
   resource: ResourceType,
-  options?: BasicRequestOptions,
 ): Promise<GetLinkHeaderResult<ResourceType>> {
   try {
-    const fetch = guaranteeFetch(options?.fetch);
-    // Fetch options to determine the document type
-    // Note cache: "no-store": we don't want to depend on cached results because
-    // of inconsistencies in Solid servers
-    // https://github.com/CommunitySolidServer/CommunitySolidServer/issues/1959
-    // The issue has been resolved, but let's just be sure.
-    const response = await fetch(resource.uri, {
-      method: "HEAD",
-      cache: "no-store",
-    });
+    const headerResult = await resource.getHeaders();
 
-    const errorResult = HttpErrorResult.checkResponse(resource, response);
-
-    if (errorResult) return errorResult;
-
-    if (NotFoundHttpError.is(response)) {
-      return new NotFoundHttpError(
-        resource,
-        response,
-        "Could not get Link header because the resource does not exist.",
-      );
+    if (headerResult.isError) {
+      if (headerResult.type === "notFoundError") {
+        return new NotFoundHttpError(
+          resource,
+          headerResult.response,
+          "Could not get Link header because the resource does not exist.",
+        );
+      } else return headerResult;
     }
 
-    const linkHeader = parseLinkHeader(response.headers);
+    const linkHeader = parseLinkHeader(headerResult.headers);
 
     if (!linkHeader) {
       return new NoncompliantPodError(
@@ -91,7 +65,7 @@ export async function getLinkHeader<ResourceType extends SolidResource>(
       );
     }
 
-    return new GetLinkHeaderSuccess(resource, false, linkHeader);
+    return new GetLinkHeaderSuccess(resource, linkHeader);
   } catch (err: unknown) {
     return UnexpectedResourceError.fromThrown(resource, err);
   }

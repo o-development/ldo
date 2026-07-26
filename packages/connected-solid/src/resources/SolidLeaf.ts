@@ -25,7 +25,7 @@ import {
 } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidContainer } from "./SolidContainer";
-import type { GetLinkHeaderResult } from "../getLinkHeader.js";
+import type { GetLinkHeaderResult } from "../getLinkHeader";
 
 /**
  * Represents the current status of a specific Leaf on a Pod as known by LDO.
@@ -557,11 +557,7 @@ export class SolidLeaf extends SolidResource {
     return { ...result, resource: this };
   }
 
-  async getLinkHeader(
-    ignoreCache?: boolean,
-  ): Promise<GetLinkHeaderResult<SolidLeaf>> {
-    return super.getLinkHeader(
-      ignoreCache,
-    ) as unknown as GetLinkHeaderResult<SolidLeaf>;
+  async getLinkHeader(): Promise<GetLinkHeaderResult<SolidLeaf>> {
+    return super.getLinkHeader() as unknown as GetLinkHeaderResult<SolidLeaf>;
   }
 }

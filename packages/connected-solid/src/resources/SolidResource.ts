@@ -54,14 +54,11 @@ import {
   getStorageDescriptionUri,
   type GetStorageDescriptionUriError,
   type GetStorageDescriptionUriResult,
-} from "../requester/requests/getStorageDescription.js";
-import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess.js";
-import type LinkHeader from "http-link-header";
-import {
-  getLinkHeader,
-  GetLinkHeaderSuccess,
-  type GetLinkHeaderResult,
-} from "../getLinkHeader.js";
+} from "../requester/requests/getStorageDescription";
+import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess";
+import { getLinkHeader, type GetLinkHeaderResult } from "../getLinkHeader";
+import { getHeaders } from "../getHeaders";
+import { getHeader } from "../getHeader";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -127,12 +124,6 @@ export abstract class SolidResource
    * If a wac rule was fetched, it is cached here
    */
   protected wacRule?: WacRule;
-
-  /**
-   * @internal
-   * If link header was (were) fetched, it is cached here
-   */
-  protected linkHeader?: LinkHeader;
 
   /**
    * @internal
@@ -486,7 +477,6 @@ export abstract class SolidResource
   public updateWithDeleteSuccess(_result: DeleteSuccess<SolidResource>) {
     this.absent = true;
     this.didInitialFetch = true;
-    this.linkHeader = undefined;
   }
 
   /**
@@ -753,7 +743,7 @@ export abstract class SolidResource
    * WEB ACCESS CONTROL METHODS
    * ===========================================================================
    */
-  request;
+
   /**
    * Retrieves the URI for the web access control (WAC) rules for this resource
    * @param options - set the "ignoreCache" field to true to ignore any cached
@@ -1034,13 +1024,42 @@ export abstract class SolidResource
   }
 
   /**
+   * Read HTTP response headers of this Solid resource
+   *
+   * @example
+   * const resource = solidLdoDataset.getResource(RESOURCE_URI);
+   * const headersResult = await resource.getHeaders();
+   * if (headersResult.isError) {
+   *   // handle error result
+   * }
+   * // do something with the headers
+   * headersResult.headers.get('content-type')
+   */
+  async getHeaders() {
+    return await getHeaders(this, { fetch: this.context.solid.fetch });
+  }
+
+  /**
+   * Read specific HTTP response header of this Solid resource
+   *
+   * @example
+   * const headerResult = await resource.getHeader(headerName);
+   * if (headerResult.isError) {
+   *   // handle error result
+   * }
+   * // do something with the header
+   * headerResult.header
+   */
+  async getHeader(headerName: string) {
+    return await getHeader(this, headerName);
+  }
+
+  /**
    * Read links from Link header of this Solid resource.
    *
    * The successful linkHeader result has interface of
    * https://www.npmjs.com/package/http-link-header
    * which allows flexible accessing of the results.
-   *
-   * By default, the parsed link header is stored and read from cache.
    *
    * @example
    * const resource = solidLdoDataset.getResource(RESOURCE_URI);
@@ -1054,37 +1073,8 @@ export abstract class SolidResource
    * const aclUri = aclLinks[0]?.uri;
    * // get all links from the successful result
    * const allLinks = linkHeaderResult.linkHeader.refs
-   *
-   * @example <caption>Ignore cached link header, refetch and parse fresh headers.</caption>
-   * const linkHeaderResult = await resource.getLinkHeader(true);
-   * // handle results as previously
    */
-  async getLinkHeader(
-    ignoreCache?: boolean,
-  ): Promise<GetLinkHeaderResult<SolidResource>> {
-    if (!ignoreCache && this.linkHeader) {
-      return new GetLinkHeaderSuccess(this, true, this.linkHeader);
-    } else {
-      const result = await getLinkHeader(this, {
-        fetch: this.context.solid.fetch,
-      });
-
-      if (!result.isError) {
-        // update Link header cache
-        this.linkHeader = result.linkHeader;
-      }
-
-      return result;
-    }
-  }
-
-  /**
-   * @internal
-   *
-   * Save parsed Link header to cache.
-   * Developer, don't use this.
-   */
-  _setLinkHeader(linkHeader: LinkHeader) {
-    this.linkHeader = linkHeader;
+  async getLinkHeader(): Promise<GetLinkHeaderResult<SolidResource>> {
+    return await getLinkHeader(this);
   }
 }

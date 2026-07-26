@@ -40,7 +40,7 @@ import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidLeaf } from "./SolidLeaf";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 import type { DatasetChanges } from "@ldo/rdf-utils";
-import type { GetLinkHeaderResult } from "../getLinkHeader.js";
+import type { GetLinkHeaderResult } from "../getLinkHeader";
 
 /**
  * Represents the current status of a specific container on a Pod as known by
@@ -591,11 +591,7 @@ export class SolidContainer extends SolidResource {
     return new IgnoredInvalidUpdateSuccess(this);
   }
 
-  async getLinkHeader(
-    ignoreCache?: boolean,
-  ): Promise<GetLinkHeaderResult<SolidContainer>> {
-    return super.getLinkHeader(
-      ignoreCache,
-    ) as unknown as GetLinkHeaderResult<SolidContainer>;
+  async getLinkHeader(): Promise<GetLinkHeaderResult<SolidContainer>> {
+    return super.getLinkHeader() as unknown as GetLinkHeaderResult<SolidContainer>;
   }
 }
