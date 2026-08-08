@@ -7,6 +7,8 @@ import {
 import type { BasicRequestOptions } from "./requester/requests/requestOptions";
 import { guaranteeFetch } from "./util/guaranteeFetch";
 import type { SolidResource } from "./resources/SolidResource";
+import LinkHeader from "http-link-header";
+import { NoncompliantPodError } from "./requester/results/error/NoncompliantPodError";
 
 export type GetHeadersResult<ResourceType extends SolidResource> =
   | GetHeadersError<ResourceType>
@@ -15,16 +17,17 @@ export type GetHeadersResult<ResourceType extends SolidResource> =
 export type GetHeadersError<ResourceType extends SolidResource> =
   | HttpErrorResultType<ResourceType>
   | NotFoundHttpError<ResourceType>
-  | UnexpectedResourceError<ResourceType>;
+  | UnexpectedResourceError<ResourceType>
+  | NoncompliantPodError<ResourceType>;
 
 export class GetHeadersSuccess<
   ResourceType extends SolidResource,
 > extends ResourceSuccess<ResourceType> {
   type = "getHeadersSuccess" as const;
 
-  headers: Response["headers"];
+  headers: LinkParsedHeaders;
 
-  constructor(resource: ResourceType, headers: Response["headers"]) {
+  constructor(resource: ResourceType, headers: LinkParsedHeaders) {
     super(resource);
     this.headers = headers;
   }
@@ -61,8 +64,46 @@ export async function getHeaders<ResourceType extends SolidResource>(
       );
     }
 
-    return new GetHeadersSuccess(resource, response.headers);
+    try {
+      const headers = new LinkParsedHeaders(response.headers, response.url);
+      return new GetHeadersSuccess(resource, headers);
+    } catch (e) {
+      if (e instanceof Error) {
+        return new NoncompliantPodError(
+          resource,
+          "Parsing Link header failed: " + e.message,
+        );
+      } else {
+        throw e;
+      }
+    }
   } catch (err: unknown) {
     return UnexpectedResourceError.fromThrown(resource, err);
   }
+}
+
+export class LinkParsedHeaders extends Headers {
+  link: LinkHeader;
+
+  constructor(init: HeadersInit, baseUrl: string) {
+    super(init);
+    this.link = parseLinkHeader(this, baseUrl);
+  }
+
+  getLinkHeader(name: string): LinkHeader.Reference[] {
+    return this.link.get("rel", name);
+  }
+}
+
+export function parseLinkHeader(headers: Headers, baseUrl: string) {
+  const link = LinkHeader.parse(headers.get("Link") ?? "");
+  // let's make sure the uris are absolute
+  link.refs.forEach((ref) => {
+    // https://datatracker.ietf.org/doc/html/rfc8288#section-3.1
+    if (ref.uri) ref.uri = new URL(ref.uri, baseUrl).toString();
+    // https://datatracker.ietf.org/doc/html/rfc8288#section-3.2
+    if (ref.anchor) ref.anchor = new URL(ref.anchor, baseUrl).toString();
+  });
+
+  return link;
 }

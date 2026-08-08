@@ -56,9 +56,7 @@ import {
   type GetStorageDescriptionUriResult,
 } from "../requester/requests/getStorageDescription";
 import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess";
-import { getLinkHeader, type GetLinkHeaderResult } from "../getLinkHeader";
 import { getHeaders } from "../getHeaders";
-import { getHeader } from "../getHeader";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -1024,7 +1022,13 @@ export abstract class SolidResource
   }
 
   /**
-   * Read HTTP response headers of this Solid resource
+   * Read HTTP response headers of this Solid resource and parsed Link header
+   * headers have the interface of Headers of native fetch response
+   * https://developer.mozilla.org/en-US/docs/Web/API/Headers
+   * headers.link have the interface of "http-link-header" library
+   *   relative URIs get resolved as absolute URIs using response.url as base url
+   * headers.getLinkHeader(name) is equivalent to headers.link.get("rel", name)
+   * https://www.npmjs.com/package/parse-link-header
    *
    * @example
    * const resource = solidLdoDataset.getResource(RESOURCE_URI);
@@ -1033,48 +1037,15 @@ export abstract class SolidResource
    *   // handle error result
    * }
    * // do something with the headers
-   * headersResult.headers.get('content-type')
+   * headersResult.headers.get("content-type")
+   * // parsed Link header
+   * headersResult.headers.link
+   * // get specific parsed Link References by "rel"
+   * headersResult.headers.link.get("rel", "acl")
+   * // or equivalent shortcut
+   * headersResult.headers.getLinkHeader("acl")
    */
   async getHeaders() {
     return await getHeaders(this, { fetch: this.context.solid.fetch });
-  }
-
-  /**
-   * Read specific HTTP response header of this Solid resource
-   *
-   * @example
-   * const headerResult = await resource.getHeader(headerName);
-   * if (headerResult.isError) {
-   *   // handle error result
-   * }
-   * // do something with the header
-   * headerResult.header
-   */
-  async getHeader(headerName: string) {
-    return await getHeader(this, headerName);
-  }
-
-  /**
-   * Read links from Link header of this Solid resource.
-   *
-   * The successful linkHeader result has interface of
-   * https://www.npmjs.com/package/http-link-header
-   * which allows flexible accessing of the results.
-   *
-   * @example
-   * const resource = solidLdoDataset.getResource(RESOURCE_URI);
-   * const linkHeaderResult = await resource.getLinkHeader();
-   * if (linkHeaderResult.isError) {
-   *   // handle error result
-   * }
-   * // get array of specific links from the successful result
-   * const aclLinks = linkHeaderResult.linkHeader.get("rel", "acl");
-   * // get first rel="acl" link
-   * const aclUri = aclLinks[0]?.uri;
-   * // get all links from the successful result
-   * const allLinks = linkHeaderResult.linkHeader.refs
-   */
-  async getLinkHeader(): Promise<GetLinkHeaderResult<SolidResource>> {
-    return await getLinkHeader(this);
   }
 }

@@ -36,11 +36,10 @@ export async function getStorageDescriptionUri(
   resource: SolidLeaf | SolidContainer,
 ): Promise<GetStorageDescriptionUriResult<SolidLeaf | SolidContainer>> {
   try {
-    const linkHeaderResult = await resource.getLinkHeader();
+    const linkHeaderResult = await resource.getHeaders();
     if (linkHeaderResult.isError) return linkHeaderResult;
 
-    const storageDescriptionLinks = linkHeaderResult.linkHeader.get(
-      "rel",
+    const storageDescriptionLinks = linkHeaderResult.headers.getLinkHeader(
       "http://www.w3.org/ns/solid/terms#storageDescription",
     );
 

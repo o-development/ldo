@@ -21,7 +21,7 @@ import {
   addRawTurtleToDataset,
   addResourceRdfToContainer,
 } from "../../util/rdfUtils";
-import { parseLinkHeader } from "../../getLinkHeader";
+import { parseLinkHeader } from "../../getHeaders";
 
 /**
  * All possible return values for reading a leaf
@@ -133,7 +133,7 @@ export async function readResource(
       if (resource.type === "SolidContainer") {
         const result = checkHeadersForRootContainer(
           resource,
-          parseLinkHeader(response.headers),
+          parseLinkHeader(response.headers, response.url),
         );
         return new ContainerReadSuccess(
           resource,

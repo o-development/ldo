@@ -55,7 +55,7 @@ export async function checkRootContainer(
   resource: SolidContainer,
 ): Promise<CheckRootResult> {
   try {
-    const linkHeaderResult = await resource.getLinkHeader();
+    const linkHeaderResult = await resource.getHeaders();
     if (linkHeaderResult.isError) {
       if (
         linkHeaderResult.type === "noncompliantPodError" ||
@@ -65,7 +65,10 @@ export async function checkRootContainer(
       return linkHeaderResult;
     }
 
-    return checkHeadersForRootContainer(resource, linkHeaderResult.linkHeader);
+    return checkHeadersForRootContainer(
+      resource,
+      linkHeaderResult.headers.link,
+    );
   } catch (err) {
     return UnexpectedResourceError.fromThrown(resource, err);
   }

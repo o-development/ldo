@@ -26,7 +26,7 @@ export async function getWacUri(
   resource: SolidLeaf | SolidContainer,
 ): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
   try {
-    const linkHeaderResult = await resource.getLinkHeader();
+    const linkHeaderResult = await resource.getHeaders();
 
     if (linkHeaderResult.type === "notFoundError") {
       linkHeaderResult;
@@ -42,7 +42,14 @@ export async function getWacUri(
       return linkHeaderResult as GetWacUriError<SolidLeaf | SolidContainer>;
     }
 
-    const aclUris = linkHeaderResult.linkHeader.get("rel", "acl");
+    if (linkHeaderResult.headers.link.refs.length === 0) {
+      return new NoncompliantPodError(
+        resource,
+        `No link header present in request.`,
+      );
+    }
+
+    const aclUris = linkHeaderResult.headers.getLinkHeader("acl");
     if (aclUris.length !== 1) {
       return new NoncompliantPodError(
         resource,
