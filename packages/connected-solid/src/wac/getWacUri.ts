@@ -49,7 +49,7 @@ export async function getWacUri(
       );
     }
 
-    const aclUris = linkHeaderResult.headers.getLinkHeader("acl");
+    const aclUris = linkHeaderResult.headers.link.rel("acl");
     if (aclUris.length !== 1) {
       return new NoncompliantPodError(
         resource,

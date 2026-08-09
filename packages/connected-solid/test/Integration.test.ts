@@ -2502,6 +2502,9 @@ describe("Integration", () => {
       expect(linkHeaderResult.headers.link.rel("acl")[0].uri).toEqual(
         SAMPLE_DATA_URI + ".acl",
       );
+      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
+        SAMPLE_DATA_URI + ".acl",
+      );
     });
 
     it("returns a success result with link headers of a Solid container", async () => {
@@ -2509,10 +2512,10 @@ describe("Integration", () => {
       const linkHeaderResult = await resource.getHeaders();
       expect(linkHeaderResult.isError).toBe(false);
       assert.equal(linkHeaderResult.isError, false);
-      expect(linkHeaderResult.headers.link.get("rel", "acl")[0].uri).toEqual(
+      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
         TEST_CONTAINER_ACL_URI,
       );
-      expect(linkHeaderResult.headers.getLinkHeader("type")).toContainEqual({
+      expect(linkHeaderResult.headers.link.rel("type")).toContainEqual({
         rel: "type",
         uri: "http://www.w3.org/ns/ldp#Container",
       });
@@ -2530,7 +2533,7 @@ describe("Integration", () => {
       const linkHeaderResult = await resource.getHeaders();
       expect(linkHeaderResult.isError).toBe(false);
       assert.equal(linkHeaderResult.isError, false);
-      expect(linkHeaderResult.headers.getLinkHeader("acl")[0].uri).toEqual(
+      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
         TEST_CONTAINER_ACL_URI,
       );
     });
@@ -2562,7 +2565,10 @@ describe("Integration", () => {
       assert.equal(linkHeaderResult.isError, false); // narrow result type
       expect(linkHeaderResult.headers.link.refs).toHaveLength(0);
       expect(linkHeaderResult.headers.link.refs).toEqual([]);
-      expect(linkHeaderResult.headers.getLinkHeader("acl")).toEqual([]);
+      expect(linkHeaderResult.headers.link.rel("acl")).toEqual([]);
+      expect(linkHeaderResult.headers.getLinkRef("acl")).toBeTypeOf(
+        "undefined",
+      );
     });
 
     it("returns empty result when link header of particular rel is missing", async () => {
@@ -2578,7 +2584,10 @@ describe("Integration", () => {
       const linkHeaderResult = await resource.getHeaders();
       expect(linkHeaderResult.isError).toBe(false);
       assert.equal(linkHeaderResult.isError, false); // narrow result type
-      expect(linkHeaderResult.headers.getLinkHeader("type")).toEqual([]);
+      expect(linkHeaderResult.headers.link.rel("type")).toEqual([]);
+      expect(linkHeaderResult.headers.getLinkRef("type")).toBeTypeOf(
+        "undefined",
+      );
     });
   });
 });

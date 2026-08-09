@@ -82,16 +82,32 @@ export async function getHeaders<ResourceType extends SolidResource>(
   }
 }
 
+/**
+ * Native fetch Response Headers interface
+ * enhanced with parsed link headers.
+ */
 export class LinkParsedHeaders extends Headers {
-  link: LinkHeader;
+  /**
+   * The Parsed Link header with interface of 'http-link-header' npm package.
+   * https://www.npmjs.com/package/http-link-header
+   */
+  readonly link: LinkHeader;
 
   constructor(init: HeadersInit, baseUrl: string) {
     super(init);
     this.link = parseLinkHeader(this, baseUrl);
   }
 
-  getLinkHeader(name: string): LinkHeader.Reference[] {
-    return this.link.get("rel", name);
+  /**
+   * Read a single Link Reference by "rel" parameter.
+   * Please note that a Link header can have multiple Link References per "rel" parameter.
+   * This method will return the first Link Reference. There is no guarantee of order.
+   *
+   * If you need a more flexible API, use `link` property,
+   * which exposes the full interface of the 'http-link-header' npm package.
+   */
+  getLinkRef(rel: string): LinkHeader.Reference | undefined {
+    return this.link.get("rel", rel)[0];
   }
 }
 
@@ -100,7 +116,7 @@ export function parseLinkHeader(headers: Headers, baseUrl: string) {
   // let's make sure the uris are absolute
   link.refs.forEach((ref) => {
     // https://datatracker.ietf.org/doc/html/rfc8288#section-3.1
-    if (ref.uri) ref.uri = new URL(ref.uri, baseUrl).toString();
+    ref.uri = new URL(ref.uri, baseUrl).toString();
     // https://datatracker.ietf.org/doc/html/rfc8288#section-3.2
     if (ref.anchor) ref.anchor = new URL(ref.anchor, baseUrl).toString();
   });

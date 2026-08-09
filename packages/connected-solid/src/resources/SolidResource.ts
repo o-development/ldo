@@ -1022,13 +1022,20 @@ export abstract class SolidResource
   }
 
   /**
-   * Read HTTP response headers of this Solid resource and parsed Link header
-   * headers have the interface of Headers of native fetch response
+   * Read HTTP response headers of this Solid resource and parsed Link header.
+   *
+   * Headers `headersResult.headers` have the interface of Headers of native fetch response:
    * https://developer.mozilla.org/en-US/docs/Web/API/Headers
-   * headers.link have the interface of "http-link-header" library
-   *   relative URIs get resolved as absolute URIs using response.url as base url
-   * headers.getLinkHeader(name) is equivalent to headers.link.get("rel", name)
-   * https://www.npmjs.com/package/parse-link-header
+   *
+   * Parsed link header `headersResult.headers.link` has the interface of "http-link-header" library:
+   * https://www.npmjs.com/package/http-link-header
+   * Relative URIs get resolved as absolute URIs using response.url as the base URL.
+   *
+   * If you want a quick result for a single Link Reference by "rel" parameter,
+   * use `headersResult.headers.getLinkRef(rel: string)`.
+   * Please note that this helper method only returns the first match and ignores
+   * any subsequent duplicate Link References for that relation type.
+   * Order of picking the Link References is not guaranteed.
    *
    * @example
    * const resource = solidLdoDataset.getResource(RESOURCE_URI);
@@ -1036,14 +1043,22 @@ export abstract class SolidResource
    * if (headersResult.isError) {
    *   // handle error result
    * }
+   *
    * // do something with the headers
    * headersResult.headers.get("content-type")
-   * // parsed Link header
+   *
+   * // get specific Link Reference by "rel".
+   * // If multiple "rel" References are present, only one is picked.
+   * // Order is not guaranteed.
+   * headersResult.headers.getLinkRef("acl")?.uri
+   *
+   * // get full parsed `http-link-header` interface
    * headersResult.headers.link
+   *
    * // get specific parsed Link References by "rel"
    * headersResult.headers.link.get("rel", "acl")
-   * // or equivalent shortcut
-   * headersResult.headers.getLinkHeader("acl")
+   * // or shortcut
+   * headersResult.headers.link.rel("acl")
    */
   async getHeaders() {
     return await getHeaders(this, { fetch: this.context.solid.fetch });

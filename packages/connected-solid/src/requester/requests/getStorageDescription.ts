@@ -39,7 +39,7 @@ export async function getStorageDescriptionUri(
     const linkHeaderResult = await resource.getHeaders();
     if (linkHeaderResult.isError) return linkHeaderResult;
 
-    const storageDescriptionLinks = linkHeaderResult.headers.getLinkHeader(
+    const storageDescriptionLinks = linkHeaderResult.headers.link.rel(
       "http://www.w3.org/ns/solid/terms#storageDescription",
     );
 
