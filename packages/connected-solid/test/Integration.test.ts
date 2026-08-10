@@ -2539,7 +2539,7 @@ describe("Integration", () => {
       );
     });
 
-    it("returns getHeaders link error (extended NoncompliantPodError) with raw headers when link header is invalid", async () => {
+    it("returns GetHeadersLinkError (extended NoncompliantPodError) with raw headers when link header is invalid", async () => {
       s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,

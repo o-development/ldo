@@ -1022,22 +1022,16 @@ export abstract class SolidResource
   }
 
   /**
-   * Read HTTP response headers of this Solid resource and parsed Link header.
+   * Reads the HTTP response headers of this Solid resource and parses the `Link` header.
    *
-   * Headers `headersResult.headers` have the interface of Headers of native fetch response:
-   * https://developer.mozilla.org/en-US/docs/Web/API/Headers
+   * - `headersResult.headers` matches the native Web API {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers Headers} interface.
+   * - `headersResult.headers.link` matches {@link https://www.npmjs.com/package/http-link-header http-link-header} npm library's `parse` result. Additionally, relative URIs are automatically resolved to absolute URIs using the response URL as a base.
+   * - Use `headersResult.headers.getLinkRef(rel: string)` to quickly fetch a single Link Reference by its `rel` parameter.
    *
-   * Parsed link header `headersResult.headers.link` has the interface of "http-link-header" library:
-   * https://www.npmjs.com/package/http-link-header
-   * Relative URIs get resolved as absolute URIs using response.url as the base URL.
-   *
-   * If you want a quick result for a single Link Reference by "rel" parameter,
-   * use `headersResult.headers.getLinkRef(rel: string)`.
-   * Please note that this helper method only returns the first match and ignores
-   * any subsequent duplicate Link References for that relation type.
-   * Order of picking the Link References is not guaranteed.
+   *   *Note: `getLinkRef` method only returns the first match, ignores subsequent duplicates for that relation type, and does not guarantee ordering.*
    *
    * @example
+   * ```typescript
    * const resource = solidLdoDataset.getResource(RESOURCE_URI);
    * const headersResult = await resource.getHeaders();
    * if (headersResult.isError) {
@@ -1059,6 +1053,24 @@ export abstract class SolidResource
    * headersResult.headers.link.get("rel", "acl")
    * // or shortcut
    * headersResult.headers.link.rel("acl")
+   * ```
+   *
+   *
+   * If you only care about raw headers and you deal with inconsistent response
+   * `Link` header, you can still get the raw headers:
+   * @example
+   * ```typescript
+   * const resource = solidLdoDataset.getResource(URI);
+   * const headersResult = await resource.getHeaders();
+   *   if (
+   *     !headersResult.isError ||
+   *     (headersResult.isError && headersResult instanceof GetHeadersLinkError)
+   *   ) {
+   *     // do something with the raw headers
+   *     const contentType = headersResult.headers.get("content-type")
+   *   }
+   * }
+   * ```
    */
   async getHeaders() {
     return await getHeaders(this, { fetch: this.context.solid.fetch });
