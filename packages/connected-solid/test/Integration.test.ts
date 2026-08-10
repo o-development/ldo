@@ -12,7 +12,7 @@ import type {
   UnauthenticatedHttpError,
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
+import { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
 import { wait, MockResponse } from "./utils.helper";
 import path from "path";
@@ -49,6 +49,7 @@ import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
+import { GetHeadersLinkError } from "../src/getHeaders.js";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -2496,26 +2497,26 @@ describe("Integration", () => {
 
     it("returns a success result with link headers of a Solid leaf", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(false);
-      assert.equal(linkHeaderResult.isError, false);
-      expect(linkHeaderResult.headers.link.rel("acl")[0].uri).toEqual(
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.link.rel("acl")[0].uri).toEqual(
         SAMPLE_DATA_URI + ".acl",
       );
-      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
         SAMPLE_DATA_URI + ".acl",
       );
     });
 
     it("returns a success result with link headers of a Solid container", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(false);
-      assert.equal(linkHeaderResult.isError, false);
-      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
         TEST_CONTAINER_ACL_URI,
       );
-      expect(linkHeaderResult.headers.link.rel("type")).toContainEqual({
+      expect(headersResult.headers.link.rel("type")).toContainEqual({
         rel: "type",
         uri: "http://www.w3.org/ns/ldp#Container",
       });
@@ -2530,26 +2531,32 @@ describe("Integration", () => {
         }),
       );
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(false);
-      assert.equal(linkHeaderResult.isError, false);
-      expect(linkHeaderResult.headers.getLinkRef("acl")?.uri).toEqual(
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
         TEST_CONTAINER_ACL_URI,
       );
     });
 
-    it("returns noncompliant pod error when link header is invalid", async () => {
+    it("returns getHeaders link error (extended NoncompliantPodError) with raw headers when link header is invalid", async () => {
       s.fetchMock.mockResolvedValueOnce(
         new Response(TEST_CONTAINER_TTL, {
           status: 200,
-          headers: { link: "#@!" },
+          headers: { link: "#@!", "content-type": "application/ld+test" },
         }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(true);
-      assert.equal(linkHeaderResult.isError, true); // narrow result type
-      expect(linkHeaderResult.type).toEqual("noncompliantPodError");
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(true);
+      assert.equal(headersResult.isError, true); // narrow result type
+      expect(headersResult.type).toEqual("noncompliantPodError");
+      expect(headersResult).toBeInstanceOf(NoncompliantPodError);
+      expect(headersResult).toBeInstanceOf(GetHeadersLinkError);
+      assert(headersResult instanceof GetHeadersLinkError); // assert narrows
+      expect(headersResult.headers.get("content-type")).toEqual(
+        "application/ld+test",
+      );
     });
 
     it("returns empty result when link header is missing", async () => {
@@ -2560,15 +2567,13 @@ describe("Integration", () => {
         }),
       );
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(false);
-      assert.equal(linkHeaderResult.isError, false); // narrow result type
-      expect(linkHeaderResult.headers.link.refs).toHaveLength(0);
-      expect(linkHeaderResult.headers.link.refs).toEqual([]);
-      expect(linkHeaderResult.headers.link.rel("acl")).toEqual([]);
-      expect(linkHeaderResult.headers.getLinkRef("acl")).toBeTypeOf(
-        "undefined",
-      );
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false); // narrow result type
+      expect(headersResult.headers.link.refs).toHaveLength(0);
+      expect(headersResult.headers.link.refs).toEqual([]);
+      expect(headersResult.headers.link.rel("acl")).toEqual([]);
+      expect(headersResult.headers.getLinkRef("acl")).toBeTypeOf("undefined");
     });
 
     it("returns empty result when link header of particular rel is missing", async () => {
@@ -2581,13 +2586,11 @@ describe("Integration", () => {
       );
 
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
-      const linkHeaderResult = await resource.getHeaders();
-      expect(linkHeaderResult.isError).toBe(false);
-      assert.equal(linkHeaderResult.isError, false); // narrow result type
-      expect(linkHeaderResult.headers.link.rel("type")).toEqual([]);
-      expect(linkHeaderResult.headers.getLinkRef("type")).toBeTypeOf(
-        "undefined",
-      );
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false); // narrow result type
+      expect(headersResult.headers.link.rel("type")).toEqual([]);
+      expect(headersResult.headers.getLinkRef("type")).toBeTypeOf("undefined");
     });
   });
 });

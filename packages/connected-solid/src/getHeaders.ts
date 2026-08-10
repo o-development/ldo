@@ -18,7 +18,7 @@ export type GetHeadersError<ResourceType extends SolidResource> =
   | HttpErrorResultType<ResourceType>
   | NotFoundHttpError<ResourceType>
   | UnexpectedResourceError<ResourceType>
-  | NoncompliantPodError<ResourceType>;
+  | GetHeadersLinkError<ResourceType>;
 
 export class GetHeadersSuccess<
   ResourceType extends SolidResource,
@@ -29,6 +29,35 @@ export class GetHeadersSuccess<
 
   constructor(resource: ResourceType, headers: LinkParsedHeaders) {
     super(resource);
+    this.headers = headers;
+  }
+}
+
+/**
+ * This error indicates that parsing `Link` header failed. It still returns raw headers
+ * in `result.headers`.
+ *
+ * If you only care about raw headers and you deal with inconsistent response
+ * `Link` header, you can still get the raw headers:
+ *
+ * @example
+ * const resource = solidLdoDataset.getResource(URI);
+ * const headersResult = await resource.getHeaders();
+ *   if (
+ *     !headersResult.isError ||
+ *     (headersResult.isError && headersResult instanceof GetHeadersLinkError)
+ *   ) {
+ *     // do something with the raw headers
+ *     const contentType = headersResult.headers.get("content-type")
+ *   }
+ * }
+ */
+export class GetHeadersLinkError<
+  ResourceType extends SolidResource,
+> extends NoncompliantPodError<ResourceType> {
+  readonly headers: Headers;
+  constructor(resource: ResourceType, message: string, headers: Headers) {
+    super(resource, `Link header could not be parsed: ${message}`);
     this.headers = headers;
   }
 }
@@ -69,10 +98,7 @@ export async function getHeaders<ResourceType extends SolidResource>(
       return new GetHeadersSuccess(resource, headers);
     } catch (e) {
       if (e instanceof Error) {
-        return new NoncompliantPodError(
-          resource,
-          "Parsing Link header failed: " + e.message,
-        );
+        return new GetHeadersLinkError(resource, e.message, response.headers);
       } else {
         throw e;
       }
