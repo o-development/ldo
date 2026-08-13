@@ -49,7 +49,7 @@ import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
-import { GetHeadersLinkError } from "../src/getHeaders.js";
+import { GetHeadersLinkError } from "../src/getHeaders";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
