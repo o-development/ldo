@@ -64,6 +64,6 @@ const combinedDataset = defaultDataset.union(defaultDataset2);
 const differenceDataset = combinedDataset.difference(customDataset);
 // Prints true because "defaultDataset2" and "customDataset" have equal values
 // combinedDataset = defaultDataset ∪ defaultDataset2
-// differenceDatasset = defaultDataset \ customDataset
+// differenceDataset = defaultDataset \ customDataset
 // Therefore differenceDataset == defaultDataset
 console.log(differenceDataset.equals(defaultDataset));

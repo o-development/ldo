@@ -12,9 +12,9 @@ import type {
   UnauthenticatedHttpError,
   UnexpectedHttpError,
 } from "../src/requester/results/error/HttpErrorResult";
-import type { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
+import { NoncompliantPodError } from "../src/requester/results/error/NoncompliantPodError";
 import type { GetStorageContainerFromWebIdSuccess } from "../src/requester/results/success/CheckRootContainerSuccess";
-import { wait } from "./utils.helper";
+import { wait, MockResponse } from "./utils.helper";
 import path from "path";
 import type {
   GetWacRuleSuccess,
@@ -49,6 +49,7 @@ import type { ResourceInfo } from "@ldo/test-solid-server";
 import { createApp, setupServer } from "@ldo/test-solid-server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import assert from "node:assert/strict";
+import { GetHeadersLinkError } from "../src/getHeaders";
 
 const ROOT_CONTAINER = "http://localhost:3001/";
 const WEB_ID = "http://localhost:3001/example/profile/card#me";
@@ -99,7 +100,7 @@ const TEST_CONTAINER_TTL = `@prefix dc: <http://purl.org/dc/terms/>.
     posix:size 522.
 <sample.txt> posix:mtime 1697810234;
     posix:size 10.`;
-const _TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
+const TEST_CONTAINER_ACL_URI = `${TEST_CONTAINER_URI}.acl`;
 const TEST_CONTAINER_ACL = `<#b30e3fd1-b5a8-4763-ad9d-e95de9cf7933> a <http://www.w3.org/ns/auth/acl#Authorization>;
 <http://www.w3.org/ns/auth/acl#accessTo> <${TEST_CONTAINER_URI}>;
 <http://www.w3.org/ns/auth/acl#default> <${TEST_CONTAINER_URI}>;
@@ -1116,7 +1117,7 @@ describe("Integration", () => {
     it("returns an unexpected resource error if an unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockImplementationOnce(async () => {
-        throw new Error("Some unknwon");
+        throw new Error("Some unknown");
       });
       const result = await resource.delete();
       expect(result.isError).toBe(true);
@@ -1989,8 +1990,9 @@ describe("Integration", () => {
     it("returns a non-compliant error if a response is returned without a link header", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("Error", {
+        new MockResponse("Error", {
           status: 200,
+          url: SAMPLE_DATA_URI,
         }),
       );
       const wacResult = await resource.getWac();
@@ -2006,9 +2008,10 @@ describe("Integration", () => {
     it("returns a non-compliant error if a response is returned without an ACL link", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("Error", {
+        new MockResponse("Error", {
           status: 200,
           headers: { link: `<card.meta>; rel="describedBy"` },
+          url: SAMPLE_DATA_URI,
         }),
       );
       const wacResult = await resource.getWac();
@@ -2034,9 +2037,10 @@ describe("Integration", () => {
     it("Returns an error if the request to get the ACL fails", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("", {
+        new MockResponse("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
+          url: SAMPLE_DATA_URI,
         }),
       );
       s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 500 }));
@@ -2050,9 +2054,10 @@ describe("Integration", () => {
     it("Returns an error if the request to the ACL resource returns invalid turtle", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("", {
+        new MockResponse("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
+          url: SAMPLE_DATA_URI,
         }),
       );
       s.fetchMock.mockResolvedValueOnce(
@@ -2071,9 +2076,10 @@ describe("Integration", () => {
     it("Returns an error if there was a problem getting the parent resource", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("", {
+        new MockResponse("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
+          url: TEST_CONTAINER_URI,
         }),
       );
       s.fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
@@ -2086,9 +2092,10 @@ describe("Integration", () => {
     it("returns a NonCompliantPodError when this is the root resource and it doesn't have an ACL", async () => {
       const resource = solidLdoDataset.getResource(ROOT_CONTAINER);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("", {
+        new MockResponse("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
+          url: ROOT_CONTAINER,
         }),
       );
       s.fetchMock.mockResolvedValueOnce(new Response("", { status: 404 }));
@@ -2174,9 +2181,10 @@ describe("Integration", () => {
     it("Returns an error when the request to write the access rules throws an error", async () => {
       const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
       s.fetchMock.mockResolvedValueOnce(
-        new Response("", {
+        new MockResponse("", {
           status: 200,
           headers: { link: `<card.acl>; rel="acl"` },
+          url: TEST_CONTAINER_URI,
         }),
       );
       s.fetchMock.mockResolvedValueOnce(new Response("", { status: 500 }));
@@ -2235,7 +2243,7 @@ describe("Integration", () => {
       ).toBe(1);
       expect(spidermanCallback).toHaveBeenCalledTimes(1);
 
-      // Notification is not propogated after unsubscribe
+      // Notification is not propagated after unsubscribe
       spidermanCallback.mockClear();
       await resource.unsubscribeFromNotifications(subscriptionId);
       expect(resource.isSubscribedToNotifications()).toBe(false);
@@ -2376,7 +2384,7 @@ describe("Integration", () => {
       await s.app.start();
     });
 
-    it.skip("returns an error when the server doesnt support websockets", async () => {
+    it.skip("returns an error when the server doesn't support websockets", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       const onError = vi.fn();
 
@@ -2427,6 +2435,162 @@ describe("Integration", () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       await resource.unsubscribeFromAllNotifications();
       expect(resource.isSubscribedToNotifications()).toBe(false);
+    });
+  });
+
+  describe("Access HTTP response headers with .getHeaders()", () => {
+    beforeEach(() => {
+      s.fetchMock.mockClear();
+    });
+
+    it("returns a success result with HTTP headers of a Solid leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.get("access-control-allow-origin")).toEqual(
+        "*",
+      );
+    });
+
+    it("returns a success result with HTTP headers of a Solid container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.get("access-control-allow-origin")).toEqual(
+        "*",
+      );
+    });
+
+    it("always fetches a fresh result", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false); // assert narrows the type
+      expect(s.fetchMock.mock.calls).toHaveLength(1);
+
+      // fetch second time, see that fetch request was made
+      s.fetchMock.mockClear();
+      const headersResult2 = await resource.getHeaders();
+      expect(headersResult2.isError).toBe(false);
+      assert.equal(headersResult2.isError, false); // assert narrows the type
+      expect(s.fetchMock.mock.calls).toHaveLength(1);
+    });
+
+    it("returns error when resource doesn't exist", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE2_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(true);
+      assert.equal(headersResult.isError, true); // narrow result type
+      expect(headersResult.type).toEqual("notFoundError");
+    });
+
+    it("returns unexpected resource error when request fails for unexpected reasons", async () => {
+      s.fetchMock.mockRejectedValueOnce(new Error("This is a failure."));
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(true);
+      assert.equal(headersResult.isError, true); // narrow result type
+      expect(headersResult.type).toEqual("unexpectedResourceError");
+    });
+
+    it("returns a success result with link headers of a Solid leaf", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.link.rel("acl")[0].uri).toEqual(
+        SAMPLE_DATA_URI + ".acl",
+      );
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
+        SAMPLE_DATA_URI + ".acl",
+      );
+    });
+
+    it("returns a success result with link headers of a Solid container", async () => {
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
+        TEST_CONTAINER_ACL_URI,
+      );
+      expect(headersResult.headers.link.rel("type")).toContainEqual({
+        rel: "type",
+        uri: "http://www.w3.org/ns/ldp#Container",
+      });
+    });
+
+    it("resolves relative URIs in link header", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new MockResponse("", {
+          status: 200,
+          headers: { Link: '<.acl>; rel="acl"' },
+          url: TEST_CONTAINER_URI,
+        }),
+      );
+      const resource = solidLdoDataset.getResource(TEST_CONTAINER_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false);
+      expect(headersResult.headers.getLinkRef("acl")?.uri).toEqual(
+        TEST_CONTAINER_ACL_URI,
+      );
+    });
+
+    it("returns GetHeadersLinkError (extended NoncompliantPodError) with raw headers when link header is invalid", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: { link: "#@!", "content-type": "application/ld+test" },
+        }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(true);
+      assert.equal(headersResult.isError, true); // narrow result type
+      expect(headersResult.type).toEqual("noncompliantPodError");
+      expect(headersResult).toBeInstanceOf(NoncompliantPodError);
+      expect(headersResult).toBeInstanceOf(GetHeadersLinkError);
+      assert(headersResult instanceof GetHeadersLinkError); // assert narrows
+      expect(headersResult.headers.get("content-type")).toEqual(
+        "application/ld+test",
+      );
+    });
+
+    it("returns empty result when link header is missing", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, {
+          status: 200,
+          headers: {},
+        }),
+      );
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false); // narrow result type
+      expect(headersResult.headers.link.refs).toHaveLength(0);
+      expect(headersResult.headers.link.refs).toEqual([]);
+      expect(headersResult.headers.link.rel("acl")).toEqual([]);
+      expect(headersResult.headers.getLinkRef("acl")).toBeTypeOf("undefined");
+    });
+
+    it("returns empty result when link header of particular rel is missing", async () => {
+      s.fetchMock.mockResolvedValueOnce(
+        new MockResponse("", {
+          status: 200,
+          headers: { Link: '<https://example.com>; rel="acl"' },
+          url: TEST_CONTAINER_URI,
+        }),
+      );
+
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      const headersResult = await resource.getHeaders();
+      expect(headersResult.isError).toBe(false);
+      assert.equal(headersResult.isError, false); // narrow result type
+      expect(headersResult.headers.link.rel("type")).toEqual([]);
+      expect(headersResult.headers.getLinkRef("type")).toBeTypeOf("undefined");
     });
   });
 });

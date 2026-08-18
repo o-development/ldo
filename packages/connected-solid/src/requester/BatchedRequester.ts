@@ -83,7 +83,7 @@ export abstract class BatchedRequester<
    * Checks if the resource is currently executing a delete request
    * @returns true if the resource is currently executing a delete request
    */
-  isDeletinng(): boolean {
+  isDeleting(): boolean {
     return this.requestBatcher.isLoading(DELETE_KEY);
   }
 
