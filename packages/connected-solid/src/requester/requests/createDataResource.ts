@@ -3,7 +3,10 @@ import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { AbsentReadSuccess, Resource } from "@ldo/connected";
 import { UnexpectedResourceError } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import {
+  HttpErrorResult,
+  NotFoundHttpError,
+} from "../results/error/HttpErrorResult";
 import { CreateSuccess } from "../results/success/CreateSuccess";
 import type {
   ReadContainerResult,
@@ -178,6 +181,17 @@ export async function createDataResource(
       return httpError as
         | HttpErrorResultType<SolidContainer>
         | HttpErrorResultType<SolidLeaf>;
+
+    // Let's handle possible 404 response.
+    // PUT should create intermediate containers, therefore 404 suggests noncompliant pod.
+    // https://solidproject.org/TR/protocol#server-put-patch-intermediate-containers
+    if (NotFoundHttpError.is(response))
+      return new NoncompliantPodError(
+        resource,
+        "Failed to save Solid resource. The server returned a 404 error.",
+      ) as
+        | NoncompliantPodError<SolidContainer>
+        | NoncompliantPodError<SolidLeaf>;
 
     const didOverwrite = response.status !== 201;
 

@@ -1,6 +1,9 @@
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { UnexpectedResourceError } from "@ldo/connected";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import {
+  HttpErrorResult,
+  NotFoundHttpError,
+} from "../results/error/HttpErrorResult";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
@@ -77,6 +80,15 @@ export async function uploadResource(
 
     const httpError = HttpErrorResult.checkResponse(resource, response);
     if (httpError) return httpError;
+
+    // Let's handle possible 404 response.
+    // PUT should create intermediate containers, therefore 404 suggests noncompliant pod.
+    // https://solidproject.org/TR/protocol#server-put-patch-intermediate-containers
+    if (NotFoundHttpError.is(response))
+      return new NoncompliantPodError(
+        resource,
+        "Failed to upload Solid resource. The server returned a 404 error.",
+      );
 
     const didOverwrite = response.status !== 201;
 
