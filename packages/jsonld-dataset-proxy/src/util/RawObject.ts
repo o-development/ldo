@@ -15,6 +15,7 @@ export type RawValue =
   | string
   | boolean
   | number
+  | Date
   | RawObject
   | NamedNode
   | BlankNode
