@@ -1,6 +1,6 @@
 {
   "entryPoints": ["src/index.ts"],
-  "tsconfig": "tsconfig.build.json",
+  "tsconfig": "tsconfig.esm.json",
   "out": "docs",
   "allReflectionsHaveOwnDocument": true,
   "hideInPageTOC": true,
