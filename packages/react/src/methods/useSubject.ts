@@ -43,7 +43,7 @@ export function createUseSubject<Plugins extends ConnectedPlugin[]>(
 ): useSubjectType<Plugins> {
   /**
    * Returns a Linked Data Object based on the provided subject. Triggers a
-   * rerender if the data is udpated.
+   * rerender if the data is updated.
    */
   return function useSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,

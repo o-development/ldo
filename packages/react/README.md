@@ -1,24 +1,28 @@
 # @ldo/react
 
-`@ldo/react` provides tool and hooks for easily building Solid applications using react.
+`@ldo/react` provides tools and hooks for easily building [RDF](https://www.w3.org/RDF/) applications using [React](https://react.dev).
 
-## Guide
-
-A full walkthrough for using the `@ldo/solid` library can be found in the [For Solid + React Guide](https://ldo.js.org/latest/guides/solid_react/)
+**Note:** If you're building a [Solid](https://solidproject.org) application with React, we recommend that you use [@ldo/solid-react](https://www.npmjs.com/package/@ldo/solid-react) instead of this package.
 
 ## Installation
 
 Navigate into your project's root folder and run the following command:
 
-```
+```sh
 cd my_project/
-npx run @ldo/cli init
+npx @ldo/cli init
 ```
 
-Now install the @ldo/solid library
+Now install the @ldo/react library:
 
+```sh
+npm i @ldo/react
 ```
-npm i @ldo/solid @ldo/react
+
+Also install a connected plugin of your choice:
+
+```sh
+npm i @ldo/connected-solid @ldo/connected-nextgraph
 ```
 
 <details>
@@ -26,85 +30,109 @@ npm i @ldo/solid @ldo/react
 Manual Installation
 </summary>
 
-If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
+If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/react` libraries independently.
 
+```sh
+npm i @ldo/ldo @ldo/react
 ```
-npm i @ldo/ldo @ldo/solid @ldo/react
+
+Also install the connected plugin of your choice:
+
+```sh
+npm i @ldo/connected-solid @ldo/connected-nextgraph
 ```
 
 </details>
 
 ## Simple Example
 
-Below is a simple example of @ldo/react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/solidProfile.shapeTypess`.
+Below is a simple example of @ldo/react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes.ts`.
 
-```typescript
-import type { FunctionComponent } from "react";
-import React, { useCallback } from "react";
-import {
-  BrowserSolidLdoProvider,
-  useResource,
-  useSolidAuth,
-  useSubject,
-} from "@ldo/react";
-import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes.js";
-import { changeData, commitData } from "@ldo/solid";
+```tsx
+import { createLdoReactMethods } from "@ldo/react";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
+import { solidConnectedPlugin, type SolidLeafUri } from "@ldo/connected-solid";
+import { useCallback, useEffect, type FunctionComponent } from "react";
 
-// The base component for the app
-const App: FunctionComponent = () => {
-  return (
-    /* The application should be surrounded with the BrowserSolidLdoProvider
-    this will set up all the underlying infrastructure for the application */
-    <BrowserSolidLdoProvider>
-      <Login />
-    </BrowserSolidLdoProvider>
-  );
-};
+const { useLdo, useSubject, useResource, dataset } = createLdoReactMethods([
+  solidConnectedPlugin,
+]);
 
-// A component that handles login
-const Login: FunctionComponent = () => {
-  // Get login information using the "useSolidAuth" hook
-  const { login, logout, session } = useSolidAuth();
+// At some point, you may want to implement some form of authentication
+// suitable for your connected plugin,
+// especially if you want to access non-public data.
+// If you're building a Solid app, we strongly recommend @ldo/solid-react
+// instead of this library.
+// In this case, you need to get authenticated fetch from the current session
+dataset.setContext("solid", { fetch: authFetch });
 
-  const onLogin = useCallback(() => {
-    const issuer = prompt("What is your Solid IDP?");
-    // Call the "login" function to initiate login
-    if (issuer) login(issuer);
+function App() {
+  useEffect(() => {
+    // If you use auth library, you will need to handle login redirect
   }, []);
 
-  // You can use session.isLoggedIn to check if the user is logged in
-  if (session.isLoggedIn) {
+  return <Login></Login>;
+}
+
+const Login: FunctionComponent = () => {
+  const handleLogin = useCallback(async () => {
+    const issuer = prompt("What is your Solid IDP?");
+    // Call the "login" function to initiate login
+    if (issuer) {
+      // You will need to handle login depending on your auth library of choice
+    }
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    // You will need to handle logout depending on your auth library of choice
+  }, []);
+
+  /**
+   * You will need to replace the following with the API of your auth library
+   */
+  const webId = authLibrarySession.webId;
+  const isSignedIn = authLibrarySession.isSignedIn;
+
+  if (isSignedIn) {
     return (
       <div>
-        {/* Get the user's webId from session.webId */}
-        <p>Logged in as {session.webId}</p>
+        {/* Get the user's webId */}
+        <p>Logged in as {webId}</p>
         {/* Use the logout function to log out */}
-        <button onClick={logout}>Log Out</button>
-        <Profile />
+        <button onClick={handleLogout}>Log Out</button>
+        <Profile webId={webId} />
       </div>
     );
   }
-  return <button onClick={onLogin}>Log In</button>;
+  return <button onClick={handleLogin}>Log In</button>;
 };
 
 // Renders the name on the profile
-const Profile: FunctionComponent = () => {
-  const { session } = useSolidAuth();
+const Profile: FunctionComponent<{ webId: SolidLeafUri }> = ({ webId }) => {
+  const { changeData, commitData } = useLdo();
   // With useResource, you can automatically fetch a resource
-  const resource = useResource(session.webId);
+  const resource = useResource(webId);
   // With useSubject, you can extract data from that resource
-  const profile = useSubject(SolidProfileShapeShapeType, session.webId);
+  const profile = useSubject(FoafProfileShapeType, webId);
 
-  const onNameChange = useCallback(async (e) => {
-    // Ensure that the
-    if (!profile || !resource) return;
-    // Change data lets you create a new object to make changes to
-    const cProfile = changeData(profile, resource);
-    // Change the name
-    cProfile.name = e.target.value;
-    // Commit the data back to the Pod
-    await commitData(cProfile);
-  }, []);
+  const onNameChange = useCallback(
+    async (e) => {
+      // Ensure that the profile and resource exist
+      if (!profile || !resource) return;
+      // Change data lets you create a new object to make changes to
+      const cProfile = changeData(profile, resource);
+      console.log("changed data");
+      // Change the name
+      cProfile.name = e.target.value;
+      // Commit the data back to the Pod
+      const result = await commitData(cProfile);
+
+      console.log(result.isError);
+      if (!result.isError && result.type === "aggregateSuccess")
+        console.log(result.results);
+    },
+    [changeData, commitData, profile, resource],
+  );
 
   return <input type="text" value={profile?.name} onChange={onNameChange} />;
 };
@@ -114,22 +142,19 @@ export default App;
 
 ## API Details
 
-Providers
-
-- [BrowserSolidLdoProvider](https://ldo.js.org/latest/api/react/BrowserSolidLdoProvider/)
-- [SolidLdoProvider](https://ldo.js.org/latest/api/react/SolidLdoProvider/)
-
 Hooks
 
 - [useLdo](https://ldo.js.org/latest/api/react/useLdo/)
 - [useResource](https://ldo.js.org/latest/api/react/useResource/)
-- [useRootContainer](https://ldo.js.org/latest/api/react/useRootContainer/)
-- [useSolidAuth](https://ldo.js.org/latest/api/react/useSolidAuth/)
 - [useSubject](https://ldo.js.org/latest/api/react/useSubject/)
 - [useMatchSubject](https://ldo.js.org/latest/api/react/useMatchSubject/)
-- [useMatchObject](https://ldo.js.org/latest/api/react/useMatchSubject/)
-- [useSubscribeToResource](https://ldo.js.org/latest/api/react/useMatchSubject/)
+- [useMatchObject](https://ldo.js.org/latest/api/react/useMatchObject/)
+- [useSubscribeToResource](https://ldo.js.org/latest/api/react/useSubscribeToResource/)
 - [useLinkQuery](https://ldo.js.org/latest/api/react/useLinkQuery/)
+- [useChangeSubject](https://ldo.js.org/latest/api/react/useChangeSubject/)
+- [useChangeMatchSubject](https://ldo.js.org/latest/api/react/useChangeMatchSubject/)
+- [useChangeMatchObject](https://ldo.js.org/latest/api/react/useChangeMatchObject/)
+- [useChangeDataset](https://ldo.js.org/latest/api/react/useChangeDataset/)
 
 ## Sponsorship
 
