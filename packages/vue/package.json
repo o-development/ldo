@@ -1,7 +1,7 @@
 {
   "name": "@ldo/vue",
   "version": "1.0.0-alpha.50",
-  "description": "A Vue library for LDO.",
+  "description": "A Vue library for LDO",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -21,7 +21,7 @@
   },
   "scripts": {
     "build": "rimraf dist && NODE_OPTIONS=--max-old-space-size=8192 tsdown",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run --coverage"
   },
   "keywords": [
     "ldo",
@@ -39,5 +39,8 @@
   "bugs": {
     "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme"
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme",
+  "devDependencies": {
+    "happy-dom": "^20.14.3"
+  }
 }

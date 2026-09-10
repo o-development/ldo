@@ -57,7 +57,7 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
     const resource = useMemo(() => {
       if (uri) {
         const resource = dataset.getResource(uri);
-        // Run read operations if necissary
+        // Run read operations if necessary
         if (!options?.suppressInitialRead) {
           if (options?.reloadOnMount) {
             resource.read();
@@ -93,7 +93,7 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
 
     // Callback function to force the react dom to reload.
     const forceReload = useCallback(
-      // Wrap the resource in a proxy so it's techically a different object
+      // Wrap the resource in a proxy so it's technically a different object
       () => {
         if (resource) setResourceRepresentation(new Proxy(resource, {}));
       },
