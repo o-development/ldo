@@ -1,30 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createUseLdo } from "./methods/useLdo";
 import {
   createConnectedLdoDataset,
   type ConnectedPlugin,
 } from "@ldo/connected";
-import { createUseMatchObject } from "./methods/useMatchObject";
-import { createUseMatchSubject } from "./methods/useMatchSubject";
+// import { createUseLdo } from "./methods/useLdo";
+// import { createUseMatchObject } from "./methods/useMatchObject";
+// import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
-import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
-import { createUseLinkQuery } from "./methods/useLinkQuery";
-import { createUseDataset } from "./methods/useDataset";
-import { createUseChangeDataset } from "./methods/change/useChangeDataset";
-import { createUseChangeSubject } from "./methods/change/useChangeSubject";
-import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
-import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
+// import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
+// import { createUseLinkQuery } from "./methods/useLinkQuery";
+// import { createUseDataset } from "./methods/useDataset";
+// import { createUseChangeDataset } from "./methods/change/useChangeDataset";
+// import { createUseChangeSubject } from "./methods/change/useChangeSubject";
+// import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
+// import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
 
 /**
- * A function that creates all common react functions given specific plugin.
+ * A function that creates all common vue functions given specific plugin.
  *
  * @example
  * `methods.ts`
- * ```tyepscript
+ * ```tsx
  * import { solidConnectedPlugin } from "@ldo/connected-solid";
  * import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
- * import { createLdoReactMethods } from "@ldo/react";
+ * import { createLdoVueMethods } from "@ldo/vue";
  *
  * // Export the results to be used in the reset of the application
  * export const {
@@ -40,7 +40,7 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  *   useChangeSubject,
  *   useChangeMatchObject,
  *   useChangeMatchSubject,
- * } = createLdoReactMethods([
+ * } = createLdoVueMethods([
  *   solidConnectedPlugin,
  *   nextGraphConnectedPlugin
  * ]);
@@ -48,7 +48,6 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  *
  * `App.tsx`
  * ```typescript
- * import react, { FunctionComponent } from "react";
  * import { PostShShapeType } from "./_ldo/posts.shapeType.ts";
  * import { useResource, useSubject } from "./methods.ts";
  *
@@ -67,7 +66,7 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  * };
  * ```
  */
-export function createLdoReactMethods<
+export function createLdoVueMethods<
   Plugins extends ConnectedPlugin<any, any, any, any>[],
 >(plugins: Plugins) {
   const dataset = createConnectedLdoDataset(plugins);
@@ -75,17 +74,17 @@ export function createLdoReactMethods<
 
   return {
     dataset,
-    useDataset: createUseDataset(dataset),
-    useLdo: createUseLdo(dataset),
-    useMatchObject: createUseMatchObject(dataset),
-    useMatchSubject: createUseMatchSubject(dataset),
+    // useDataset: createUseDataset(dataset),
+    // useLdo: createUseLdo(dataset),
+    // useMatchObject: createUseMatchObject(dataset),
+    // useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
-    useSubscribeToResource: createUseSubscribeToResource(dataset),
-    useLinkQuery: createUseLinkQuery(dataset),
-    useChangeDataset: createUseChangeDataset(dataset),
-    useChangeSubject: createUseChangeSubject(dataset),
-    useChangeMatchObject: createUseChangeMatchObject(dataset),
-    useChangeMatchSubject: createUseChangeMatchSubject(dataset),
+    // useSubscribeToResource: createUseSubscribeToResource(dataset),
+    // useLinkQuery: createUseLinkQuery(dataset),
+    // useChangeDataset: createUseChangeDataset(dataset),
+    // useChangeSubject: createUseChangeSubject(dataset),
+    // useChangeMatchObject: createUseChangeMatchObject(dataset),
+    // useChangeMatchSubject: createUseChangeMatchSubject(dataset),
   };
 }

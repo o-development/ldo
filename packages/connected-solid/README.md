@@ -36,7 +36,7 @@ Below is a simple example of @ldo/solid. Assume that a ShapeType was previously 
 
 ```typescript
 import { changeData, commitData } from "@ldo/connected";
-import { createSolidLdoDataset } from "@ldo/solid";
+import { createSolidLdoDataset } from "@ldo/connected-solid";
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 import { SocialMediaPostShapeType } from "./_ldo/socialMediaPost.shapeTypes.js";
