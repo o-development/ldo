@@ -1,13 +1,14 @@
 import { describe, it, beforeEach, vi, expect } from "vitest";
-import { createLdoVueMethods } from "../src/index";
+import { createLdoVueMethods, type UseResourceOptions } from "../src/index";
 import {
   type SolidConnectedPlugin,
   solidConnectedPlugin,
+  type SolidContainerUri,
 } from "@ldo/connected-solid";
 import { withSetup } from "./test-utils.js";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
-import { nextTick, ref } from "vue";
+import { nextTick, type Ref, ref } from "vue";
 
 describe("LDO Vue Composables", () => {
   let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
@@ -93,6 +94,38 @@ describe("LDO Vue Composables", () => {
 
       expect(result.value.isFetched()).toBe(true);
       expect(result.value.type).toEqual("SolidLeaf");
+
+      app.unmount();
+    });
+
+    it("should handle change in options and not create a new the resource", async () => {
+      s.fetchMock.mockClear();
+
+      const uriRef: Ref<SolidContainerUri, SolidContainerUri> = ref(
+        "http://localhost:3006/directory/",
+      );
+      const optionsRef: Ref<UseResourceOptions<"solid">> = ref({
+        suppressInitialRead: true,
+      });
+      const [result, app] = withSetup(() =>
+        methods.useResource(uriRef, optionsRef),
+      );
+
+      expect(result.value.isFetched()).toBe(false);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      expect(result.value.isFetched()).toBe(false);
+
+      optionsRef.value = { suppressInitialRead: false };
+
+      await vi.waitFor(() => {
+        if (!result.value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      expect(result.value.isFetched()).toBe(true);
 
       app.unmount();
     });
