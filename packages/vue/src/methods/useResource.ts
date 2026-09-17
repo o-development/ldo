@@ -2,6 +2,7 @@ import type {
   ConnectedLdoDataset,
   ConnectedPlugin,
   GetResourceReturnType,
+  Resource,
 } from "@ldo/connected";
 import {
   shallowRef,
@@ -9,7 +10,7 @@ import {
   onBeforeUnmount,
   type Ref,
   triggerRef,
-  type MaybeRef,
+  type MaybeRefOrGetter,
   toValue,
 } from "vue";
 
@@ -26,16 +27,16 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(
-    uri: MaybeRef<UriType>,
-    options?: UseResourceOptions<Name>,
+    uri: MaybeRefOrGetter<UriType>,
+    options?: MaybeRefOrGetter<UseResourceOptions<Name>>,
   ): Ref<GetResourceReturnType<Plugin, UriType>>;
   <
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(
-    uri?: MaybeRef<UriType>,
-    options?: UseResourceOptions<Name>,
+    uri?: MaybeRefOrGetter<UriType>,
+    options?: MaybeRefOrGetter<UseResourceOptions<Name>>,
   ): Ref<GetResourceReturnType<Plugin, UriType> | undefined>;
 };
 
@@ -55,58 +56,78 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(
-    uri?: MaybeRef<UriType>,
-    options?: UseResourceOptions<Name>,
+    uri?: MaybeRefOrGetter<UriType>,
+    options?: MaybeRefOrGetter<UseResourceOptions<Name>>,
   ): Ref<GetResourceReturnType<Plugin, UriType> | undefined> {
-    const resourceRef: Ref<GetResourceReturnType<Plugin, UriType> | undefined> =
-      shallowRef<GetResourceReturnType<Plugin, UriType> | undefined>();
-
-    let currentResource: GetResourceReturnType<Plugin, UriType> | undefined;
+    const resourceRef: Ref<Resource | undefined> = shallowRef<
+      Resource | undefined
+    >();
+    let subscriptionId: string | undefined;
 
     const onResourceUpdate = () => {
       triggerRef(resourceRef);
     };
 
     watch(
-      () => toValue(uri),
-      (newUri) => {
-        if (currentResource) {
-          currentResource.off("update", onResourceUpdate);
-          currentResource.unsubscribeFromNotifications();
-        }
+      [() => toValue(uri), () => toValue(options)],
+      async ([newUri, newOptions], [oldUri, oldOptions], onCleanup) => {
+        // TODO handle change in uri vs options more carefully
+
+        let cancelled = false;
+        let localResource: Resource | undefined;
+
+        onCleanup(async () => {
+          cancelled = true;
+          localResource?.off("update", onResourceUpdate);
+          if (subscriptionId) {
+            localResource?.unsubscribeFromNotifications(subscriptionId);
+            subscriptionId = undefined;
+          }
+        });
+
         if (newUri) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          currentResource = dataset.getResource(newUri) as any;
-          if (!options?.suppressInitialRead) {
-            if (options?.reloadOnMount) {
-              currentResource!.read();
+          localResource = dataset.getResource(newUri) as Resource;
+          resourceRef.value = localResource;
+          if (!newOptions?.suppressInitialRead) {
+            if (newOptions?.reloadOnMount) {
+              resourceRef.value!.read();
             } else {
-              currentResource!.readIfUnfetched();
+              resourceRef.value!.readIfUnfetched();
             }
           }
 
-          if (currentResource) {
-            currentResource.on("update", onResourceUpdate);
+          if (resourceRef.value) {
+            resourceRef.value.on("update", onResourceUpdate);
             // Subscribe to notifications if it's needed
-            if (options?.subscribe) {
-              currentResource.subscribeToNotifications();
+            if (newOptions?.subscribe) {
+              const id = await resourceRef.value.subscribeToNotifications();
+
+              if (cancelled) {
+                await resourceRef.value.unsubscribeFromNotifications(id);
+              } else {
+                subscriptionId = id;
+              }
             }
           }
         } else {
-          currentResource = undefined;
+          resourceRef.value = undefined;
         }
-
-        resourceRef.value = currentResource;
       },
       { immediate: true },
     );
 
     // cleanup
     onBeforeUnmount(() => {
-      currentResource?.off("update", onResourceUpdate);
-      currentResource?.unsubscribeFromNotifications();
+      resourceRef.value?.off("update", onResourceUpdate);
+      if (subscriptionId) {
+        resourceRef.value?.unsubscribeFromNotifications(subscriptionId);
+        subscriptionId = undefined;
+      }
     });
 
-    return resourceRef;
+    return resourceRef as Ref<
+      GetResourceReturnType<Plugin, UriType> | undefined,
+      GetResourceReturnType<Plugin, UriType>
+    >;
   };
 }
