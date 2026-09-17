@@ -5,10 +5,14 @@ import { guaranteeFetch } from "../../util/guaranteeFetch";
 import type { Resource } from "@ldo/connected";
 import { UnexpectedResourceError, UpdateSuccess } from "@ldo/connected";
 import type { HttpErrorResultType } from "../results/error/HttpErrorResult";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import {
+  HttpErrorResult,
+  NotFoundHttpError,
+} from "../results/error/HttpErrorResult";
 import type { DatasetRequestOptions } from "./requestOptions";
 import type { SolidContainer } from "../../resources/SolidContainer";
 import type { SolidLeaf } from "../../resources/SolidLeaf";
+import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 
 /**
  * All return values for updateDataResource
@@ -22,6 +26,7 @@ export type UpdateResult<ResourceType extends Resource> =
  */
 export type UpdateResultError<ResourceType extends Resource> =
   | HttpErrorResultType<ResourceType>
+  | NoncompliantPodError<ResourceType>
   | UnexpectedResourceError<ResourceType>;
 
 /**
@@ -79,6 +84,16 @@ export async function updateDataResource(
       }
       return httpError;
     }
+
+    // Let's handle possible 404 response.
+    // PATCH should create intermediate containers, therefore 404 suggests noncompliant pod.
+    // https://solidproject.org/TR/protocol#server-put-patch-intermediate-containers
+    if (NotFoundHttpError.is(response))
+      return new NoncompliantPodError(
+        resource,
+        "Failed to update Solid resource. The server returned a 404 error.",
+      );
+
     return new UpdateSuccess(resource);
   } catch (err) {
     return UnexpectedResourceError.fromThrown(resource, err);

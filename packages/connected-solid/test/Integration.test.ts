@@ -141,6 +141,9 @@ const OTHER_RESOURCE_SLUG = "resource.ttl";
 const OTHER_RESOURCE_URI =
   `${OTHER_CONTAINER_URI}${OTHER_RESOURCE_SLUG}` as SolidLeafUri;
 
+const NONEXISTENT_CONTAINER_URI = `${ROOT_CONTAINER}nonexistent-container/`;
+const NONEXISTENT_CONTAINER_RESOURCE_URI = `${NONEXISTENT_CONTAINER_URI}nonexistent-resource.ttl`;
+
 const resourceInfo: ResourceInfo = {
   slug: TEST_CONTAINER_SLUG,
   isContainer: true,
@@ -937,6 +940,46 @@ describe("Integration", () => {
       expect(result.type).toBe("serverError");
     });
 
+    // https://solidproject.org/TR/protocol#server-put-patch-intermediate-containers
+    it("successfully creates a resource and missing parent container", async () => {
+      // see that the container and resource do not exist
+      const requestContainerBefore = await s.authFetch(
+        NONEXISTENT_CONTAINER_URI,
+      );
+      expect(requestContainerBefore.status).toEqual(404);
+      const requestResourceBefore = await s.authFetch(
+        NONEXISTENT_CONTAINER_RESOURCE_URI,
+      );
+      expect(requestResourceBefore.status).toEqual(404);
+
+      const resource = solidLdoDataset.getResource(
+        NONEXISTENT_CONTAINER_RESOURCE_URI,
+      );
+      const result = await resource.createAndOverwrite();
+
+      expect(result.isError).toBe(false);
+
+      // see that the container and resource exist now
+      const requestContainerAfter = await s.authFetch(
+        NONEXISTENT_CONTAINER_URI,
+      );
+      expect(requestContainerAfter.status).toEqual(200);
+      const requestResourceAfter = await s.authFetch(
+        NONEXISTENT_CONTAINER_RESOURCE_URI,
+      );
+      expect(requestResourceAfter.status).toEqual(200);
+    });
+
+    it("returns a noncompliant pod error when resource creation fails with 404", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
+      s.fetchMock.mockResolvedValueOnce(
+        new Response(SAMPLE_DATA_URI, { status: 404 }),
+      );
+      const result = await resource.createAndOverwrite();
+      expect(result.isError).toBe(true);
+      expect(result.type).toEqual("noncompliantPodError");
+    });
+
     it("returns an unexpected error if some unknown error is triggered", async () => {
       const resource = solidLdoDataset.getResource(SAMPLE_DATA_URI);
       s.fetchMock.mockImplementationOnce(async () => {
@@ -1277,6 +1320,24 @@ describe("Integration", () => {
       expect(aggregateError.errors[0].type).toBe("serverError");
     });
 
+    it("handles a 404 error", async () => {
+      s.fetchMock.mockResolvedValueOnce(new Response("Error", { status: 404 }));
+
+      const transaction = solidLdoDataset.startTransaction();
+      transaction.add(normanQuad);
+      transaction.delete(goblinQuad);
+      const result = await transaction.commitToRemote();
+
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("aggregateError");
+      const aggregateError = result as AggregateError<
+        | UpdateResultError<SolidLeaf | SolidContainer>
+        | InvalidUriError<SolidLeaf | SolidContainer>
+      >;
+      expect(aggregateError.errors.length).toBe(1);
+      expect(aggregateError.errors[0].type).toBe("noncompliantPodError");
+    });
+
     it("handles an unknown request", async () => {
       s.fetchMock.mockImplementationOnce(() => {
         throw new Error("Some Error");
@@ -1509,6 +1570,19 @@ describe("Integration", () => {
       );
       expect(result.isError).toBe(true);
       expect(result.type).toBe("unexpectedResourceError");
+    });
+
+    it("returns a noncompliant pod error when file creation fails with 404", async () => {
+      const resource = solidLdoDataset.getResource(SAMPLE_BINARY_URI);
+      s.fetchMock.mockResolvedValueOnce(
+        new Response(TEST_CONTAINER_TTL, { status: 404 }),
+      );
+      const result = await resource.uploadAndOverwrite(
+        Buffer.from("some text.") as unknown as Blob,
+        "text/plain",
+      );
+      expect(result.isError).toBe(true);
+      expect(result.type).toBe("noncompliantPodError");
     });
 
     it("batches the upload request while waiting on another request", async () => {
