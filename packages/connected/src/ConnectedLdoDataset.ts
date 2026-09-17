@@ -121,14 +121,14 @@ export class ConnectedLdoDataset<
       // TODO: LDO is currently not architected to have an ID valid in multiple
       // protocols. This will need to be refactored if this is ever the case.
       throw new Error(
-        "LDO Connect does not currently support two plugins with overlappng uris",
+        "LDO Connect does not currently support two plugins with overlapping uris",
       );
     }
     return validPlugins[0];
   }
 
   /**
-   * Retireves a representation of a Resource at the given URI. This resource
+   * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
    * fetched or in the process of fetching as well as some information about it.
    *
@@ -241,13 +241,13 @@ export class ConnectedLdoDataset<
    *   .usingType(shapeType)
    *   .write(...resources.map((r) => r.uri))
    *   .fromSubject(subject);
-   * @param shapeType - The shapetype to represent the data
+   * @param shapeType - The shapeType to represent the data
    * @param subject - A subject URI
    * @param resources - The resources changes to should written to
    *
    * @example
    * ```typescript
-   * import { ProfielShapeType } from "./_ldo/foafProfile.shapeType.ts"
+   * import { ProfileShapeType } from "./_ldo/foafProfile.shapeType.ts"
    *
    * const resource = connectedLdoDataset
    *   .getResource("https://example.com/profile");
@@ -273,7 +273,7 @@ export class ConnectedLdoDataset<
   }
 
   /**
-   * Sets conetext for a specific plugin
+   * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin

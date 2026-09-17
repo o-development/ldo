@@ -34,7 +34,7 @@ export async function getStorageFromWebId(
   | GetStorageContainerFromWebIdSuccess
   | CheckRootResultError
   | ReadResultError<SolidLeaf | SolidContainer>
-  | NoRootContainerError<SolidContainer>
+  | NoRootContainerError<SolidContainer | SolidLeaf>
 > {
   const webIdResource = dataset.getResource(webId) as SolidLeaf;
   const readResult = await webIdResource.readIfUnfetched();

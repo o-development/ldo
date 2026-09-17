@@ -11,7 +11,7 @@ cd my_project/
 npx run @ldo/cli init
 ```
 
-Now install the @ldo/solid library
+Now install the @ldo/connected library
 
 ```
 npm i @ldo/connected
@@ -28,10 +28,10 @@ npm i @ldo/connected-nextgraph
 Manual Installation
 </summary>
 
-If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
+If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/connected` libraries independently.
 
 ```
-npm i @ldo/ldo @ldo/solid
+npm i @ldo/ldo @ldo/connected
 ```
 
 </details>

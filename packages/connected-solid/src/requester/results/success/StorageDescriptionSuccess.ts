@@ -1,5 +1,5 @@
 import { ResourceSuccess } from "@ldo/connected";
-import type { SolidLeafUri } from "packages/connected-solid/src/types";
+import type { SolidLeafUri } from "../../../types";
 import type { SolidResource } from "../../../resources/SolidResource";
 
 export class GetStorageDescriptionUriSuccess extends ResourceSuccess<SolidResource> {
