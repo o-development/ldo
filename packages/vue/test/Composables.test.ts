@@ -8,7 +8,8 @@ import {
 import { withSetup } from "./test-utils.js";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
-import { nextTick, type Ref, ref } from "vue";
+import { nextTick, type Ref, ref, watch } from "vue";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
 
 describe("LDO Vue Composables", () => {
   let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
@@ -22,6 +23,18 @@ describe("LDO Vue Composables", () => {
         data: "<https://example.com/vocab#me> <https://example.com/vocab#is> <https://example.com/vocab#happy> .",
         mimeType: "text/turtle",
       },
+      {
+        slug: "person",
+        isContainer: false,
+        data: `
+        @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+        <#me>
+          a foaf:Person;
+          foaf:name "Name";
+          foaf:knows <https://example.com/profile/card#me>, <https://example.org/profile/card#i>.
+        `,
+        mimeType: "text/turtle",
+      },
     ],
   });
 
@@ -31,7 +44,7 @@ describe("LDO Vue Composables", () => {
   });
 
   describe("useTrackingProxy", () => {
-    it("should return a LinkedDataObject");
+    it.todo("should return a LinkedDataObject");
   });
 
   describe("useResource", () => {
@@ -98,7 +111,7 @@ describe("LDO Vue Composables", () => {
       app.unmount();
     });
 
-    it("should handle change in options and not create a new the resource", async () => {
+    it("should handle change in options", async () => {
       s.fetchMock.mockClear();
 
       const uriRef: Ref<SolidContainerUri, SolidContainerUri> = ref(
@@ -129,5 +142,52 @@ describe("LDO Vue Composables", () => {
 
       app.unmount();
     });
+  });
+
+  describe("useSubject", () => {
+    it("should return a linked data object with given subject uri", async () => {
+      let rerenderCount = 0;
+
+      const [result, app] = withSetup(() => {
+        const useSubjectResult = methods.useSubject(
+          FoafProfileShapeType,
+          "http://localhost:3006/directory/person#me",
+        );
+        const useResourceResult = methods.useResource(
+          "http://localhost:3006/directory/person",
+        );
+
+        return [useSubjectResult, useResourceResult] as const;
+      });
+
+      watch(result, () => {
+        rerenderCount++;
+      });
+
+      expect(rerenderCount).toEqual(0);
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      expect(rerenderCount).toEqual(1);
+
+      assert(!result[1].value.isError);
+      expect(result[1].value.isAbsent()).toBe(false);
+
+      expect(result[0].value.name).toEqual("Name");
+      const knows = result[0].value.knows?.map((k) => k["@id"]);
+      expect(knows).toHaveLength(2);
+      expect(knows).toContain("https://example.com/profile/card#me");
+      expect(knows).toContain("https://example.org/profile/card#i");
+
+      app.unmount();
+    });
+
+    it.todo("should change the LDO when the subject changes");
+    it.todo("should change the LDO when the shape type changes");
+    it.todo("should change the LDO when the options.dataset changes");
   });
 });
