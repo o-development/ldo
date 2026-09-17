@@ -6,7 +6,7 @@ import type {
   ConnectedPlugin,
   IConnectedLdoDataset,
 } from "@ldo/connected";
-import { computed, toValue, type MaybeRef, type Ref } from "vue";
+import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 
 export interface UseSubjectOptions<Plugins extends ConnectedPlugin[]> {
   dataset?: IConnectedLdoDataset<Plugins>;
@@ -15,19 +15,19 @@ export interface UseSubjectOptions<Plugins extends ConnectedPlugin[]> {
 export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    subject: MaybeRef<string | SubjectNode>,
+    subject: MaybeRefOrGetter<string | SubjectNode>,
     options?: UseSubjectOptions<Plugins>,
-  ): Type;
+  ): Ref<Type>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    subject?: MaybeRef<string | SubjectNode>,
+    subject?: MaybeRefOrGetter<string | SubjectNode>,
     options?: UseSubjectOptions<Plugins>,
-  ): Type | undefined;
+  ): Ref<Type | undefined>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    subject?: MaybeRef<string | SubjectNode>,
+    subject?: MaybeRefOrGetter<string | SubjectNode>,
     options?: UseSubjectOptions<Plugins>,
-  ): Type | undefined;
+  ): Ref<Type | undefined>;
 };
 
 /**
@@ -44,17 +44,18 @@ export function createUseSubject<Plugins extends ConnectedPlugin[]>(
    */
   return function useSubject<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
-    subject?: MaybeRef<string | SubjectNode>,
-    options?: UseSubjectOptions<Plugins>,
+    subject?: MaybeRefOrGetter<string | SubjectNode>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined> {
     return computed(() => {
       const subjectValue = toValue(subject);
+      const observedOptions = toValue(options);
       if (!subjectValue) return undefined;
 
       return useTrackingProxy(
         shapeType,
         (builder) => builder.fromSubject(subjectValue),
-        options?.dataset ?? dataset,
+        observedOptions?.dataset ?? dataset,
       ).value;
     });
   };
