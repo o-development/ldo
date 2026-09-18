@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.ts";
-import { useSubject, useResource } from "./ldoVue.ts";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
+import { useSubject, useResource } from "./ldoVue.js";
 import UseMatchSubjectTest from "./useMatchSubjectTest.vue";
 
 const isValidUrl = (str: string) => {
@@ -28,6 +28,11 @@ useResource(validUri);
     <h1>vue Solid auth test</h1>
     <input v-model="inputUri" placeholder="enter webId" />
     <div>{{ subject?.name ?? subject?.["@id"] }}</div>
+    <ul>
+      <li v-for="friend in subject?.knows" :key="friend['@id']">
+        {{ friend["@id"] }}
+      </li>
+    </ul>
 
     <p>checked:</p>
     <p>active:</p>

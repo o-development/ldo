@@ -370,4 +370,48 @@ describe("LDO Vue Composables", () => {
 
     it.todo("should change the LDO set when graph changes");
   });
+
+  describe("useMatchObject", () => {
+    it("should return a LdSet of matched linked data objects", async () => {
+      const [result, app] = withSetup(() => {
+        const useMatchObjectResult = methods.useMatchObject(
+          FoafProfileShapeType,
+          "http://localhost:3006/directory/person#me",
+          "http://xmlns.com/foaf/0.1/knows",
+          "http://localhost:3006/directory/person",
+        );
+        const useResourceResult = methods.useResource(
+          "http://localhost:3006/directory/person",
+        );
+
+        return [useMatchObjectResult, useResourceResult] as const;
+      });
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      assert(!result[1].value.isError);
+      expect(result[1].value.isAbsent()).toBe(false);
+
+      const friends = result[0].value;
+      expect(friends.size).toBe(2);
+      expect(friends.map((v) => v["@id"])).toContain(
+        "https://example.com/profile/card#me",
+      );
+      expect(friends.map((v) => v["@id"])).toContain(
+        "https://example.org/profile/card#i",
+      );
+
+      app.unmount();
+    });
+
+    it.todo("should change the LDO set when the shape type changes");
+    it.todo("should change the LDO set when the options.dataset changes");
+    it.todo("should change the LDO set when subject changes");
+    it.todo("should change the LDO set when predicate changes");
+    it.todo("should change the LDO set when graph changes");
+  });
 });
