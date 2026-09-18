@@ -5,7 +5,7 @@ import {
 } from "@ldo/connected";
 // import { createUseLdo } from "./methods/useLdo";
 // import { createUseMatchObject } from "./methods/useMatchObject";
-// import { createUseMatchSubject } from "./methods/useMatchSubject";
+import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
 // import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
@@ -77,7 +77,7 @@ export function createLdoVueMethods<
     // useDataset: createUseDataset(dataset),
     // useLdo: createUseLdo(dataset),
     // useMatchObject: createUseMatchObject(dataset),
-    // useMatchSubject: createUseMatchSubject(dataset),
+    useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
     // useSubscribeToResource: createUseSubscribeToResource(dataset),
