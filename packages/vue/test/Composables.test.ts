@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, vi, expect } from "vitest";
+import { describe, it, beforeEach, expect } from "vitest";
 import { createLdoVueMethods, type UseResourceOptions } from "../src/index";
 import {
   type SolidConnectedPlugin,
@@ -6,7 +6,7 @@ import {
   type SolidContainerUri,
   type SolidLeafUri,
 } from "@ldo/connected-solid";
-import { RerenderCount, withSetup } from "./test-utils.js";
+import { RerenderCount, waitForResource, withSetup } from "./test-utils.js";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
 import { nextTick, type Ref, ref } from "vue";
@@ -69,11 +69,7 @@ describe("LDO Vue Composables", () => {
 
       expect(result.value.isFetched()).toBe(false);
 
-      await vi.waitFor(() => {
-        if (!result.value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result.value);
 
       expect(result.value.isFetched()).toBe(true);
 
@@ -98,11 +94,7 @@ describe("LDO Vue Composables", () => {
 
       expect(result.value.isFetched()).toBe(false);
 
-      await vi.waitFor(() => {
-        if (!result.value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result.value);
 
       expect(result.value.isFetched()).toBe(true);
       expect(result.value.type).toEqual("SolidContainer");
@@ -113,11 +105,7 @@ describe("LDO Vue Composables", () => {
       expect(result.value.isFetched()).toBe(false);
       expect(result.value.uri).toEqual("http://localhost:3006/directory/leaf");
 
-      await vi.waitFor(() => {
-        if (!result.value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result.value);
 
       expect(result.value.isFetched()).toBe(true);
       expect(result.value.type).toEqual("SolidLeaf");
@@ -146,11 +134,7 @@ describe("LDO Vue Composables", () => {
 
       optionsRef.value = { suppressInitialRead: false };
 
-      await vi.waitFor(() => {
-        if (!result.value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result.value);
 
       expect(result.value.isFetched()).toBe(true);
 
@@ -178,11 +162,7 @@ describe("LDO Vue Composables", () => {
 
       expect(rerenderCount.count).toEqual(0);
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       expect(rerenderCount.count).toEqual(1);
 
@@ -226,11 +206,7 @@ describe("LDO Vue Composables", () => {
 
       expect(rerenderCount.count).toEqual(0);
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       expect(result[0].value.name).toEqual("Name");
       expect(rerenderCount.count).toEqual(1);
@@ -252,11 +228,7 @@ describe("LDO Vue Composables", () => {
       expect(result[0].value.name).toEqual(undefined);
       expect(rerenderCount.count).toEqual(3);
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       expect(result[1].value.isFetched()).toBe(true);
       expect(result[1].value.isAbsent()).toBe(false);
@@ -287,11 +259,7 @@ describe("LDO Vue Composables", () => {
         return [useMatchSubjectResult, useResourceResult] as const;
       });
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       assert(!result[1].value.isError);
       expect(result[1].value.isAbsent()).toBe(false);
@@ -334,11 +302,7 @@ describe("LDO Vue Composables", () => {
 
       expect(result[0].value.size).toBe(0);
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       expect(rerenderCount.count).toBe(2);
 
@@ -387,11 +351,7 @@ describe("LDO Vue Composables", () => {
         return [useMatchObjectResult, useResourceResult] as const;
       });
 
-      await vi.waitFor(() => {
-        if (!result[1].value.isFetched()) {
-          throw new Error("not fetched yet");
-        }
-      });
+      await waitForResource(result[1].value);
 
       assert(!result[1].value.isError);
       expect(result[1].value.isAbsent()).toBe(false);

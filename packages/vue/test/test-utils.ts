@@ -1,3 +1,5 @@
+import type { Resource } from "@ldo/connected";
+import { vi } from "vitest";
 import {
   createApp,
   type MultiWatchSources,
@@ -51,4 +53,12 @@ export class RerenderCount {
   public clearCount() {
     this._count = 0;
   }
+}
+
+export async function waitForResource(resource: Resource) {
+  await vi.waitFor(() => {
+    if (!resource.isFetched()) {
+      throw new Error("not fetched yet");
+    }
+  });
 }
