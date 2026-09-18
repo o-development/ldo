@@ -16,17 +16,17 @@ export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: MaybeRefOrGetter<string | SubjectNode>,
-    options?: UseSubjectOptions<Plugins>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject?: MaybeRefOrGetter<string | SubjectNode>,
-    options?: UseSubjectOptions<Plugins>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined>;
   <Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject?: MaybeRefOrGetter<string | SubjectNode>,
-    options?: UseSubjectOptions<Plugins>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined>;
 };
 

@@ -6,11 +6,12 @@ import {
   type SolidContainerUri,
   type SolidLeafUri,
 } from "@ldo/connected-solid";
-import { withSetup } from "./test-utils.js";
+import { RerenderCount, withSetup } from "./test-utils.js";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
-import { nextTick, type Ref, ref, watch } from "vue";
+import { nextTick, type Ref, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
+import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
 
 describe("LDO Vue Composables", () => {
   let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
@@ -29,6 +30,7 @@ describe("LDO Vue Composables", () => {
         isContainer: false,
         data: `
         @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+        <> a foaf:PersonalProfileDocument.
         <#me>
           a foaf:Person;
           foaf:name "Name";
@@ -52,9 +54,7 @@ describe("LDO Vue Composables", () => {
 
   beforeEach(() => {
     methods = createLdoVueMethods([solidConnectedPlugin]);
-    methods.dataset.setContext("solid", {
-      fetch: s.fetchMock,
-    });
+    methods.dataset.setContext("solid", { fetch: s.fetchMock });
   });
 
   describe("useTrackingProxy", () => {
@@ -162,8 +162,6 @@ describe("LDO Vue Composables", () => {
 
   describe("useSubject", () => {
     it("should return a linked data object with given subject uri", async () => {
-      let rerenderCount = 0;
-
       const [result, app] = withSetup(() => {
         const useSubjectResult = methods.useSubject(
           FoafProfileShapeType,
@@ -176,11 +174,9 @@ describe("LDO Vue Composables", () => {
         return [useSubjectResult, useResourceResult] as const;
       });
 
-      watch(result, () => {
-        rerenderCount++;
-      });
+      const rerenderCount = new RerenderCount(result);
 
-      expect(rerenderCount).toEqual(0);
+      expect(rerenderCount.count).toEqual(0);
 
       await vi.waitFor(() => {
         if (!result[1].value.isFetched()) {
@@ -188,7 +184,7 @@ describe("LDO Vue Composables", () => {
         }
       });
 
-      expect(rerenderCount).toEqual(1);
+      expect(rerenderCount.count).toEqual(1);
 
       assert(!result[1].value.isError);
       expect(result[1].value.isAbsent()).toBe(false);
@@ -204,7 +200,7 @@ describe("LDO Vue Composables", () => {
 
     it("should change the LDO when the subject changes", async () => {
       // s.fetchMock.mockClear();
-      let rerenderCount = 0;
+
       const subject = ref("http://localhost:3006/directory/person#me");
 
       expect(s.fetchMock).toHaveBeenCalledTimes(0);
@@ -222,16 +218,13 @@ describe("LDO Vue Composables", () => {
         return [useSubjectResult, useResourceResult] as const;
       });
 
+      const rerenderCount = new RerenderCount(result[0]);
+
       // inform the tracking proxy we're interested in this and check the result
       // removing access to the property will lead to less renders
       expect(result[0].value.name).toEqual(undefined);
 
-      watch(result[0], () => {
-        console.log("RERENDER", rerenderCount + 1);
-        rerenderCount++;
-      });
-
-      expect(rerenderCount).toEqual(0);
+      expect(rerenderCount.count).toEqual(0);
 
       await vi.waitFor(() => {
         if (!result[1].value.isFetched()) {
@@ -240,7 +233,7 @@ describe("LDO Vue Composables", () => {
       });
 
       expect(result[0].value.name).toEqual("Name");
-      expect(rerenderCount).toEqual(1);
+      expect(rerenderCount.count).toEqual(1);
 
       subject.value = "http://localhost:3006/directory/person#i";
 
@@ -248,7 +241,7 @@ describe("LDO Vue Composables", () => {
       await nextTick();
 
       expect(result[1].value.isFetched()).toBe(true);
-      expect(rerenderCount).toEqual(2);
+      expect(rerenderCount.count).toEqual(2);
       expect(result[0].value.name).toEqual("myname");
 
       subject.value = "http://localhost:3006/directory/person2#me";
@@ -257,7 +250,7 @@ describe("LDO Vue Composables", () => {
       await nextTick();
       expect(result[1].value.isFetched()).toBe(false);
       expect(result[0].value.name).toEqual(undefined);
-      expect(rerenderCount).toEqual(3);
+      expect(rerenderCount.count).toEqual(3);
 
       await vi.waitFor(() => {
         if (!result[1].value.isFetched()) {
@@ -268,7 +261,7 @@ describe("LDO Vue Composables", () => {
       expect(result[1].value.isFetched()).toBe(true);
       expect(result[1].value.isAbsent()).toBe(false);
       expect(result[0].value.name).toEqual("Other Name");
-      expect(rerenderCount).toEqual(4);
+      expect(rerenderCount.count).toEqual(4);
 
       app.unmount();
     });
@@ -277,5 +270,104 @@ describe("LDO Vue Composables", () => {
       "should change the LDO when the shape type changes (this will probably ruin types though)",
     );
     it.todo("should change the LDO when the options.dataset changes");
+  });
+
+  describe("useMatchSubject", () => {
+    it("should return a LdSet of matched linked data objects", async () => {
+      const [result, app] = withSetup(() => {
+        const useMatchSubjectResult = methods.useMatchSubject(
+          FoafProfileShapeType,
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          "http://xmlns.com/foaf/0.1/Person",
+        );
+        const useResourceResult = methods.useResource(
+          "http://localhost:3006/directory/person",
+        );
+
+        return [useMatchSubjectResult, useResourceResult] as const;
+      });
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      assert(!result[1].value.isError);
+      expect(result[1].value.isAbsent()).toBe(false);
+
+      expect(result[0].value).toBeInstanceOf(BasicLdSet);
+      expect(result[0].value.size).toBe(2);
+      expect(result[0].value.map((v) => v["@id"])).toContain(
+        "http://localhost:3006/directory/person#me",
+      );
+      expect(result[0].value.map((v) => v["@id"])).toContain(
+        "http://localhost:3006/directory/person#i",
+      );
+
+      app.unmount();
+    });
+    it.todo(
+      "should change the LDO set when the shape type changes (this will probably ruin types though)",
+    );
+    it.todo("should change the LDO set when the options.dataset changes");
+    it.todo("should change the LDO set when predicate changes");
+
+    it("should change the LDO set when object changes", async () => {
+      const object = ref("http://xmlns.com/foaf/0.1/Person");
+
+      const [result, app] = withSetup(() => {
+        const useMatchSubjectResult = methods.useMatchSubject(
+          FoafProfileShapeType,
+          "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+          object,
+          undefined,
+        );
+        const useResourceResult = methods.useResource(
+          "http://localhost:3006/directory/person",
+        );
+
+        return [useMatchSubjectResult, useResourceResult] as const;
+      });
+
+      const rerenderCount = new RerenderCount(result);
+
+      expect(result[0].value.size).toBe(0);
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      expect(rerenderCount.count).toBe(2);
+
+      assert(!result[1].value.isError);
+      expect(result[1].value.isAbsent()).toBe(false);
+
+      expect(result[0].value).toBeInstanceOf(BasicLdSet);
+      expect(result[0].value.size).toBe(2);
+      expect(result[0].value.map((v) => v["@id"])).toContain(
+        "http://localhost:3006/directory/person#me",
+      );
+      expect(result[0].value.map((v) => v["@id"])).toContain(
+        "http://localhost:3006/directory/person#i",
+      );
+
+      object.value = "http://xmlns.com/foaf/0.1/PersonalProfileDocument";
+      await nextTick();
+      expect(result[0].value.size).toBe(1);
+
+      result[0].value.forEach((v) => {
+        expect(v["@id"]).toBe("http://localhost:3006/directory/person");
+      });
+
+      // TODO fix, it does update in production though
+      expect(rerenderCount.count).toBe(3);
+
+      app.unmount();
+    });
+
+    it.todo("should change the LDO set when graph changes");
   });
 });

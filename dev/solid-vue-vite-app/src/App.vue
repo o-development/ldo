@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.ts";
 import { useSubject, useResource } from "./ldoVue.ts";
+import UseMatchSubjectTest from "./useMatchSubjectTest.vue";
 
 const isValidUrl = (str: string) => {
   try {
@@ -47,6 +48,7 @@ useResource(validUri);
 
     <pre></pre>
   </div>
+  <UseMatchSubjectTest />
 </template>
 
 <style scoped></style>
