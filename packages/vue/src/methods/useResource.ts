@@ -66,11 +66,15 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
 
     const onResourceUpdate = () => {
       triggerRef(resourceRef);
+      console.log("TRIGGERING RESOURCE UPDATE REF");
     };
 
     watch(
       [() => toValue(uri), () => toValue(options)],
       async ([newUri, newOptions], [oldUri, oldOptions], onCleanup) => {
+        // console.log(newUri, oldUri);
+
+        // if (newUri === oldUri && newOptions === oldOptions) return;
         // TODO handle change in uri vs options more carefully
 
         let cancelled = false;

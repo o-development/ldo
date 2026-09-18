@@ -4,6 +4,7 @@ import {
   type SolidConnectedPlugin,
   solidConnectedPlugin,
   type SolidContainerUri,
+  type SolidLeafUri,
 } from "@ldo/connected-solid";
 import { withSetup } from "./test-utils.js";
 import assert from "node:assert";
@@ -32,6 +33,17 @@ describe("LDO Vue Composables", () => {
           a foaf:Person;
           foaf:name "Name";
           foaf:knows <https://example.com/profile/card#me>, <https://example.org/profile/card#i>.
+
+        <#i> a foaf:Person; foaf:name "myname".
+        `,
+        mimeType: "text/turtle",
+      },
+      {
+        slug: "person2",
+        isContainer: false,
+        data: `
+        @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+        <#me> a foaf:Person; foaf:name "Other Name".
         `,
         mimeType: "text/turtle",
       },
@@ -40,7 +52,9 @@ describe("LDO Vue Composables", () => {
 
   beforeEach(() => {
     methods = createLdoVueMethods([solidConnectedPlugin]);
-    methods.dataset.setContext("solid", { fetch: s.authFetch });
+    methods.dataset.setContext("solid", {
+      fetch: s.fetchMock,
+    });
   });
 
   describe("useTrackingProxy", () => {
@@ -112,7 +126,7 @@ describe("LDO Vue Composables", () => {
     });
 
     it("should handle change in options", async () => {
-      s.fetchMock.mockClear();
+      // s.fetchMock.mockClear();
 
       const uriRef: Ref<SolidContainerUri, SolidContainerUri> = ref(
         "http://localhost:3006/directory/",
@@ -139,6 +153,8 @@ describe("LDO Vue Composables", () => {
       });
 
       expect(result.value.isFetched()).toBe(true);
+
+      expect(s.fetchMock).toHaveBeenCalledTimes(1);
 
       app.unmount();
     });
@@ -186,8 +202,80 @@ describe("LDO Vue Composables", () => {
       app.unmount();
     });
 
-    it.todo("should change the LDO when the subject changes");
-    it.todo("should change the LDO when the shape type changes");
+    it("should change the LDO when the subject changes", async () => {
+      // s.fetchMock.mockClear();
+      let rerenderCount = 0;
+      const subject = ref("http://localhost:3006/directory/person#me");
+
+      expect(s.fetchMock).toHaveBeenCalledTimes(0);
+
+      const [result, app] = withSetup(() => {
+        const useSubjectResult = methods.useSubject(
+          FoafProfileShapeType,
+          subject,
+        );
+
+        const useResourceResult = methods.useResource(
+          subject as Ref<SolidLeafUri, SolidLeafUri>,
+        );
+
+        return [useSubjectResult, useResourceResult] as const;
+      });
+
+      // inform the tracking proxy we're interested in this and check the result
+      // removing access to the property will lead to less renders
+      expect(result[0].value.name).toEqual(undefined);
+
+      watch(result[0], () => {
+        console.log("RERENDER", rerenderCount + 1);
+        rerenderCount++;
+      });
+
+      expect(rerenderCount).toEqual(0);
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      expect(result[0].value.name).toEqual("Name");
+      expect(rerenderCount).toEqual(1);
+
+      subject.value = "http://localhost:3006/directory/person#i";
+
+      // this should not trigger refetch
+      await nextTick();
+
+      expect(result[1].value.isFetched()).toBe(true);
+      expect(rerenderCount).toEqual(2);
+      expect(result[0].value.name).toEqual("myname");
+
+      subject.value = "http://localhost:3006/directory/person2#me";
+
+      // this triggers refetch
+      await nextTick();
+      expect(result[1].value.isFetched()).toBe(false);
+      expect(result[0].value.name).toEqual(undefined);
+      expect(rerenderCount).toEqual(3);
+
+      await vi.waitFor(() => {
+        if (!result[1].value.isFetched()) {
+          throw new Error("not fetched yet");
+        }
+      });
+
+      expect(result[1].value.isFetched()).toBe(true);
+      expect(result[1].value.isAbsent()).toBe(false);
+      expect(result[0].value.name).toEqual("Other Name");
+      expect(rerenderCount).toEqual(4);
+
+      app.unmount();
+    });
+
+    it.todo(
+      "should change the LDO when the shape type changes (this will probably ruin types though)",
+    );
     it.todo("should change the LDO when the options.dataset changes");
   });
 });
