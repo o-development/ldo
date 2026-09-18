@@ -4,7 +4,7 @@ import {
   type ConnectedPlugin,
 } from "@ldo/connected";
 // import { createUseLdo } from "./methods/useLdo";
-// import { createUseMatchObject } from "./methods/useMatchObject";
+import { createUseMatchObject } from "./methods/useMatchObject";
 import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
@@ -46,24 +46,24 @@ import { createUseSubject } from "./methods/useSubject";
  * ]);
  * ```
  *
- * `App.tsx`
- * ```typescript
- * import { PostShShapeType } from "./_ldo/posts.shapeType.ts";
- * import { useResource, useSubject } from "./methods.ts";
+ * `App.vue`
+ * ```vue
+ * <script setup lang="ts">
+ * import { computed, ref } from "vue";
+ * import { PostShShapeType } from "./_ldo/posts.shapeTypes.ts";
+ * import { useSubject, useResource } from "./methods.ts";
  *
- * const UseSubjectTest: FunctionComponent = () => {
- *   const resource = useResource(SAMPLE_DATA_URI);
- *   const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
- *   if (resource.isLoading() || !post) return <p>loading</p>;
+ * const subject = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+ * useResource(SAMPLE_DATA_URI);
+ * </script>
  *
- *   return (
- *     <ul>
- *       {post.publisher.map((publisher) => {
- *         return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
- *       })}
- *     </ul>
- *   );
- * };
+ * <template>
+ *   <ul>
+ *     <li v-for="publisher in post?.publisher" :key="publisher['@id']">
+ *       {{ publisher["id"] }}
+ *     </li>
+ *   </ul>
+ * </template>
  * ```
  */
 export function createLdoVueMethods<
@@ -76,7 +76,7 @@ export function createLdoVueMethods<
     dataset,
     // useDataset: createUseDataset(dataset),
     // useLdo: createUseLdo(dataset),
-    // useMatchObject: createUseMatchObject(dataset),
+    useMatchObject: createUseMatchObject(dataset),
     useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),

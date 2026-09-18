@@ -31,9 +31,9 @@ const subjectsSet = useMatchSubject(
   graph,
 );
 
-const subjects = computed(() => {
-  return subjectsSet.value.toArray();
-});
+// const subjects = computed(() => {
+//   return subjectsSet.value.toArray();
+// });
 
 useResource(validResource);
 </script>
@@ -52,7 +52,7 @@ useResource(validResource);
     <br />
 
     <ul>
-      <li v-for="item in subjects">
+      <li v-for="item in subjectsSet">
         {{ item.knows?.map((p) => p["@id"]).join(", ") }}
       </li>
     </ul>

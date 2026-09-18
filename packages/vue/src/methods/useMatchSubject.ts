@@ -21,7 +21,7 @@ export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
 ) {
   /**
-   * Returns a Linked Data Object based on the provided subject.
+   * Returns a LDO set of matching items.
    * Triggers a rerender if the data are updated.
    */
   return function useMatchSubject<Type extends LdoBase>(
