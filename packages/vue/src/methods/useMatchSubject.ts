@@ -1,4 +1,4 @@
-import type { QuadMatch, SubjectNode } from "@ldo/rdf-utils";
+import type { QuadMatch } from "@ldo/rdf-utils";
 import type { ShapeType, LdoBase, LdSet } from "@ldo/ldo";
 import { useTrackingProxy } from "../util/useTrackingProxy";
 import type {

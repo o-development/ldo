@@ -3,7 +3,7 @@ import {
   createConnectedLdoDataset,
   type ConnectedPlugin,
 } from "@ldo/connected";
-// import { createUseLdo } from "./methods/useLdo";
+import { createUseLdo } from "./methods/useLdo";
 import { createUseMatchObject } from "./methods/useMatchObject";
 import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
@@ -75,7 +75,7 @@ export function createLdoVueMethods<
   return {
     dataset,
     // useDataset: createUseDataset(dataset),
-    // useLdo: createUseLdo(dataset),
+    useLdo: createUseLdo(dataset),
     useMatchObject: createUseMatchObject(dataset),
     useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
