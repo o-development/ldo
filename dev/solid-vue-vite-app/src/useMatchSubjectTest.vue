@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 import { useResource, useMatchSubject } from "./ldoVue.js";
+import type { FoafProfile } from "./_ldo/foafProfile.typings.js";
 
 const isValidUrl = (str: string) => {
   try {
@@ -53,7 +54,7 @@ useResource(validResource);
 
     <ul>
       <li v-for="item in subjectsSet">
-        {{ item.knows?.map((p) => p["@id"]).join(", ") }}
+        {{ item.knows?.map((p: FoafProfile) => p["@id"]).join(", ") }}
       </li>
     </ul>
   </div>
