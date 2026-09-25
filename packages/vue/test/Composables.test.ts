@@ -458,7 +458,62 @@ describe("LDO Vue Composables", () => {
 
       app.unmount();
     });
-    it.todo("should unsubscribe from resources removed", async () => {});
-    it.todo("should unsubscribe from resources when finished", async () => {});
+
+    it("should unsubscribe from resources removed", async () => {
+      const urlRef = ref<string[]>([url]);
+      // subscribe
+      const [, app] = withSetup(
+        () =>
+          [
+            methods.useSubscribeToResource(urlRef),
+            methods.useSubject(FoafProfileShapeType, subject),
+          ] as const,
+      );
+
+      const resource = methods.dataset.getResource(url);
+      await vi.waitFor(() => {
+        expect(resource.isFetched()).toBe(true);
+      });
+      await vi.waitFor(() => {
+        expect(resource.isSubscribedToNotifications()).toBe(true);
+      });
+
+      // remove resource from subscription
+      urlRef.value = [];
+
+      // and check that it's not subscribed, eventually
+      await vi.waitFor(() => {
+        expect(resource.isSubscribedToNotifications()).toBe(false);
+      });
+
+      app.unmount();
+    });
+
+    it("should unsubscribe from resources when finished", async () => {
+      // subscribe
+      const [, app] = withSetup(
+        () =>
+          [
+            methods.useSubscribeToResource([url]),
+            methods.useSubject(FoafProfileShapeType, subject),
+          ] as const,
+      );
+
+      const resource = methods.dataset.getResource(url);
+      await vi.waitFor(() => {
+        expect(resource.isFetched()).toBe(true);
+      });
+      await vi.waitFor(() => {
+        expect(resource.isSubscribedToNotifications()).toBe(true);
+      });
+
+      // unmount
+      app.unmount();
+
+      // and check that the resource is not subscribed, eventually
+      await vi.waitFor(() => {
+        expect(resource.isSubscribedToNotifications()).toBe(false);
+      });
+    });
   });
 });
