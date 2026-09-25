@@ -8,7 +8,7 @@ import { createUseMatchObject } from "./methods/useMatchObject";
 import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
-// import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
+import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
 // import { createUseLinkQuery } from "./methods/useLinkQuery";
 // import { createUseDataset } from "./methods/useDataset";
 // import { createUseChangeDataset } from "./methods/change/useChangeDataset";
@@ -80,7 +80,7 @@ export function createLdoVueMethods<
     useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
-    // useSubscribeToResource: createUseSubscribeToResource(dataset),
+    useSubscribeToResource: createUseSubscribeToResource(dataset),
     // useLinkQuery: createUseLinkQuery(dataset),
     // useChangeDataset: createUseChangeDataset(dataset),
     // useChangeSubject: createUseChangeSubject(dataset),
