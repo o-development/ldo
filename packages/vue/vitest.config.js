@@ -24,6 +24,6 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
     },
-    environment: "happy-dom",
+    environment: "jsdom",
   },
 });

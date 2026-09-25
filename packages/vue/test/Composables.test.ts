@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, expect } from "vitest";
+import { describe, it, beforeEach, expect, vi } from "vitest";
 import { createLdoVueMethods, type UseResourceOptions } from "../src/index";
 import {
   type SolidConnectedPlugin,
@@ -12,6 +12,34 @@ import { setupServer } from "@ldo/test-solid-server";
 import { nextTick, type Ref, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
+
+// Only overwrite this if we are in test mode. This is an env var we happen to have in our repo
+if (process.env.VITE_IS_TEST === "true") {
+  class ESBuildAndJSDOMCompatibleTextEncoder extends TextEncoder {
+    constructor() {
+      super();
+    }
+
+    encode(input: string) {
+      if (typeof input !== "string") {
+        throw new TypeError("`input` must be a string");
+      }
+
+      const decodedURI = decodeURIComponent(encodeURIComponent(input));
+      const arr = new Uint8Array(decodedURI.length);
+      const chars = decodedURI.split("");
+      for (let i = 0; i < chars.length; i++) {
+        arr[i] = decodedURI[i].charCodeAt(0);
+      }
+      return arr;
+    }
+  }
+
+  Object.defineProperty(global, "TextEncoder", {
+    value: ESBuildAndJSDOMCompatibleTextEncoder,
+    writable: true,
+  });
+}
 
 describe("LDO Vue Composables", () => {
   let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
@@ -373,5 +401,64 @@ describe("LDO Vue Composables", () => {
     it.todo("should change the LDO set when subject changes");
     it.todo("should change the LDO set when predicate changes");
     it.todo("should change the LDO set when graph changes");
+  });
+
+  describe("useSubscribeToResource", () => {
+    const url = "http://localhost:3006/directory/person";
+    const subject = url + "#me";
+    it("should subscribe to resource changes (detect resource changes)", async () => {
+      // subscribe
+      const [result, app] = withSetup(
+        () =>
+          [
+            methods.useSubscribeToResource([url]),
+            methods.useSubject(FoafProfileShapeType, subject),
+          ] as const,
+      );
+
+      void result[1].value.name;
+      const rerenderCount = new RerenderCount(result[1]);
+
+      // change the resource
+      const resource = methods.dataset.getResource(url);
+
+      await vi.waitFor(() => {
+        expect(resource.isFetched()).toBe(true);
+      });
+      await vi.waitFor(() => {
+        expect(resource.isSubscribedToNotifications()).toBe(true);
+      });
+      // check that the change has been detected
+      rerenderCount.clearCount();
+      const changeResult = await s.authFetch(url, {
+        method: "PATCH",
+        headers: { "content-type": "text/n3" },
+        body: `
+          @prefix solid: <http://www.w3.org/ns/solid/terms#>.
+          @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+          _:patch a solid:InsertDeletePatch;
+          solid:inserts { <#me> foaf:name "NEW NAME". };
+          solid:deletes { <#me> foaf:name ?name. };
+          solid:where { <#me> foaf:name ?name. }.`,
+      });
+      expect(changeResult.ok).toBe(true);
+      await nextTick();
+      // refetch should be going on
+      await vi.waitFor(() => {
+        expect(resource.isLoading()).toBe(true);
+      });
+      // and then done
+      await vi.waitFor(() => expect(resource.isLoading()).toBe(false));
+      expect(resource.isError).toBe(false);
+      // and expect refreshed data
+      expect(result[1].value.name).toEqual("NEW NAME");
+      await nextTick();
+      // expect(rerenderCount.count).toEqual(1);
+
+      app.unmount();
+    });
+    it.todo("should unsubscribe from resources removed", async () => {});
+    it.todo("should unsubscribe from resources when finished", async () => {});
   });
 });

@@ -39,8 +39,5 @@
   "bugs": {
     "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme",
-  "devDependencies": {
-    "happy-dom": "^20.14.3"
-  }
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme"
 }
