@@ -19,7 +19,7 @@ export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
 
     watch(
       () => toValue(uris),
-      async (newUris, oldUris) => {
+      async (newUris) => {
         const resources = newUris.map((uri) => dataset.getResource(uri));
         const previousSubscriptions = { ...currentlySubscribed };
 
