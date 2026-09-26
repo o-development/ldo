@@ -8,4 +8,4 @@ export const _writeGraphs = Symbol("_writeGraphs");
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ObjectLike = Record<string | number | symbol, any>;
-export type LiteralLike = string | number | boolean;
+export type LiteralLike = string | number | boolean | Date;
