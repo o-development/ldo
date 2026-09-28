@@ -71,9 +71,7 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
 
     watch(
       [() => toValue(uri), () => toValue(options)],
-      async ([newUri, newOptions], [oldUri, oldOptions], onCleanup) => {
-        // console.log(newUri, oldUri);
-
+      async ([newUri, newOptions], _, onCleanup) => {
         // if (newUri === oldUri && newOptions === oldOptions) return;
         // TODO handle change in uri vs options more carefully
 
