@@ -1,5 +1,5 @@
 import type { SubjectNode } from "@ldo/rdf-utils";
-import type { ShapeType, LdoBase } from "@ldo/ldo";
+import type { ShapeType, LdoBase, LdoBuilder } from "@ldo/ldo";
 import { useTrackingProxy } from "../util/useTrackingProxy";
 import type {
   ConnectedLdoDataset,
@@ -14,17 +14,17 @@ export interface UseSubjectOptions<Plugins extends ConnectedPlugin[]> {
 
 export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
   <Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject: MaybeRefOrGetter<string | SubjectNode>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type>;
   <Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<string | SubjectNode>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined>;
   <Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<string | SubjectNode>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined>;
@@ -43,20 +43,20 @@ export function createUseSubject<Plugins extends ConnectedPlugin[]>(
    * Triggers a rerender if the data are updated.
    */
   return function useSubject<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<string | SubjectNode>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined> {
-    return computed(() => {
+    const createLdo = computed(() => {
       const subjectValue = toValue(subject);
-      const observedOptions = toValue(options);
       if (!subjectValue) return undefined;
-
-      return useTrackingProxy(
-        shapeType,
-        (builder) => builder.fromSubject(subjectValue),
-        observedOptions?.dataset ?? dataset,
-      ).value;
+      return (builder: LdoBuilder<Type>) => builder.fromSubject(subjectValue);
     });
+
+    return useTrackingProxy(
+      shapeType,
+      createLdo,
+      () => toValue(options)?.dataset ?? dataset,
+    );
   };
 }
