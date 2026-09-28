@@ -1,5 +1,5 @@
 import type { QuadMatch } from "@ldo/rdf-utils";
-import type { ShapeType, LdoBase, LdSet } from "@ldo/ldo";
+import type { ShapeType, LdoBase, LdSet, LdoBuilder } from "@ldo/ldo";
 import { useTrackingProxy } from "../util/useTrackingProxy";
 import type {
   ConnectedLdoDataset,
@@ -25,24 +25,25 @@ export function createUseMatchObject<Plugins extends ConnectedPlugin[]>(
    * Triggers a rerender if the data are updated.
    */
   return function useMatchObject<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<QuadMatch[0] | string>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
     options?: MaybeRefOrGetter<UseMatchObjectOptions<Plugins>>,
   ): Ref<LdSet<Type>> {
-    return computed(() => {
+    const createLdo = computed(() => {
       const subjectValue = toValue(subject);
       const predicateValue = toValue(predicate);
       const graphValue = toValue(graph);
-      const observedOptions = toValue(options);
 
-      return useTrackingProxy(
-        shapeType,
-        (builder) =>
-          builder.matchObject(subjectValue, predicateValue, graphValue),
-        observedOptions?.dataset ?? dataset,
-      ).value;
+      return (builder: LdoBuilder<Type>) =>
+        builder.matchObject(subjectValue, predicateValue, graphValue);
     });
+
+    return useTrackingProxy(
+      shapeType,
+      createLdo,
+      () => toValue(options)?.dataset ?? dataset,
+    );
   };
 }

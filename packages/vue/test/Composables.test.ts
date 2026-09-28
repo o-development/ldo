@@ -43,6 +43,10 @@ if (process.env.VITE_IS_TEST === "true") {
 
 describe("LDO Vue Composables", () => {
   let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
+  const personResourceUri = "http://localhost:3006/directory/person";
+  const personUri = personResourceUri + "#me";
+  const person2ResourceUri = "http://localhost:3006/directory/person2";
+  const person2Uri = person2ResourceUri + "#me";
   const s = setupServer(3006, {
     slug: "directory/",
     isContainer: true,
@@ -73,7 +77,7 @@ describe("LDO Vue Composables", () => {
         isContainer: false,
         data: `
         @prefix foaf: <http://xmlns.com/foaf/0.1/>.
-        <#me> a foaf:Person; foaf:name "Other Name".
+        <#me> a foaf:Person; foaf:name "Other Name"; foaf:knows <./person#me>.
         `,
         mimeType: "text/turtle",
       },
@@ -404,15 +408,13 @@ describe("LDO Vue Composables", () => {
   });
 
   describe("useSubscribeToResource", () => {
-    const url = "http://localhost:3006/directory/person";
-    const subject = url + "#me";
     it("should subscribe to resource changes (detect resource changes)", async () => {
       // subscribe
       const [result, app] = withSetup(
         () =>
           [
-            methods.useSubscribeToResource([url]),
-            methods.useSubject(FoafProfileShapeType, subject),
+            methods.useSubscribeToResource([personResourceUri]),
+            methods.useSubject(FoafProfileShapeType, personUri),
           ] as const,
       );
 
@@ -420,7 +422,7 @@ describe("LDO Vue Composables", () => {
       const rerenderCount = new RerenderCount(result[1]);
 
       // change the resource
-      const resource = methods.dataset.getResource(url);
+      const resource = methods.dataset.getResource(personResourceUri);
 
       await vi.waitFor(() => {
         expect(resource.isFetched()).toBe(true);
@@ -430,7 +432,7 @@ describe("LDO Vue Composables", () => {
       });
       // check that the change has been detected
       rerenderCount.clearCount();
-      const changeResult = await s.authFetch(url, {
+      const changeResult = await s.authFetch(personResourceUri, {
         method: "PATCH",
         headers: { "content-type": "text/n3" },
         body: `
@@ -460,17 +462,17 @@ describe("LDO Vue Composables", () => {
     });
 
     it("should unsubscribe from resources removed", async () => {
-      const urlRef = ref<string[]>([url]);
+      const urlRef = ref<string[]>([personResourceUri]);
       // subscribe
       const [, app] = withSetup(
         () =>
           [
             methods.useSubscribeToResource(urlRef),
-            methods.useSubject(FoafProfileShapeType, subject),
+            methods.useSubject(FoafProfileShapeType, personUri),
           ] as const,
       );
 
-      const resource = methods.dataset.getResource(url);
+      const resource = methods.dataset.getResource(personResourceUri);
       await vi.waitFor(() => {
         expect(resource.isFetched()).toBe(true);
       });
@@ -494,12 +496,12 @@ describe("LDO Vue Composables", () => {
       const [, app] = withSetup(
         () =>
           [
-            methods.useSubscribeToResource([url]),
-            methods.useSubject(FoafProfileShapeType, subject),
+            methods.useSubscribeToResource([personResourceUri]),
+            methods.useSubject(FoafProfileShapeType, personUri),
           ] as const,
       );
 
-      const resource = methods.dataset.getResource(url);
+      const resource = methods.dataset.getResource(personResourceUri);
       await vi.waitFor(() => {
         expect(resource.isFetched()).toBe(true);
       });
@@ -515,5 +517,46 @@ describe("LDO Vue Composables", () => {
         expect(resource.isSubscribedToNotifications()).toBe(false);
       });
     });
+  });
+
+  describe("useLinkQuery", () => {
+    it("should resolve the query", async () => {
+      const [result, app] = withSetup(() => {
+        const result = methods.useLinkQuery(
+          FoafProfileShapeType,
+          person2ResourceUri,
+          person2Uri,
+          { name: true, knows: { name: true, "@id": true } },
+        );
+
+        return result;
+      });
+
+      const person2Resource = methods.dataset.getResource(person2ResourceUri);
+      const personResource = methods.dataset.getResource(personResourceUri);
+
+      await vi.waitFor(() => {
+        expect(person2Resource.isFetched()).toBe(true);
+        expect(personResource.isFetched()).toBe(true);
+      });
+
+      // test result
+      expect(result.value.knows?.map((k) => k.name)).toEqual(["Name"]);
+
+      // wait for resources to be subscribed to notifications
+      await vi.waitFor(() => {
+        expect(person2Resource.isSubscribedToNotifications()).toBe(true);
+        expect(personResource.isSubscribedToNotifications()).toBe(true);
+      });
+
+      app.unmount();
+
+      // wait for the resources to be unsubscribed from notifications
+      await vi.waitFor(() => {
+        expect(person2Resource.isSubscribedToNotifications()).toBe(false);
+        expect(personResource.isSubscribedToNotifications()).toBe(false);
+      });
+    });
+    it.todo("should update the query when a resource changes");
   });
 });
