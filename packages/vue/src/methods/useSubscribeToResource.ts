@@ -29,8 +29,7 @@ export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
               // Prevent multiple triggers from created subscriptions while waiting
               // for connection
               currentlySubscribed[resource.uri] = "AWAITING";
-              const result = await resource.readIfUnfetched();
-              console.log(result, "****");
+              const _result = await resource.readIfUnfetched();
               currentlySubscribed[resource.uri] =
                 await resource.subscribeToNotifications();
             } else {

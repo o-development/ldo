@@ -12,6 +12,8 @@ import { setupServer } from "@ldo/test-solid-server";
 import { nextTick, type Ref, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
+import { literal, namedNode, quad } from "@ldo/rdf-utils";
+import { ConnectedLdoTransactionDataset } from "@ldo/connected";
 
 // Only overwrite this if we are in test mode. This is an env var we happen to have in our repo
 if (process.env.VITE_IS_TEST === "true") {
@@ -521,16 +523,14 @@ describe("LDO Vue Composables", () => {
 
   describe("useLinkQuery", () => {
     it("should resolve the query", async () => {
-      const [result, app] = withSetup(() => {
-        const result = methods.useLinkQuery(
+      const [result, app] = withSetup(() =>
+        methods.useLinkQuery(
           FoafProfileShapeType,
           person2ResourceUri,
           person2Uri,
           { name: true, knows: { name: true, "@id": true } },
-        );
-
-        return result;
-      });
+        ),
+      );
 
       const person2Resource = methods.dataset.getResource(person2ResourceUri);
       const personResource = methods.dataset.getResource(personResourceUri);
@@ -551,12 +551,89 @@ describe("LDO Vue Composables", () => {
 
       app.unmount();
 
-      // wait for the resources to be unsubscribed from notifications
+      // wait for the resources to be unsubscribed from notifications after unmount
       await vi.waitFor(() => {
         expect(person2Resource.isSubscribedToNotifications()).toBe(false);
         expect(personResource.isSubscribedToNotifications()).toBe(false);
       });
     });
     it.todo("should update the query when a resource changes");
+  });
+
+  describe("useChangeDataset", () => {
+    it("should accept and commit changes to a default dataset", async () => {
+      const [results, app] = withSetup(() => {
+        const changeDataset = methods.useChangeDataset();
+        const resource = methods.useResource(personResourceUri);
+        methods.useSubscribeToResource([personResourceUri]);
+
+        return { changeDataset, resource };
+      });
+
+      expect(results.changeDataset.transactionDataset.value).toBeInstanceOf(
+        ConnectedLdoTransactionDataset,
+      );
+
+      // make sure the resource is fetched before proceeding
+      await vi.waitFor(() => {
+        expect(results.resource.value.isFetched()).toBe(true);
+      });
+      // make sure resource will update
+      await vi.waitFor(() => {
+        expect(results.resource.value.isSubscribedToNotifications()).toBe(true);
+      });
+
+      const foafName = namedNode("http://xmlns.com/foaf/0.1/name");
+
+      // change person's name
+      results.changeDataset.setData((dataset) => {
+        dataset.deleteMatches(namedNode(personUri), foafName);
+        dataset.add(
+          quad(
+            namedNode(personUri),
+            foafName,
+            literal("New Saved Name"),
+            namedNode(personResourceUri),
+          ),
+        );
+      });
+
+      expect(
+        results.changeDataset.transactionDataset.value.getChanges().added?.size,
+      ).toEqual(1);
+      expect(
+        results.changeDataset.transactionDataset.value.getChanges().removed
+          ?.size,
+      ).toEqual(1);
+      const result = await results.changeDataset.commitData();
+      expect(result.isError).toBe(false);
+      // transaction dataset should be reset at this point
+      expect(
+        results.changeDataset.transactionDataset.value.getChanges(),
+      ).toEqual({});
+
+      // the resource should reload (thanks to subscription)
+      await vi.waitFor(() => {
+        expect(results.resource.value.isLoading()).toBe(true);
+      });
+      await vi.waitFor(() => {
+        expect(results.resource.value.isLoading()).toBe(false);
+      });
+
+      const names = methods.dataset.match(namedNode(personUri), foafName);
+
+      // and the name should be updated
+      expect(names.size).toBe(1);
+      expect(names.toArray()[0].object.value).toBe("New Saved Name");
+
+      app.unmount();
+
+      // let's just wait for unsubscribing at the end
+      await vi.waitFor(() => {
+        expect(results.resource.value.isLoading()).toBe(false);
+      });
+    });
+
+    it.todo("should handle changes to custom dataset");
   });
 });

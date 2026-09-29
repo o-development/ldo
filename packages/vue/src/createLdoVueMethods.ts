@@ -10,6 +10,7 @@ import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
 import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
 import { createUseLinkQuery } from "./methods/useLinkQuery";
+import { createUseChangeDataset } from "./methods/change/useChangeDataset.js";
 // import { createUseDataset } from "./methods/useDataset";
 // import { createUseChangeDataset } from "./methods/change/useChangeDataset";
 // import { createUseChangeSubject } from "./methods/change/useChangeSubject";
@@ -82,7 +83,7 @@ export function createLdoVueMethods<
     useSubject: createUseSubject(dataset),
     useSubscribeToResource: createUseSubscribeToResource(dataset),
     useLinkQuery: createUseLinkQuery(dataset),
-    // useChangeDataset: createUseChangeDataset(dataset),
+    useChangeDataset: createUseChangeDataset(dataset),
     // useChangeSubject: createUseChangeSubject(dataset),
     // useChangeMatchObject: createUseChangeMatchObject(dataset),
     // useChangeMatchSubject: createUseChangeMatchSubject(dataset),
