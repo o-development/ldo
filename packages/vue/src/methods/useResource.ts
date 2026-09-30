@@ -1,7 +1,7 @@
 import type {
-  ConnectedLdoDataset,
   ConnectedPlugin,
   GetResourceReturnType,
+  IConnectedLdoDataset,
   Resource,
 } from "@ldo/connected";
 import {
@@ -46,7 +46,7 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
  * Creates a useResource composable.
  */
 export function createUseResource<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ): useResourceType<Plugins> {
   /**
    * Returns a resource and triggers a rerender if that resource is updated.

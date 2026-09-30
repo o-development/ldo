@@ -9,7 +9,7 @@ import {
 import { RerenderCount, waitForResource, withSetup } from "./test-utils.js";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
-import { nextTick, type Ref, ref } from "vue";
+import { nextTick, type Ref, ref, toValue } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
 import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
 import { literal, namedNode, quad } from "@ldo/rdf-utils";
@@ -635,5 +635,37 @@ describe("LDO Vue Composables", () => {
     });
 
     it.todo("should handle changes to custom dataset");
+    it.todo("should handle error in saving");
+  });
+
+  describe("useChangeSubject", () => {
+    it("should accept and commit changes to a default dataset", async () => {
+      const [{ changeDataset, resource, subject }, app] = withSetup(() => {
+        const changeDataset = methods.useChangeSubject(
+          FoafProfileShapeType,
+          personUri,
+        );
+        const resource = methods.useResource(personResourceUri);
+        const subject = methods.useSubject(FoafProfileShapeType, personUri);
+        return { changeDataset, resource, subject };
+      });
+
+      await vi.waitFor(() => {
+        expect(resource.value.isFetched()).toBe(true);
+      });
+
+      changeDataset.setData(resource.value, (profile) => {
+        profile.name = "ANOTHER NAME";
+      });
+
+      const result = await changeDataset.commitData();
+      expect(result.isError).toBe(false);
+      expect(subject.value.name).toEqual("ANOTHER NAME");
+
+      app.unmount();
+    });
+
+    it.todo("should accept and commit changes to a custom dataset");
+    it.todo("should handle error in saving");
   });
 });

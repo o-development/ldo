@@ -1,7 +1,7 @@
 import type {
-  ConnectedLdoDataset,
   ConnectedLdoTransactionDataset,
   ConnectedPlugin,
+  IConnectedLdoDataset,
 } from "@ldo/connected";
 import {
   type MaybeRefOrGetter,
@@ -12,10 +12,12 @@ import {
 } from "vue";
 
 export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ) {
   return function useChangeDataset(
-    specificDataset?: MaybeRefOrGetter<ConnectedLdoDataset<Plugins>>,
+    specificDataset?: MaybeRefOrGetter<
+      IConnectedLdoDataset<Plugins> | undefined
+    >,
   ) {
     const transactionDataset = shallowRef<
       ConnectedLdoTransactionDataset<Plugins>
