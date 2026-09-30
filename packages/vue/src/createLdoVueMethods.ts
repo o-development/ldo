@@ -12,11 +12,9 @@ import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
 import { createUseLinkQuery } from "./methods/useLinkQuery";
 import { createUseChangeDataset } from "./methods/change/useChangeDataset";
 import { createUseChangeSubject } from "./methods/change/useChangeSubject";
+import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
+import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
 // import { createUseDataset } from "./methods/useDataset";
-// import { createUseChangeDataset } from "./methods/change/useChangeDataset";
-// import { createUseChangeSubject } from "./methods/change/useChangeSubject";
-// import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
-// import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
 
 /**
  * A function that creates all common vue functions given specific plugin.
@@ -86,7 +84,7 @@ export function createLdoVueMethods<
     useLinkQuery: createUseLinkQuery(dataset),
     useChangeDataset: createUseChangeDataset(dataset),
     useChangeSubject: createUseChangeSubject(dataset),
-    // useChangeMatchObject: createUseChangeMatchObject(dataset),
-    // useChangeMatchSubject: createUseChangeMatchSubject(dataset),
+    useChangeMatchObject: createUseChangeMatchObject(dataset),
+    useChangeMatchSubject: createUseChangeMatchSubject(dataset),
   };
 }
