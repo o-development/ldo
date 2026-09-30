@@ -1,11 +1,7 @@
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type { ShapeType, LdoBase, LdSet, LdoBuilder } from "@ldo/ldo";
 import { useTrackingProxy } from "../util/useTrackingProxy";
-import type {
-  ConnectedLdoDataset,
-  ConnectedPlugin,
-  IConnectedLdoDataset,
-} from "@ldo/connected";
+import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 
 export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
@@ -18,7 +14,7 @@ export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
  * Creates a useMatchObject function.
  */
 export function createUseMatchObject<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
    * Returns a LDO set of matching items.
