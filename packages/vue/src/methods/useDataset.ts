@@ -1,4 +1,4 @@
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type { IConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
 /**
  * @internal
@@ -6,7 +6,7 @@ import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
  * Creates a useDataset function
  */
 export function createUseDataset<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
    * Returns the global dataset for the application

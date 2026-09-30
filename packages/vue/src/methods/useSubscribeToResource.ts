@@ -1,4 +1,4 @@
-import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { onBeforeUnmount, toValue, watch, type MaybeRefOrGetter } from "vue";
 
 /**
@@ -7,7 +7,7 @@ import { onBeforeUnmount, toValue, watch, type MaybeRefOrGetter } from "vue";
  * Creates a useSubscribeToResource composable
  */
 export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
    * Starts and updates subscriptions to a list of resources

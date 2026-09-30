@@ -1,5 +1,5 @@
 import type {
-  ConnectedLdoDataset,
+  IConnectedLdoDataset,
   ConnectedPlugin,
   LQInput,
 } from "@ldo/connected";
@@ -9,7 +9,7 @@ import { createUseSubject } from "@ldo/vue";
 import { type MaybeRefOrGetter, toValue, watch } from "vue";
 
 export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
-  dataset: ConnectedLdoDataset<Plugins>,
+  dataset: IConnectedLdoDataset<Plugins>,
 ) {
   return function useLinkQuery<
     Type extends LdoBase,
