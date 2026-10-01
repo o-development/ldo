@@ -14,7 +14,7 @@ import { createUseChangeDataset } from "./methods/change/useChangeDataset";
 import { createUseChangeSubject } from "./methods/change/useChangeSubject";
 import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
 import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
-// import { createUseDataset } from "./methods/useDataset";
+import { createUseDataset } from "./methods/useDataset";
 
 /**
  * A function that creates all common vue functions given specific plugin.
@@ -74,7 +74,7 @@ export function createLdoVueMethods<
 
   return {
     dataset,
-    // useDataset: createUseDataset(dataset),
+    useDataset: createUseDataset(dataset),
     useLdo: createUseLdo(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
