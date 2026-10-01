@@ -39,5 +39,20 @@
   "bugs": {
     "url": "https://github.com/o-development/ldo/issues"
   },
-  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme"
+  "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme",
+  "dependencies": {
+    "@ldo/connected": "^1.0.0-alpha.50",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.50",
+    "@ldo/ldo": "^1.0.0-alpha.50",
+    "@ldo/rdf-utils": "^1.0.0-alpha.50"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@ldo/connected-solid": "^1.0.0-alpha.50",
+    "@ldo/test-solid-server": "^1.0.0-alpha.50",
+    "@types/shexj": "^2.1.7",
+    "vue": "^3.5.43"
+  }
 }
