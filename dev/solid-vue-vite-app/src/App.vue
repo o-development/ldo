@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
-import { useSubject, useResource } from "./ldoVue.js";
+import { useSubject, useResource } from "./ldo.js";
 import UseMatchSubjectTest from "./useMatchSubjectTest.vue";
+import VueReadmeTest from "./vueReadmeTest.vue";
 
 const isValidUrl = (str: string) => {
   try {
@@ -54,6 +55,7 @@ useResource(validUri);
     <pre></pre>
   </div>
   <UseMatchSubjectTest />
+  <VueReadmeTest />
 </template>
 
 <style scoped></style>
