@@ -1,5 +1,6 @@
 export * from "./createLdoVueMethods";
 
+export * from "./methods/useDataset";
 export * from "./methods/useLdo";
 export * from "./methods/useMatchObject";
 export * from "./methods/useMatchSubject";
