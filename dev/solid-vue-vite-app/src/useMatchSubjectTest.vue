@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
-import { useResource, useMatchSubject } from "./ldoVue.js";
+import { useResource, useMatchSubject } from "./ldo.js";
 import type { FoafProfile } from "./_ldo/foafProfile.typings.js";
 
 const isValidUrl = (str: string) => {
