@@ -63,6 +63,7 @@ export const {
   useSubject,
   useResource,
   useMatchSubject,
+  useSubscribeToResource,
   /* export all you need */
 } = createLdoVueMethods([solidConnectedPlugin]);
 
@@ -75,22 +76,27 @@ dataset.setContext("solid", { fetch: authFetch });
 
 ```vue
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 import { useSubject, useResource } from "./ldo.js";
 
+const personUri = ref<string>();
 const subject = useSubject(FoafProfileShapeType, personUri);
-const resource = useResource(validUri);
-useSubscribeToResource();
+const resource = useResource(personUri);
+// TODO show how to use subscription to resources
 </script>
 
 <template>
-  <div>{{ subject?.name }}</div>
-  <ul>
-    <li v-for="friend in subject?.knows" :key="friend['@id']">
-      {{ friend["@id"] }}
-    </li>
-  </ul>
+  <input v-model="personUri" placeholder="Enter a webId" />
+  <div>Name: {{ subject?.name }}</div>
+  <div>
+    Friends:
+    <ul>
+      <li v-for="friend in subject?.knows" :key="friend['@id']">
+        {{ friend["@id"] }}
+      </li>
+    </ul>
+  </div>
 </template>
 ```
 
