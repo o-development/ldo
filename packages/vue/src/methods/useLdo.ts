@@ -1,6 +1,8 @@
+// This is a copy-paste from @ldo/react library.
+// It has nothing framework-specific in it. It's just a wrapper of ldo methods.
+
 import {
   changeData,
-  // changeData,
   type ConnectedLdoDataset,
   type ConnectedLdoTransactionDataset,
   type ConnectedPlugin,
@@ -47,7 +49,7 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
    *   .usingType(shapeType)
    *   .write(...resources.map((r) => r.uri))
    *   .fromSubject(subject);
-   * @param shapeType - The shapetype to represent the data
+   * @param shapeType - The shapeType to represent the data
    * @param subject - A subject URI
    * @param resources - The resources changes to should written to
    */
