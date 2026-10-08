@@ -11,14 +11,14 @@ export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
 /**
  * @internal
  *
- * Creates a useMatchObject function.
+ * Creates a useMatchObject composable.
  */
 export function createUseMatchObject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
-   * Returns a LDO set of matching items.
-   * Triggers a rerender if the data are updated.
+   * Returns a reactive LDO set of matching items.
+   * Triggers a rerender if that data are updated.
    */
   return function useMatchObject<Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,

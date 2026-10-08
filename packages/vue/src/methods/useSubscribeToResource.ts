@@ -4,13 +4,13 @@ import { onBeforeUnmount, toValue, watch, type MaybeRefOrGetter } from "vue";
 /**
  * @internal
  *
- * Creates a useSubscribeToResource composable
+ * Creates a useSubscribeToResource composable.
  */
 export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
-   * Starts and updates subscriptions to a list of resources
+   * Starts and updates subscriptions to a list of resources.
    */
   return function useSubscribeToResource(
     uris: MaybeRefOrGetter<string[]>,

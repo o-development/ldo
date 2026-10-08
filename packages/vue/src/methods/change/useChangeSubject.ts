@@ -6,6 +6,11 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 import { createUseSubject, type UseSubjectOptions } from "../useSubject";
 import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
 
+/**
+ * @internal
+ *
+ * Creates a useChangeSubject composable.
+ */
 export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
