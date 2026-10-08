@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createConnectedLdoDataset,
   type ConnectedPlugin,
@@ -67,6 +66,7 @@ import { createUseDataset } from "./methods/useDataset";
  * ```
  */
 export function createLdoVueMethods<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Plugins extends ConnectedPlugin<any, any, any, any>[],
 >(plugins: Plugins) {
   const dataset = createConnectedLdoDataset(plugins);
