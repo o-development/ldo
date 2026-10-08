@@ -9,6 +9,11 @@ import {
   type UseMatchSubjectOptions,
 } from "../useMatchSubject";
 
+/**
+ * @internal
+ *
+ * Creates a useChangeMatchSubject composable
+ */
 export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
@@ -16,7 +21,7 @@ export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
   const useMatchSubject = createUseMatchSubject(dataset);
 
   /**
-   * Returns a reactive subject that can be modified and committed
+   * Returns a reactive list of matched subjects that can be modified and committed
    */
   return function useChangeMatchSubject<Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,

@@ -14,7 +14,7 @@ import { useTrackingProxy } from "../util/useTrackingProxy";
 /**
  * @internal
  *
- * Creates a useMatchSubject function.
+ * Creates a useLinkQuery function.
  */
 export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,

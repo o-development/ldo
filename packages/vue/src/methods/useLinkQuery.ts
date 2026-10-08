@@ -8,9 +8,19 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 import { createUseSubject } from "@ldo/vue";
 import { type MaybeRefOrGetter, toValue, watch } from "vue";
 
+/**
+ * @internal
+ *
+ * Creates a useLinkQuery composable.
+ */
 export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
+  /**
+   * Runs a LDO link query.
+   * Subscribes to related changes.
+   * Returns the starting point as a reactive Linked Data Object.
+   */
   return function useLinkQuery<
     Type extends LdoBase,
     QueryInput extends LQInput<Type>,

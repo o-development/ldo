@@ -1,5 +1,8 @@
-// This is a copy-paste from @ldo/react library.
-// It has nothing framework-specific in it. It's just a wrapper of ldo methods.
+/*
+This is a copy from @ldo/react library.
+It has nothing framework-specific in it.
+It's just a wrapper of ldo methods that looks like a composable.
+*/
 
 import {
   changeData,
@@ -77,7 +80,7 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
 
 /**
  * @internal
- * Creates the useLdoHook
+ * Creates a useLdo composable
  */
 export function createUseLdo<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,

@@ -11,13 +11,13 @@ export interface UseMatchSubjectOptions<Plugins extends ConnectedPlugin[]> {
 /**
  * @internal
  *
- * Creates a useMatchSubject function.
+ * Creates a useMatchSubject composable.
  */
 export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ) {
   /**
-   * Returns a LDO set of matching items.
+   * Returns a reactive LDO set of matching linked data objects.
    * Triggers a rerender if the data are updated.
    */
   return function useMatchSubject<Type extends LdoBase>(

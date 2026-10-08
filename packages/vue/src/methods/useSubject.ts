@@ -29,13 +29,13 @@ export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
 /**
  * @internal
  *
- * Creates a useSubject function.
+ * Creates a useSubject composable.
  */
 export function createUseSubject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
 ): useSubjectType<Plugins> {
   /**
-   * Returns a Linked Data Object based on the provided subject.
+   * Returns a reactive Linked Data Object based on the provided subject.
    * Triggers a rerender if the data are updated.
    */
   return function useSubject<Type extends LdoBase>(
