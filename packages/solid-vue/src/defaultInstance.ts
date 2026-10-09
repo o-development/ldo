@@ -18,4 +18,5 @@ export const {
   useChangeMatchSubject,
 } = createLdoVueMethods([solidConnectedPlugin]);
 
-export const { useSolidAuth } = createBrowserSolidVueMethods(dataset);
+export const { useSolidAuth, provideSolidAuth } =
+  createBrowserSolidVueMethods(dataset);
