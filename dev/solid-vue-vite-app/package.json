@@ -14,8 +14,10 @@
   "dependencies": {
     "@ldo/connected-solid": "^1.0.0-alpha.50",
     "@ldo/ldo": "^1.0.0-alpha.50",
+    "@ldo/solid-vue": "^1.0.0-alpha.50",
     "@ldo/vue": "^1.0.0-alpha.50",
-    "vue": "^3.5.40"
+    "vue": "^3.5.40",
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@ldo/cli": "^1.0.0-alpha.50",
