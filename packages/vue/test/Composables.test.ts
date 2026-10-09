@@ -12,7 +12,7 @@ import {
   type SolidContainerUri,
   type SolidLeafUri,
 } from "@ldo/connected-solid";
-import { RerenderCount, waitForResource, withSetup } from "./test-utils.js";
+import { RerenderCount, waitForResource, withSetup } from "./test-utils";
 import assert from "node:assert";
 import { setupServer } from "@ldo/test-solid-server";
 import { nextTick, type Ref, ref } from "vue";
