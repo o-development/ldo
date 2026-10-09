@@ -2,8 +2,9 @@
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 import { useSubject, useResource } from "./ldo.js";
-import UseMatchSubjectTest from "./useMatchSubjectTest.vue";
-import VueReadmeTest from "./vueReadmeTest.vue";
+import { provideSolidAuth } from "@ldo/solid-vue";
+import { RouterView, RouterLink } from "vue-router";
+import { router } from "./router.js";
 
 const isValidUrl = (str: string) => {
   try {
@@ -22,40 +23,45 @@ const validUri = computed(() =>
 const subject = useSubject(FoafProfileShapeType, inputUri);
 console.log(subject);
 useResource(validUri);
+
+provideSolidAuth();
 </script>
 
 <template>
-  <div>
-    <h1>vue Solid auth test</h1>
-    <input v-model="inputUri" placeholder="enter webId" />
-    <div>{{ subject?.name ?? subject?.["@id"] }}</div>
-    <ul>
-      <li v-for="friend in subject?.knows" :key="friend['@id']">
-        {{ friend["@id"] }}
-      </li>
-    </ul>
+  <header class="header">
+    <nav class="navigation">
+      <RouterLink to="/">home</RouterLink>
+      <RouterLink to="/solid-auth">useSolidAuth</RouterLink>
+      <RouterLink to="/match-subject">useMatchSubject</RouterLink>
+    </nav>
+  </header>
 
-    <p>checked:</p>
-    <p>active:</p>
-    <p>webId:</p>
-    <p>webId resource:</p>
-
-    <form>
-      <input />
-      <button type="submit">login</button>
-    </form>
-
-    <!-- <button type="button" @onClick="logout">logout</button> -->
-
-    <form>
-      <input />
-      <button type="submit">fetch</button>
-    </form>
-
-    <pre></pre>
-  </div>
-  <UseMatchSubjectTest />
-  <VueReadmeTest />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped lang="css">
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.navigation {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+
+  a {
+    text-decoration: none;
+    color: purple;
+    font-variant: small-caps;
+    cursor: pointer;
+
+    &.router-link-exact-active {
+      color: green;
+    }
+  }
+}
+</style>

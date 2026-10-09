@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-vue",
-  "version": "1.0.0-alpha.50",
+  "version": "1.0.0-alpha.53",
   "description": "A Vue library for LDO and Solid",
   "type": "module",
   "main": "./dist/index.cjs",

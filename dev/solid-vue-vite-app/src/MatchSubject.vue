@@ -2,7 +2,6 @@
 import { computed, ref } from "vue";
 import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 import { useResource, useMatchSubject } from "./ldo.js";
-import type { FoafProfile } from "./_ldo/foafProfile.typings.js";
 
 const isValidUrl = (str: string) => {
   try {
@@ -19,7 +18,7 @@ const graphInput = ref("");
 
 const predicate = computed(() => predicateInput.value || undefined);
 const object = computed(() => objectInput.value || undefined);
-const graph = computed(() => graphInput.value || resource.value);
+const graph = computed(() => graphInput.value || undefined); //|| resource.value);
 
 const validResource = computed(() =>
   isValidUrl(resource.value) ? resource.value : "",
@@ -32,29 +31,35 @@ const subjectsSet = useMatchSubject(
   graph,
 );
 
-// const subjects = computed(() => {
-//   return subjectsSet.value.toArray();
-// });
-
 useResource(validResource);
 </script>
 
 <template>
   <div>
-    <h1>useMatchSubject test</h1>
+    <h2>useMatchSubject</h2>
+    <div>
+      <label for="resource">load resource: </label>
+      <input id="resource" v-model="resource" placeholder="resource" />
+    </div>
 
-    <input v-model="resource" placeholder="resource" />
     <br />
-    <input v-model="predicateInput" placeholder="predicate" />
-    <br />
-    <input v-model="objectInput" placeholder="object" />
-    <br />
-    <input v-model="graphInput" placeholder="graph" />
-    <br />
+
+    <div>
+      <input v-model="predicateInput" placeholder="predicate" />
+      <br />
+      <input v-model="objectInput" placeholder="object" />
+      <br />
+      <input v-model="graphInput" placeholder="graph" />
+    </div>
 
     <ul>
       <li v-for="item in subjectsSet">
-        {{ item.knows?.map((p: FoafProfile) => p["@id"]).join(", ") }}
+        {{ item.name ?? item["@id"] }}:
+        <ul>
+          <li v-for="friend in item.knows">
+            {{ friend.name ?? friend["@id"] }}
+          </li>
+        </ul>
       </li>
     </ul>
   </div>

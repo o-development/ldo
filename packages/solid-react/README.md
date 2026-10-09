@@ -33,7 +33,7 @@ npm i @ldo/ldo @ldo/solid-react
 
 ## Simple Example
 
-Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes.ts`.
+Below is a simple example of `@ldo/solid-react` in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes.ts`.
 
 ```tsx
 import { useCallback, type FunctionComponent } from "react";
