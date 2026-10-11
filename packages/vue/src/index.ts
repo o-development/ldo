@@ -1,4 +1,5 @@
 export * from "./createLdoVueMethods";
+export * from "./createLdoVueComposables";
 
 export * from "./methods/useDataset";
 export * from "./methods/useLdo";

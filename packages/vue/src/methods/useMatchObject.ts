@@ -8,6 +8,16 @@ export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
   dataset?: IConnectedLdoDataset<Plugins>;
 }
 
+export interface UseMatchObjectComposable<Plugins extends ConnectedPlugin[]> {
+  <Type extends LdoBase, CustomPlugins extends ConnectedPlugin[] = Plugins>(
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
+    subject?: MaybeRefOrGetter<QuadMatch[0] | string>,
+    predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
+    graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
+    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugins>>,
+  ): Ref<LdSet<Type>>;
+}
+
 /**
  * @internal
  *
@@ -15,17 +25,20 @@ export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
  */
 export function createUseMatchObject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
-) {
+): UseMatchObjectComposable<Plugins> {
   /**
    * Returns a reactive LDO set of matching items.
    * Triggers a rerender if that data are updated.
    */
-  return function useMatchObject<Type extends LdoBase>(
+  return function useMatchObject<
+    Type extends LdoBase,
+    CustomPlugins extends ConnectedPlugin[] = Plugins,
+  >(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<QuadMatch[0] | string>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchObjectOptions<Plugins>>,
+    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugins>>,
   ): Ref<LdSet<Type>> {
     const createLdo = computed(() => {
       const subjectValue = toValue(subject);
