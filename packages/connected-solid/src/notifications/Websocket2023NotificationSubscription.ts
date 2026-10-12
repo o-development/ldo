@@ -118,7 +118,8 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
         setTimeout(() => {
-          this.open();
+          // attempt to reconnect unless the disconnection became intentional
+          if (!this.isManualClose) this.open();
         }, this.reconnectInterval);
         this.onNotificationError(
           new DisconnectedAttemptingReconnectError(
@@ -139,6 +140,8 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
 
   protected async close(): Promise<void> {
     this.socket?.close();
+    // set the intention to disconnect
+    this.isManualClose = true;
   }
 }
 

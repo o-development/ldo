@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **connected-solid:** Fix `acl:accessTo` vs. `acl:default` WAC rule resolution in `resource.getWac()`. (#159)
 - **solid-react:** Improve support for Next.js / SSR. (#156)
 - **connected-solid:** Fix false success when Solid resource creation and update fails with 404. (#168)
+- **connected-solid:** Fix unintentional resubscription to websocket notifications.
 
 ## [1.0.0-alpha.51] - 2026-05-11
 
