@@ -66,12 +66,11 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
 
     const onResourceUpdate = () => {
       triggerRef(resourceRef);
-      console.log("TRIGGERING RESOURCE UPDATE REF");
     };
 
     watch(
       [() => toValue(uri), () => toValue(options)],
-      async ([newUri, newOptions], _, onCleanup) => {
+      async ([newUri, newOptions], [oldUri, oldOptions], onCleanup) => {
         // if (newUri === oldUri && newOptions === oldOptions) return;
         // TODO handle change in uri vs options more carefully
 
@@ -81,11 +80,20 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
         onCleanup(async () => {
           cancelled = true;
           localResource?.off("update", onResourceUpdate);
-          if (subscriptionId) {
-            localResource?.unsubscribeFromNotifications(subscriptionId);
-            subscriptionId = undefined;
-          }
         });
+
+        const uriChanged = oldUri !== newUri;
+        const subscriptionTurnedOff = !newOptions?.subscribe;
+
+        if (uriChanged || subscriptionTurnedOff) {
+          if (subscriptionId) {
+            const sid = subscriptionId;
+            await resourceRef.value?.unsubscribeFromNotifications(sid);
+            // clear old subscription id
+            // but make sure we don't unintentionally clear a new subscription id
+            if (sid === subscriptionId) subscriptionId = undefined;
+          }
+        }
 
         if (newUri) {
           localResource = dataset.getResource(newUri) as Resource;
@@ -101,7 +109,10 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
           if (resourceRef.value) {
             resourceRef.value.on("update", onResourceUpdate);
             // Subscribe to notifications if it's needed
-            if (newOptions?.subscribe) {
+            if (
+              newOptions?.subscribe &&
+              (uriChanged || !oldOptions?.subscribe)
+            ) {
               const id = await resourceRef.value.subscribeToNotifications();
 
               if (cancelled) {

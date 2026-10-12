@@ -5,7 +5,7 @@ import type {
 } from "@ldo/connected";
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
-import { createUseSubject } from "@ldo/vue";
+import { createUseSubject } from "./useSubject.js";
 import { type MaybeRefOrGetter, toValue, watch } from "vue";
 
 /**
