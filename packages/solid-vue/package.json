@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-vue#readme",
   "dependencies": {
+    "@ldo/connected": "^1.0.0-alpha.50",
     "@ldo/connected-solid": "^1.0.0-alpha.50",
     "@ldo/vue": "^1.0.0-alpha.50"
   },

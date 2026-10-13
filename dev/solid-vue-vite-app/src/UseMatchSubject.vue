@@ -53,10 +53,10 @@ useResource(validResource);
     </div>
 
     <ul>
-      <li v-for="item in subjectsSet">
+      <li v-for="item in subjectsSet" v-bind:key="item['@id']">
         {{ item.name ?? item["@id"] }}:
         <ul>
-          <li v-for="friend in item.knows">
+          <li v-for="friend in item.knows" v-bind:key="friend['@id']">
             {{ friend.name ?? friend["@id"] }}
           </li>
         </ul>

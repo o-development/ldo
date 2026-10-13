@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSolidAuth } from "@ldo/solid-vue";
+import { useSolidAuth } from "./ldo.js";
 
 const solidAuth = useSolidAuth();
 
@@ -30,26 +30,16 @@ const login = async () => {
 async function logout() {
   await solidAuth.logout();
 }
-
-async function handleHistoryHome() {
-  globalThis.history.pushState({}, document.title, globalThis.location.origin);
-}
 </script>
 
 <template>
-  <h2>Solid Auth</h2>
   <div v-if="solidAuth.session.value.isActive">
     {{ solidAuth.session.value.webId }}
   </div>
 
   <div v-if="!solidAuth.ranInitialAuthCheck.value">CHECKING AUTH</div>
-
   <button @click="logout" v-else-if="solidAuth.session.value.isActive">
     Sign out
   </button>
-  <button @click="login" v-else="solidAuth.session.value.isActive">
-    Sign in
-  </button>
-
-  <button @click="handleHistoryHome">history home</button>
+  <button @click="login" v-else>Sign in</button>
 </template>

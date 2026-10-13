@@ -1,18 +1,20 @@
 import {
   createWebHistory,
   createRouter,
-  createWebHashHistory,
+  // createWebHashHistory,
 } from "vue-router";
-import SolidAuth from "./SolidAuth.vue";
-import MatchSubject from "./MatchSubject.vue";
-import Main from "./Main.vue";
+import SolidAuth from "./UseSolidAuth.vue";
+import MatchSubject from "./UseMatchSubject.vue";
+import LandingPage from "./LandingPage.vue";
+import UseResource from "./UseResource.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "", component: Main },
+    { path: "", component: LandingPage },
     { path: "/solid-auth", component: SolidAuth },
     { path: "/match-subject", component: MatchSubject },
+    { path: "/resource", component: UseResource },
   ],
 });
 
@@ -32,5 +34,3 @@ export const router = createRouter({
 // router.onError((error) => {
 //   console.error("[Router] Error occurred during routing:", error);
 // });
-
-export default router;

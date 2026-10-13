@@ -1,9 +1,10 @@
-import { solidConnectedPlugin } from "@ldo/connected-solid";
-import { createLdoVueMethods } from "@ldo/vue";
-import { createBrowserSolidVueMethods } from "./createBrowserSolidVueMethods";
+import { createBrowserSolidVueComposables } from "./createBrowserSolidVueMethods";
 
 export const {
-  dataset,
+  provideSolidLdo,
+  provideDataset,
+  provideSolidAuth,
+  useSolidAuth,
   useDataset,
   useLdo,
   useResource,
@@ -16,7 +17,4 @@ export const {
   useChangeSubject,
   useChangeMatchObject,
   useChangeMatchSubject,
-} = createLdoVueMethods([solidConnectedPlugin]);
-
-export const { useSolidAuth, provideSolidAuth } =
-  createBrowserSolidVueMethods(dataset);
+} = createBrowserSolidVueComposables();
