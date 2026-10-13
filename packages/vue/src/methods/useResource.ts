@@ -92,6 +92,7 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
             // clear old subscription id
             // but make sure we don't unintentionally clear a new subscription id
             if (sid === subscriptionId) subscriptionId = undefined;
+            onResourceUpdate();
           }
         }
 
@@ -114,9 +115,11 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
               (uriChanged || !oldOptions?.subscribe)
             ) {
               const id = await resourceRef.value.subscribeToNotifications();
+              onResourceUpdate();
 
               if (cancelled) {
                 await resourceRef.value.unsubscribeFromNotifications(id);
+                onResourceUpdate();
               } else {
                 subscriptionId = id;
               }
