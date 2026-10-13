@@ -8,6 +8,7 @@ export const {
   useResource,
   useMatchSubject,
   useSolidAuth,
+  useRootContainerFor,
 } = createBrowserSolidVueComposables([nextGraphConnectedPlugin]);
 
 createLdoVueMethods([nextGraphConnectedPlugin]);
