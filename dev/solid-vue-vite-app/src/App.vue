@@ -10,9 +10,10 @@ provideSolidLdo();
   <header class="header">
     <nav class="navigation">
       <RouterLink to="/">home</RouterLink>
-      <RouterLink to="/resource">useResource</RouterLink>
-      <RouterLink to="/solid-auth">useSolidAuth</RouterLink>
-      <RouterLink to="/match-subject">useMatchSubject</RouterLink>
+      <RouterLink to="/use-resource">useResource</RouterLink>
+      <RouterLink to="/use-solid-auth">useSolidAuth</RouterLink>
+      <RouterLink to="/use-match-subject">useMatchSubject</RouterLink>
+      <RouterLink to="/use-root-container-for">useRootContainerFor</RouterLink>
     </nav>
 
     <div class="auth">
@@ -44,12 +45,11 @@ provideSolidLdo();
 .navigation {
   a {
     text-decoration: none;
-    color: purple;
     font-variant: small-caps;
     cursor: pointer;
 
     &.router-link-exact-active {
-      color: green;
+      color: red;
     }
   }
 }
