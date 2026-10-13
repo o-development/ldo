@@ -1,39 +1,23 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
-import { useSubject, useResource } from "./ldo.js";
-import { provideSolidAuth } from "@ldo/solid-vue";
+import { provideSolidLdo } from "./ldo.js";
 import { RouterView, RouterLink } from "vue-router";
-import { router } from "./router.js";
+import SolidAuth from "./UseSolidAuth.vue";
 
-const isValidUrl = (str: string) => {
-  try {
-    return Boolean(new URL(str));
-  } catch {
-    return false;
-  }
-};
-
-const inputUri = ref("");
-
-const validUri = computed(() =>
-  isValidUrl(inputUri.value) ? inputUri.value : "",
-);
-
-const subject = useSubject(FoafProfileShapeType, inputUri);
-console.log(subject);
-useResource(validUri);
-
-provideSolidAuth();
+provideSolidLdo();
 </script>
 
 <template>
   <header class="header">
     <nav class="navigation">
       <RouterLink to="/">home</RouterLink>
+      <RouterLink to="/resource">useResource</RouterLink>
       <RouterLink to="/solid-auth">useSolidAuth</RouterLink>
       <RouterLink to="/match-subject">useMatchSubject</RouterLink>
     </nav>
+
+    <div class="auth">
+      <SolidAuth />
+    </div>
   </header>
 
   <main>
@@ -46,13 +30,18 @@ provideSolidAuth();
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  margin: 1rem;
 }
-.navigation {
+
+.navigation,
+.auth {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  padding: 1rem;
+}
 
+.navigation {
   a {
     text-decoration: none;
     color: purple;
