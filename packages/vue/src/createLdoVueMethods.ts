@@ -65,10 +65,9 @@ import { createUseDataset } from "./methods/useDataset";
  * </template>
  * ```
  */
-export function createLdoVueMethods<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Plugins extends ConnectedPlugin<any, any, any, any>[],
->(plugins: Plugins) {
+export function createLdoVueMethods<Plugin extends ConnectedPlugin>(
+  plugins: Plugin[],
+) {
   const dataset = createConnectedLdoDataset(plugins);
   dataset.setMaxListeners(1000);
 

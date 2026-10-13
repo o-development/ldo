@@ -35,7 +35,7 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
     Plugin extends Extract<Plugins[number], { name: Name }>,
     UriType extends string,
   >(
-    uri?: MaybeRefOrGetter<UriType>,
+    uri?: MaybeRefOrGetter<UriType | undefined>,
     options?: MaybeRefOrGetter<UseResourceOptions<Name>>,
   ): Ref<GetResourceReturnType<Plugin, UriType> | undefined>;
 };

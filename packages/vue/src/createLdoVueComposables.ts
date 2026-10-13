@@ -35,10 +35,10 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  * const subjectLdo = useSubject(...subjectProps)
  * ```
  */
-export function createLdoVueComposables<Plugins extends ConnectedPlugin[]>(
-  plugins: Plugins,
+export function createLdoVueComposables<Plugin extends ConnectedPlugin>(
+  plugins: Plugin[],
 ) {
-  const DatasetKey: InjectionKey<ConnectedLdoDataset<Plugins>> =
+  const DatasetKey: InjectionKey<ConnectedLdoDataset<Plugin[]>> =
     Symbol("Dataset Key");
 
   function provideDataset() {
@@ -49,32 +49,35 @@ export function createLdoVueComposables<Plugins extends ConnectedPlugin[]>(
 
   return {
     provideDataset,
-    useDataset: createComposable(DatasetKey, createUseDataset<Plugins>),
-    useLdo: createComposable(DatasetKey, createUseLdo<Plugins>),
-    useResource: createComposable(DatasetKey, createUseResource<Plugins>),
-    useSubject: createComposable(DatasetKey, createUseSubject<Plugins>),
-    useMatchObject: createComposable(DatasetKey, createUseMatchObject<Plugins>),
+    useDataset: createComposable(DatasetKey, createUseDataset<Plugin[]>),
+    useLdo: createComposable(DatasetKey, createUseLdo<Plugin[]>),
+    useResource: createComposable(DatasetKey, createUseResource<Plugin[]>),
+    useSubject: createComposable(DatasetKey, createUseSubject<Plugin[]>),
+    useMatchObject: createComposable(
+      DatasetKey,
+      createUseMatchObject<Plugin[]>,
+    ),
     useMatchSubject: createComposable(
       DatasetKey,
-      createUseMatchSubject<Plugins>,
+      createUseMatchSubject<Plugin[]>,
     ),
     useSubscribeToResource: createComposable(
       DatasetKey,
-      createUseSubscribeToResource<Plugins>,
+      createUseSubscribeToResource<Plugin[]>,
     ),
-    useLinkQuery: createComposable(DatasetKey, createUseLinkQuery<Plugins>),
+    useLinkQuery: createComposable(DatasetKey, createUseLinkQuery<Plugin[]>),
     useChangeDataset: createComposable(
       DatasetKey,
-      createUseChangeDataset<Plugins>,
+      createUseChangeDataset<Plugin[]>,
     ),
-    useChangeSubject: createComposable(DatasetKey, createUseSubject<Plugins>),
+    useChangeSubject: createComposable(DatasetKey, createUseSubject<Plugin[]>),
     useChangeMatchObject: createComposable(
       DatasetKey,
-      createUseChangeMatchObject<Plugins>,
+      createUseChangeMatchObject<Plugin[]>,
     ),
     useChangeMatchSubject: createComposable(
       DatasetKey,
-      createUseChangeMatchSubject<Plugins>,
+      createUseChangeMatchSubject<Plugin[]>,
     ),
   };
 }
@@ -85,11 +88,11 @@ export function createLdoVueComposables<Plugins extends ConnectedPlugin[]>(
  * A method to create the composable with injected dataset
  */
 const createComposable = <
-  Plugins extends ConnectedPlugin[],
+  Plugin extends ConnectedPlugin,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  CreateComposable extends (dataset: ConnectedLdoDataset<Plugins>) => any,
+  CreateComposable extends (dataset: ConnectedLdoDataset<Plugin[]>) => any,
 >(
-  key: InjectionKey<ConnectedLdoDataset<Plugins>>,
+  key: InjectionKey<ConnectedLdoDataset<Plugin[]>>,
   creator: CreateComposable,
 ): ReturnType<CreateComposable> => {
   // We return a proxy function matching the exact signature layout of the underlying contract
