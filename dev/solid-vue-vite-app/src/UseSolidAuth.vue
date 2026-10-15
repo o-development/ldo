@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSolidAuth } from "./ldo.js";
+import { useSolidAuth } from "./ldo";
 
 const solidAuth = useSolidAuth();
 
