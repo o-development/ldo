@@ -46,6 +46,7 @@ const handleRefresh = () => {
   </div>
 
   <div class="results" v-if="resource">
+    <div>uri: {{ resource.uri }}</div>
     <div>isDoingInitialFetch: {{ resource.isDoingInitialFetch() }}</div>
     <div>isLoading: {{ resource.isLoading() }}</div>
     <div>isReloading: {{ resource.isReloading() }}</div>
