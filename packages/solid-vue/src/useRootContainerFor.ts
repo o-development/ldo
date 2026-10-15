@@ -22,8 +22,8 @@ export function createUseRootContainerFor({
   useSolidAuth: typeof useSolidAuth;
 }) {
   return function useRootContainerFor(
-    uri?: MaybeRefOrGetter<SolidContainerUri | SolidLeafUri>,
-    options?: UseResourceOptions<"solid">,
+    uri?: MaybeRefOrGetter<SolidContainerUri | SolidLeafUri | undefined>,
+    options?: MaybeRefOrGetter<UseResourceOptions<"solid">>,
   ) {
     const dataset = useDataset();
     const rootContainerUriRef = ref<SolidContainerUri | undefined>();
@@ -33,10 +33,11 @@ export function createUseRootContainerFor({
       [() => toValue(uri), () => solidAuth.session.value.isActive],
       async ([newUri, newIsActive], [oldUri, oldIsActive]) => {
         void newIsActive;
+        if (newUri !== oldUri) rootContainerUriRef.value = undefined;
         if (newUri && isSolidUri(newUri)) {
           const givenResource = dataset.getResource(newUri);
           const result = await givenResource.getRootContainer();
-          if (!result.isError) rootContainerUriRef.value = result.uri;
+          rootContainerUriRef.value = result.isError ? undefined : result.uri;
         } else {
           rootContainerUriRef.value = undefined;
         }

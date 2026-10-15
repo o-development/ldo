@@ -1,5 +1,9 @@
 import { createLdoVueComposables } from "@ldo/vue";
-import { provideSolidAuth, useSolidAuth } from "./useSolidAuth.js";
+import {
+  provideSolidAuth,
+  useSolidAuth,
+  solidAuthInjectionKey,
+} from "./useSolidAuth.js";
 import { solidConnectedPlugin } from "@ldo/connected-solid";
 import type { ConnectedPlugin } from "@ldo/connected";
 import { createUseRootContainerFor } from "./useRootContainerFor.js";
@@ -8,8 +12,13 @@ import { createUseResourceWithAuth } from "./useResourceWithAuth.js";
 export function createBrowserSolidVueComposables<
   Plugin extends ConnectedPlugin = never,
 >(additionalPlugins: Plugin[] = []) {
-  const { provideDataset, useResource, useDataset, ...vueComposables } =
-    createLdoVueComposables([solidConnectedPlugin, ...additionalPlugins]);
+  const {
+    provideDataset,
+    useResource,
+    useDataset,
+    datasetInjectionKey,
+    ...vueComposables
+  } = createLdoVueComposables([solidConnectedPlugin, ...additionalPlugins]);
 
   function provideSolidLdo() {
     const dataset = provideDataset();
@@ -24,6 +33,8 @@ export function createBrowserSolidVueComposables<
   });
 
   return {
+    solidAuthInjectionKey,
+    datasetInjectionKey,
     provideSolidLdo,
     provideDataset,
     useResource: useResourceWithAuth,
