@@ -12,7 +12,7 @@ import {
 } from "vue";
 import { Session, SessionEvents } from "@uvdsl/solid-oidc-client-browser";
 
-type SolidAuthSession = {
+export type SolidAuthSession = {
   login: Session["login"];
   logout: Session["logout"];
   signUp: Session["login"];
@@ -21,7 +21,7 @@ type SolidAuthSession = {
   ranInitialAuthCheck: Ref<boolean>;
 };
 
-const OidcSessionKey: InjectionKey<SolidAuthSession> = Symbol(
+export const solidAuthInjectionKey: InjectionKey<SolidAuthSession> = Symbol(
   "solid auth context identifier",
 );
 
@@ -125,7 +125,7 @@ export function provideSolidAuth({
     ranInitialAuthCheck,
   };
 
-  provide(OidcSessionKey, solidAuth);
+  provide(solidAuthInjectionKey, solidAuth);
 
   return solidAuth;
 }
@@ -135,7 +135,10 @@ export function provideSolidAuth({
  * In order to use it, you have to run provideSolidAuth in an ancestor component.
  */
 export function useSolidAuth() {
-  const auth = inject(OidcSessionKey);
-  if (!auth) throw new Error("useSolidAuth must have session provided");
+  const auth = inject(solidAuthInjectionKey);
+  if (!auth)
+    throw new Error(
+      "useSolidAuth requires an ancestor provider (provideSolidLdo or provideSolidAuth).",
+    );
   return auth;
 }

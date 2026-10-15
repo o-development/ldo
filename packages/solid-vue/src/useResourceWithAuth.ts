@@ -40,7 +40,6 @@ export function createUseResourceWithAuth({
             !resource.isLoading()
           )
         ) {
-          console.log("REFETCHING");
           await resourceRef.value!.read();
         }
       }
