@@ -17,7 +17,7 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
    */
   dataset: ConnectedLdoDataset<Plugins>;
   /**
-   * Retireves a representation of a Resource at the given URI. This resource
+   * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
    * fetched or in the process of fetching as well as some information about it.
    *
@@ -29,7 +29,7 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
    */
   getResource: ConnectedLdoDataset<Plugins>["getResource"];
   /**
-   * Sets conetext for a specific plugin
+   * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin
@@ -66,7 +66,7 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
     ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type;
   /**
-   * Commits the data of a writable Linke Data Object back to the remote.
+   * Commits the data of a writable Linked Data Object back to the remote.
    */
   commitData(
     input: LdoBase,
