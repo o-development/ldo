@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SolidLeafUri, SolidContainerUri } from "@ldo/connected-solid";
 import { ref } from "vue";
-import { useRootContainerFor } from "./ldo.ts";
+import { useRootContainerFor } from "./ldo";
 
 const uri = ref<SolidLeafUri | SolidContainerUri>(
   "https://timbl.solidcommunity.net/profile/card",

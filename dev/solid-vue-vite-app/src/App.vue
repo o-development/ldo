@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provideSolidLdo } from "./ldo.js";
+import { provideSolidLdo } from "./ldo";
 import { RouterView, RouterLink } from "vue-router";
 import SolidAuth from "./UseSolidAuth.vue";
 

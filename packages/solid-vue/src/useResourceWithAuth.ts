@@ -6,7 +6,7 @@ import {
 } from "@ldo/connected-solid";
 import type { useResourceType } from "@ldo/vue";
 import { toValue, watch } from "vue";
-import type { useSolidAuth } from "./useSolidAuth.js";
+import type { useSolidAuth } from "./useSolidAuth";
 
 type UseSolidAuth = typeof useSolidAuth;
 
