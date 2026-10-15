@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, triggerRef } from "vue";
-import { useResource } from "./ldo.js";
+import { useResource } from "./ldo";
 import type { SolidContainerUri, SolidLeafUri } from "@ldo/connected-solid";
 import type { UseResourceOptions } from "@ldo/vue";
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MockSharedWorker, withParentChildSetup } from "./test-utils.js";
+import { MockSharedWorker, withParentChildSetup } from "./test-utils";
 import { createBrowserSolidVueComposables } from "@ldo/solid-vue";
 import { namedNode } from "@ldo/rdf-utils";
 import { setupServer } from "@ldo/test-solid-server";
@@ -10,9 +10,9 @@ import type {
   SolidContainerUri,
   SolidLeafUri,
 } from "@ldo/connected-solid";
-import type { UseResourceOptions } from "../src/index.js";
+import type { UseResourceOptions } from "../src/index";
 import type { ConnectedLdoDataset } from "@ldo/connected";
-import type { SolidAuthSession } from "../src/useSolidAuth.js";
+import type { SolidAuthSession } from "../src/useSolidAuth";
 
 describe("Composables for Solid", () => {
   let methods: ReturnType<typeof createBrowserSolidVueComposables<never>>;

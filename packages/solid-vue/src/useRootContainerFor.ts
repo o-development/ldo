@@ -10,7 +10,7 @@ import type {
   UseResourceOptions,
 } from "@ldo/vue";
 import { ref, toValue, watch, type MaybeRefOrGetter } from "vue";
-import type { useSolidAuth } from "./useSolidAuth.js";
+import type { useSolidAuth } from "./useSolidAuth";
 
 export function createUseRootContainerFor({
   useDataset,

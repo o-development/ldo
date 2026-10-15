@@ -3,11 +3,11 @@ import {
   provideSolidAuth,
   useSolidAuth,
   solidAuthInjectionKey,
-} from "./useSolidAuth.js";
+} from "./useSolidAuth";
 import { solidConnectedPlugin } from "@ldo/connected-solid";
 import type { ConnectedPlugin } from "@ldo/connected";
-import { createUseRootContainerFor } from "./useRootContainerFor.js";
-import { createUseResourceWithAuth } from "./useResourceWithAuth.js";
+import { createUseRootContainerFor } from "./useRootContainerFor";
+import { createUseResourceWithAuth } from "./useResourceWithAuth";
 
 export function createBrowserSolidVueComposables<
   Plugin extends ConnectedPlugin = never,
