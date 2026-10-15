@@ -38,45 +38,61 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
 export function createLdoVueComposables<Plugin extends ConnectedPlugin>(
   plugins: Plugin[],
 ) {
-  const DatasetKey: InjectionKey<ConnectedLdoDataset<Plugin[]>> =
+  const datasetInjectionKey: InjectionKey<ConnectedLdoDataset<Plugin[]>> =
     Symbol("Dataset Key");
 
   function provideDataset() {
     const dataset = createConnectedLdoDataset(plugins);
-    provide(DatasetKey, dataset);
+    provide(datasetInjectionKey, dataset);
     return dataset;
   }
 
   return {
+    datasetInjectionKey,
     provideDataset,
-    useDataset: createComposable(DatasetKey, createUseDataset<Plugin[]>),
-    useLdo: createComposable(DatasetKey, createUseLdo<Plugin[]>),
-    useResource: createComposable(DatasetKey, createUseResource<Plugin[]>),
-    useSubject: createComposable(DatasetKey, createUseSubject<Plugin[]>),
+    useDataset: createComposable(
+      datasetInjectionKey,
+      createUseDataset<Plugin[]>,
+    ),
+    useLdo: createComposable(datasetInjectionKey, createUseLdo<Plugin[]>),
+    useResource: createComposable(
+      datasetInjectionKey,
+      createUseResource<Plugin[]>,
+    ),
+    useSubject: createComposable(
+      datasetInjectionKey,
+      createUseSubject<Plugin[]>,
+    ),
     useMatchObject: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseMatchObject<Plugin[]>,
     ),
     useMatchSubject: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseMatchSubject<Plugin[]>,
     ),
     useSubscribeToResource: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseSubscribeToResource<Plugin[]>,
     ),
-    useLinkQuery: createComposable(DatasetKey, createUseLinkQuery<Plugin[]>),
+    useLinkQuery: createComposable(
+      datasetInjectionKey,
+      createUseLinkQuery<Plugin[]>,
+    ),
     useChangeDataset: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseChangeDataset<Plugin[]>,
     ),
-    useChangeSubject: createComposable(DatasetKey, createUseSubject<Plugin[]>),
+    useChangeSubject: createComposable(
+      datasetInjectionKey,
+      createUseSubject<Plugin[]>,
+    ),
     useChangeMatchObject: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseChangeMatchObject<Plugin[]>,
     ),
     useChangeMatchSubject: createComposable(
-      DatasetKey,
+      datasetInjectionKey,
       createUseChangeMatchSubject<Plugin[]>,
     ),
   };

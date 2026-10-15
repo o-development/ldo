@@ -54,12 +54,12 @@ if (process.env.VITE_IS_TEST === "true") {
 }
 
 describe("LDO Vue Composables", () => {
-  let methods: ReturnType<typeof createLdoVueMethods<[SolidConnectedPlugin]>>;
+  let methods: ReturnType<typeof createLdoVueMethods<SolidConnectedPlugin>>;
   const personResourceUri = "http://localhost:3006/directory/person";
-  const personUri = personResourceUri + "#me";
-  const otherPersonUri = personResourceUri + "#i";
+  const personUri = `${personResourceUri}#me`;
+  const otherPersonUri = `${personResourceUri}#i`;
   const person2ResourceUri = "http://localhost:3006/directory/person2";
-  const person2Uri = person2ResourceUri + "#me";
+  const person2Uri = `${person2ResourceUri}#me`;
   const foafName = namedNode("http://xmlns.com/foaf/0.1/name");
   const foafKnows = namedNode("http://xmlns.com/foaf/0.1/knows");
 
