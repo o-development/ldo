@@ -46,7 +46,7 @@ export interface Resource<UriType extends string = string>
    */
   isFetched(): boolean;
   /**
-   * Returns true if this reosource has not performed a fetch at least once
+   * Returns true if this resource has not performed a fetch at least once
    */
   isUnfetched(): boolean;
   /**
