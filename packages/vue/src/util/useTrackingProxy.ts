@@ -45,7 +45,6 @@ export function useTrackingProxy<Type extends LdoBase, ReturnType>(
 
   const forceUpdate = () => {
     triggerRef(linkedDataObject);
-    console.log("TRIGGERING REF");
   };
 
   watch(

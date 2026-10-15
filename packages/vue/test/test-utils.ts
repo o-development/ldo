@@ -42,7 +42,6 @@ export class RerenderCount {
   constructor(sources: AllowedSources) {
     watch(sources, () => {
       this._count++;
-      console.log("RERENDER", this._count);
     });
   }
 

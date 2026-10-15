@@ -124,14 +124,12 @@ describe("LDO Vue Composables", () => {
       expect(result.value.type).toEqual("SolidContainer");
 
       const headersResult = await result.value.getHeaders();
-      assert(!headersResult.isError);
-
-      console.log(Object.fromEntries(headersResult.headers.entries()));
+      expect(headersResult.isError).toBe(false);
 
       const rootContainerResult = await result.value.getRootContainer();
 
       assert(!rootContainerResult.isError);
-      console.log(rootContainerResult.uri);
+      expect(rootContainerResult.uri).toEqual("http://localhost:3006/");
 
       app.unmount();
     });
@@ -162,8 +160,6 @@ describe("LDO Vue Composables", () => {
     });
 
     it("should handle change in options", async () => {
-      // s.fetchMock.mockClear();
-
       const uriRef: Ref<SolidContainerUri, SolidContainerUri> = ref(
         "http://localhost:3006/directory/",
       );
@@ -816,7 +812,6 @@ describe("LDO Vue Composables", () => {
 
       const result = await changeDataset.commitData();
       expect(result.isError).toBe(false);
-      console.log(result);
 
       await vi.waitFor(() => {
         expect(resource.value.isLoading()).toBe(true);
