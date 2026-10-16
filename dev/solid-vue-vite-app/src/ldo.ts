@@ -1,4 +1,3 @@
-import { createLdoVueComposables, createLdoVueMethods } from "@ldo/vue";
 import { createBrowserSolidVueComposables } from "@ldo/solid-vue";
 import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
 
@@ -10,6 +9,3 @@ export const {
   useSolidAuth,
   useRootContainerFor,
 } = createBrowserSolidVueComposables([nextGraphConnectedPlugin]);
-
-createLdoVueMethods([nextGraphConnectedPlugin]);
-createLdoVueComposables([nextGraphConnectedPlugin]);
