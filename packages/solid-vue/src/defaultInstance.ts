@@ -1,4 +1,4 @@
-import { createBrowserSolidVueComposables } from "./createBrowserSolidVueMethods";
+import { createBrowserSolidVueComposables } from "./createBrowserSolidVueComposables";
 
 export const {
   provideSolidLdo,
