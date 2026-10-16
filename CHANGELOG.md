@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **connected-solid:** Read links from Link header of a Solid resource. (#165)
 - **vue:** Add [Vue](https://vuejs.org) support with `@ldo/vue` package. ([#171](https://github.com/o-development/ldo/pull/171))
+- **solid-vue:** Add Solid + Vue support with `@ldo/solid-vue` package. It provides `@ldo/vue` integration with Solid dataset and Solid auth session and additional Solid-specific Vue composables. ([#173](https://github.com/o-development/ldo/pull/173))
 
 ### Changed
 
