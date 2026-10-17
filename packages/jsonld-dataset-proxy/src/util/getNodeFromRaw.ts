@@ -31,6 +31,21 @@ export function getNodeFromRawValue(
   // Get the Object Node
   if (value == undefined) {
     return undefined;
+  } else if (value instanceof Date) {
+    if (!datatype || datatype === "@id") {
+      // Dates cannot be used as named node identifiers
+      return undefined;
+    } else if (datatype === "http://www.w3.org/2001/XMLSchema#date") {
+      // Format as date-only (YYYY-MM-DD) for xsd:date
+      const dateString = value.toISOString().split("T")[0];
+      return literal(dateString, datatype);
+    } else if (datatype === "http://www.w3.org/2001/XMLSchema#dateTime") {
+      // Use full ISO format for xsd:dateTime
+      return literal(value.toISOString(), datatype);
+    } else {
+      // For non-date-related datatypes, do not coerce Date values
+      return undefined;
+    }
   } else if (
     typeof value === "string" ||
     typeof value === "boolean" ||
