@@ -1,5 +1,11 @@
-import { createLdoVueMethods } from "@ldo/vue";
-import { solidConnectedPlugin } from "@ldo/connected-solid";
+import { createBrowserSolidVueComposables } from "@ldo/solid-vue";
+import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
 
-export const { dataset, useSubject, useResource, useMatchSubject } =
-  createLdoVueMethods([solidConnectedPlugin]);
+export const {
+  provideSolidLdo,
+  useSubject,
+  useResource,
+  useMatchSubject,
+  useSolidAuth,
+  useRootContainerFor,
+} = createBrowserSolidVueComposables([nextGraphConnectedPlugin]);
