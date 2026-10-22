@@ -22,7 +22,7 @@ const CHANNEL_TYPE =
 
 /**
  * @internal
- * An implementation of the Websocket2023 notifiction spec
+ * An implementation of the Websocket2023 notification spec
  */
 export class Websocket2023NotificationSubscription extends NotificationSubscription<
   SolidConnectedPlugin,
@@ -106,7 +106,10 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
 
     this.socket.onerror = (err) => {
       this.onNotificationError(
-        new UnexpectedResourceError(this.resource, err.error),
+        new UnexpectedResourceError(
+          this.resource,
+          err.error ?? new Error("WebSocket error"),
+        ),
       );
     };
     return;
