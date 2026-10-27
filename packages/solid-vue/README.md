@@ -108,32 +108,32 @@ Solid + Vue [composables](https://vuejs.org/guide/reusability/composables.html):
 
 ### Providers
 
-- [provideSolidLdo](https://ldo.js.org/latest/api/vue/provideSolidLdo/)
+- [provideSolidLdo](https://ldo.js.org/latest/api/solid-vue/provideSolidLdo/)
 
 ### Composables
 
 Generic `@ldo/vue` composables with integrated Solid connected plugin:
 
-- [useLdo](https://ldo.js.org/latest/api/vue/useLdo/)
-- [useResource](https://ldo.js.org/latest/api/vue/useResource/)
-- [useSubject](https://ldo.js.org/latest/api/vue/useSubject/)
-- [useMatchSubject](https://ldo.js.org/latest/api/vue/useMatchSubject/)
-- [useMatchObject](https://ldo.js.org/latest/api/vue/useMatchObject/)
-- [useSubscribeToResource](https://ldo.js.org/latest/api/vue/useSubscribeToResource/)
-- [useLinkQuery](https://ldo.js.org/latest/api/vue/useLinkQuery/)
-- [useChangeDataset](https://ldo.js.org/latest/api/vue/useChangeDataset/)
-- [useChangeSubject](https://ldo.js.org/latest/api/vue/useChangeSubject/)
-- [useChangeMatchSubject](https://ldo.js.org/latest/api/vue/useChangeMatchSubject/)
-- [useChangeMatchObject](https://ldo.js.org/latest/api/vue/useChangeMatchObject/)
+- [useLdo](https://ldo.js.org/latest/api/solid-vue/useLdo/)
+- [useResource](https://ldo.js.org/latest/api/solid-vue/useResource/)
+- [useSubject](https://ldo.js.org/latest/api/solid-vue/useSubject/)
+- [useMatchSubject](https://ldo.js.org/latest/api/solid-vue/useMatchSubject/)
+- [useMatchObject](https://ldo.js.org/latest/api/solid-vue/useMatchObject/)
+- [useSubscribeToResource](https://ldo.js.org/latest/api/solid-vue/useSubscribeToResource/)
+- [useLinkQuery](https://ldo.js.org/latest/api/solid-vue/useLinkQuery/)
+- [useChangeDataset](https://ldo.js.org/latest/api/solid-vue/useChangeDataset/)
+- [useChangeSubject](https://ldo.js.org/latest/api/solid-vue/useChangeSubject/)
+- [useChangeMatchSubject](https://ldo.js.org/latest/api/solid-vue/useChangeMatchSubject/)
+- [useChangeMatchObject](https://ldo.js.org/latest/api/solid-vue/useChangeMatchObject/)
 
 Solid-specific composables:
 
-- [useSolidAuth](https://ldo.js.org/latest/api/vue/useLdo/)
-- [useRootContainerFor](https://ldo.js.org/latest/api/vue/useLdo/)
+- [useSolidAuth](https://ldo.js.org/latest/api/solid-vue/useLdo/)
+- [useRootContainerFor](https://ldo.js.org/latest/api/solid-vue/useLdo/)
 
 ### Composable factory
 
-- [createBrowserSolidVueComposables](https://ldo.js.org/latest/api/vue/createBrowserSolidVueComposables/)
+- [createBrowserSolidVueComposables](https://ldo.js.org/latest/api/solid-vue/createBrowserSolidVueComposables/)
 
 ## Sponsorship
 
