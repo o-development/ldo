@@ -13,6 +13,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@ldo/connected-nextgraph": "^1.0.0-alpha.50",
     "@ldo/connected-solid": "^1.0.0-alpha.50",
     "@ldo/ldo": "^1.0.0-alpha.50",
     "@ldo/solid-vue": "^1.0.0-alpha.50",

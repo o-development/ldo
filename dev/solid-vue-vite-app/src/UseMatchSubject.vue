@@ -18,7 +18,7 @@ const graphInput = ref("");
 
 const predicate = computed(() => predicateInput.value || undefined);
 const object = computed(() => objectInput.value || undefined);
-const graph = computed(() => graphInput.value || undefined); //|| resource.value);
+const graph = computed(() => graphInput.value || undefined);
 
 const validResource = computed(() =>
   isValidUrl(resource.value) ? resource.value : "",

@@ -31,12 +31,14 @@ export function createUseRootContainerFor({
 
     watch(
       [() => toValue(uri), () => solidAuth.session.value.isActive],
-      async ([newUri, newIsActive], [oldUri, oldIsActive]) => {
+      async ([newUri, newIsActive], [oldUri, _oldIsActive]) => {
         void newIsActive;
         if (newUri !== oldUri) rootContainerUriRef.value = undefined;
         if (newUri && isSolidUri(newUri)) {
           const givenResource = dataset.getResource(newUri);
           const result = await givenResource.getRootContainer();
+          // now, proceed only if the newUri is still active, to prevent race condition
+          if (newUri !== toValue(uri)) return;
           rootContainerUriRef.value = result.isError ? undefined : result.uri;
         } else {
           rootContainerUriRef.value = undefined;

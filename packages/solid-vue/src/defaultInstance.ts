@@ -17,4 +17,7 @@ export const {
   useChangeSubject,
   useChangeMatchObject,
   useChangeMatchSubject,
+  useRootContainerFor,
+  datasetInjectionKey,
+  solidAuthInjectionKey,
 } = createBrowserSolidVueComposables();
