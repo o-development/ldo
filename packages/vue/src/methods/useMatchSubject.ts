@@ -8,6 +8,16 @@ export interface UseMatchSubjectOptions<Plugin extends ConnectedPlugin> {
   dataset?: IConnectedLdoDataset<Plugin[]>;
 }
 
+export interface UseMatchSubjectComposable<Plugin extends ConnectedPlugin> {
+  <Type extends LdoBase>(
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
+    predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
+    object?: MaybeRefOrGetter<QuadMatch[2] | string>,
+    graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
+  ): Ref<LdSet<Type>>;
+}
+
 /**
  * @internal
  *
@@ -15,7 +25,7 @@ export interface UseMatchSubjectOptions<Plugin extends ConnectedPlugin> {
  */
 export function createUseMatchSubject<Plugin extends ConnectedPlugin>(
   dataset: IConnectedLdoDataset<Plugin[]>,
-) {
+): UseMatchSubjectComposable<Plugin> {
   /**
    * Returns a reactive LDO set of matching linked data objects.
    * Triggers a rerender if the data are updated.

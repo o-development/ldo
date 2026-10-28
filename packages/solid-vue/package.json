@@ -50,7 +50,6 @@
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@ldo/test-solid-server": "^1.0.0-alpha.50",
     "vue": "^3.5.43"
   }

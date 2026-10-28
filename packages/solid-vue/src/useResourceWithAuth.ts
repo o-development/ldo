@@ -4,7 +4,7 @@ import {
   type SolidContainer,
   type SolidLeaf,
 } from "@ldo/connected-solid";
-import type { useResourceType } from "@ldo/vue";
+import type { UseResourceComposable } from "@ldo/vue";
 import { toValue, watch } from "vue";
 import type { useSolidAuth } from "./useSolidAuth";
 
@@ -20,9 +20,9 @@ export function createUseResourceWithAuth({
   useResource,
   useSolidAuth,
 }: {
-  useResource: useResourceType<SolidConnectedPlugin>;
+  useResource: UseResourceComposable<SolidConnectedPlugin>;
   useSolidAuth: UseSolidAuth;
-}): useResourceType<SolidConnectedPlugin> {
+}): UseResourceComposable<SolidConnectedPlugin> {
   /**
    * Solid-authentication-aware useResource method.
    * It returns a reactive resource and it triggers a rerender.
