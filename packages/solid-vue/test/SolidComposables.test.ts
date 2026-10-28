@@ -1,30 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MockSharedWorker, withParentChildSetup } from "./test-utils";
 import { createBrowserSolidVueComposables } from "@ldo/solid-vue";
-import { namedNode } from "@ldo/rdf-utils";
 import { setupServer } from "@ldo/test-solid-server";
 import { type CreateAppFunction, nextTick, type Ref, ref } from "vue";
 import type {
-  SolidConnectedPlugin,
   SolidContainer,
   SolidContainerUri,
   SolidLeafUri,
 } from "@ldo/connected-solid";
 import type { UseResourceOptions } from "../src/index";
-import type { ConnectedLdoDataset } from "@ldo/connected";
-import type { SolidAuthSession } from "../src/useSolidAuth";
 
 describe("Composables for Solid", () => {
   let methods: ReturnType<typeof createBrowserSolidVueComposables<never>>;
   const personResourceUri = "http://localhost:3006/directory/person";
-  const personUri = personResourceUri + "#me";
-  const otherPersonUri = personResourceUri + "#i";
   const person2ResourceUri = "http://localhost:3006/directory/person2";
-  const person2Uri = person2ResourceUri + "#me";
-  const foafName = namedNode("http://xmlns.com/foaf/0.1/name");
-  const foafKnows = namedNode("http://xmlns.com/foaf/0.1/knows");
 
-  const s = setupServer(3006, {
+  setupServer(3006, {
     slug: "directory/",
     isContainer: true,
     contains: [
@@ -98,10 +89,10 @@ describe("Composables for Solid", () => {
 
   describe("useRootContainerFor", () => {
     let childResult: Ref<SolidContainer | undefined>,
-      parentResult: {
-        dataset: ConnectedLdoDataset<SolidConnectedPlugin[]>;
-        solidAuth: SolidAuthSession;
-      },
+      // parentResult: {
+      //   dataset: ConnectedLdoDataset<SolidConnectedPlugin[]>;
+      //   solidAuth: SolidAuthSession;
+      // },
       app: ReturnType<CreateAppFunction<Element>>,
       uri: Ref<SolidLeafUri | SolidContainerUri | undefined>,
       options: Ref<UseResourceOptions<"solid">>;
@@ -110,7 +101,7 @@ describe("Composables for Solid", () => {
       uri = ref<SolidLeafUri | SolidContainerUri | undefined>();
       options = ref({});
 
-      [parentResult, childResult, app] = withParentChildSetup(
+      [, /*parentResult*/ childResult, app] = withParentChildSetup(
         () => methods.provideSolidLdo(),
         () => methods.useRootContainerFor(uri, options),
       );
