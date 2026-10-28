@@ -11,7 +11,10 @@ import type { useSolidAuth } from "./useSolidAuth";
 type UseSolidAuth = typeof useSolidAuth;
 
 /**
- * If the uri is Solid uri, we want refetch the resource when session.isActive changes
+ * @internal
+ *
+ * Creates a Solid-authentication-aware useResource composable.
+ * If the uri is Solid uri, we want to refetch the resource when session.isActive changes
  */
 export function createUseResourceWithAuth({
   useResource,
@@ -20,6 +23,11 @@ export function createUseResourceWithAuth({
   useResource: useResourceType<SolidConnectedPlugin[]>;
   useSolidAuth: UseSolidAuth;
 }): useResourceType<SolidConnectedPlugin[]> {
+  /**
+   * Solid-authentication-aware useResource method.
+   * It returns a reactive resource and it triggers a rerender.
+   * It re-fetches the resource when auth session status (signin/signout) changes.
+   */
   return function useResourceWithAuth(
     uri: Parameters<typeof useResource>[0],
     options?: Parameters<typeof useResource>[1],
@@ -34,11 +42,9 @@ export function createUseResourceWithAuth({
         const resource = resourceRef.value as SolidLeaf | SolidContainer;
         // if the read has not been initialized and initial read is suppressed, don't re-read
         if (
-          !(
-            suppressInitialRead &&
-            resource.status.type === "unfetched" &&
-            !resource.isLoading()
-          )
+          !suppressInitialRead ||
+          resource.status.type !== "unfetched" ||
+          resource.isLoading()
         ) {
           await resourceRef.value!.read();
         }

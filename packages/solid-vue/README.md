@@ -128,8 +128,8 @@ Generic `@ldo/vue` composables with integrated Solid connected plugin:
 
 Solid-specific composables:
 
-- [useSolidAuth](https://ldo.js.org/latest/api/solid-vue/useLdo/)
-- [useRootContainerFor](https://ldo.js.org/latest/api/solid-vue/useLdo/)
+- [useSolidAuth](https://ldo.js.org/latest/api/solid-vue/useSolidAuth/)
+- [useRootContainerFor](https://ldo.js.org/latest/api/solid-vue/useRootContainerFor/)
 
 ### Composable factory
 

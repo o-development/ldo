@@ -9,6 +9,12 @@ import type { ConnectedPlugin } from "@ldo/connected";
 import { createUseRootContainerFor } from "./useRootContainerFor";
 import { createUseResourceWithAuth } from "./useResourceWithAuth";
 
+/**
+ * Create LDO Vue composables with Solid protocol support.
+ *
+ * You can optionally also provide an array of additional plugins.
+ * Solid connected plugin is included by default.
+ */
 export function createBrowserSolidVueComposables<
   Plugin extends ConnectedPlugin = never,
 >(additionalPlugins: Plugin[] = []) {
@@ -23,6 +29,8 @@ export function createBrowserSolidVueComposables<
   function provideSolidLdo() {
     const dataset = provideDataset();
     const solidAuth = provideSolidAuth();
+    // Bind the Solid session's authenticate fetch to the LDO dataset
+    // to send Solid-authenticated requests.
     dataset.setContext("solid", { fetch: solidAuth.fetch });
     return { dataset, solidAuth };
   }
