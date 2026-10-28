@@ -19,11 +19,6 @@ export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
     subject?: MaybeRefOrGetter<string | SubjectNode | undefined>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type | undefined>;
-  <Type extends LdoBase>(
-    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
-    subject?: MaybeRefOrGetter<string | SubjectNode | undefined>,
-    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
-  ): Ref<Type | undefined>;
 };
 
 /**

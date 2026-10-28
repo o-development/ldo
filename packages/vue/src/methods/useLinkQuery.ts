@@ -48,16 +48,17 @@ export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
           .usingType(shapeType)
           .startLinkQuery(resource, startingSubjectUri, linkQuery);
 
+        // register cleanup before first await
+        onCleanup(async () => {
+          finished = true;
+          await resourceLinkQuery.unsubscribeAll();
+        });
+
         await resourceLinkQuery.subscribe();
         // if already cleaned up, unsubscribe immediately
         if (finished) {
           await resourceLinkQuery.unsubscribeAll();
         }
-
-        onCleanup(async () => {
-          finished = true;
-          await resourceLinkQuery.unsubscribeAll();
-        });
       },
       { immediate: true },
     );

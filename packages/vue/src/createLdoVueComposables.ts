@@ -15,6 +15,7 @@ import { createUseLinkQuery } from "./methods/useLinkQuery";
 import { createUseChangeDataset } from "./methods/change/useChangeDataset";
 import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
 import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
+import { createUseChangeSubject } from "./methods/change/useChangeSubject";
 
 /**
  * Create ldo composables for Vue, where the dataset is isolated and provided/injected.
@@ -85,7 +86,7 @@ export function createLdoVueComposables<Plugin extends ConnectedPlugin>(
     ),
     useChangeSubject: createComposable(
       datasetInjectionKey,
-      createUseSubject<Plugin[]>,
+      createUseChangeSubject<Plugin[]>,
     ),
     useChangeMatchObject: createComposable(
       datasetInjectionKey,
