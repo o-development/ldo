@@ -8,7 +8,7 @@ export interface UseSubjectOptions<Plugin extends ConnectedPlugin> {
   dataset?: IConnectedLdoDataset<Plugin[]>;
 }
 
-export type useSubjectType<Plugin extends ConnectedPlugin> = {
+export type UseSubjectComposable<Plugin extends ConnectedPlugin> = {
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject: MaybeRefOrGetter<string | SubjectNode>,
@@ -28,7 +28,7 @@ export type useSubjectType<Plugin extends ConnectedPlugin> = {
  */
 export function createUseSubject<Plugin extends ConnectedPlugin>(
   dataset: IConnectedLdoDataset<Plugin[]>,
-): useSubjectType<Plugin> {
+): UseSubjectComposable<Plugin> {
   /**
    * Returns a reactive Linked Data Object based on the provided subject.
    * Triggers a rerender if the data are updated.

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MockSharedWorker, withParentChildSetup } from "./test-utils";
-import { createBrowserSolidVueComposables } from "@ldo/solid-vue";
+import { createBrowserSolidVueComposables } from "../src/index";
 import { setupServer } from "@ldo/test-solid-server";
 import { type CreateAppFunction, nextTick, type Ref, ref } from "vue";
 import type {

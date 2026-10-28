@@ -6,7 +6,16 @@ import type {
 import type { LdoBase, ShapeType } from "@ldo/ldo";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import { createUseSubject } from "./useSubject";
-import { type MaybeRefOrGetter, toValue, watch } from "vue";
+import { type MaybeRefOrGetter, type Ref, toValue, watch } from "vue";
+
+export interface UseLinkQueryComposable {
+  <Type extends LdoBase, QueryInput extends LQInput<Type>>(
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
+    startingResource: MaybeRefOrGetter<string>,
+    startingSubject: MaybeRefOrGetter<SubjectNode | string>,
+    linkQuery: MaybeRefOrGetter<QueryInput>,
+  ): Ref<Type>;
+}
 
 /**
  * @internal
@@ -15,7 +24,7 @@ import { type MaybeRefOrGetter, toValue, watch } from "vue";
  */
 export function createUseLinkQuery<Plugin extends ConnectedPlugin>(
   dataset: IConnectedLdoDataset<Plugin[]>,
-) {
+): UseLinkQueryComposable {
   /**
    * Runs a LDO link query.
    * Subscribes to related changes.
