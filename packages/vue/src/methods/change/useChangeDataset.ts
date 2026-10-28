@@ -16,8 +16,8 @@ import {
  *
  * Creates a useChangeDataset composable
  */
-export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
+export function createUseChangeDataset<Plugin extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugin[]>,
 ) {
   /**
    * Returns a transaction on the dataset that can be modified and committed.
@@ -44,12 +44,12 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
    */
   return function useChangeDataset(
     specificDataset?: MaybeRefOrGetter<
-      IConnectedLdoDataset<Plugins> | undefined
+      IConnectedLdoDataset<Plugin[]> | undefined
     >,
   ) {
     const transactionDataset = shallowRef<
-      ConnectedLdoTransactionDataset<Plugins>
-    >() as Ref<ConnectedLdoTransactionDataset<Plugins>>;
+      ConnectedLdoTransactionDataset<Plugin[]>
+    >() as Ref<ConnectedLdoTransactionDataset<Plugin[]>>;
 
     watch(
       () => toValue(specificDataset),
@@ -60,7 +60,7 @@ export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
     );
 
     const setData = (
-      changer: (toChange: ConnectedLdoTransactionDataset<Plugins>) => void,
+      changer: (toChange: ConnectedLdoTransactionDataset<Plugin[]>) => void,
     ) => {
       const subTransaction = transactionDataset.value.startTransaction();
       changer(subTransaction);
