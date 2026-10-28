@@ -12,7 +12,7 @@ import UseRootContainerFor from "./UseRootContainerFor.vue";
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "", component: LandingPage },
+    { path: "/", component: LandingPage },
     { path: "/use-solid-auth", component: SolidAuth },
     { path: "/use-match-subject", component: MatchSubject },
     { path: "/use-resource", component: UseResource },

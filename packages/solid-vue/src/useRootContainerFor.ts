@@ -12,6 +12,11 @@ import type {
 import { ref, toValue, watch, type MaybeRefOrGetter } from "vue";
 import type { useSolidAuth } from "./useSolidAuth";
 
+/**
+ * @internal
+ *
+ * Creates a useRootContainerFor composable
+ */
 export function createUseRootContainerFor({
   useDataset,
   useResource,
@@ -21,6 +26,10 @@ export function createUseRootContainerFor({
   useResource: ReturnType<typeof createUseResource<SolidConnectedPlugin[]>>;
   useSolidAuth: typeof useSolidAuth;
 }) {
+  /**
+   * Returns a reactive Solid Pod root container of a given URI
+   * or undefined if the root container of the resource is not found.
+   */
   return function useRootContainerFor(
     uri?: MaybeRefOrGetter<SolidContainerUri | SolidLeafUri | undefined>,
     options?: MaybeRefOrGetter<UseResourceOptions<"solid">>,

@@ -19,7 +19,6 @@ const validUri = computed(() =>
 );
 
 const subject = useSubject(FoafProfileShapeType, inputUri);
-console.log(subject);
 useResource(validUri);
 </script>
 
