@@ -9,13 +9,17 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "build:ldo": "ldo build --input src/_shapes --output src/_ldo"
+    "build:ldo": "ldo build --input src/_shapes --output src/_ldo",
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@ldo/connected-nextgraph": "^1.0.0-alpha.50",
     "@ldo/connected-solid": "^1.0.0-alpha.50",
     "@ldo/ldo": "^1.0.0-alpha.50",
+    "@ldo/solid-vue": "^1.0.0-alpha.50",
     "@ldo/vue": "^1.0.0-alpha.50",
-    "vue": "^3.5.40"
+    "vue": "^3.5.40",
+    "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@ldo/cli": "^1.0.0-alpha.50",
@@ -24,7 +28,10 @@
     "@types/node": "^24.13.3",
     "@types/shexj": "^2.1.7",
     "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.12.0",
+    "eslint-plugin-vue": "^10.11.1",
     "npm-run-all2": "^9.0.2",
     "typescript": "~6.0.0",
     "vite": "^8.1.5",

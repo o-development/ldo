@@ -1,14 +1,18 @@
 import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { onBeforeUnmount, toValue, watch, type MaybeRefOrGetter } from "vue";
 
+export interface UseSubscribeToResourceComposable {
+  (uris: MaybeRefOrGetter<string[]>): void;
+}
+
 /**
  * @internal
  *
  * Creates a useSubscribeToResource composable.
  */
-export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
-) {
+export function createUseSubscribeToResource<Plugin extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugin[]>,
+): UseSubscribeToResourceComposable {
   /**
    * Starts and updates subscriptions to a list of resources.
    */
