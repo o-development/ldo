@@ -20,9 +20,9 @@ export function createUseResourceWithAuth({
   useResource,
   useSolidAuth,
 }: {
-  useResource: useResourceType<SolidConnectedPlugin[]>;
+  useResource: useResourceType<SolidConnectedPlugin>;
   useSolidAuth: UseSolidAuth;
-}): useResourceType<SolidConnectedPlugin[]> {
+}): useResourceType<SolidConnectedPlugin> {
   /**
    * Solid-authentication-aware useResource method.
    * It returns a reactive resource and it triggers a rerender.

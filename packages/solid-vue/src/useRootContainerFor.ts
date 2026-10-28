@@ -22,8 +22,8 @@ export function createUseRootContainerFor({
   useResource,
   useSolidAuth: useSAuth,
 }: {
-  useDataset: ReturnType<typeof createUseDataset<[SolidConnectedPlugin]>>;
-  useResource: ReturnType<typeof createUseResource<SolidConnectedPlugin[]>>;
+  useDataset: ReturnType<typeof createUseDataset<SolidConnectedPlugin>>;
+  useResource: ReturnType<typeof createUseResource<SolidConnectedPlugin>>;
   useSolidAuth: typeof useSolidAuth;
 }) {
   /**

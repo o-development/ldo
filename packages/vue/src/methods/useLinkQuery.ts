@@ -13,8 +13,8 @@ import { type MaybeRefOrGetter, toValue, watch } from "vue";
  *
  * Creates a useLinkQuery composable.
  */
-export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
+export function createUseLinkQuery<Plugin extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugin[]>,
 ) {
   /**
    * Runs a LDO link query.

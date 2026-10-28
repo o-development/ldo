@@ -21,18 +21,18 @@ export interface UseResourceOptions<Name> {
   subscribe?: boolean;
 }
 
-export type useResourceType<Plugins extends ConnectedPlugin[]> = {
+export type useResourceType<Plugins extends ConnectedPlugin> = {
   <
-    Name extends Plugins[number]["name"],
-    Plugin extends Extract<Plugins[number], { name: Name }>,
+    Name extends Plugins["name"],
+    Plugin extends Extract<Plugins, { name: Name }>,
     UriType extends string,
   >(
     uri: MaybeRefOrGetter<UriType>,
     options?: MaybeRefOrGetter<UseResourceOptions<Name>>,
   ): Ref<GetResourceReturnType<Plugin, UriType>>;
   <
-    Name extends Plugins[number]["name"],
-    Plugin extends Extract<Plugins[number], { name: Name }>,
+    Name extends Plugins["name"],
+    Plugin extends Extract<Plugins, { name: Name }>,
     UriType extends string,
   >(
     uri?: MaybeRefOrGetter<UriType | undefined>,
@@ -45,15 +45,15 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
  *
  * Creates a useResource composable.
  */
-export function createUseResource<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
+export function createUseResource<Plugins extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugins[]>,
 ): useResourceType<Plugins> {
   /**
    * Returns a reactive resource and triggers a rerender if that resource is updated.
    */
   return function useResource<
-    Name extends Plugins[number]["name"],
-    Plugin extends Extract<Plugins[number], { name: Name }>,
+    Name extends Plugins["name"],
+    Plugin extends Extract<Plugins, { name: Name }>,
     UriType extends string,
   >(
     uri?: MaybeRefOrGetter<UriType>,

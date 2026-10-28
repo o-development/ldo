@@ -4,8 +4,8 @@ import { useTrackingProxy } from "../util/useTrackingProxy";
 import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 
-export interface UseMatchSubjectOptions<Plugins extends ConnectedPlugin[]> {
-  dataset?: IConnectedLdoDataset<Plugins>;
+export interface UseMatchSubjectOptions<Plugin extends ConnectedPlugin> {
+  dataset?: IConnectedLdoDataset<Plugin[]>;
 }
 
 /**
@@ -13,8 +13,8 @@ export interface UseMatchSubjectOptions<Plugins extends ConnectedPlugin[]> {
  *
  * Creates a useMatchSubject composable.
  */
-export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
+export function createUseMatchSubject<Plugin extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugin[]>,
 ) {
   /**
    * Returns a reactive LDO set of matching linked data objects.
@@ -25,7 +25,7 @@ export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     object?: MaybeRefOrGetter<QuadMatch[2] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugins>>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
   ): Ref<LdSet<Type>> {
     const createLdo = computed(() => {
       const predicateValue = toValue(predicate);

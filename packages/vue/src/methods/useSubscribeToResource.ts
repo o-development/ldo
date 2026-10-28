@@ -6,8 +6,8 @@ import { onBeforeUnmount, toValue, watch, type MaybeRefOrGetter } from "vue";
  *
  * Creates a useSubscribeToResource composable.
  */
-export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
-  dataset: IConnectedLdoDataset<Plugins>,
+export function createUseSubscribeToResource<Plugin extends ConnectedPlugin>(
+  dataset: IConnectedLdoDataset<Plugin[]>,
 ) {
   /**
    * Starts and updates subscriptions to a list of resources.
