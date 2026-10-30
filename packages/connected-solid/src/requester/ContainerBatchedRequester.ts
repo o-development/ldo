@@ -8,7 +8,7 @@ import type {
   ContainerCreateIfAbsentResult,
 } from "./requests/createDataResource";
 import type { ReadContainerResult } from "./requests/readResource";
-import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFunctions";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 
 export const IS_ROOT_CONTAINER_KEY = "isRootContainer";
@@ -46,7 +46,7 @@ export class ContainerBatchedRequester extends BatchedRequester<SolidContainer> 
 
   /**
    * Creates the container
-   * @param overwrite - If true, this will orverwrite the resource if it already
+   * @param overwrite - If true, this will overwrite the resource if it already
    * exists
    */
   createDataResource(
