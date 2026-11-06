@@ -40,10 +40,8 @@ export async function init(directory?: string) {
   }
 
   // Install dependencies
-  await exec(`cd ${projectDirectory} && npm install @ldo/ldo --save`);
-  await exec(
-    `cd ${projectDirectory} && npm install @ldo/cli @types/shexj @types/jsonld --save-dev`,
-  );
+  await exec(`cd ${projectDirectory} && npm install @rdfjs/wrapper --save`);
+  await exec(`cd ${projectDirectory} && npm install @ldo/cli --save-dev`);
 
   // Create "shapes" folder
   const shapesFolderPath = path.join(parentDirectory, DEFAULT_SHAPES_FOLDER);
@@ -58,7 +56,7 @@ export async function init(directory?: string) {
         {},
       );
       await fs.writeFile(
-        path.join(shapesFolderPath, `${path.parse(shapePath).name}.shex`),
+        path.join(shapesFolderPath, `${path.parse(shapePath).name}.shacl`),
         shapeContent,
       );
     }),

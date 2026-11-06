@@ -1,6 +1,19 @@
 import type { Schema } from "shexj";
 import type { ContextDefinition } from "jsonld";
-import type { LdSet, ShapeType } from "../src/index";
+import {
+  RequiredFrom,
+  RequiredAs,
+  OptionalFrom,
+  OptionalAs,
+  SetFrom,
+  LiteralAs,
+  LiteralFrom,
+  NamedNodeAs,
+  NamedNodeFrom,
+  TermAs,
+  TermFrom,
+} from "@rdfjs/wrapper";
+import { LdoTermWrapper } from "../src/LdoTermWrapper";
 
 export const profileShex: Schema = {
   type: "Schema",
@@ -886,226 +899,423 @@ export const profileContext: ContextDefinition = {
   },
 };
 
-export interface AddressShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The name of the user's country of residence
-   */
-  countryName?: string;
-  /**r
-   * The name of the user's locality (City, Town etc.) of residencer
-   */
-  locality?: string;
-  /**
-   * The user's postal code
-   */
-  postalCode?: string;
-  /**
-   * The name of the user's region (State, Province etc.) of residence
-   */
-  region?: string;
-  /**
-   * The user's street address
-   */
-  streetAddress?: string;
+/**
+ * RDF/JS Wrapper classes for the Solid Profile ShEx shape.
+ *
+ * Cardinality mapping used throughout:
+ *   - ShEx `min 0, max 1`        -> optional singular  (OptionalFrom / OptionalAs)
+ *   - ShEx no min/max (= 1..1)   -> required singular  (RequiredFrom / RequiredAs)
+ *   - ShEx `max -1` (unbounded)  -> set / "multiple"   (SetFrom -> mutable Set)
+ *
+ * Value/term mappings:
+ *   - xsd:string  -> LiteralAs.string  / LiteralFrom.string
+ *   - xsd:integer -> LiteralAs.number  / LiteralFrom.integer
+ *   - IRI (nodeKind: iri) -> NamedNodeAs.string / NamedNodeFrom.string  (IRI as a JS string)
+ *   - nested shape        -> TermAs.instance(Class) / TermFrom.instance
+ */
+
+// ---------------------------------------------------------------------------
+// Vocabulary / predicate IRIs
+// ---------------------------------------------------------------------------
+
+const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+const FOAF = "http://xmlns.com/foaf/0.1/";
+const VCARD = "http://www.w3.org/2006/vcard/ns#";
+const ACL = "http://www.w3.org/ns/auth/acl#";
+const CERT = "http://www.w3.org/ns/auth/cert#";
+const LDP = "http://www.w3.org/ns/ldp#";
+const PIM = "http://www.w3.org/ns/pim/space#";
+const SOLID = "http://www.w3.org/ns/solid/terms#";
+
+// ---------------------------------------------------------------------------
+// AddressShape  -> all five fields are optional strings
+// ---------------------------------------------------------------------------
+
+export class Address extends LdoTermWrapper {
+  get countryName(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "country-name",
+      LiteralAs.string,
+    );
+  }
+  set countryName(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "country-name", value, LiteralFrom.string);
+  }
+
+  get locality(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "locality",
+      LiteralAs.string,
+    );
+  }
+  set locality(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "locality", value, LiteralFrom.string);
+  }
+
+  get postalCode(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "postal-code",
+      LiteralAs.string,
+    );
+  }
+  set postalCode(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "postal-code", value, LiteralFrom.string);
+  }
+
+  get region(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "region",
+      LiteralAs.string,
+    );
+  }
+  set region(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "region", value, LiteralFrom.string);
+  }
+
+  get streetAddress(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "street-address",
+      LiteralAs.string,
+    );
+  }
+  set streetAddress(value: string | undefined) {
+    OptionalAs.object(
+      this,
+      VCARD + "street-address",
+      value,
+      LiteralFrom.string,
+    );
+  }
 }
 
-export interface EmailShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The type of email.
-   */
-  type?:
-    | { "@id": "Dom" }
-    | { "@id": "Home" }
-    | { "@id": "ISDN" }
-    | { "@id": "Internet" }
-    | { "@id": "Intl" }
-    | { "@id": "Label" }
-    | { "@id": "Parcel" }
-    | { "@id": "Postal" }
-    | { "@id": "Pref" }
-    | { "@id": "Work" }
-    | { "@id": "X400" };
-  /**
-   * The value of an email as a mailto link (Example <mailto:jane@example.com>)
-   */
-  value: string;
+// ---------------------------------------------------------------------------
+// EmailShape  -> optional `type` (IRI kind) + required `value` (mailto IRI)
+// ---------------------------------------------------------------------------
+
+export class Email extends LdoTermWrapper {
+  /** vcard kind, e.g. vcard:Home / vcard:Work (IRI). */
+  get kind(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      RDF + "type",
+      NamedNodeAs.string,
+    );
+  }
+  set kind(value: string | undefined) {
+    OptionalAs.object(this, RDF + "type", value, NamedNodeFrom.string);
+  }
+
+  /** The email as a mailto: IRI (required). */
+  get value(): string {
+    return RequiredFrom.subjectPredicate(
+      this,
+      VCARD + "value",
+      NamedNodeAs.string,
+    );
+  }
+  set value(value: string) {
+    RequiredAs.object(this, VCARD + "value", value, NamedNodeFrom.string);
+  }
 }
 
-export interface PhoneNumberShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * They type of Phone Number
-   */
-  type?:
-    | { "@id": "Dom" }
-    | { "@id": "Home" }
-    | { "@id": "ISDN" }
-    | { "@id": "Internet" }
-    | { "@id": "Intl" }
-    | { "@id": "Label" }
-    | { "@id": "Parcel" }
-    | { "@id": "Postal" }
-    | { "@id": "Pref" }
-    | { "@id": "Work" }
-    | { "@id": "X400" };
-  /**
-   * The value of a phone number as a tel link (Example <tel:555-555-5555>)
-   */
-  value: string;
+// ---------------------------------------------------------------------------
+// PhoneNumberShape  -> optional `type` (IRI kind) + required `value` (tel IRI)
+// ---------------------------------------------------------------------------
+
+export class PhoneNumber extends LdoTermWrapper {
+  get kind(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      RDF + "type",
+      NamedNodeAs.string,
+    );
+  }
+  set kind(value: string | undefined) {
+    OptionalAs.object(this, RDF + "type", value, NamedNodeFrom.string);
+  }
+
+  /** The phone number as a tel: IRI (required). */
+  get value(): string {
+    return RequiredFrom.subjectPredicate(
+      this,
+      VCARD + "value",
+      NamedNodeAs.string,
+    );
+  }
+  set value(value: string) {
+    RequiredAs.object(this, VCARD + "value", value, NamedNodeFrom.string);
+  }
 }
 
-export interface RSAPublicKeyShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * RSA Modulus
-   */
-  modulus: string;
-  /**
-   * RSA Exponent
-   */
-  exponent: number;
+// ---------------------------------------------------------------------------
+// TrustedAppShape  -> set of acl:mode IRIs (min 1) + required acl:origin IRI
+// ---------------------------------------------------------------------------
+
+export class TrustedApp extends LdoTermWrapper {
+  /** Access modes (acl:Read / acl:Write / acl:Append / acl:Control). 1..* */
+  get modes(): Set<string> {
+    return SetFrom.subjectPredicate(
+      this,
+      ACL + "mode",
+      NamedNodeAs.string,
+      NamedNodeFrom.string,
+    );
+  }
+
+  /** The trusted app origin (required IRI). */
+  get origin(): string {
+    return RequiredFrom.subjectPredicate(
+      this,
+      ACL + "origin",
+      NamedNodeAs.string,
+    );
+  }
+  set origin(value: string) {
+    RequiredAs.object(this, ACL + "origin", value, NamedNodeFrom.string);
+  }
 }
 
-export interface SolidProfileShape {
-  "@id"?: string;
-  /**
-   * Defines the node as a Person (from Schema.org) | Defines the node as a Person (from foaf)
-   */
-  type: LdSet<{ "@id": "Person" } | { "@id": "Person2" }>;
-  /**
-   * The formatted name of a person. Example: John Smith
-   */
-  fn?: string;
-  /**
-   * An alternate way to define a person's name.
-   */
-  name?: string;
-  /**
-   * The person's street address.
-   */
-  hasAddress?: LdSet<AddressShape>;
-  /**
-   * The person's email.
-   */
-  hasEmail?: LdSet<EmailShape>;
-  /**
-   * A link to the person's photo
-   */
-  hasPhoto?: string;
-  /**
-     * Photo link but in string form
-     *
-    img?: string;
-    /**
-     * Person's telephone number
-     */
-  hasTelephone?: LdSet<PhoneNumberShape>;
-  /**
-   * An alternative way to define a person's telephone number using a string
-   */
-  phone?: string;
-  /**
-   * The name of the organization with which the person is affiliated
-   */
-  organizationName?: string;
-  /**
-   * The name of the person's role in their organization
-   */
-  role?: string;
-  /**
-   * A list of app origins that are trusted by this user
-   */
-  trustedApp?: LdSet<TrustedAppShape>;
-  /**
-   * A list of RSA public keys that are associated with private keys the user holds.
-   */
-  key?: LdSet<RSAPublicKeyShape>;
-  /**
-   * The user's LDP inbox to which apps can post notifications
-   */
-  inbox: { "@id": string };
-  /**
-   * The user's preferences
-   */
-  preferencesFile?: string;
-  /**
-   * The location of a Solid storage server related to this WebId
-   */
-  storage?: LdSet<string>;
-  /**
-   * The user's account
-   */
-  account?: string;
-  /**
-   * A registry of all types used on the user's Pod (for private access only)
-   */
-  privateTypeIndex?: LdSet<string>;
-  /**
-   * A registry of all types used on the user's Pod (for public access)
-   */
-  publicTypeIndex?: LdSet<string>;
-  /**
-   * A list of WebIds for all the people this user knows.
-   */
-  knows?: LdSet<SolidProfileShape>;
+// ---------------------------------------------------------------------------
+// RSAPublicKeyShape  -> required modulus (string) + required exponent (integer)
+// ---------------------------------------------------------------------------
+
+export class RSAPublicKey extends LdoTermWrapper {
+  get modulus(): string {
+    return RequiredFrom.subjectPredicate(
+      this,
+      CERT + "modulus",
+      LiteralAs.string,
+    );
+  }
+  set modulus(value: string) {
+    RequiredAs.object(this, CERT + "modulus", value, LiteralFrom.string);
+  }
+
+  get exponent(): number {
+    return RequiredFrom.subjectPredicate(
+      this,
+      CERT + "exponent",
+      LiteralAs.number,
+    );
+  }
+  set exponent(value: number) {
+    RequiredAs.object(this, CERT + "exponent", value, LiteralFrom.integer);
+  }
 }
 
-export interface TrustedAppShape {
-  "@id"?: string;
-  "@context"?: ContextDefinition;
-  /**
-   * The level of access provided to this origin
-   */
-  mode: LdSet<
-    | { "@id": "Append" }
-    | { "@id": "Control" }
-    | { "@id": "Read" }
-    | { "@id": "Write" }
-  >;
-  /**
-   * The app origin the user trusts
-   */
-  origin: string;
+// ---------------------------------------------------------------------------
+// SolidProfileShape
+// ---------------------------------------------------------------------------
+
+export class SolidProfile extends LdoTermWrapper {
+  // --- rdf:type values (schema:Person, foaf:Person, ...) as a mutable set ---
+  get types(): Set<string> {
+    return SetFrom.subjectPredicate(
+      this,
+      RDF + "type",
+      NamedNodeAs.string,
+      NamedNodeFrom.string,
+    );
+  }
+
+  // --- Optional singular strings (min 0, max 1) ---
+  get fn(): string | undefined {
+    return OptionalFrom.subjectPredicate(this, VCARD + "fn", LiteralAs.string);
+  }
+  set fn(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "fn", value, LiteralFrom.string);
+  }
+
+  get name(): string | undefined {
+    return OptionalFrom.subjectPredicate(this, FOAF + "name", LiteralAs.string);
+  }
+  set name(value: string | undefined) {
+    OptionalAs.object(this, FOAF + "name", value, LiteralFrom.string);
+  }
+
+  /** foaf:img — photo as a plain string literal. */
+  get img(): string | undefined {
+    return OptionalFrom.subjectPredicate(this, FOAF + "img", LiteralAs.string);
+  }
+  set img(value: string | undefined) {
+    OptionalAs.object(this, FOAF + "img", value, LiteralFrom.string);
+  }
+
+  get phone(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "phone",
+      LiteralAs.string,
+    );
+  }
+  set phone(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "phone", value, LiteralFrom.string);
+  }
+
+  get organizationName(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "organization-name",
+      LiteralAs.string,
+    );
+  }
+  set organizationName(value: string | undefined) {
+    OptionalAs.object(
+      this,
+      VCARD + "organization-name",
+      value,
+      LiteralFrom.string,
+    );
+  }
+
+  get role(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "role",
+      LiteralAs.string,
+    );
+  }
+  set role(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "role", value, LiteralFrom.string);
+  }
+
+  // --- Optional singular IRIs (min 0, max 1) ---
+  get hasPhoto(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      VCARD + "hasPhoto",
+      NamedNodeAs.string,
+    );
+  }
+  set hasPhoto(value: string | undefined) {
+    OptionalAs.object(this, VCARD + "hasPhoto", value, NamedNodeFrom.string);
+  }
+
+  get preferencesFile(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      PIM + "preferencesFile",
+      NamedNodeAs.string,
+    );
+  }
+  set preferencesFile(value: string | undefined) {
+    OptionalAs.object(
+      this,
+      PIM + "preferencesFile",
+      value,
+      NamedNodeFrom.string,
+    );
+  }
+
+  get account(): string | undefined {
+    return OptionalFrom.subjectPredicate(
+      this,
+      SOLID + "account",
+      NamedNodeAs.string,
+    );
+  }
+  set account(value: string | undefined) {
+    OptionalAs.object(this, SOLID + "account", value, NamedNodeFrom.string);
+  }
+
+  // --- Required singular IRI (no min/max in shape => 1..1) ---
+  get inbox(): string {
+    return RequiredFrom.subjectPredicate(
+      this,
+      LDP + "inbox",
+      NamedNodeAs.string,
+    );
+  }
+  set inbox(value: string) {
+    RequiredAs.object(this, LDP + "inbox", value, NamedNodeFrom.string);
+  }
+
+  // --- Sets of IRIs (max -1) ---
+  get storage(): Set<string> {
+    return SetFrom.subjectPredicate(
+      this,
+      PIM + "storage",
+      NamedNodeAs.string,
+      NamedNodeFrom.string,
+    );
+  }
+
+  get privateTypeIndex(): Set<string> {
+    return SetFrom.subjectPredicate(
+      this,
+      SOLID + "privateTypeIndex",
+      NamedNodeAs.string,
+      NamedNodeFrom.string,
+    );
+  }
+
+  get publicTypeIndex(): Set<string> {
+    return SetFrom.subjectPredicate(
+      this,
+      SOLID + "publicTypeIndex",
+      NamedNodeAs.string,
+      NamedNodeFrom.string,
+    );
+  }
+
+  // --- Sets of nested wrappers (max -1) ---
+  get addresses(): Set<Address> {
+    return SetFrom.subjectPredicate(
+      this,
+      VCARD + "hasAddress",
+      TermAs.instance(Address),
+      TermFrom.instance,
+    );
+  }
+
+  get emails(): Set<Email> {
+    return SetFrom.subjectPredicate(
+      this,
+      VCARD + "hasEmail",
+      TermAs.instance(Email),
+      TermFrom.instance,
+    );
+  }
+
+  get phones(): Set<PhoneNumber> {
+    return SetFrom.subjectPredicate(
+      this,
+      VCARD + "hasTelephone",
+      TermAs.instance(PhoneNumber),
+      TermFrom.instance,
+    );
+  }
+
+  get trustedApps(): Set<TrustedApp> {
+    return SetFrom.subjectPredicate(
+      this,
+      ACL + "trustedApp",
+      TermAs.instance(TrustedApp),
+      TermFrom.instance,
+    );
+  }
+
+  get keys(): Set<RSAPublicKey> {
+    return SetFrom.subjectPredicate(
+      this,
+      CERT + "key",
+      TermAs.instance(RSAPublicKey),
+      TermFrom.instance,
+    );
+  }
+
+  /** foaf:knows — other Solid profiles (recursive). */
+  get knows(): Set<SolidProfile> {
+    return SetFrom.subjectPredicate(
+      this,
+      FOAF + "knows",
+      TermAs.instance(SolidProfile),
+      TermFrom.instance,
+    );
+  }
 }
-
-export const ProfileShapeType: ShapeType<SolidProfileShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#SolidProfileShape",
-  context: profileContext,
-};
-
-export const TrustedAppShapeType: ShapeType<TrustedAppShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#TrustedAppShape",
-  context: profileContext,
-};
-
-export const AddressShapeType: ShapeType<AddressShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#AddressShape",
-  context: profileContext,
-};
-
-export const EmailShapeType: ShapeType<EmailShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#EmailShape",
-  context: profileContext,
-};
-
-export const PhoneNumberShapeType: ShapeType<PhoneNumberShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#PhoneNumberShape",
-  context: profileContext,
-};
-
-export const RSAPublicKeyShapeType: ShapeType<RSAPublicKeyShape> = {
-  schema: profileShex,
-  shape: "https://shaperepo.com/schemas/solidProfile#RSAPublicKeyShape",
-  context: profileContext,
-};
