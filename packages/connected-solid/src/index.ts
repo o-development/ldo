@@ -29,7 +29,7 @@ export * from "./requester/results/error/HttpErrorResult";
 export * from "./requester/results/error/NoRootContainerError";
 export * from "./requester/results/error/NoncompliantPodError";
 
-export * from "./requester/util/modifyQueueFuntions";
+export * from "./requester/util/modifyQueueFunctions";
 
 export * from "./util/isSolidUri";
 export * from "./util/guaranteeFetch";

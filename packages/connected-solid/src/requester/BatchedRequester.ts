@@ -14,7 +14,7 @@ import type {
 import { readResource } from "./requests/readResource";
 import type { DeleteResult } from "./requests/deleteResource";
 import { deleteResource } from "./requests/deleteResource";
-import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFuntions";
+import { modifyQueueByMergingEventsWithTheSameKeys } from "./util/modifyQueueFunctions";
 import type { SolidConnectedPlugin } from "../SolidConnectedPlugin";
 import type { SolidContainer } from "../resources/SolidContainer";
 import type { SolidLeaf } from "../resources/SolidLeaf";
@@ -136,7 +136,7 @@ export abstract class BatchedRequester<
 
   /**
    * Creates a Resource
-   * @param overwrite - If true, this will orverwrite the resource if it already
+   * @param overwrite - If true, this will overwrite the resource if it already
    * exists
    * @returns A ContainerCreateAndOverwriteResult or a
    * LeafCreateAndOverwriteResult depending on this resource's URI
