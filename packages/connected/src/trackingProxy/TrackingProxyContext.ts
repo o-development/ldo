@@ -1,9 +1,9 @@
-import type {
-  ProxyContextOptions,
-  SubjectProxy,
-  SetProxy,
-} from "@ldo/jsonld-dataset-proxy";
-import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
+// import type {
+//   ProxyContextOptions,
+//   SubjectProxy,
+//   SetProxy,
+// } from "@ldo/jsonld-dataset-proxy";
+// import { ProxyContext } from "@ldo/jsonld-dataset-proxy";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import type {
   nodeEventListener,
@@ -28,9 +28,9 @@ export interface TrackingProxyContextOptions extends ProxyContextOptions {
 
 /**
  * @internal
- * This proxy exists to ensure react components rerender at the right time. It
- * keeps track of every key accessed in a Linked Data Object and only when the
- * dataset is updated with that key does it rerender the react component.
+ * This proxy exists to ensure reactive components rerender at the right time.
+ * It keeps track of every key accessed in a Linked Data Object and only when
+ * the dataset is updated with that key does it rerender the react component.
  */
 export class TrackingProxyContext extends ProxyContext {
   private listener: nodeEventListener<Quad>;

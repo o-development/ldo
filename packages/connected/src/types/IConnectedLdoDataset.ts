@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
+import type { LdoDataset } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { InvalidIdentifierResource } from "../InvalidIdentifierResource";
 import type { IConnectedLdoBuilder } from "./IConnectedLdoBuilder";
 import type { ConnectedLdoTransactionDataset } from "../ConnectedLdoTransactionDataset";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
 
 export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   arg: Arg,
@@ -166,8 +167,8 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
     context: Plugin["types"]["context"],
   );
 
-  usingType<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+  usingType<Type extends TermWrapper>(
+    termWrapperClass: ITermWrapperConstructor<Type>,
   ): IConnectedLdoBuilder<Type, Plugins>;
 
   startTransaction(): ConnectedLdoTransactionDataset<Plugins>;

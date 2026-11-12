@@ -1,7 +1,7 @@
 import type { ConnectedLdoDataset } from "../src/ConnectedLdoDataset";
 import {
-  changeData,
-  commitData,
+  // changeData,
+  // commitData,
   createConnectedLdoDataset,
 } from "../src/index";
 import {
@@ -17,9 +17,12 @@ import {
   THIRD_PROFILE_SUBJECT,
   THIRD_PROFILE_URI,
 } from "./LinkTraversalData";
-import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes";
+// import { Person } from "./_ldo/solidProfile.shapeTypes";
 import { wait } from "./util/wait";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { Person } from "./Person";
+import { dataFactory } from "@ldo/ldo";
+import { namedNode } from "@ldo/rdf-utils";
 
 describe("Link Traversal", () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -39,12 +42,11 @@ describe("Link Traversal", () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
 
     const data = await solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
         name: true,
-        knows: {
-          name: true,
-        },
+        // knows: { value: true },
+        knows: { name: true },
       })
       .run();
 
@@ -55,24 +57,24 @@ describe("Link Traversal", () => {
     expect(resourceUris).toContain(MAIN_PROFILE_URI);
     expect(resourceUris).toContain(OTHER_PROFILE_URI);
     expect(data.name).toBe("Main User");
-    expect(data.knows?.toArray()[0].name).toBe("Other User");
+    expect(Array.from(data.knows)[0].name).toBe("Other User");
   });
 
   it("handles subscriptions if data changes locally", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
     const linkQuery = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
         name: true,
         knows: {
           name: true,
         },
       });
-    await linkQuery.subscribe();
+    const subscriptionId = await linkQuery.subscribe();
 
     // Should have regular information
     let mainProfile = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .fromSubject(MAIN_PROFILE_SUBJECT);
     let resourceUris = solidLdoDataset
       .getResources()
@@ -82,22 +84,38 @@ describe("Link Traversal", () => {
     expect(resourceUris).toContain(OTHER_PROFILE_URI);
     expect(mainProfile.name).toBe("Main User");
     expect(mainProfile.knows?.size).toBe(1);
-    expect(mainProfile.knows?.toArray()[0].name).toBe("Other User");
+    expect(Array.from(mainProfile.knows)[0].name).toBe("Other User");
+
+    const transactionDataset = solidLdoDataset.startTransaction();
+
+    const cMainProfile = transactionDataset
+      .usingType(Person)
+      .write(mainProfileResource.uri)
+      .fromSubject(mainProfile.value);
+
+    cMainProfile.knows?.add(namedNode(THIRD_PROFILE_SUBJECT) as Person);
+
+    transactionDataset.commit();
 
     // Update to include a new document
-    const cMainProfile = changeData(mainProfile, mainProfileResource);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    cMainProfile.knows?.add({ "@id": THIRD_PROFILE_SUBJECT });
-    await commitData(cMainProfile);
+    // const cMainProfile = changeData(mainProfile, mainProfileResource);
+    // cMainProfile.knows?.add(
+    //   new Person(THIRD_PROFILE_SUBJECT, mainProfile.dataset, dataFactory),
+    // );
+    // await commitData(cMainProfile);
 
     // Wait for 200ms to allow the other file to be fetched
     await wait(200);
 
     // After the data is committed, the third profile should be present
     mainProfile = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .fromSubject(MAIN_PROFILE_SUBJECT);
+
+    vi.waitFor(() => {
+      expect(solidLdoDataset.getResources()).toHaveLength(4);
+    });
+
     resourceUris = solidLdoDataset
       .getResources()
       .map((resource) => resource.uri);
@@ -107,17 +125,20 @@ describe("Link Traversal", () => {
     expect(resourceUris).toContain(THIRD_PROFILE_URI);
     expect(mainProfile.name).toBe("Main User");
     expect(mainProfile.knows?.size).toBe(2);
-    const knowNames = mainProfile.knows?.map((knowsPerson) => knowsPerson.name);
+    const knowNames = Array.from(mainProfile.knows).map(
+      (knowsPerson) => knowsPerson.name,
+    );
     expect(knowNames).toContain("Other User");
     expect(knowNames).toContain("Third User");
 
     // Unsubscribe
+    await linkQuery.unsubscribe(subscriptionId);
   });
 
   it("handles subscriptions if data changes on the Pod", async () => {
     const mainProfileResource = solidLdoDataset.getResource(MAIN_PROFILE_URI);
     const linkQuery = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .startLinkQuery(mainProfileResource, MAIN_PROFILE_SUBJECT, {
         name: true,
         knows: {
@@ -129,7 +150,7 @@ describe("Link Traversal", () => {
 
     // Should have regular information
     let mainProfile = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .fromSubject(MAIN_PROFILE_SUBJECT);
     let resourceUris = solidLdoDataset
       .getResources()
@@ -139,7 +160,7 @@ describe("Link Traversal", () => {
     expect(resourceUris).toContain(OTHER_PROFILE_URI);
     expect(mainProfile.name).toBe("Main User");
     expect(mainProfile.knows?.size).toBe(1);
-    expect(mainProfile.knows?.toArray()[0].name).toBe("Other User");
+    expect(Array.from(mainProfile.knows)[0].name).toBe("Other User");
 
     let subscribedResources = linkQuery
       .getSubscribedResources()
@@ -160,7 +181,7 @@ describe("Link Traversal", () => {
 
     // After the data is committed, the third profile should be present
     mainProfile = solidLdoDataset
-      .usingType(SolidProfileShapeShapeType)
+      .usingType(Person)
       .fromSubject(MAIN_PROFILE_SUBJECT);
     resourceUris = solidLdoDataset
       .getResources()
@@ -171,7 +192,9 @@ describe("Link Traversal", () => {
     expect(resourceUris).toContain(THIRD_PROFILE_URI);
     expect(mainProfile.name).toBe("Main User");
     expect(mainProfile.knows?.size).toBe(2);
-    const knowNames = mainProfile.knows?.map((knowsPerson) => knowsPerson.name);
+    const knowNames = Array.from(mainProfile.knows).map(
+      (knowsPerson) => knowsPerson.name,
+    );
     expect(knowNames).toContain("Other User");
     expect(knowNames).toContain("Third User");
 
@@ -212,12 +235,22 @@ describe("Link Traversal", () => {
       expect(resource.isSubscribedToNotifications()).toBe(false);
     });
 
-    const cMainProfile = changeData(mainProfile, mainProfileResource);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    cMainProfile.knows?.add({
-      "@id": "http://localhost:3005/test-container/fifthProfile.ttl#me",
-    });
-    await commitData(cMainProfile);
+    const transactionDataset = solidLdoDataset.startTransaction();
+
+    const cMainProfile = transactionDataset
+      .usingType(Person)
+      .write(mainProfileResource.uri)
+      .fromSubject(mainProfile.value);
+
+    // const cMainProfile = changeData(mainProfile, mainProfileResource);
+    cMainProfile.knows?.add(
+      namedNode(
+        "http://localhost:3005/test-container/fifthProfile.ttl#me",
+      ) as Person,
+    );
+
+    const result = await transactionDataset.commitToRemote();
+
+    expect(result.isError).toBe(false);
   });
 });

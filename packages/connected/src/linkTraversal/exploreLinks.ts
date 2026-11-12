@@ -1,12 +1,13 @@
-import type { LdoBase, ShapeType } from "@ldo/ldo";
 import type { ConnectedPlugin } from "../types/ConnectedPlugin";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import type { LQInput } from "../types/ILinkQuery";
-import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
+// import { BasicLdSet } from "@ldo/jsonld-dataset-proxy";
 import type { IConnectedLdoDataset } from "../types/IConnectedLdoDataset";
-import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy";
+// import { createTrackingProxyBuilder } from "../trackingProxy/createTrackingProxy";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
+import { createTrackingDataset } from "../tracking/createTrackingDataset.js";
 
 /**
  * @internal
@@ -23,11 +24,11 @@ interface ExploreLinksOptions<Plugins extends ConnectedPlugin[]> {
  * @internal
  */
 export async function exploreLinks<
-  Type extends LdoBase,
+  Type extends TermWrapper,
   Plugins extends ConnectedPlugin[],
 >(
   dataset: IConnectedLdoDataset<Plugins>,
-  shapeType: ShapeType<Type>,
+  termWrapperClass: ITermWrapperConstructor<Type>,
   startingResource: Plugins[number]["types"]["resource"],
   startingSubject: SubjectNode | string,
   queryInput: LQInput<Type>,
@@ -42,14 +43,24 @@ export async function exploreLinks<
   if (options?.onResourceEncountered)
     await options?.onResourceEncountered(startingResource);
 
-  const proxyBuilder = options?.onCoveredDataChanged
-    ? createTrackingProxyBuilder(
-        dataset,
-        shapeType,
-        options?.onCoveredDataChanged,
-      )
-    : dataset.usingType(shapeType);
-  const ldObject = proxyBuilder.fromSubject(startingSubject);
+  const maybeTrackingDataset = options?.onCoveredDataChanged
+    ? createTrackingDataset(dataset, options.onCoveredDataChanged)
+    : dataset;
+
+  // options?.onCoveredDataChanged
+  //   ? createTrackingDataset()
+  //   : /*
+  //   TODO
+  //   options?.onCoveredDataChanged
+  //   ? createTrackingProxyBuilder(
+  //       dataset,
+  //       shapeType,
+  //       options?.onCoveredDataChanged,
+  //     )
+  // :*/ dataset.usingType(termWrapperClass);
+  const ldObject = maybeTrackingDataset
+    .usingType(termWrapperClass)
+    .fromSubject(startingSubject);
 
   const encounteredDuringThisExploration = new Set<string>([
     startingResource.uri,
@@ -66,22 +77,23 @@ export async function exploreLinks<
 }
 
 export async function exploreLinksRecursive<
-  Type extends LdoBase,
+  Type extends TermWrapper,
   Plugins extends ConnectedPlugin[],
 >(
   dataset: IConnectedLdoDataset<Plugins>,
-  ldObject: Type,
+  termWrapper: Type,
   queryInput: LQInput<Type>,
   encounteredDuringThisExploration: Set<string>,
   options?: ExploreLinksOptions<Plugins>,
 ): Promise<void> {
   const shouldFetch = shouldFetchResource(
     dataset,
-    ldObject,
+    termWrapper,
     queryInput,
     encounteredDuringThisExploration,
   );
-  const resourceToFetch = dataset.getResource(ldObject["@id"]);
+
+  const resourceToFetch = dataset.getResource(termWrapper.value);
   if (shouldFetch) {
     const readResult = options?.shouldRefreshResources
       ? await resourceToFetch.read()
@@ -91,25 +103,26 @@ export async function exploreLinksRecursive<
       return;
     }
   }
+
   if (!encounteredDuringThisExploration.has(resourceToFetch.uri)) {
     encounteredDuringThisExploration.add(resourceToFetch.uri);
     if (options?.onResourceEncountered)
       await options.onResourceEncountered(resourceToFetch);
   }
-  // Recurse through the other elemenets
+  // Recurse through the other elements
   await Promise.all(
     Object.entries(queryInput).map(async ([queryKey, queryValue]) => {
       if (
         queryValue != undefined &&
         queryValue !== true &&
-        ldObject[queryKey] != undefined
+        termWrapper[queryKey] != undefined
       ) {
-        if (ldObject[queryKey] instanceof BasicLdSet) {
+        if (isSetLike(termWrapper[queryKey])) {
           await Promise.all(
-            ldObject[queryKey].map(async (item) => {
+            Array.from(termWrapper[queryKey]).map(async (item) => {
               await exploreLinksRecursive(
                 dataset,
-                item,
+                item as TermWrapper,
                 queryValue,
                 encounteredDuringThisExploration,
                 options,
@@ -119,7 +132,7 @@ export async function exploreLinksRecursive<
         } else {
           await exploreLinksRecursive(
             dataset,
-            ldObject[queryKey],
+            termWrapper[queryKey],
             queryValue,
             encounteredDuringThisExploration,
             options,
@@ -134,29 +147,41 @@ export async function exploreLinksRecursive<
  * Determines if a resource needs to be fetched based on given data
  */
 export function shouldFetchResource<
-  Type extends LdoBase,
+  Type extends TermWrapper,
   Plugins extends ConnectedPlugin[],
 >(
   dataset: IConnectedLdoDataset<Plugins>,
-  ldObject: Type,
+  termWrapper: Type,
   queryInput: LQInput<Type>,
   encounteredDuringThisExploration: Set<string>,
 ): boolean {
-  const linkedResourceUri: string | undefined = ldObject["@id"];
+  const linkedResourceUri: string | undefined = termWrapper.value;
+
   // If it's a blank node, no need to fetch
   if (!linkedResourceUri) return false;
   const linkedResource = dataset.getResource(linkedResourceUri);
-  // If we've already explored the resource in this exporation, do not fetch
+  // If we've already explored the resource in this exploration, do not fetch
   if (encounteredDuringThisExploration.has(linkedResource.uri)) return false;
 
   return Object.entries(queryInput).some(([queryKey, queryValue]) => {
     // If value is undefined then no need to fetch
     if (!queryValue) return false;
     // Always fetch if there's a set in the object
-    if (ldObject[queryKey] instanceof BasicLdSet) return true;
+    if (isSetLike(termWrapper[queryKey])) return true;
     // Fetch if a singleton set is not present
-    if (ldObject[queryKey] == undefined) return true;
+    if (termWrapper[queryKey] == undefined) return true;
     // Otherwise no need t to fetch
     return false;
   });
+}
+
+function isSetLike<T>(obj: unknown): obj is Set<T> {
+  return (
+    obj instanceof Set ||
+    (typeof obj === "object" &&
+      obj !== null &&
+      "add" in obj &&
+      "has" in obj &&
+      Symbol.iterator in obj)
+  );
 }

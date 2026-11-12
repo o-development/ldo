@@ -1,4 +1,3 @@
-import type { LdoBase, ShapeType } from "@ldo/ldo";
 import type {
   ExpandDeep,
   ILinkQuery,
@@ -13,6 +12,7 @@ import type { IConnectedLdoBuilder } from "../types/IConnectedLdoBuilder";
 import { v4 } from "uuid";
 import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
 
 /**
  * Represents a query over multiple datasources and constituting multiple
@@ -42,7 +42,7 @@ import type { Quad } from "@rdfjs/types";
  * ```
  */
 export class ResourceLinkQuery<
-  Type extends LdoBase,
+  Type extends TermWrapper,
   QueryInput extends LQInput<Type>,
   Plugins extends ConnectedPlugin[],
 > implements ILinkQuery<Type, QueryInput>
@@ -64,7 +64,7 @@ export class ResourceLinkQuery<
   /**
    * @internal
    * @param parentDataset The dataset for which this link query is a part
-   * @param shapeType A ShapeType for the link query to follow
+   * @param termWrapperClass A ShapeType for the link query to follow
    * @param ldoBuilder An LdoBuilder associated with the dataset
    * @param startingResource The resource to explore first in the link query
    * @param startingSubject The starting point of the link query
@@ -72,7 +72,7 @@ export class ResourceLinkQuery<
    */
   constructor(
     protected parentDataset: IConnectedLdoDataset<Plugins>,
-    protected shapeType: ShapeType<Type>,
+    protected termWrapperClass: ITermWrapperConstructor<Type>,
     protected ldoBuilder: IConnectedLdoBuilder<Type, Plugins>,
     protected startingResource: Plugins[number]["types"]["resource"],
     protected startingSubject: SubjectNode | string,
@@ -117,7 +117,7 @@ export class ResourceLinkQuery<
   }): Promise<ExpandDeep<LQReturn<Type, QueryInput>>> {
     await exploreLinks(
       this.parentDataset,
-      this.shapeType,
+      this.termWrapperClass,
       this.startingResource,
       this.startingSubject,
       this.linkQueryInput,
@@ -225,7 +225,7 @@ export class ResourceLinkQuery<
         : {};
       await exploreLinks(
         this.parentDataset,
-        this.shapeType,
+        this.termWrapperClass,
         this.startingResource,
         this.startingSubject,
         this.linkQueryInput,

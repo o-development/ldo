@@ -4,7 +4,7 @@ export * from "./ConnectedLdoTransactionDataset";
 
 export * from "./Resource";
 export * from "./InvalidIdentifierResource";
-export * from "./methods";
+// export * from "./methods";
 export * from "./createConntectedLdoDataset";
 
 export * from "./types/ConnectedContext";
@@ -27,10 +27,10 @@ export * from "./results/success/UpdateSuccess";
 export * from "./notifications/NotificationSubscription";
 export * from "./notifications/SubscriptionCallbacks";
 
-export * from "./trackingProxy/TrackingProxyContext";
-export * from "./trackingProxy/TrackingSetProxy";
-export * from "./trackingProxy/TrackingSubjectProxy";
-export * from "./trackingProxy/createTrackingProxy";
+// export * from "./trackingProxy/TrackingProxyContext";
+// export * from "./trackingProxy/TrackingSetProxy";
+// export * from "./trackingProxy/TrackingSubjectProxy";
+// export * from "./trackingProxy/createTrackingProxy";
 
 export * from "./linkTraversal/ResourceLinkQuery";
 export * from "./linkTraversal/exploreLinks";

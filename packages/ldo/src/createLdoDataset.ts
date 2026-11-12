@@ -36,7 +36,7 @@ export function createLdoDatasetFactory() {
  *
  * @param initialDataset - An optional dataset or array of quads for the new dataset
  *
- * @returns An LDO Dataset initialized with the intitial dataset if any
+ * @returns An LDO Dataset initialized with the initial dataset if any
  *
  * @example
  * ```typescript
