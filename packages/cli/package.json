@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "npm run remove-dist && npm run build:ts && npm run copy-files && npm run update-permission",
-    "build:ts": "tsc --project tsconfig.cjs.json",
+    "build:ts": "tsc --project tsconfig.build.json",
     "remove-dist": "rimraf dist/",
     "copy-files": "copyfiles -u 1 \"./src/**/*.ejs\" dist/",
     "update-permission": "chmod +x ./dist/index.js",
@@ -60,6 +60,9 @@
     "dist",
     "src"
   ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "publishConfig": {
     "access": "public"
   },

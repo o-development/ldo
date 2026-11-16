@@ -1,0 +1,127 @@
+# Publishes every @ldo package to npm when a GitHub Release is published.
+#
+# The release's tag is the version: tag "v1.2.3" publishes 1.2.3 (the leading
+# "v" is optional). Tick "Set as a pre-release" on the GitHub Release to publish
+# under the "next" dist-tag instead of "latest".
+#
+# The workflow does what `lerna publish` does locally: it bumps every package
+# (and internal @ldo/* ranges) to the tag's version, builds, publishes, then
+# commits the bump back to the release's target branch and moves the tag onto
+# that commit.
+#
+# Authentication uses npm trusted publishing (OIDC), so no NPM_TOKEN secret is
+# needed. Each package must list this repo + "publish.yml" as a trusted
+# publisher on npmjs.com.
+
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: publish-npm
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the version-bump commit and move the tag
+  id-token: write # npm trusted publishing (OIDC) and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+      TARGET: ${{ github.event.release.target_commitish }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      DIST_TAG: ${{ github.event.release.prerelease && 'next' || 'latest' }}
+
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@v6
+        with:
+          ref: refs/tags/${{ github.event.release.tag_name }}
+          fetch-depth: 0
+
+      - name: Work out the version and target branch
+        run: |
+          VERSION="${TAG#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Release tag '$TAG' is not a semver version (expected e.g. v1.2.3 or v1.0.0-alpha.52)."
+            exit 1
+          fi
+          # A release can target a branch or a raw commit SHA; the bump commit
+          # always goes to a branch.
+          if git ls-remote --exit-code --heads origin "$TARGET" >/dev/null; then
+            BRANCH="$TARGET"
+          else
+            BRANCH="$DEFAULT_BRANCH"
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          echo "Publishing $VERSION to dist-tag '$DIST_TAG'; bump goes to '$BRANCH'."
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # Trusted publishing needs npm >= 11.5.1; Node 22 ships with npm 10.
+      - name: Upgrade npm
+        run: npm install -g npm@^11.5.1
+
+      - name: Install dependencies
+        run: npm ci --include=optional
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump package versions
+        run: |
+          if [ "$(node -p 'require("./lerna.json").version')" != "$VERSION" ]; then
+            npx lerna version "$VERSION" --no-git-tag-version --no-push --no-private --yes
+            npx prettier --write lerna.json
+          fi
+
+      - name: Build
+        run: npm run build
+
+      # `from-package` publishes whatever version is in each package.json and
+      # skips anything already on npm, so re-running a failed job is safe.
+      - name: Publish to npm
+        run: npx lerna publish from-package --no-private --dist-tag "$DIST_TAG" --yes
+
+      - name: Commit the version bump to ${{ env.BRANCH }}
+        run: |
+          if git diff --quiet; then
+            echo "Versions already at $VERSION; nothing to commit."
+            exit 0
+          fi
+          git commit -am "v$VERSION"
+
+          # Fast-forward when the branch is still at the released commit, and
+          # move the tag onto the bump commit, the same as `lerna version` does.
+          if git push origin "HEAD:refs/heads/$BRANCH"; then
+            git tag -f "$TAG"
+            git push -f origin "refs/tags/$TAG"
+            exit 0
+          fi
+
+          # The branch moved on after the release was cut: redo the bump on its
+          # tip instead of rebasing (avoids lockfile conflicts). The tag stays
+          # on the released commit.
+          echo "$BRANCH has moved past $TAG; re-applying the bump on its tip."
+          git fetch origin "$BRANCH"
+          git checkout -B "$BRANCH" "origin/$BRANCH"
+          npx lerna version "$VERSION" --no-git-tag-version --no-push --no-private --yes
+          npx prettier --write lerna.json
+          if git diff --quiet; then
+            echo "$BRANCH already at $VERSION."
+            exit 0
+          fi
+          git commit -am "v$VERSION"
+          git push origin "HEAD:refs/heads/$BRANCH"
