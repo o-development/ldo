@@ -55,7 +55,7 @@ export function createUseResource<Plugins extends ConnectedPlugin[]>(
     if (uri) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       resource = dataset.getResource(uri) as any;
-      // Run read operations if necissary
+      // Run read operations if necessary
       if (!options?.suppressInitialRead) {
         if (options?.reloadOnMount) {
           resource!.read();

@@ -46,8 +46,7 @@
     "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.51",
     "@ldo/ldo": "^1.0.0-alpha.51",
     "@ldo/rdf-utils": "^1.0.0-alpha.51",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.51",
-    "cross-fetch": "^3.1.6"
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.51"
   },
   "files": [
     "dist",

@@ -1,49 +1,51 @@
 # @ldo/solid-react
 
-`@ldo/solid-react` provides tool and hooks for easily building Solid applications using react.
+`@ldo/solid-react` provides tool and hooks for easily building [Solid](https://solidproject.org) applications using [React](https://react.dev).
+
+**Note:** If you're building a generic RDF application with React, please use [@ldo/react](https://www.npmjs.com/package/@ldo/react) instead of this package.
 
 ## Guide
 
-A full walkthrough for using the `@ldo/solid` library can be found in the [For Solid + React Guide](https://ldo.js.org/latest/guides/solid_react/)
+A full walkthrough for using the `@ldo/solid-react` library can be found in the [For Solid + React Guide](https://ldo.js.org/latest/guides/solid_react/).
 
 ## Installation
 
 Navigate into your project's root folder and run the following command:
 
-```
+```sh
 cd my_project/
-npx run @ldo/cli init
+npx @ldo/cli init
 ```
 
-Now install the @ldo/solid library
+Now install the @ldo/solid-react library
 
-```
-npm i @ldo/solid @ldo/solid-react
+```sh
+npm i @ldo/solid-react
 ```
 
 ### Manual Installation
 
-If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid` libraries independently.
+If you already have generated ShapeTypes, you may install the `@ldo/ldo` and `@ldo/solid-react` libraries independently.
 
-```
-npm i @ldo/ldo @ldo/solid @ldo/solid-react
+```sh
+npm i @ldo/ldo @ldo/solid-react
 ```
 
 ## Simple Example
 
-Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/solidProfile.shapeTypess`.
+Below is a simple example of @ldo/solid-react in a real use-case. Assume that a ShapeType was previously generated and placed at `./_ldo/foafProfile.shapeTypes.ts`.
 
-```typescript
-import type { FunctionComponent } from "react";
-import React, { useCallback } from "react";
+```tsx
+import { useCallback, type FunctionComponent } from "react";
 import {
   BrowserSolidLdoProvider,
+  useLdo,
   useResource,
   useSolidAuth,
   useSubject,
 } from "@ldo/solid-react";
-import { SolidProfileShapeShapeType } from "./_ldo/solidProfile.shapeTypes.js";
-import { changeData, commitData } from "@ldo/solid";
+import type { SolidLeafUri } from "@ldo/connected-solid";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
 
 // The base component for the app
 const App: FunctionComponent = () => {
@@ -61,10 +63,10 @@ const Login: FunctionComponent = () => {
   // Get login information using the "useSolidAuth" hook
   const { login, logout, session } = useSolidAuth();
 
-  const onLogin = useCallback(() => {
+  const onLogin = useCallback(async () => {
     const issuer = prompt("What is your Solid IDP?");
     // Call the "login" function to initiate login
-    if (issuer) login(issuer, window.location.href);
+    if (issuer) await login(issuer, globalThis.location.href);
   }, [login]);
 
   // You can use session.isActive to check if the user is logged in
@@ -85,21 +87,25 @@ const Login: FunctionComponent = () => {
 // Renders the name on the profile
 const Profile: FunctionComponent = () => {
   const { session } = useSolidAuth();
+  const { changeData, commitData } = useLdo();
   // With useResource, you can automatically fetch a resource
-  const resource = useResource(session.webId);
+  const resource = useResource(session.webId as SolidLeafUri);
   // With useSubject, you can extract data from that resource
-  const profile = useSubject(SolidProfileShapeShapeType, session.webId);
+  const profile = useSubject(FoafProfileShapeType, session.webId);
 
-  const onNameChange = useCallback(async (e) => {
-    // Ensure that the
-    if (!profile || !resource) return;
-    // Change data lets you create a new object to make changes to
-    const cProfile = changeData(profile, resource);
-    // Change the name
-    cProfile.name = e.target.value;
-    // Commit the data back to the Pod
-    await commitData(cProfile);
-  }, []);
+  const onNameChange = useCallback(
+    async (e) => {
+      // Ensure that the profile and resource exist
+      if (!profile || !resource) return;
+      // Change data lets you create a new object to make changes to
+      const cProfile = changeData(profile, resource);
+      // Change the name
+      cProfile.name = e.target.value;
+      // Commit the data back to the Pod
+      await commitData(cProfile);
+    },
+    [changeData, commitData, profile, resource],
+  );
 
   return <input type="text" value={profile?.name} onChange={onNameChange} />;
 };
@@ -122,9 +128,9 @@ Hooks
 - [useSolidAuth](https://ldo.js.org/latest/api/solid-react/useSolidAuth/)
 - [useSubject](https://ldo.js.org/latest/api/solid-react/useSubject/)
 - [useMatchSubject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
-- [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
-- [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useMatchSubject/)
-- [useLinkQUery](https://ldo.js.org/latest/api/solid-react/useLinkQuery/)
+- [useMatchObject](https://ldo.js.org/latest/api/solid-react/useMatchObject/)
+- [useSubscribeToResource](https://ldo.js.org/latest/api/solid-react/useSubscribeToResource/)
+- [useLinkQuery](https://ldo.js.org/latest/api/solid-react/useLinkQuery/)
 
 ## Sponsorship
 

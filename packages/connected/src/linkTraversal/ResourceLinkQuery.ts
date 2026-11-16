@@ -15,7 +15,7 @@ import type { nodeEventListener } from "@ldo/subscribable-dataset";
 import type { Quad } from "@rdfjs/types";
 
 /**
- * Represents a query over multiple datasources and constituting muliple
+ * Represents a query over multiple datasources and constituting multiple
  * resources.
  *
  * @example
@@ -36,7 +36,7 @@ import type { Quad } from "@rdfjs/types";
  *       },
  *     }
  *   );
- * // Susbscribe to this link query, automaticically updating the dataset when
+ * // Subscribe to this link query, automatically updating the dataset when
  * // something from the link query is changed.
  * await linkQuery.subscribe();
  * ```
@@ -102,7 +102,7 @@ export class ResourceLinkQuery<
    *       },
    *     }
    *   );
-   * // Susbscribe to this link query, automaticically updating the dataset when
+   * // Subscribe to this link query, automatically updating the dataset when
    * // something from the link query is changed.
    * const result = await linkQuery.read();
    * console.log(result.name);
@@ -149,7 +149,7 @@ export class ResourceLinkQuery<
    *       },
    *     }
    *   );
-   * // Susbscribe to this link query, automaticically updating the dataset when
+   * // Subscribe to this link query, automatically updating the dataset when
    * // something from the link query is changed.
    * const unsubscribeId = await linkQuery.subscribe();
    *

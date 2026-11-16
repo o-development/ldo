@@ -224,7 +224,6 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     );
 
     // If one has errored, return error
-    console.log(results);
     const errors = (
       results.map((result) => result[2]) as (SuccessResult | ErrorResult)[]
     ).filter((result): result is ErrorResult => result.isError);

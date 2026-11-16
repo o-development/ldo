@@ -22,7 +22,7 @@ const CHANNEL_TYPE =
 
 /**
  * @internal
- * An implementation of the Websocket2023 notifiction spec
+ * An implementation of the Websocket2023 notification spec
  */
 export class Websocket2023NotificationSubscription extends NotificationSubscription<
   SolidConnectedPlugin,
@@ -106,7 +106,10 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
 
     this.socket.onerror = (err) => {
       this.onNotificationError(
-        new UnexpectedResourceError(this.resource, err.error),
+        new UnexpectedResourceError(
+          this.resource,
+          err.error ?? new Error("WebSocket error"),
+        ),
       );
     };
     return;
@@ -118,7 +121,8 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
         setTimeout(() => {
-          this.open();
+          // attempt to reconnect unless the disconnection became intentional
+          if (!this.isManualClose) this.open();
         }, this.reconnectInterval);
         this.onNotificationError(
           new DisconnectedAttemptingReconnectError(
@@ -139,6 +143,8 @@ export class Websocket2023NotificationSubscription extends NotificationSubscript
 
   protected async close(): Promise<void> {
     this.socket?.close();
+    // set the intention to disconnect
+    this.isManualClose = true;
   }
 }
 

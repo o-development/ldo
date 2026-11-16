@@ -54,8 +54,9 @@ import {
   getStorageDescriptionUri,
   type GetStorageDescriptionUriError,
   type GetStorageDescriptionUriResult,
-} from "../requester/requests/getStorageDescription.js";
-import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess.js";
+} from "../requester/requests/getStorageDescription";
+import { GetStorageDescriptionUriSuccess } from "../requester/results/success/StorageDescriptionSuccess";
+import { getHeaders } from "../getHeaders";
 
 /**
  * Statuses shared between both Leaf and Container
@@ -121,6 +122,12 @@ export abstract class SolidResource
    * If a wac rule was fetched, it is cached here
    */
   protected wacRule?: WacRule;
+
+  /**
+   * @internal
+   * If an acl:default wac rule was fetched, it is cached here
+   */
+  protected inheritableWacRule?: WacRule;
 
   /**
    * @internal
@@ -240,7 +247,7 @@ export abstract class SolidResource
    * ```
    */
   isDeleting(): boolean {
-    return this.requester.isDeletinng();
+    return this.requester.isDeleting();
   }
 
   /**
@@ -615,7 +622,6 @@ export abstract class SolidResource
 
     const storageDescriptionUriResult = await getStorageDescriptionUri(
       thisAsLeafOrContainer,
-      { fetch: this.context.solid.fetch },
     );
     if (storageDescriptionUriResult.isError) {
       return storageDescriptionUriResult;
@@ -743,7 +749,7 @@ export abstract class SolidResource
    * @returns WAC Rules results
    */
   protected async getWacUri(options?: {
-    ignoreCache: boolean;
+    ignoreCache?: boolean;
   }): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
     const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Get the wacUri if not already present
@@ -751,9 +757,7 @@ export abstract class SolidResource
       return new GetWacUriSuccess(thisAsLeafOrContainer, this.wacUri);
     }
 
-    const wacUriResult = await getWacUri(thisAsLeafOrContainer, {
-      fetch: this.context.solid.fetch,
-    });
+    const wacUriResult = await getWacUri(thisAsLeafOrContainer);
     if (wacUriResult.isError) {
       return wacUriResult;
     }
@@ -789,8 +793,13 @@ export abstract class SolidResource
    * }
    * ```
    */
-  async getWac(options?: {
-    ignoreCache: boolean;
+  async getWac(options?: { ignoreCache?: boolean }) {
+    return await this._getWac(options);
+  }
+
+  private async _getWac(options?: {
+    ignoreCache?: boolean;
+    inheritable?: boolean;
   }): Promise<
     | GetWacUriError<SolidContainer | SolidLeaf>
     | GetWacRuleError<SolidContainer | SolidLeaf>
@@ -798,8 +807,11 @@ export abstract class SolidResource
   > {
     const thisAsLeafOrContainer = this as unknown as SolidLeaf | SolidContainer;
     // Return the wac rule if it's already cached
-    if (!options?.ignoreCache && this.wacRule) {
-      return new GetWacRuleSuccess(thisAsLeafOrContainer, this.wacRule);
+    const cachedRule = options?.inheritable
+      ? this.inheritableWacRule
+      : this.wacRule;
+    if (!options?.ignoreCache && cachedRule) {
+      return new GetWacRuleSuccess(thisAsLeafOrContainer, cachedRule);
     }
 
     // Get the wac uri
@@ -812,12 +824,17 @@ export abstract class SolidResource
       thisAsLeafOrContainer,
       {
         fetch: this.context.solid.fetch,
+        inheritable: options?.inheritable,
       },
     );
     if (wacResult.isError) return wacResult;
     // If the wac rules was successfully found
     if (wacResult.type === "getWacRuleSuccess") {
-      this.wacRule = wacResult.wacRule;
+      if (options?.inheritable) {
+        this.inheritableWacRule = wacResult.wacRule;
+      } else {
+        this.wacRule = wacResult.wacRule;
+      }
       return wacResult;
     }
 
@@ -830,7 +847,7 @@ export abstract class SolidResource
         `Resource "${this.uri}" has no Effective ACL resource`,
       );
     }
-    return parentResource.getWac();
+    return parentResource._getWac({ ...options, inheritable: true });
   }
 
   /**
@@ -888,7 +905,11 @@ export abstract class SolidResource
       this.emit("update");
       return result;
     }
+    // update cache
     this.wacRule = result.wacRule;
+    // clear default rule cache
+    // to simplify logic
+    this.inheritableWacRule = undefined;
     return result;
   }
 
@@ -901,7 +922,7 @@ export abstract class SolidResource
   /**
    * Activates Websocket subscriptions on this resource. Updates, deletions,
    * and creations on this resource will be tracked and all changes will be
-   * relected in LDO's resources and graph.
+   * reflected in LDO's resources and graph.
    *
    * @param onNotificationError - A callback function if there is an error
    * with notifications.
@@ -942,7 +963,7 @@ export abstract class SolidResource
 
   /**
    * @internal
-   * Function that triggers whenever a notification is recieved.
+   * Function that triggers whenever a notification is received.
    */
   protected async onNotification(
     message: SolidNotificationMessage,
@@ -998,5 +1019,60 @@ export abstract class SolidResource
    */
   async unsubscribeFromAllNotifications(): Promise<void> {
     return this.notificationSubscription.unsubscribeFromAllNotifications();
+  }
+
+  /**
+   * Reads the HTTP response headers of this Solid resource and parses the `Link` header.
+   *
+   * - `headersResult.headers` matches the native Web API {@link https://developer.mozilla.org/en-US/docs/Web/API/Headers Headers} interface.
+   * - `headersResult.headers.link` matches {@link https://www.npmjs.com/package/http-link-header http-link-header} npm library's `parse` result. Additionally, relative URIs are automatically resolved to absolute URIs using the response URL as a base.
+   * - Use `headersResult.headers.getLinkRef(rel: string)` to quickly fetch a single Link Reference by its `rel` parameter.
+   *
+   *   *Note: `getLinkRef` method only returns the first match, ignores subsequent duplicates for that relation type, and does not guarantee ordering.*
+   *
+   * @example
+   * ```typescript
+   * const resource = solidLdoDataset.getResource(RESOURCE_URI);
+   * const headersResult = await resource.getHeaders();
+   * if (headersResult.isError) {
+   *   // handle error result
+   * }
+   *
+   * // do something with the headers
+   * headersResult.headers.get("content-type")
+   *
+   * // get specific Link Reference by "rel".
+   * // If multiple "rel" References are present, only one is picked.
+   * // Order is not guaranteed.
+   * headersResult.headers.getLinkRef("acl")?.uri
+   *
+   * // get full parsed `http-link-header` interface
+   * headersResult.headers.link
+   *
+   * // get specific parsed Link References by "rel"
+   * headersResult.headers.link.get("rel", "acl")
+   * // or shortcut
+   * headersResult.headers.link.rel("acl")
+   * ```
+   *
+   *
+   * If you only care about raw headers and you deal with inconsistent response
+   * `Link` header, you can still get the raw headers:
+   * @example
+   * ```typescript
+   * const resource = solidLdoDataset.getResource(URI);
+   * const headersResult = await resource.getHeaders();
+   *   if (
+   *     !headersResult.isError ||
+   *     (headersResult.isError && headersResult instanceof GetHeadersLinkError)
+   *   ) {
+   *     // do something with the raw headers
+   *     const contentType = headersResult.headers.get("content-type")
+   *   }
+   * }
+   * ```
+   */
+  async getHeaders() {
+    return await getHeaders(this, { fetch: this.context.solid.fetch });
   }
 }

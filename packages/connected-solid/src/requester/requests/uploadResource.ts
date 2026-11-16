@@ -1,20 +1,19 @@
 import { guaranteeFetch } from "../../util/guaranteeFetch";
 import { UnexpectedResourceError } from "@ldo/connected";
-import { HttpErrorResult } from "../results/error/HttpErrorResult";
+import {
+  HttpErrorResult,
+  NotFoundHttpError,
+} from "../results/error/HttpErrorResult";
 import type {
   LeafCreateAndOverwriteResult,
   LeafCreateIfAbsentResult,
 } from "./createDataResource";
-import { deleteResource } from "./deleteResource";
 import { readResource } from "./readResource";
 import type { DatasetRequestOptions } from "./requestOptions";
 import type { SolidLeaf } from "../../resources/SolidLeaf";
 import { CreateSuccess } from "../results/success/CreateSuccess";
-import {
-  addResourceRdfToContainer,
-  getParentUri,
-  getSlug,
-} from "../../util/rdfUtils";
+import { addResourceRdfToContainer } from "../../util/rdfUtils";
+import { NoncompliantPodError } from "../results/error/NoncompliantPodError";
 
 /**
  * @internal
@@ -50,33 +49,48 @@ export async function uploadResource(
 ): Promise<LeafCreateIfAbsentResult | LeafCreateAndOverwriteResult> {
   try {
     const fetch = guaranteeFetch(options?.fetch);
-    let didOverwrite = false;
-    if (overwrite) {
-      const deleteResult = await deleteResource(resource, options);
-      // Return if it wasn't deleted
-      if (deleteResult.isError) return deleteResult;
-      didOverwrite = deleteResult.resourceExisted;
-    } else {
-      // Perform a read to check if it exists
-      const readResult = await readResource(resource, options);
-      // If it does exist stop and return.
-      if (readResult.type !== "absentReadSuccess") {
-        return readResult;
-      }
+    const headers: HeadersInit = {
+      "content-type": mimeType,
+    };
+
+    if (!overwrite) {
+      // https://solidproject.org/TR/protocol#conditional-update
+      // https://www.rfc-editor.org/info/rfc9110/#section-13.1.2
+      headers["If-None-Match"] = "*";
     }
+
     // Create the document
-    const parentUri = getParentUri(resource.uri)!;
-    const response = await fetch(parentUri, {
-      method: "post",
-      headers: {
-        "content-type": mimeType,
-        slug: getSlug(resource.uri),
-      },
+    const response = await fetch(resource.uri, {
+      method: "PUT",
+      headers,
       body: blob,
     });
 
+    // Check whether If-None-Match: "*" precondition failed.
+    // That means we tried to overwrite existing resource when overwriting is forbidden.
+    if (response.status === 412) {
+      const result = await readResource(resource, options);
+      if (result.type === "absentReadSuccess")
+        return new NoncompliantPodError(
+          resource,
+          `Server returned conflicting states: Response status 412 implies the resource ${resource.uri} exists, but it is absent.`,
+        );
+      return result;
+    }
+
     const httpError = HttpErrorResult.checkResponse(resource, response);
     if (httpError) return httpError;
+
+    // Let's handle possible 404 response.
+    // PUT should create intermediate containers, therefore 404 suggests noncompliant pod.
+    // https://solidproject.org/TR/protocol#server-put-patch-intermediate-containers
+    if (NotFoundHttpError.is(response))
+      return new NoncompliantPodError(
+        resource,
+        "Failed to upload Solid resource. The server returned a 404 error.",
+      );
+
+    const didOverwrite = response.status !== 201;
 
     if (options?.dataset) {
       addResourceRdfToContainer(resource.uri, options.dataset);

@@ -24,7 +24,7 @@ export interface WaitingProcessOptions<Args extends any[], Return> {
    */
   name: string;
   /**
-   * The arguements supplied to the process
+   * The arguments supplied to the process
    */
   args: Args;
   /**

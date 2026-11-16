@@ -3,6 +3,7 @@ import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./ConnectedPlugin";
 import type { InvalidIdentifierResource } from "../InvalidIdentifierResource";
 import type { IConnectedLdoBuilder } from "./IConnectedLdoBuilder";
+import type { ConnectedLdoTransactionDataset } from "../ConnectedLdoTransactionDataset";
 
 export type ReturnTypeFromArgs<Func, Arg> = Func extends (
   arg: Arg,
@@ -54,7 +55,7 @@ export type GetResourceReturnType<
 export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   extends LdoDataset {
   /**
-   * Retireves a representation of a Resource at the given URI. This resource
+   * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
    * fetched or in the process of fetching as well as some information about it.
    *
@@ -80,7 +81,7 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   ): GetResourceReturnType<Plugin, UriType>;
 
   /**
-   * Retireves a representation of all Resources referenced by this dataset
+   * Retrieves a representation of all Resources referenced by this dataset
    * This does not necessarily mean that it's been fetched (use the
    * `getFetchedResources` method for that). It simply means that at one point
    * it was referenced.
@@ -95,7 +96,7 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   getResources(): Plugins[number]["types"]["resource"][];
 
   /**
-   * Retireves a representation of all Resources that have been fetched.
+   * Retrieves a representation of all Resources that have been fetched.
    *
    * @returns a Resource array
    *
@@ -152,7 +153,7 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   forgetAllResources(): void;
 
   /**
-   * Sets conetext for a specific plugin
+   * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin
@@ -168,4 +169,6 @@ export interface IConnectedLdoDataset<Plugins extends ConnectedPlugin[]>
   usingType<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
   ): IConnectedLdoBuilder<Type, Plugins>;
+
+  startTransaction(): ConnectedLdoTransactionDataset<Plugins>;
 }

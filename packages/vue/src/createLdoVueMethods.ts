@@ -1,30 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createUseLdo } from "./methods/useLdo";
 import {
   createConnectedLdoDataset,
   type ConnectedPlugin,
 } from "@ldo/connected";
+import { createUseLdo } from "./methods/useLdo";
 import { createUseMatchObject } from "./methods/useMatchObject";
 import { createUseMatchSubject } from "./methods/useMatchSubject";
 import { createUseResource } from "./methods/useResource";
 import { createUseSubject } from "./methods/useSubject";
 import { createUseSubscribeToResource } from "./methods/useSubscribeToResource";
 import { createUseLinkQuery } from "./methods/useLinkQuery";
-import { createUseDataset } from "./methods/useDataset";
 import { createUseChangeDataset } from "./methods/change/useChangeDataset";
 import { createUseChangeSubject } from "./methods/change/useChangeSubject";
 import { createUseChangeMatchObject } from "./methods/change/useChangeMatchObject";
 import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubject";
+import { createUseDataset } from "./methods/useDataset";
 
 /**
- * A function that creates all common react functions given specific plugin.
+ * A function that creates all common vue functions given specific plugin.
  *
  * @example
  * `methods.ts`
- * ```tyepscript
+ * ```tsx
  * import { solidConnectedPlugin } from "@ldo/connected-solid";
  * import { nextGraphConnectedPlugin } from "@ldo/connected-nextgraph";
- * import { createLdoReactMethods } from "@ldo/react";
+ * import { createLdoVueMethods } from "@ldo/vue";
  *
  * // Export the results to be used in the reset of the application
  * export const {
@@ -40,36 +39,35 @@ import { createUseChangeMatchSubject } from "./methods/change/useChangeMatchSubj
  *   useChangeSubject,
  *   useChangeMatchObject,
  *   useChangeMatchSubject,
- * } = createLdoReactMethods([
+ * } = createLdoVueMethods([
  *   solidConnectedPlugin,
  *   nextGraphConnectedPlugin
  * ]);
  * ```
  *
- * `App.tsx`
- * ```typescript
- * import react, { FunctionComponent } from "react";
- * import { PostShShapeType } from "./_ldo/posts.shapeType.ts";
- * import { useResource, useSubject } from "./methods.ts";
+ * `App.vue`
+ * ```vue
+ * <script setup lang="ts">
+ * import { computed, ref } from "vue";
+ * import { PostShShapeType } from "./_ldo/posts.shapeTypes.ts";
+ * import { useSubject, useResource } from "./methods.ts";
  *
- * const UseSubjectTest: FunctionComponent = () => {
- *   const resource = useResource(SAMPLE_DATA_URI);
- *   const post = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
- *   if (resource.isLoading() || !post) return <p>loading</p>;
+ * const subject = useSubject(PostShShapeType, `${SAMPLE_DATA_URI}#Post1`);
+ * useResource(SAMPLE_DATA_URI);
+ * </script>
  *
- *   return (
- *     <ul>
- *       {post.publisher.map((publisher) => {
- *         return <li key={publisher["@id"]}>{publisher["@id"]}</li>;
- *       })}
- *     </ul>
- *   );
- * };
+ * <template>
+ *   <ul>
+ *     <li v-for="publisher in post?.publisher" :key="publisher['@id']">
+ *       {{ publisher["id"] }}
+ *     </li>
+ *   </ul>
+ * </template>
  * ```
  */
-export function createLdoReactMethods<
-  Plugins extends ConnectedPlugin<any, any, any, any>[],
->(plugins: Plugins) {
+export function createLdoVueMethods<Plugin extends ConnectedPlugin>(
+  plugins: Plugin[],
+) {
   const dataset = createConnectedLdoDataset(plugins);
   dataset.setMaxListeners(1000);
 
@@ -77,10 +75,10 @@ export function createLdoReactMethods<
     dataset,
     useDataset: createUseDataset(dataset),
     useLdo: createUseLdo(dataset),
-    useMatchObject: createUseMatchObject(dataset),
-    useMatchSubject: createUseMatchSubject(dataset),
     useResource: createUseResource(dataset),
     useSubject: createUseSubject(dataset),
+    useMatchObject: createUseMatchObject(dataset),
+    useMatchSubject: createUseMatchSubject(dataset),
     useSubscribeToResource: createUseSubscribeToResource(dataset),
     useLinkQuery: createUseLinkQuery(dataset),
     useChangeDataset: createUseChangeDataset(dataset),

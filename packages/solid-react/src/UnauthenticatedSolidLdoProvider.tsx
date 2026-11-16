@@ -4,7 +4,6 @@ import type { FunctionComponent, PropsWithChildren } from "react";
 import { SessionCore } from "@uvdsl/solid-oidc-client-browser/core";
 import type { SolidAuthFunctions } from "./SolidAuthContext";
 import { SolidAuthContext } from "./SolidAuthContext";
-import libraryFetch from "cross-fetch";
 
 /**
  * A provider for interacting with Solid Pods without authenticating
@@ -24,7 +23,7 @@ export const UnauthenticatedSolidLdoProvider: FunctionComponent<
     );
   }, []);
   const fetch = useCallback<SolidAuthFunctions["fetch"]>((input, init) => {
-    return libraryFetch(input, init);
+    return globalThis.fetch(input, init);
   }, []);
 
   const solidAuthFunctions = useMemo<SolidAuthFunctions>(

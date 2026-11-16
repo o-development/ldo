@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidContainerUri, SolidLeafUri } from "./types";
 import { GetStorageContainerFromWebIdSuccess } from "./requester/results/success/CheckRootContainerSuccess";
@@ -35,7 +34,7 @@ export async function getStorageFromWebId(
   | GetStorageContainerFromWebIdSuccess
   | CheckRootResultError
   | ReadResultError<SolidLeaf | SolidContainer>
-  | NoRootContainerError<SolidContainer>
+  | NoRootContainerError<SolidContainer | SolidLeaf>
 > {
   const webIdResource = dataset.getResource(webId) as SolidLeaf;
   const readResult = await webIdResource.readIfUnfetched();

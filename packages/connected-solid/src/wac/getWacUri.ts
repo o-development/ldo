@@ -1,16 +1,10 @@
-import {
-  HttpErrorResult,
-  NotFoundHttpError,
-} from "../requester/results/error/HttpErrorResult";
+import { NotFoundHttpError } from "../requester/results/error/HttpErrorResult";
 import type { HttpErrorResultType } from "../requester/results/error/HttpErrorResult";
 import { GetWacUriSuccess } from "./results/GetWacUriSuccess";
-import LinkHeader from "http-link-header";
 import { UnexpectedResourceError } from "@ldo/connected";
 import { NoncompliantPodError } from "../requester/results/error/NoncompliantPodError";
 import type { SolidContainer } from "../resources/SolidContainer";
 import type { SolidLeaf } from "../resources/SolidLeaf";
-import type { BasicRequestOptions } from "../requester/requests/requestOptions";
-import { guaranteeFetch } from "../util/guaranteeFetch";
 import type { SolidLeafUri } from "../types";
 
 export type GetWacUriError<ResourceType extends SolidContainer | SolidLeaf> =
@@ -30,32 +24,32 @@ export type GetWacUriResult<ResourceType extends SolidContainer | SolidLeaf> =
  */
 export async function getWacUri(
   resource: SolidLeaf | SolidContainer,
-  options?: BasicRequestOptions,
 ): Promise<GetWacUriResult<SolidLeaf | SolidContainer>> {
   try {
-    const fetch = guaranteeFetch(options?.fetch);
-    const response = await fetch(resource.uri, {
-      method: "head",
-    });
-    const errorResult = HttpErrorResult.checkResponse(resource, response);
-    if (errorResult) return errorResult;
-    if (NotFoundHttpError.is(response)) {
+    const linkHeaderResult = await resource.getHeaders();
+
+    if (linkHeaderResult.type === "notFoundError") {
+      linkHeaderResult;
+      // update message of the not found error
       return new NotFoundHttpError(
         resource,
-        response,
+        linkHeaderResult.response,
         "Could not get access control rules because the resource does not exist.",
       );
     }
-    // Get the URI from the link header
-    const linkHeader = response.headers.get("link");
-    if (!linkHeader) {
+
+    if (linkHeaderResult.isError) {
+      return linkHeaderResult as GetWacUriError<SolidLeaf | SolidContainer>;
+    }
+
+    if (linkHeaderResult.headers.link.refs.length === 0) {
       return new NoncompliantPodError(
         resource,
-        "No link header present in request.",
+        `No link header present in request.`,
       );
     }
-    const parsedLinkHeader = LinkHeader.parse(linkHeader);
-    const aclUris = parsedLinkHeader.get("rel", "acl");
+
+    const aclUris = linkHeaderResult.headers.link.rel("acl");
     if (aclUris.length !== 1) {
       return new NoncompliantPodError(
         resource,

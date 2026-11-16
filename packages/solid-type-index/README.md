@@ -5,14 +5,14 @@ A library to handle [type indexes](https://solid.github.io/type-indexes/index.ht
 ## Installation
 
 ```
-npm i @ldo/solid-type-index @ldo/solid
+npm i @ldo/solid-type-index @ldo/connected-solid
 ```
 
 ## Usage
 
 ```typescript
 import { initTypeIndex } from "@ldo/solid-type-index";
-import { createSolidLdoDataset } from "@ldo/solid";
+import { createSolidLdoDataset } from "@ldo/connected-solid";
 
 async function main() {
   const myWebId = "https://example.com/profile/card#me";

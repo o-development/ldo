@@ -7,7 +7,7 @@ import type { SolidConnectedPlugin } from "@ldo/connected-solid";
 import { createUseRootContainerFor } from "./useRootContainerFor";
 import { redirectForSignUp } from "./redirectForSignUp";
 import { createUseResource } from "@ldo/react";
-import libraryFetch from "cross-fetch";
+import { SessionCore } from "@uvdsl/solid-oidc-client-browser/core";
 
 type SolidOidcBrowserSession = InstanceType<typeof SolidOidcSession>;
 type BrowserSolidLdoProviderProps = PropsWithChildren<{
@@ -38,11 +38,8 @@ export function createBrowserSolidReactMethods(
   dataset: ConnectedLdoDataset<(SolidConnectedPlugin | ConnectedPlugin)[]>,
 ) {
   let currentSession: SolidOidcBrowserSession | undefined;
-  const authFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
-    return (
-      currentSession?.authFetch(input as string | URL | Request, init) ??
-      libraryFetch(input, init)
-    );
+  const authFetch = ((input: string | URL | Request, init?: RequestInit) => {
+    return currentSession?.authFetch(input, init) ?? fetch(input, init);
   }) as typeof fetch;
 
   dataset.setContext("solid", { fetch: authFetch });
@@ -53,6 +50,7 @@ export function createBrowserSolidReactMethods(
     const [version, setVersion] = useState(0);
     const [ranInitialAuthCheck, setRanInitialAuthCheck] = useState(false);
     const [session] = useState(() => {
+      if (typeof SharedWorker === "undefined") return new SessionCore();
       const solidSession = bindSessionMethods(
         new SolidOidcSession(clientDetails, {
           ...sessionOptions,

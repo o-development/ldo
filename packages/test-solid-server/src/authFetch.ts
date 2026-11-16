@@ -4,8 +4,6 @@ import {
   createDpopHeader,
   generateDpopKeyPair,
 } from "@inrupt/solid-client-authn-core";
-import fetch from "cross-fetch";
-
 const config = {
   podName: "example",
   email: "hello@example.com",

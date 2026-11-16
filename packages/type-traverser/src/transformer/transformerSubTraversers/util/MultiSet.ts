@@ -4,7 +4,7 @@
 
 export class MultiSet<Key1, Key2> {
   private map: Map<Key1, Set<Key2>> = new Map();
-  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+
   private internalSize: number = 0;
 
   add(key1: Key1, key2: Key2): void {

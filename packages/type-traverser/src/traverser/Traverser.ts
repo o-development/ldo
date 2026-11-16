@@ -8,10 +8,7 @@ import type {
 import { Transformer, Visitor } from "../index";
 import type { TransformersInput } from "../transformer/Transformers";
 
-export class Traverser<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Types extends TraverserTypes<any>,
-> {
+export class Traverser<Types extends TraverserTypes<any>> {
   private traverserDefinition: TraverserDefinitions<Types>;
 
   constructor(traverserDefinition: TraverserDefinitions<Types>) {
