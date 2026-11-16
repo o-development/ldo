@@ -1,6 +1,6 @@
 {
   "name": "@ldo/cli",
-  "version": "1.0.0-alpha.51",
+  "version": "1.0.0-alpha.52",
   "description": "A Command Line Interface for Linked Data Objects",
   "main": "./dist/index.js",
   "type": "module",
@@ -42,8 +42,8 @@
   },
   "dependencies": {
     "@jeswr/shacl2shex": "^1.1.0",
-    "@ldo/ldo": "^1.0.0-alpha.51",
-    "@ldo/schema-converter-shex": "^1.0.0-alpha.51",
+    "@ldo/ldo": "^1.0.0-alpha.52",
+    "@ldo/schema-converter-shex": "^1.0.0-alpha.52",
     "@shexjs/parser": "^1.0.0-alpha.24",
     "camelcase": "^9.0.0",
     "commander": "^9.3.0",

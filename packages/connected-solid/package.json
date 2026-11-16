@@ -1,6 +1,6 @@
 {
   "name": "@ldo/connected-solid",
-  "version": "1.0.0-alpha.51",
+  "version": "1.0.0-alpha.52",
   "description": "A plugin for @ldo/connected to work with the Solid ecosystem.",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,8 +34,8 @@
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid#readme",
   "devDependencies": {
     "@inrupt/solid-client-authn-core": "^3.0.0",
-    "@ldo/cli": "^1.0.0-alpha.51",
-    "@ldo/test-solid-server": "^1.0.0-alpha.51",
+    "@ldo/cli": "^1.0.0-alpha.52",
+    "@ldo/test-solid-server": "^1.0.0-alpha.52",
     "@solid/community-server": "8.0.0-alpha.3",
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
@@ -44,12 +44,12 @@
     "typedoc-plugin-markdown": "^3.17.1"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.51",
+    "@ldo/connected": "^1.0.0-alpha.52",
     "@ldo/connected-solid": "^1.0.0-alpha.46",
-    "@ldo/dataset": "^1.0.0-alpha.51",
-    "@ldo/ldo": "^1.0.0-alpha.51",
-    "@ldo/rdf-utils": "^1.0.0-alpha.51",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.51",
+    "@ldo/dataset": "^1.0.0-alpha.52",
+    "@ldo/ldo": "^1.0.0-alpha.52",
+    "@ldo/rdf-utils": "^1.0.0-alpha.52",
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.52",
     "@rdfjs/types": "^1.0.1",
     "@solid-notifications/subscription": "^0.1.2",
     "@solid-notifications/types": "^0.1.2",

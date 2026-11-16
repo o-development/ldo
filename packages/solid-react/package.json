@@ -1,6 +1,6 @@
 {
   "name": "@ldo/solid-react",
-  "version": "1.0.0-alpha.51",
+  "version": "1.0.0-alpha.52",
   "description": "A React library for LDO and Solid",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-react#readme",
   "devDependencies": {
-    "@ldo/rdf-utils": "^1.0.0-alpha.51",
+    "@ldo/rdf-utils": "^1.0.0-alpha.52",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
     "@types/react": "^18.3.29",
@@ -40,9 +40,9 @@
     "whatwg-fetch": "^3.6.20"
   },
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.51",
-    "@ldo/connected-solid": "^1.0.0-alpha.51",
-    "@ldo/react": "^1.0.0-alpha.51",
+    "@ldo/connected": "^1.0.0-alpha.52",
+    "@ldo/connected-solid": "^1.0.0-alpha.52",
+    "@ldo/react": "^1.0.0-alpha.52",
     "@uvdsl/solid-oidc-client-browser": "^0.2.2"
   },
   "peerDependencies": {
