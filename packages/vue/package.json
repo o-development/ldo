@@ -1,6 +1,6 @@
 {
   "name": "@ldo/vue",
-  "version": "1.0.0-alpha.52",
+  "version": "1.0.0-alpha.53",
   "description": "A Vue library for LDO",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,17 +34,17 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/vue#readme",
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.52",
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.52",
-    "@ldo/ldo": "^1.0.0-alpha.52",
-    "@ldo/rdf-utils": "^1.0.0-alpha.52"
+    "@ldo/connected": "^1.0.0-alpha.53",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.53",
+    "@ldo/ldo": "^1.0.0-alpha.53",
+    "@ldo/rdf-utils": "^1.0.0-alpha.53"
   },
   "peerDependencies": {
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "@ldo/connected-solid": "^1.0.0-alpha.52",
-    "@ldo/test-solid-server": "^1.0.0-alpha.52",
+    "@ldo/connected-solid": "^1.0.0-alpha.53",
+    "@ldo/test-solid-server": "^1.0.0-alpha.53",
     "@types/shexj": "^2.1.7",
     "vue": "^3.5.43"
   },

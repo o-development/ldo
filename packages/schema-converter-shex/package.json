@@ -1,6 +1,6 @@
 {
   "name": "@ldo/schema-converter-shex",
-  "version": "1.0.0-alpha.52",
+  "version": "1.0.0-alpha.53",
   "description": "",
   "type": "module",
   "main": "./dist/index.js",
@@ -43,10 +43,10 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.52",
-    "@ldo/ldo": "^1.0.0-alpha.52",
-    "@ldo/traverser-shexj": "^1.0.0-alpha.52",
-    "@ldo/type-traverser": "^1.0.0-alpha.52",
+    "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.53",
+    "@ldo/ldo": "^1.0.0-alpha.53",
+    "@ldo/traverser-shexj": "^1.0.0-alpha.53",
+    "@ldo/type-traverser": "^1.0.0-alpha.53",
     "dts-dom": "~3.6.0",
     "jsonld": "^5.2.0",
     "jsonld2graphobject": "^0.0.5"
