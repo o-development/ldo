@@ -30,7 +30,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
     "jsdom": "^26.1.0",
-    "lerna": "^7.2.0",
+    "lerna": "^9.0.7",
     "prettier": "3.0.3",
     "publint": "^0.3.18",
     "tsdown": "^0.21.4",
