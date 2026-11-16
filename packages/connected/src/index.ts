@@ -31,6 +31,7 @@ export * from "./notifications/SubscriptionCallbacks";
 // export * from "./trackingProxy/TrackingSetProxy";
 // export * from "./trackingProxy/TrackingSubjectProxy";
 // export * from "./trackingProxy/createTrackingProxy";
+export * from "./tracking/createTrackingDataset";
 
 export * from "./linkTraversal/ResourceLinkQuery";
 export * from "./linkTraversal/exploreLinks";

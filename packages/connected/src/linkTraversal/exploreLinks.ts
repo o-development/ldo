@@ -47,17 +47,6 @@ export async function exploreLinks<
     ? createTrackingDataset(dataset, options.onCoveredDataChanged)
     : dataset;
 
-  // options?.onCoveredDataChanged
-  //   ? createTrackingDataset()
-  //   : /*
-  //   TODO
-  //   options?.onCoveredDataChanged
-  //   ? createTrackingProxyBuilder(
-  //       dataset,
-  //       shapeType,
-  //       options?.onCoveredDataChanged,
-  //     )
-  // :*/ dataset.usingType(termWrapperClass);
   const ldObject = maybeTrackingDataset
     .usingType(termWrapperClass)
     .fromSubject(startingSubject);
