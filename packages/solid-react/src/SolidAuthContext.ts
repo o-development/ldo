@@ -7,7 +7,11 @@ import { createContext, useContext } from "react";
 export interface SolidAuthFunctions {
   login: SessionCore["login"];
   logout: SessionCore["logout"];
-  signUp: SessionCore["login"];
+  /**
+   * Like `login`, but sends the user to the identity provider's registration
+   * screen (OIDC `prompt=create`).
+   */
+  signUp: (idp: string, redirect_uri: string) => Promise<void>;
   fetch: SessionCore["authFetch"];
   session: SessionCore;
   ranInitialAuthCheck: boolean;

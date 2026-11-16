@@ -5,6 +5,7 @@ import { Session as SolidOidcSession } from "@uvdsl/solid-oidc-client-browser";
 import type { ConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 import type { SolidConnectedPlugin } from "@ldo/connected-solid";
 import { createUseRootContainerFor } from "./useRootContainerFor";
+import { redirectForSignUp } from "./redirectForSignUp";
 import { createUseResource } from "@ldo/react";
 import libraryFetch from "cross-fetch";
 
@@ -100,12 +101,13 @@ export function createBrowserSolidReactMethods(
       () => ({
         login: session.login,
         logout: session.logout,
-        signUp: session.login,
+        signUp: (idp: string, redirect_uri: string) =>
+          redirectForSignUp(idp, redirect_uri, clientDetails),
         fetch: session.authFetch,
         session,
         ranInitialAuthCheck,
       }),
-      [ranInitialAuthCheck, session, version],
+      [clientDetails, ranInitialAuthCheck, session, version],
     );
 
     return (
