@@ -3,24 +3,17 @@
   "version": "1.0.0-alpha.50",
   "description": "A React library for LDO and Solid",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
-  "react-native": "./dist/react-native.cjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "react-native": "./dist/react-native.js",
   "exports": {
     ".": {
       "react-native": {
-        "types": "./dist/react-native.d.cts",
-        "default": "./dist/react-native.cjs"
+        "types": "./dist/react-native.d.ts",
+        "default": "./dist/react-native.js"
       },
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -44,8 +37,6 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-react#readme",
   "devDependencies": {
-    "@babel/core": "^7.26.10",
-    "@babel/preset-env": "^7.26.9",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
     "@rdfjs/types": "^1.0.1",
     "@testing-library/react": "^14.1.2",
@@ -64,6 +55,9 @@
     "dist",
     "src"
   ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "publishConfig": {
     "access": "public"
   },

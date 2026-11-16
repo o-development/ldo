@@ -3,19 +3,12 @@
   "version": "1.0.0-alpha.50",
   "description": "",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -52,6 +45,9 @@
     "dist",
     "src"
   ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "dependencies": {
     "@ldo/dataset": "^1.0.0-alpha.50",
     "@ldo/rdf-utils": "^1.0.0-alpha.50",
