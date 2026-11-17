@@ -12,13 +12,13 @@
     "build:ldo": "ldo build --input src/_shapes --output src/_ldo"
   },
   "dependencies": {
-    "@ldo/connected-solid": "^1.0.0-alpha.50",
-    "@ldo/ldo": "^1.0.0-alpha.50",
-    "@ldo/vue": "^1.0.0-alpha.50",
+    "@ldo/connected-solid": "^1.0.0-alpha.53",
+    "@ldo/ldo": "^1.0.0-alpha.53",
+    "@ldo/vue": "^1.0.0-alpha.53",
     "vue": "^3.5.40"
   },
   "devDependencies": {
-    "@ldo/cli": "^1.0.0-alpha.50",
+    "@ldo/cli": "^1.0.0-alpha.53",
     "@tsconfig/node24": "^24.0.4",
     "@types/jsonld": "^1.5.15",
     "@types/node": "^24.13.3",

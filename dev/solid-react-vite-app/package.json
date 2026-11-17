@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ldo/solid-react": "^1.0.0-alpha.50",
+    "@ldo/solid-react": "^1.0.0-alpha.53",
     "@uvdsl/solid-oidc-client-browser": "^0.2.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

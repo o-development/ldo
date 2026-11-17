@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "@ldo/connected": "^1.0.0-alpha.53",
-    "@ldo/connected-solid": "^1.0.0-alpha.46",
     "@ldo/dataset": "^1.0.0-alpha.53",
     "@ldo/ldo": "^1.0.0-alpha.53",
     "@ldo/rdf-utils": "^1.0.0-alpha.53",
