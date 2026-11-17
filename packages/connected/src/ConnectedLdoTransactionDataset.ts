@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LdoBase, ShapeType } from "@ldo/ldo";
-import { LdoTransactionDataset } from "@ldo/ldo";
+import { LdoTransactionDataset, dataFactory } from "@ldo/ldo";
 import type { DatasetFactory, Quad } from "@rdfjs/types";
 import {
   updateDatasetInBulk,
@@ -23,7 +22,8 @@ import type {
   SuccessResult,
 } from "./results/success/SuccessResult";
 import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
-import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
+// import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
 
 /**
  * A ConnectedLdoTransactionDataset has all the functionality of a
@@ -240,10 +240,9 @@ export class ConnectedLdoTransactionDataset<Plugins extends ConnectedPlugin[]>
     };
   }
 
-  public usingType<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+  public usingType<Type extends TermWrapper>(
+    termWrapperClass: ITermWrapperConstructor<Type>,
   ): ConnectedLdoBuilder<Type, Plugins> {
-    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
-    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
+    return new ConnectedLdoBuilder(termWrapperClass, this, dataFactory);
   }
 }

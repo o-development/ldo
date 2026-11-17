@@ -3,9 +3,10 @@
 // If I ever want to implement a global query interface, this is a good place
 // to start.
 
-import type { LdoBase, LdSet } from "@ldo/ldo";
+// import type { LdoBase } from "@ldo/ldo";
 // import { SolidProfileShapeShapeType } from "../../test/_ldo/solidProfile.shapeTypes";
 // import type { SolidProfileShape } from "../../test/_ldo/solidProfile.typings";
+import type { TermWrapper } from "@rdfjs/wrapper";
 
 /**
  * Link Query Input
@@ -20,7 +21,7 @@ export type LQInputSubSet<Type> = Type extends object
   ? LQInputObject<Type>
   : true;
 
-export type LQInputFlattenSet<Type> = Type extends LdSet<infer SetSubType>
+export type LQInputFlattenSet<Type> = Type extends Set<infer SetSubType>
   ? LQInputSubSet<SetSubType>
   : LQInputSubSet<Type>;
 
@@ -56,15 +57,15 @@ export type LQReturnSubSet<Type, Input> = Input extends LQInputSubSet<Type>
 export type LQReturnExpandSet<
   Type,
   Input extends LQInputFlattenSet<Type>,
-> = NonNullable<Type> extends LdSet<infer SetSubType>
-  ? LdSet<LQReturnSubSet<SetSubType, Input>>
+> = NonNullable<Type> extends Set<infer SetSubType>
+  ? Set<LQReturnSubSet<SetSubType, Input>>
   : LQReturnSubSet<Type, Input>;
 
 /**
  * Helper Functions
  */
-export type ExpandDeep<T> = T extends LdSet<infer U>
-  ? LdSet<ExpandDeep<U>> // recursively expand sets
+export type ExpandDeep<T> = T extends Set<infer U>
+  ? Set<ExpandDeep<U>> // recursively expand sets
   : T extends object
   ? { [K in keyof T]: ExpandDeep<T[K]> } // recursively expand objects
   : T; // base case (primitive types)
@@ -76,7 +77,10 @@ export interface LinkQueryRunOptions {
   reload?: boolean;
 }
 
-export interface ILinkQuery<Type extends LdoBase, Input extends LQInput<Type>> {
+export interface ILinkQuery<
+  Type extends TermWrapper,
+  Input extends LQInput<Type>,
+> {
   run(
     options?: LinkQueryRunOptions,
   ): Promise<ExpandDeep<LQReturn<Type, Input>>>;

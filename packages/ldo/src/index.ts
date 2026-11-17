@@ -1,12 +1,11 @@
 export * from "./parseRdf";
-export * from "./ShapeType";
 export * from "./methods";
+export * from "./LdoTermWrapper";
 export * from "./LdoDataset";
 export * from "./LdoTransactionDataset";
 export * from "./LdoBuilder";
 export * from "./createLdoDataset";
+export * from "./dataFactory.js";
 import type { LdoBase as LdoBaseImport } from "./util";
 export type LdoBase = LdoBaseImport;
 export * from "./types";
-export type { LdSet, LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
-export { set } from "@ldo/jsonld-dataset-proxy";

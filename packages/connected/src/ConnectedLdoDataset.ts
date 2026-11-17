@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { LdoBase, ShapeType } from "@ldo/ldo";
-import { LdoDataset, startTransaction } from "@ldo/ldo";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
+import { LdoDataset } from "@ldo/ldo";
 import type { ConnectedPlugin } from "./types/ConnectedPlugin";
 import type { Dataset, DatasetFactory, Quad } from "@rdfjs/types";
 import type { ITransactionDatasetFactory } from "@ldo/subscribable-dataset";
@@ -13,7 +13,7 @@ import type {
 import { ConnectedLdoTransactionDataset } from "./ConnectedLdoTransactionDataset";
 import type { SubjectNode } from "@ldo/rdf-utils";
 import { ConnectedLdoBuilder } from "./ConnectedLdoBuilder";
-import jsonldDatasetProxy from "@ldo/jsonld-dataset-proxy";
+import { dataFactory } from "@ldo/ldo";
 
 /**
  * A ConnectedLdoDataset has all the functionality of a LdoDataset with the
@@ -241,7 +241,7 @@ export class ConnectedLdoDataset<
    *   .usingType(shapeType)
    *   .write(...resources.map((r) => r.uri))
    *   .fromSubject(subject);
-   * @param shapeType - The shapeType to represent the data
+   * @param termWrapperClass - The shapeType to represent the data
    * @param subject - A subject URI
    * @param resources - The resources changes to should written to
    *
@@ -258,18 +258,18 @@ export class ConnectedLdoDataset<
    * );
    * ```
    */
-  createData<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+  createData<Type extends TermWrapper>(
+    termWrapperClass: ITermWrapperConstructor<Type>,
     subject: string | SubjectNode,
     resource: Plugins[number]["types"]["resource"],
     ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type {
     const resources = [resource, ...additionalResources];
-    const linkedDataObject = this.usingType(shapeType)
+    const transactionDataset = this.startTransaction();
+    return transactionDataset
+      .usingType(termWrapperClass)
       .write(...resources.map((r) => r.uri))
       .fromSubject(subject);
-    startTransaction(linkedDataObject);
-    return linkedDataObject;
   }
 
   /**
@@ -287,11 +287,10 @@ export class ConnectedLdoDataset<
     this.context[pluginName] = { ...this.context[pluginName], ...context };
   }
 
-  public usingType<Type extends LdoBase>(
-    shapeType: ShapeType<Type>,
+  public usingType<Type extends TermWrapper>(
+    termWrapperClass: ITermWrapperConstructor<Type>,
   ): ConnectedLdoBuilder<Type, Plugins> {
-    const proxyBuilder = jsonldDatasetProxy(this, shapeType.context);
-    return new ConnectedLdoBuilder(this, proxyBuilder, shapeType);
+    return new ConnectedLdoBuilder(termWrapperClass, this, dataFactory);
   }
 
   public startTransaction(): ConnectedLdoTransactionDataset<Plugins> {

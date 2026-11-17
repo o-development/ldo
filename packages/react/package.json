@@ -46,7 +46,8 @@
     "@ldo/jsonld-dataset-proxy": "^1.0.0-alpha.53",
     "@ldo/ldo": "^1.0.0-alpha.53",
     "@ldo/rdf-utils": "^1.0.0-alpha.53",
-    "@ldo/subscribable-dataset": "^1.0.0-alpha.53"
+    "@ldo/subscribable-dataset": "^1.0.0-alpha.53",
+    "@rdfjs/wrapper": "^0.34.0"
   },
   "files": [
     "dist",

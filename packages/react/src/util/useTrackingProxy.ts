@@ -1,15 +1,16 @@
 import type { LdoBuilder } from "@ldo/ldo";
-import type { LdoBase, LdoDataset, ShapeType } from "@ldo/ldo";
+import type { LdoDataset } from "@ldo/ldo";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createTrackingProxyBuilder } from "@ldo/connected";
+import { createTrackingDataset } from "@ldo/connected";
+import type { TermWrapper, ITermWrapperConstructor } from "@rdfjs/wrapper";
 
 /**
  * @internal
  *
  * A hook for tracking proxies
  */
-export function useTrackingProxy<Type extends LdoBase, ReturnType>(
-  shapeType: ShapeType<Type>,
+export function useTrackingProxy<Type extends TermWrapper, ReturnType>(
+  termWrapperClass: ITermWrapperConstructor<Type>,
   createLdo: (builder: LdoBuilder<Type>) => ReturnType,
   dataset: LdoDataset,
 ): ReturnType {
@@ -23,16 +24,19 @@ export function useTrackingProxy<Type extends LdoBase, ReturnType>(
   const linkedDataObject = useMemo(() => {
     // Remove all current subscriptions
     dataset.removeListenerFromAllEvents(forceUpdate);
-    const builder = createTrackingProxyBuilder(dataset, shapeType, forceUpdate);
+    const builder = createTrackingDataset(dataset, forceUpdate).usingType(
+      termWrapperClass,
+    );
+
     return createLdo(builder);
-  }, [shapeType, dataset, forceUpdateCounter, forceUpdate, createLdo]);
+  }, [termWrapperClass, dataset, forceUpdateCounter, forceUpdate, createLdo]);
 
   useEffect(() => {
     // Unregister force update listener upon unmount
     return () => {
       dataset.removeListenerFromAllEvents(forceUpdate);
     };
-  }, [shapeType]);
+  }, [termWrapperClass]);
 
   return linkedDataObject;
 }
