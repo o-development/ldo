@@ -4,17 +4,17 @@ import { useTrackingProxy } from "../util/useTrackingProxy";
 import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 
-export interface UseMatchObjectOptions<Plugin extends ConnectedPlugin> {
-  dataset?: IConnectedLdoDataset<Plugin[]>;
+export interface UseMatchObjectOptions<Plugins extends ConnectedPlugin[]> {
+  dataset?: IConnectedLdoDataset<Plugins>;
 }
 
-export interface UseMatchObjectComposable<Plugin extends ConnectedPlugin> {
-  <Type extends LdoBase, CustomPlugin extends ConnectedPlugin = Plugin>(
+export interface UseMatchObjectComposable<Plugins extends ConnectedPlugin[]> {
+  <Type extends LdoBase, CustomPlugins extends ConnectedPlugin[] = Plugins>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<QuadMatch[0] | string>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugin>>,
+    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugins>>,
   ): Ref<LdSet<Type>>;
 }
 
@@ -23,22 +23,22 @@ export interface UseMatchObjectComposable<Plugin extends ConnectedPlugin> {
  *
  * Creates a useMatchObject composable.
  */
-export function createUseMatchObject<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseMatchObjectComposable<Plugin> {
+export function createUseMatchObject<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseMatchObjectComposable<Plugins> {
   /**
    * Returns a reactive LDO set of matching items.
    * Triggers a rerender if that data are updated.
    */
   return function useMatchObject<
     Type extends LdoBase,
-    CustomPlugin extends ConnectedPlugin = Plugin,
+    CustomPlugins extends ConnectedPlugin[] = Plugins,
   >(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<QuadMatch[0] | string>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugin>>,
+    options?: MaybeRefOrGetter<UseMatchObjectOptions<CustomPlugins>>,
   ): Ref<LdSet<Type>> {
     const createLdo = computed(() => {
       const subjectValue = toValue(subject);

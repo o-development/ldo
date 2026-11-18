@@ -16,15 +16,18 @@ import { createUseResourceWithAuth } from "./useResourceWithAuth";
  * Solid connected plugin is included by default.
  */
 export function createBrowserSolidVueComposables<
-  Plugin extends ConnectedPlugin = never,
->(additionalPlugins: Plugin[] = []) {
+  Plugins extends ConnectedPlugin[] = [],
+>(additionalPlugins?: Plugins) {
   const {
     provideDataset,
     useResource,
     useDataset,
     datasetInjectionKey,
     ...vueComposables
-  } = createLdoVueComposables([solidConnectedPlugin, ...additionalPlugins]);
+  } = createLdoVueComposables([
+    solidConnectedPlugin,
+    ...(additionalPlugins ?? []),
+  ]);
 
   function provideSolidLdo() {
     const dataset = provideDataset();

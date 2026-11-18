@@ -68,8 +68,8 @@ import { createUseDataset } from "./methods/useDataset";
  * </template>
  * ```
  */
-export function createLdoVueMethods<Plugin extends ConnectedPlugin>(
-  plugins: Plugin[],
+export function createLdoVueMethods<Plugins extends ConnectedPlugin[]>(
+  plugins: Plugins,
 ) {
   const dataset = createConnectedLdoDataset(plugins);
   dataset.setMaxListeners(1000);

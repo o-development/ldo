@@ -10,8 +10,8 @@ export interface UseSubscribeToResourceComposable {
  *
  * Creates a useSubscribeToResource composable.
  */
-export function createUseSubscribeToResource<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
+export function createUseSubscribeToResource<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
 ): UseSubscribeToResourceComposable {
   /**
    * Starts and updates subscriptions to a list of resources.

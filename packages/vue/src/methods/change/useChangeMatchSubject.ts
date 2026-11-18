@@ -14,28 +14,28 @@ import {
 } from "../useMatchSubject";
 
 export interface UseChangeMatchSubjectComposable<
-  Plugin extends ConnectedPlugin,
+  Plugins extends ConnectedPlugin[],
 > {
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string | undefined>,
     object?: MaybeRefOrGetter<QuadMatch[2] | string | undefined>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string | undefined>,
-    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugins>>,
   ): {
     ldo: Ref<LdSet<Type>>;
-    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugin[]>>;
+    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugins>>;
     setData: <
       OtherType extends LdoBase | LdSet<LdoBase> | undefined = undefined,
     >(
-      writeResource: Plugin["types"]["resource"],
+      writeResource: Plugins[number]["types"]["resource"],
       changer: (
         toChange: OtherType extends undefined ? LdSet<Type> : OtherType,
       ) => void,
       otherType?: OtherType,
     ) => void;
     commitData: () => ReturnType<
-      ConnectedLdoTransactionDataset<Plugin[]>["commitToRemote"]
+      ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]
     >;
   };
 }
@@ -45,9 +45,9 @@ export interface UseChangeMatchSubjectComposable<
  *
  * Creates a useChangeMatchSubject composable
  */
-export function createUseChangeMatchSubject<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseChangeMatchSubjectComposable<Plugin> {
+export function createUseChangeMatchSubject<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseChangeMatchSubjectComposable<Plugins> {
   const useChangeDataset = createUseChangeDataset(dataset);
   const useMatchSubject = createUseMatchSubject(dataset);
 
@@ -59,7 +59,7 @@ export function createUseChangeMatchSubject<Plugin extends ConnectedPlugin>(
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string | undefined>,
     object?: MaybeRefOrGetter<QuadMatch[2] | string | undefined>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string | undefined>,
-    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugins>>,
   ) {
     const resolvedDataset = computed(() => toValue(options)?.dataset);
 
@@ -84,7 +84,7 @@ export function createUseChangeMatchSubject<Plugin extends ConnectedPlugin>(
     const setData = <
       OtherType extends LdoBase | LdSet<LdoBase> | undefined = undefined,
     >(
-      writeResource: Plugin["types"]["resource"],
+      writeResource: Plugins[number]["types"]["resource"],
       changer: (
         toChange: OtherType extends undefined ? LdSet<Type> : OtherType,
       ) => void,

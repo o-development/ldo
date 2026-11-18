@@ -4,17 +4,17 @@ import { useTrackingProxy } from "../util/useTrackingProxy";
 import type { ConnectedPlugin, IConnectedLdoDataset } from "@ldo/connected";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 
-export interface UseMatchSubjectOptions<Plugin extends ConnectedPlugin> {
-  dataset?: IConnectedLdoDataset<Plugin[]>;
+export interface UseMatchSubjectOptions<Plugins extends ConnectedPlugin[]> {
+  dataset?: IConnectedLdoDataset<Plugins>;
 }
 
-export interface UseMatchSubjectComposable<Plugin extends ConnectedPlugin> {
+export interface UseMatchSubjectComposable<Plugins extends ConnectedPlugin[]> {
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     object?: MaybeRefOrGetter<QuadMatch[2] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugins>>,
   ): Ref<LdSet<Type>>;
 }
 
@@ -23,9 +23,9 @@ export interface UseMatchSubjectComposable<Plugin extends ConnectedPlugin> {
  *
  * Creates a useMatchSubject composable.
  */
-export function createUseMatchSubject<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseMatchSubjectComposable<Plugin> {
+export function createUseMatchSubject<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseMatchSubjectComposable<Plugins> {
   /**
    * Returns a reactive LDO set of matching linked data objects.
    * Triggers a rerender if the data are updated.
@@ -35,7 +35,7 @@ export function createUseMatchSubject<Plugin extends ConnectedPlugin>(
     predicate?: MaybeRefOrGetter<QuadMatch[1] | string>,
     object?: MaybeRefOrGetter<QuadMatch[2] | string>,
     graph?: MaybeRefOrGetter<QuadMatch[3] | string>,
-    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseMatchSubjectOptions<Plugins>>,
   ): Ref<LdSet<Type>> {
     const createLdo = computed(() => {
       const predicateValue = toValue(predicate);

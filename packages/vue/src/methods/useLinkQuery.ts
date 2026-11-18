@@ -22,8 +22,8 @@ export interface UseLinkQueryComposable {
  *
  * Creates a useLinkQuery composable.
  */
-export function createUseLinkQuery<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
+export function createUseLinkQuery<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
 ): UseLinkQueryComposable {
   /**
    * Runs a LDO link query.

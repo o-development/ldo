@@ -11,18 +11,18 @@ import {
   type Ref,
 } from "vue";
 
-export interface UseChangeDatasetComposable<Plugin extends ConnectedPlugin> {
+export interface UseChangeDatasetComposable<Plugins extends ConnectedPlugin[]> {
   (
     specificDataset?: MaybeRefOrGetter<
-      IConnectedLdoDataset<Plugin[]> | undefined
+      IConnectedLdoDataset<Plugins> | undefined
     >,
   ): {
-    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugin[]>>;
+    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugins>>;
     setData: (
-      changer: (toChange: ConnectedLdoTransactionDataset<Plugin[]>) => void,
+      changer: (toChange: ConnectedLdoTransactionDataset<Plugins>) => void,
     ) => void;
     commitData: () => ReturnType<
-      ConnectedLdoTransactionDataset<Plugin[]>["commitToRemote"]
+      ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]
     >;
   };
 }
@@ -32,9 +32,9 @@ export interface UseChangeDatasetComposable<Plugin extends ConnectedPlugin> {
  *
  * Creates a useChangeDataset composable
  */
-export function createUseChangeDataset<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseChangeDatasetComposable<Plugin> {
+export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseChangeDatasetComposable<Plugins> {
   /**
    * Returns a transaction on the dataset that can be modified and committed.
    *
@@ -60,12 +60,12 @@ export function createUseChangeDataset<Plugin extends ConnectedPlugin>(
    */
   return function useChangeDataset(
     specificDataset?: MaybeRefOrGetter<
-      IConnectedLdoDataset<Plugin[]> | undefined
+      IConnectedLdoDataset<Plugins> | undefined
     >,
   ) {
     const transactionDataset = shallowRef<
-      ConnectedLdoTransactionDataset<Plugin[]>
-    >() as Ref<ConnectedLdoTransactionDataset<Plugin[]>>;
+      ConnectedLdoTransactionDataset<Plugins>
+    >() as Ref<ConnectedLdoTransactionDataset<Plugins>>;
 
     watch(
       () => toValue(specificDataset),
@@ -76,7 +76,7 @@ export function createUseChangeDataset<Plugin extends ConnectedPlugin>(
     );
 
     const setData = (
-      changer: (toChange: ConnectedLdoTransactionDataset<Plugin[]>) => void,
+      changer: (toChange: ConnectedLdoTransactionDataset<Plugins>) => void,
     ) => {
       const subTransaction = transactionDataset.value.startTransaction();
       changer(subTransaction);

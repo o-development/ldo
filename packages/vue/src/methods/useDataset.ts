@@ -1,7 +1,7 @@
 import type { IConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
 
-export interface UseDatasetComposable<Plugin extends ConnectedPlugin> {
-  (): IConnectedLdoDataset<Plugin[]>;
+export interface UseDatasetComposable<Plugins extends ConnectedPlugin[]> {
+  (): IConnectedLdoDataset<Plugins>;
 }
 
 /**
@@ -9,9 +9,9 @@ export interface UseDatasetComposable<Plugin extends ConnectedPlugin> {
  *
  * Creates a useDataset function
  */
-export function createUseDataset<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseDatasetComposable<Plugin> {
+export function createUseDataset<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseDatasetComposable<Plugins> {
   /**
    * Returns the global dataset for the application
    */

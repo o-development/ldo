@@ -16,11 +16,11 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 /**
  * The methods returned by useLdo
  */
-export interface UseLdoMethods<Plugin extends ConnectedPlugin> {
+export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
   /**
    * A ConnectedLdoDataset
    */
-  dataset: ConnectedLdoDataset<Plugin[]>;
+  dataset: ConnectedLdoDataset<Plugins>;
   /**
    * Retrieves a representation of a Resource at the given URI. This resource
    * represents the current state of the resource: whether it is currently
@@ -32,14 +32,14 @@ export interface UseLdoMethods<Plugin extends ConnectedPlugin> {
    *
    * @returns a Resource
    */
-  getResource: ConnectedLdoDataset<Plugin[]>["getResource"];
+  getResource: ConnectedLdoDataset<Plugins>["getResource"];
   /**
    * Sets context for a specific plugin
    *
    * @param pluginName - the name of the plugin
    * @param context - the context for this specific plugin
    */
-  setContext: ConnectedLdoDataset<Plugin[]>["setContext"];
+  setContext: ConnectedLdoDataset<Plugins>["setContext"];
   /**
    * Gets a linked data object based on the subject
    */
@@ -59,36 +59,36 @@ export interface UseLdoMethods<Plugin extends ConnectedPlugin> {
   createData<Type extends LdoBase>(
     shapeType: ShapeType<Type>,
     subject: string | SubjectNode,
-    resource: Plugin["types"]["resource"],
-    ...additionalResources: Plugin["types"]["resource"][]
+    resource: Plugins[number]["types"]["resource"],
+    ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type;
   /**
    * Returns a writable LinkedDataObject given a linked data object
    */
   changeData<Type extends LdoBase>(
     input: Type,
-    resource: Plugin["types"]["resource"],
-    ...additionalResources: Plugin["types"]["resource"][]
+    resource: Plugins[number]["types"]["resource"],
+    ...additionalResources: Plugins[number]["types"]["resource"][]
   ): Type;
   /**
    * Commits the data of a writable Linked Data Object back to the remote.
    */
   commitData(
     input: LdoBase,
-  ): ReturnType<ConnectedLdoTransactionDataset<Plugin[]>["commitToRemote"]>;
+  ): ReturnType<ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]>;
 }
 
-export interface UseLdoComposable<Plugin extends ConnectedPlugin> {
-  (): UseLdoMethods<Plugin>;
+export interface UseLdoComposable<Plugins extends ConnectedPlugin[]> {
+  (): UseLdoMethods<Plugins>;
 }
 
 /**
  * @internal
  * Creates a useLdo composable
  */
-export function createUseLdo<Plugin extends ConnectedPlugin>(
-  dataset: ConnectedLdoDataset<Plugin[]>,
-): UseLdoComposable<Plugin> {
+export function createUseLdo<Plugins extends ConnectedPlugin[]>(
+  dataset: ConnectedLdoDataset<Plugins>,
+): UseLdoComposable<Plugins> {
   const toReturn = {
     dataset,
     /**
@@ -121,8 +121,8 @@ export function createUseLdo<Plugin extends ConnectedPlugin>(
     createData<Type extends LdoBase>(
       shapeType: ShapeType<Type>,
       subject: string | SubjectNode,
-      resource: Plugin["types"]["resource"],
-      ...additionalResources: Plugin["types"]["resource"][]
+      resource: Plugins[number]["types"]["resource"],
+      ...additionalResources: Plugins[number]["types"]["resource"][]
     ): Type {
       return dataset.createData(
         shapeType,
@@ -143,14 +143,14 @@ export function createUseLdo<Plugin extends ConnectedPlugin>(
      */
     commitData(
       input: LdoBase,
-    ): ReturnType<ConnectedLdoTransactionDataset<Plugin[]>["commitToRemote"]> {
-      const inputDataset = getDataset(input) as ConnectedLdoTransactionDataset<
-        Plugin[]
-      >;
+    ): ReturnType<ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]> {
+      const inputDataset = getDataset(
+        input,
+      ) as ConnectedLdoTransactionDataset<Plugins>;
       return inputDataset.commitToRemote();
     },
   };
-  return function useLdo(): UseLdoMethods<Plugin> {
+  return function useLdo(): UseLdoMethods<Plugins> {
     return toReturn;
   };
 }

@@ -54,7 +54,7 @@ if (process.env.VITE_IS_TEST === "true") {
 }
 
 describe("LDO Vue Composables", () => {
-  let methods: ReturnType<typeof createLdoVueMethods<SolidConnectedPlugin>>;
+  let methods: ReturnType<typeof createLdoVueMethods<SolidConnectedPlugin[]>>;
   const personResourceUri = "http://localhost:3006/directory/person";
   const personUri = `${personResourceUri}#me`;
   const otherPersonUri = `${personResourceUri}#i`;

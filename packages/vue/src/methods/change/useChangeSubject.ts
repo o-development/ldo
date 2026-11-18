@@ -10,25 +10,25 @@ import type { SubjectNode } from "@ldo/rdf-utils";
 import { createUseSubject, type UseSubjectOptions } from "../useSubject";
 import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
 
-export interface UseChangeSubjectComposable<Plugin extends ConnectedPlugin> {
+export interface UseChangeSubjectComposable<Plugins extends ConnectedPlugin[]> {
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject: MaybeRefOrGetter<string | SubjectNode | undefined>,
-    options?: MaybeRefOrGetter<UseSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): {
     ldo: Ref<Type | undefined>;
-    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugin[]>>;
+    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugins>>;
     setData: <
       OtherType extends LdoBase | LdSet<LdoBase> | undefined = undefined,
     >(
-      writeResource: Plugin["types"]["resource"],
+      writeResource: Plugins[number]["types"]["resource"],
       changer: (
         toChange: OtherType extends undefined ? Type : OtherType,
       ) => void,
       otherType?: OtherType,
     ) => void;
     commitData: () => ReturnType<
-      ConnectedLdoTransactionDataset<Plugin[]>["commitToRemote"]
+      ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]
     >;
   };
 }
@@ -38,9 +38,9 @@ export interface UseChangeSubjectComposable<Plugin extends ConnectedPlugin> {
  *
  * Creates a useChangeSubject composable.
  */
-export function createUseChangeSubject<Plugin extends ConnectedPlugin>(
-  dataset: IConnectedLdoDataset<Plugin[]>,
-): UseChangeSubjectComposable<Plugin> {
+export function createUseChangeSubject<Plugins extends ConnectedPlugin[]>(
+  dataset: IConnectedLdoDataset<Plugins>,
+): UseChangeSubjectComposable<Plugins> {
   const useChangeDataset = createUseChangeDataset(dataset);
   const useSubject = createUseSubject(dataset);
 
@@ -50,7 +50,7 @@ export function createUseChangeSubject<Plugin extends ConnectedPlugin>(
   return function useChangeSubject<Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject: MaybeRefOrGetter<string | SubjectNode | undefined>,
-    options?: MaybeRefOrGetter<UseSubjectOptions<Plugin>>,
+    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ) {
     const resolvedDataset = computed(() => toValue(options)?.dataset);
 
@@ -69,7 +69,7 @@ export function createUseChangeSubject<Plugin extends ConnectedPlugin>(
     const setData = <
       OtherType extends LdoBase | LdSet<LdoBase> | undefined = undefined,
     >(
-      writeResource: Plugin["types"]["resource"],
+      writeResource: Plugins[number]["types"]["resource"],
       changer: (
         toChange: OtherType extends undefined ? Type : OtherType,
       ) => void,
