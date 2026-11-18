@@ -3,19 +3,12 @@
   "version": "1.0.0-alpha.53",
   "description": "A Vue library for LDO and Solid",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -41,16 +34,19 @@
   },
   "homepage": "https://github.com/o-development/ldo/tree/main/packages/solid-vue#readme",
   "dependencies": {
-    "@ldo/connected": "^1.0.0-alpha.50",
-    "@ldo/connected-solid": "^1.0.0-alpha.50",
-    "@ldo/vue": "^1.0.0-alpha.50",
+    "@ldo/connected": "^1.0.0-alpha.53",
+    "@ldo/connected-solid": "^1.0.0-alpha.53",
+    "@ldo/vue": "^1.0.0-alpha.53",
     "@uvdsl/solid-oidc-client-browser": "^0.2.3"
   },
   "peerDependencies": {
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "@ldo/test-solid-server": "^1.0.0-alpha.50",
+    "@ldo/test-solid-server": "^1.0.0-alpha.53",
     "vue": "^3.5.43"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   }
 }
