@@ -46,7 +46,7 @@ export function createUseResourceWithAuth({
           resource.status.type !== "unfetched" ||
           resource.isLoading()
         ) {
-          await resourceRef.value!.read();
+          await resource.read();
         }
       }
     });

@@ -11,7 +11,7 @@ import type {
 import type { UseResourceOptions } from "../src/index";
 
 describe("Composables for Solid", () => {
-  let methods: ReturnType<typeof createBrowserSolidVueComposables<never>>;
+  let methods: ReturnType<typeof createBrowserSolidVueComposables<[]>>;
   const personResourceUri = "http://localhost:3006/directory/person";
   const person2ResourceUri = "http://localhost:3006/directory/person2";
 

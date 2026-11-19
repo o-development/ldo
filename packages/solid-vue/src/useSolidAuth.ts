@@ -82,7 +82,7 @@ export function provideSolidAuth({
         const uri = new URL(globalThis.location.href);
         hash = uri.hash;
         uri.hash = "";
-        globalThis.history.replaceState({}, "", uri);
+        globalThis.history.replaceState(globalThis.history.state, "", uri);
       }
     }
     await waitFor?.();
@@ -120,6 +120,8 @@ export function provideSolidAuth({
     session: sessionRef,
     login: session.login.bind(session),
     logout: session.logout.bind(session),
+    // TODO this should be replaced with an appropriate signup function
+    // see also https://github.com/o-development/ldo/issues/178
     signUp: session.login.bind(session),
     fetch: session.authFetch.bind(session),
     ranInitialAuthCheck,

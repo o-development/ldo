@@ -3,14 +3,22 @@ import {
   type SolidConnectedPlugin,
   type SolidContainerUri,
   type SolidLeafUri,
+  type SolidContainer,
 } from "@ldo/connected-solid";
 import type {
-  createUseDataset,
-  createUseResource,
+  UseDatasetComposable,
+  UseResourceComposable,
   UseResourceOptions,
 } from "@ldo/vue";
-import { ref, toValue, watch, type MaybeRefOrGetter } from "vue";
+import { ref, toValue, watch, type MaybeRefOrGetter, type Ref } from "vue";
 import type { useSolidAuth } from "./useSolidAuth";
+
+export interface UseRootContainerFor {
+  (
+    uri?: MaybeRefOrGetter<SolidContainerUri | SolidLeafUri | undefined>,
+    options?: MaybeRefOrGetter<UseResourceOptions<"solid">>,
+  ): Ref<SolidContainer | undefined>;
+}
 
 /**
  * @internal
@@ -22,10 +30,10 @@ export function createUseRootContainerFor({
   useResource,
   useSolidAuth: useSAuth,
 }: {
-  useDataset: ReturnType<typeof createUseDataset<SolidConnectedPlugin[]>>;
-  useResource: ReturnType<typeof createUseResource<SolidConnectedPlugin[]>>;
+  useDataset: UseDatasetComposable<SolidConnectedPlugin[]>;
+  useResource: UseResourceComposable<SolidConnectedPlugin[]>;
   useSolidAuth: typeof useSolidAuth;
-}) {
+}): UseRootContainerFor {
   /**
    * Returns a reactive Solid Pod root container of a given URI
    * or undefined if the root container of the resource is not found.
@@ -40,7 +48,7 @@ export function createUseRootContainerFor({
 
     watch(
       [() => toValue(uri), () => solidAuth.session.value.isActive],
-      async ([newUri, newIsActive], [oldUri, _oldIsActive]) => {
+      async ([newUri, newIsActive], [oldUri]) => {
         void newIsActive;
         if (newUri !== oldUri) rootContainerUriRef.value = undefined;
         if (newUri && isSolidUri(newUri)) {

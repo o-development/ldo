@@ -43,6 +43,12 @@ export function createBrowserSolidVueComposables<
     useSolidAuth,
   });
 
+  const useRootContainerFor = createUseRootContainerFor({
+    useSolidAuth,
+    useDataset,
+    useResource: useResourceWithAuth,
+  });
+
   return {
     solidAuthInjectionKey,
     datasetInjectionKey,
@@ -53,10 +59,6 @@ export function createBrowserSolidVueComposables<
     ...vueComposables,
     provideSolidAuth,
     useSolidAuth,
-    useRootContainerFor: createUseRootContainerFor({
-      useSolidAuth,
-      useDataset,
-      useResource: useResourceWithAuth,
-    }),
+    useRootContainerFor,
   };
 }
