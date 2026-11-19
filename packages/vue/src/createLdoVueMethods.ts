@@ -18,6 +18,9 @@ import { createUseDataset } from "./methods/useDataset";
 /**
  * A function that creates all common vue functions given specific plugin.
  *
+ * It keeps a global module-level dataset variable.
+ * To keep injected dataset, use `createLdoVueComposables` instead.
+ *
  * @example
  * `methods.ts`
  * ```tsx
@@ -65,8 +68,8 @@ import { createUseDataset } from "./methods/useDataset";
  * </template>
  * ```
  */
-export function createLdoVueMethods<Plugin extends ConnectedPlugin>(
-  plugins: Plugin[],
+export function createLdoVueMethods<Plugins extends ConnectedPlugin[]>(
+  plugins: Plugins,
 ) {
   const dataset = createConnectedLdoDataset(plugins);
   dataset.setMaxListeners(1000);

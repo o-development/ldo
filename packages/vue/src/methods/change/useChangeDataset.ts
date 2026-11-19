@@ -11,6 +11,22 @@ import {
   type Ref,
 } from "vue";
 
+export interface UseChangeDatasetComposable<Plugins extends ConnectedPlugin[]> {
+  (
+    specificDataset?: MaybeRefOrGetter<
+      IConnectedLdoDataset<Plugins> | undefined
+    >,
+  ): {
+    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugins>>;
+    setData: (
+      changer: (toChange: ConnectedLdoTransactionDataset<Plugins>) => void,
+    ) => void;
+    commitData: () => ReturnType<
+      ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]
+    >;
+  };
+}
+
 /**
  * @internal
  *
@@ -18,7 +34,7 @@ import {
  */
 export function createUseChangeDataset<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
-) {
+): UseChangeDatasetComposable<Plugins> {
   /**
    * Returns a transaction on the dataset that can be modified and committed.
    *

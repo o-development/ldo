@@ -78,13 +78,17 @@ export interface UseLdoMethods<Plugins extends ConnectedPlugin[]> {
   ): ReturnType<ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]>;
 }
 
+export interface UseLdoComposable<Plugins extends ConnectedPlugin[]> {
+  (): UseLdoMethods<Plugins>;
+}
+
 /**
  * @internal
  * Creates a useLdo composable
  */
 export function createUseLdo<Plugins extends ConnectedPlugin[]>(
   dataset: ConnectedLdoDataset<Plugins>,
-) {
+): UseLdoComposable<Plugins> {
   const toReturn = {
     dataset,
     /**

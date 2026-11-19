@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
-import { useSubject, useResource } from "./ldo.js";
+import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes";
+import { useSubject, useResource } from "./ldo";
 
 const personUri = ref<string>("");
 const subject = useSubject(FoafProfileShapeType, personUri);

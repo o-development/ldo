@@ -8,17 +8,12 @@ export interface UseSubjectOptions<Plugins extends ConnectedPlugin[]> {
   dataset?: IConnectedLdoDataset<Plugins>;
 }
 
-export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
+export type UseSubjectComposable<Plugins extends ConnectedPlugin[]> = {
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject: MaybeRefOrGetter<string | SubjectNode>,
     options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
   ): Ref<Type>;
-  <Type extends LdoBase>(
-    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
-    subject?: MaybeRefOrGetter<string | SubjectNode | undefined>,
-    options?: MaybeRefOrGetter<UseSubjectOptions<Plugins>>,
-  ): Ref<Type | undefined>;
   <Type extends LdoBase>(
     shapeType: MaybeRefOrGetter<ShapeType<Type>>,
     subject?: MaybeRefOrGetter<string | SubjectNode | undefined>,
@@ -33,7 +28,7 @@ export type useSubjectType<Plugins extends ConnectedPlugin[]> = {
  */
 export function createUseSubject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
-): useSubjectType<Plugins> {
+): UseSubjectComposable<Plugins> {
   /**
    * Returns a reactive Linked Data Object based on the provided subject.
    * Triggers a rerender if the data are updated.

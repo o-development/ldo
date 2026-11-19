@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **solid-vue:** Add Solid + Vue support with `@ldo/solid-vue` package. It provides `@ldo/vue` integration with Solid dataset and Solid auth session and additional Solid-specific Vue composables. ([#173](https://github.com/o-development/ldo/pull/173))
+
 ## [1.0.0-alpha.53] - 2026-11-16
 
 ### Added

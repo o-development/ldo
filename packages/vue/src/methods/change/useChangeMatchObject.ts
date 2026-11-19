@@ -1,6 +1,10 @@
-import type { IConnectedLdoDataset, ConnectedPlugin } from "@ldo/connected";
+import type {
+  IConnectedLdoDataset,
+  ConnectedPlugin,
+  ConnectedLdoTransactionDataset,
+} from "@ldo/connected";
 import { type LdSet, write, type LdoBase, type ShapeType } from "@ldo/ldo";
-import { computed, toValue, type MaybeRefOrGetter } from "vue";
+import { computed, type Ref, toValue, type MaybeRefOrGetter } from "vue";
 import { createUseChangeDataset } from "./useChangeDataset";
 import type { QuadMatch } from "@ldo/rdf-utils";
 import { createProxyInteractOptions } from "@ldo/jsonld-dataset-proxy";
@@ -9,6 +13,33 @@ import {
   type UseMatchObjectOptions,
 } from "../useMatchObject";
 
+export interface UseChangeMatchObjectComposable<
+  Plugins extends ConnectedPlugin[],
+> {
+  <Type extends LdoBase>(
+    shapeType: MaybeRefOrGetter<ShapeType<Type>>,
+    subject?: MaybeRefOrGetter<QuadMatch[0] | string | undefined>,
+    predicate?: MaybeRefOrGetter<QuadMatch[1] | string | undefined>,
+    graph?: MaybeRefOrGetter<QuadMatch[3] | string | undefined>,
+    options?: MaybeRefOrGetter<UseMatchObjectOptions<Plugins>>,
+  ): {
+    ldo: Ref<LdSet<Type>>;
+    transactionDataset: Ref<ConnectedLdoTransactionDataset<Plugins>>;
+    setData: <
+      OtherType extends LdoBase | LdSet<LdoBase> | undefined = undefined,
+    >(
+      writeResource: Plugins[number]["types"]["resource"],
+      changer: (
+        toChange: OtherType extends undefined ? LdSet<Type> : OtherType,
+      ) => void,
+      otherType?: OtherType,
+    ) => void;
+    commitData: () => ReturnType<
+      ConnectedLdoTransactionDataset<Plugins>["commitToRemote"]
+    >;
+  };
+}
+
 /**
  * @internal
  *
@@ -16,7 +47,7 @@ import {
  */
 export function createUseChangeMatchObject<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
-) {
+): UseChangeMatchObjectComposable<Plugins> {
   const useChangeDataset = createUseChangeDataset(dataset);
   const useMatchObject = createUseMatchObject(dataset);
 

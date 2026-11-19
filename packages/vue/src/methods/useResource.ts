@@ -21,7 +21,7 @@ export interface UseResourceOptions<Name> {
   subscribe?: boolean;
 }
 
-export type useResourceType<Plugins extends ConnectedPlugin[]> = {
+export type UseResourceComposable<Plugins extends ConnectedPlugin[]> = {
   <
     Name extends Plugins[number]["name"],
     Plugin extends Extract<Plugins[number], { name: Name }>,
@@ -47,7 +47,7 @@ export type useResourceType<Plugins extends ConnectedPlugin[]> = {
  */
 export function createUseResource<Plugins extends ConnectedPlugin[]>(
   dataset: IConnectedLdoDataset<Plugins>,
-): useResourceType<Plugins> {
+): UseResourceComposable<Plugins> {
   /**
    * Returns a reactive resource and triggers a rerender if that resource is updated.
    */

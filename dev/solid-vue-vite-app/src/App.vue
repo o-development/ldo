@@ -1,61 +1,56 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { FoafProfileShapeType } from "./_ldo/foafProfile.shapeTypes.js";
-import { useSubject, useResource } from "./ldo.js";
-import UseMatchSubjectTest from "./useMatchSubjectTest.vue";
-import VueReadmeTest from "./vueReadmeTest.vue";
+import { provideSolidLdo } from "./ldo";
+import { RouterView, RouterLink } from "vue-router";
+import SolidAuth from "./UseSolidAuth.vue";
 
-const isValidUrl = (str: string) => {
-  try {
-    return Boolean(new URL(str));
-  } catch {
-    return false;
-  }
-};
-
-const inputUri = ref("");
-
-const validUri = computed(() =>
-  isValidUrl(inputUri.value) ? inputUri.value : "",
-);
-
-const subject = useSubject(FoafProfileShapeType, inputUri);
-console.log(subject);
-useResource(validUri);
+provideSolidLdo();
 </script>
 
 <template>
-  <div>
-    <h1>vue Solid auth test</h1>
-    <input v-model="inputUri" placeholder="enter webId" />
-    <div>{{ subject?.name ?? subject?.["@id"] }}</div>
-    <ul>
-      <li v-for="friend in subject?.knows" :key="friend['@id']">
-        {{ friend["@id"] }}
-      </li>
-    </ul>
+  <header class="header">
+    <nav class="navigation">
+      <RouterLink to="/">home</RouterLink>
+      <RouterLink to="/use-resource">useResource</RouterLink>
+      <RouterLink to="/use-solid-auth">useSolidAuth</RouterLink>
+      <RouterLink to="/use-match-subject">useMatchSubject</RouterLink>
+      <RouterLink to="/use-root-container-for">useRootContainerFor</RouterLink>
+    </nav>
 
-    <p>checked:</p>
-    <p>active:</p>
-    <p>webId:</p>
-    <p>webId resource:</p>
+    <div class="auth">
+      <SolidAuth />
+    </div>
+  </header>
 
-    <form>
-      <input />
-      <button type="submit">login</button>
-    </form>
-
-    <!-- <button type="button" @onClick="logout">logout</button> -->
-
-    <form>
-      <input />
-      <button type="submit">fetch</button>
-    </form>
-
-    <pre></pre>
-  </div>
-  <UseMatchSubjectTest />
-  <VueReadmeTest />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
-<style scoped></style>
+<style scoped lang="css">
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem;
+}
+
+.navigation,
+.auth {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.navigation {
+  a {
+    text-decoration: none;
+    font-variant: small-caps;
+    cursor: pointer;
+
+    &.router-link-exact-active {
+      color: red;
+    }
+  }
+}
+</style>
