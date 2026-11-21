@@ -13,7 +13,7 @@ export function getValueForKey(
   target: SubjectProxyTarget,
   key: string | symbol,
   proxyContext: ProxyContext,
-): SubjectProxy | SetProxy | string | number | boolean | undefined {
+): SubjectProxy | SetProxy | string | number | boolean | Date | undefined {
   const { contextUtil, dataset } = proxyContext;
   if (key === "@id") {
     if (target["@id"].termType === "BlankNode") {
