@@ -3,6 +3,9 @@ import type { ExpandedTermDefinition } from "jsonld";
 import type { LdoJsonldContext } from "@ldo/jsonld-dataset-proxy";
 import { hashValueSetValue } from "./util/hashValueSetValue";
 
+const RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+const RDFS_LABEL = "http://www.w3.org/2000/01/rdf-schema#label"
+
 /**
  * Name functions
  */
@@ -27,8 +30,7 @@ export function nameFromObject(obj: {
   annotations?: Annotation[];
 }): string | undefined {
   const labelAnnotationObject = obj.annotations?.find(
-    (annotation) =>
-      annotation.predicate === "http://www.w3.org/2000/01/rdf-schema#label",
+    (annotation) => annotation.predicate === RDFS_LABEL,
   )?.object;
   if (labelAnnotationObject && typeof labelAnnotationObject === "string") {
     return toCamelCase(iriToName(labelAnnotationObject));
@@ -106,21 +108,20 @@ export class JsonLdContextBuilder {
   ) {
     const relevantBuilders = this.getRelevantBuilders(rdfType);
 
+    // Collection status comes from ShEx cardinality analysis,
+    // not from the number of associated values.
+    const shouldBeCollection = isContainer || iri === RDF_TYPE;
+
     relevantBuilders.forEach((relevantBuilder) => {
       relevantBuilder.addSubject(iri, undefined, annotations);
 
-      // If there are multiple associated
       const associatedValuesSet = new Set(
         associatedValues?.map((val) => hashValueSetValue(val)),
       );
 
       if (!relevantBuilder.iriTypes[iri]) {
         relevantBuilder.iriTypes[iri] = { ...expandedTermDefinition };
-        if (
-          isContainer ||
-          associatedValuesSet.size > 1 ||
-          iri === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-        ) {
+        if (shouldBeCollection) {
           relevantBuilder.iriTypes[iri]["@isCollection"] = true;
         }
         if (associatedValuesSet.size > 0) {
@@ -130,24 +131,18 @@ export class JsonLdContextBuilder {
       } else {
         const curDef = relevantBuilder.iriTypes[iri];
         const newDef = expandedTermDefinition;
-        if (isContainer) {
+        // Preserve collection status if any ShEx constraint
+        // establishes that this predicate can occur multiple times.
+        if (shouldBeCollection) {
           curDef["@isCollection"] = true;
         }
-        // If there's a different associated value, it must be a collection because you can have multiple types
+        // Merge permitted values without inferring collection status.
         if (associatedValuesSet.size > 0) {
-          if (associatedValuesSet.size > 1) {
-            relevantBuilder.iriTypes[iri]["@isCollection"] = true;
-          }
           const existingSet = curDef["@associatedValues"];
           if (!existingSet) {
             curDef["@associatedValues"] = new Set(associatedValuesSet);
-            curDef["@isCollection"] = true;
           } else {
-            const oldAssociatedValueSetSize = existingSet.size;
             associatedValuesSet.forEach((val) => existingSet.add(val));
-            if (existingSet.size !== oldAssociatedValueSetSize) {
-              curDef["@isCollection"] = true;
-            }
           }
         }
         // If the old and new versions both have types
@@ -170,8 +165,7 @@ export class JsonLdContextBuilder {
       if (annotations.length > 0) {
         const labelAnnotationObject = annotations.find(
           (annotation) =>
-            annotation.predicate ===
-            "http://www.w3.org/2000/01/rdf-schema#label",
+            annotation.predicate === RDFS_LABEL,
         )?.object;
         if (
           labelAnnotationObject &&
@@ -224,7 +218,7 @@ export class JsonLdContextBuilder {
       if (this.iriTypes[iri]) {
         let subContext: ExpandedTermDefinition = {
           "@id":
-            iri === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+            iri === RDF_TYPE
               ? "@type"
               : iri,
         };

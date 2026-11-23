@@ -9,8 +9,10 @@ import { reusedPredicates } from "./reusedPredicates";
 import { oldExtends } from "./oldExtends";
 import { orSimple } from "./orSimple";
 import { andSimple } from "./andSimple";
+import { valueSet } from "./valueSet";
 import { eachOfAndSimple } from "./eachOfAndSimple";
 import { multipleSharedPredicates } from "./multipleSharedPredicates";
+import { valueSetScope } from "./valueSet_scope";
 
 export interface TestData {
   name: string;
@@ -34,4 +36,6 @@ export const testData: TestData[] = [
   andSimple,
   eachOfAndSimple,
   multipleSharedPredicates,
+  valueSet,
+  valueSetScope,
 ];
