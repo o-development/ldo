@@ -13,6 +13,8 @@ import { valueSet } from "./valueSet";
 import { eachOfAndSimple } from "./eachOfAndSimple";
 import { multipleSharedPredicates } from "./multipleSharedPredicates";
 import { valueSetScope } from "./valueSet_scope";
+import { valueSetOr } from "./valueSet_or.js";
+import { valueSetString } from "./valueSet_string.js";
 
 export interface TestData {
   name: string;
@@ -38,4 +40,6 @@ export const testData: TestData[] = [
   multipleSharedPredicates,
   valueSet,
   valueSetScope,
+  valueSetOr,
+  valueSetString,
 ];
