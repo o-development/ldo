@@ -1,6 +1,25 @@
 import ShexJTraverser from "@ldo/traverser-shexj";
 import type { JsonLdContextBuilder } from "./JsonLdContextBuilder";
 import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleConstraint";
+import { getCollectionPredicates } from "./util/getCollectionConstraints";
+
+const collectionConstraintsByContext = new WeakMap<
+  JsonLdContextBuilder,
+  WeakSet<object>
+>();
+
+function getCollectionConstraints(
+  context: JsonLdContextBuilder,
+): WeakSet<object> {
+  let constraints = collectionConstraintsByContext.get(context);
+
+  if (!constraints) {
+    constraints = new WeakSet<object>();
+    collectionConstraintsByContext.set(context, constraints);
+  }
+
+  return constraints;
+}
 
 /**
  * Visitor
@@ -8,7 +27,39 @@ import { getRdfTypesForTripleConstraint } from "../util/getRdfTypesForTripleCons
 export const ShexJNameVisitor =
   ShexJTraverser.createVisitor<JsonLdContextBuilder>({
     Shape: {
-      visitor: async (_shape, _context) => {},
+      visitor: async (shape, _node, context) => {
+        if (!shape.expression) {
+          return;
+        }
+
+        const collectionPredicates = getCollectionPredicates(
+          shape.expression,
+        );
+
+        const collectionConstraints = getCollectionConstraints(context);
+
+        // Mark all TripleConstraints belonging to collection predicates.
+        function markCollectionConstraints(expression: any): void {
+          if (expression.type === "TripleConstraint") {
+            if (collectionPredicates.has(expression.predicate)) {
+              collectionConstraints.add(expression);
+            }
+          } else if (
+            expression.type === "EachOf" ||
+            expression.type === "OneOf"
+          ) {
+            expression.expressions?.forEach(
+              markCollectionConstraints,
+            );
+          } else {
+            throw new Error(
+              `Unsupported ShEx triple expression: ${expression.type}`,
+            );
+          }
+        }
+
+        markCollectionConstraints(shape.expression);
+      },
     },
     TripleConstraint: {
       visitor: async (tripleConstraint, node, context) => {
@@ -19,8 +70,9 @@ export const ShexJNameVisitor =
         // For Each RDF Type, add it
         rdfTypes.forEach((rdfType) => {
           if (tripleConstraint.valueExpr) {
-            const isContainer =
-              tripleConstraint.max !== undefined && tripleConstraint.max !== 1;
+            const isContainer = getCollectionConstraints(context).has(
+              tripleConstraint,
+            );
             if (typeof tripleConstraint.valueExpr === "string") {
               // TOOD handle string value expr
             } else if (tripleConstraint.valueExpr.type === "NodeConstraint") {

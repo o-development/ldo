@@ -1,8 +1,11 @@
 import type { ObjectTypeMember } from "dts-dom";
 import * as dom from "dts-dom";
 
+export type PropertyMergeStrategy = "set" | "union";
+
 export function dedupeObjectTypeMembers(
   memberList: ObjectTypeMember[],
+  mergeStrategy: PropertyMergeStrategy = "set",
 ): ObjectTypeMember[] {
   const properties: Record<string, dom.PropertyDeclaration> = {};
   memberList.forEach((expression) => {
@@ -19,13 +22,22 @@ export function dedupeObjectTypeMembers(
       const isOptional =
         propertyDeclaration.flags === dom.DeclarationFlags.Optional ||
         oldPropertyDeclaration.flags === dom.DeclarationFlags.Optional;
+      const mergedType =
+        mergeStrategy === "set"
+          ? {
+              kind: "name" as const,
+              name: "LdSet",
+              typeArguments: [
+                dom.create.union([oldPropertyType, propertyType]),
+              ],
+            }
+          : dom.create.union([
+              oldPropertyDeclaration.type,
+              propertyDeclaration.type,
+            ]);
       properties[propertyDeclaration.name] = dom.create.property(
         propertyDeclaration.name,
-        {
-          kind: "name",
-          name: "LdSet",
-          typeArguments: [dom.create.union([oldPropertyType, propertyType])],
-        },
+        mergedType,
         isOptional ? dom.DeclarationFlags.Optional : dom.DeclarationFlags.None,
       );
       // Set JS Comment
