@@ -2,12 +2,12 @@ import type { TestData } from "./testData";
 
 /**
  * VALUE SET
- * 
- * OR connection of two value sets
+ *
+ * OneOf connection of two value sets
  * see https://shex.io/shex-primer/#choices
  */
-export const valueSetOr: TestData = {
-  name: "valueSetOr",
+export const valueSetOneof: TestData = {
+  name: "valueSetOneof",
   shexc: `
   PREFIX example: <https://example.com/>
   example:IssueShape {

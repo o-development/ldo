@@ -10,6 +10,7 @@ import {
   primitiveKindFromDatatype,
   primitiveKindToType,
 } from "./util/getDomTypesForDatatype.js";
+import { getPropertyDeclarations } from "./util/getPropertyDeclaration.js";
 
 export interface ShexJTypeTransformerContext {
   getNameFromIri: (iri: string, rdfType?: string) => string;
@@ -43,6 +44,9 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
     };
     EachOf: {
       return: dom.ObjectType | dom.InterfaceDeclaration;
+    };
+    OneOf: {
+      return: dom.ObjectType;
     };
     TripleConstraint: {
       return: dom.PropertyDeclaration;
@@ -172,40 +176,25 @@ export const ShexJTypingTransformer = ShexJTraverser.createTransformer<
         : dom.create.objectType([]);
       setReturnPointer(objectType);
       // Get Input property expressions
-      const inputPropertyExpressions: dom.PropertyDeclaration[] = [];
-      transformedChildren.expressions
-        .filter(
-          (
-            expression,
-          ): expression is dom.ObjectType | dom.PropertyDeclaration => {
-            return (
-              (expression as dom.PropertyDeclaration).kind === "property" ||
-              (expression as dom.ObjectType).kind === "object" ||
-              (expression as dom.InterfaceDeclaration).kind === "interface"
-            );
-          },
-        )
-        .forEach(
-          (
-            expression:
-              | dom.ObjectType
-              | dom.InterfaceDeclaration
-              | dom.PropertyDeclaration,
-          ) => {
-            if (expression.kind === "property") {
-              inputPropertyExpressions.push(expression);
-            } else {
-              expression.members.forEach((objectMember) => {
-                if (objectMember.kind === "property") {
-                  inputPropertyExpressions.push(objectMember);
-                }
-              });
-            }
-          },
-        );
+      const inputPropertyExpressions = transformedChildren.expressions.flatMap(
+        getPropertyDeclarations,
+      );
       objectType.members.push(
         ...dedupeObjectTypeMembers(inputPropertyExpressions),
       );
+      return objectType;
+    },
+  },
+  OneOf: {
+    transformer: async (oneOf, getTransformedChildren, setReturnPointer) => {
+      const transformedChildren = await getTransformedChildren();
+      const propertyDeclarations = transformedChildren.expressions.flatMap(
+        getPropertyDeclarations,
+      );
+      const objectType = dom.create.objectType(
+        dedupeObjectTypeMembers(propertyDeclarations, "union"),
+      );
+      setReturnPointer(objectType);
       return objectType;
     },
   },
